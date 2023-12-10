@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE abiword PUBLIC "-//ABISOURCE//DTD AWML 1.0 Strict//EN" "http://www.abisource.com/awml.dtd">
+<abiword template="false" xmlns:ct="http://www.abisource.com/changetracking.dtd" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:math="http://www.w3.org/1998/Math/MathML" xid-max="45" xmlns:dc="http://purl.org/dc/elements/1.1/" styles="unlocked" fileformat="1.0" xmlns:svg="http://www.w3.org/2000/svg" xmlns:awml="http://www.abisource.com/awml.dtd" xmlns="http://www.abisource.com/awml.dtd" xmlns:xlink="http://www.w3.org/1999/xlink" version="0.99.2" xml:space="preserve" props="dom-dir:ltr; document-footnote-restart-section:0; document-endnote-type:numeric; document-endnote-place-enddoc:1; document-endnote-initial:1; lang:en-US; document-endnote-restart-section:0; document-footnote-restart-page:0; document-footnote-type:numeric; document-footnote-initial:1; document-endnote-place-endsection:0">
+<!-- ======================================================================== -->
+<!-- This file is an AbiWord document.                                        -->
+<!-- AbiWord is a free, Open Source word processor.                           -->
+<!-- More information about AbiWord is available at http://www.abisource.com/ -->
+<!-- You should not edit this file by hand.                                   -->
+<!-- ======================================================================== -->
+
+<metadata>
+<m key="abiword.date_last_changed">Wed Sep 27 09:27:52 2023
+</m>
+<m key="abiword.generator">AbiWord</m>
+<m key="dc.creator">micha</m>
+<m key="dc.date">Wed Sep 27 09:27:52 2023
+</m>
+<m key="dc.format">application/x-abiword</m>
+</metadata>
+<rdf>
+</rdf>
+<history version="1" edit-time="23" last-saved="1695821272" uid="9b772488-5d39-11ee-8cbb-9ea176c1f34e">
+<version id="1" started="1695821272" uid="a9090594-5d39-11ee-8cbb-9ea176c1f34e" auto="0" top-xid="45"/>
+</history>
+<styles>
+<s type="P" name="Normal" followedby="Current Settings" props="font-family:Times New Roman; margin-top:0pt; color:000000; margin-left:0pt; text-position:normal; widows:2; font-style:normal; text-indent:0in; font-variant:normal; font-weight:normal; margin-right:0pt; font-size:12pt; text-decoration:none; margin-bottom:0pt; line-height:1.0; bgcolor:transparent; text-align:left; font-stretch:normal"/>
+<s type="P" name="Plain Text" basedon="Normal" followedby="Current Settings" props="font-family:Courier New"/>
+</styles>
+<lists>
+<l id="1" parentid="0" type="0" start-value="1" list-delim="%L" list-decimal="."/>
+</lists>
+<pagesize pagetype="Letter" orientation="portrait" width="8.500000" height="11.000000" units="in" page-scale="1.000000"/>
+<section xid="44" props="page-margin-footer:0.5in; page-margin-header:0.5in">
+<p style="Normal" xid="45"><c props="font-weight:bold">List Databases</c><c>:</c></p>
+<p style="Normal" xid="1"><c>To list all the databases on your MySQL server, you can use the following command:</c></p>
+<p style="Plain Text" xid="2"><c></c></p>
+<p style="Plain Text" xid="3"><c>sql</c></p>
+<p style="Plain Text" xid="4"><c></c></p>
+<p style="Plain Text" xid="5"><c props="" props="font-family:Courier">SHOW</c><c props="font-family:Courier"> DATABASES;<br/></c></p>
+<p style="Normal" xid="6"><c>This command will display a list of all available databases.</c></p>
+<p style="Normal" xid="7"><c props="font-weight:bold">Show Databases</c><c>:</c></p>
+<p style="Normal" xid="8"><c>To show a specific database and its details, you can use the </c><c props="font-family:Courier">USE</c><c> statement followed by the </c><c props="font-family:Courier">SELECT DATABASE()</c><c> function:</c></p>
+<p style="Plain Text" xid="9"><c></c></p>
+<p style="Plain Text" xid="10"><c>sql</c></p>
+<p style="Plain Text" xid="11"><c></c></p>
+<p style="Plain Text" xid="12"><c props="font-family:Courier">USE database_name;<br/></c><c props="" props="font-family:Courier">SELECT</c><c props="font-family:Courier"> DATABASE();<br/></c></p>
+<p style="Normal" xid="13"><c>Replace </c><c props="font-family:Courier">database_name</c><c> with the name of the database you want to show. The first command switches to the specified database, and the second command shows the name of the currently selected database.</c></p>
+<p style="Normal" xid="14"><c props="font-weight:bold">List Tables</c><c>:</c></p>
+<p style="Normal" xid="15"><c>To list all the tables within a specific database, you can use the following command after selecting the database using the </c><c props="font-family:Courier">USE</c><c> statement:</c></p>
+<p style="Plain Text" xid="16"><c></c></p>
+<p style="Plain Text" xid="17"><c>sql</c></p>
+<p style="Plain Text" xid="18"><c></c></p>
+<p style="Plain Text" xid="19"><c props="font-family:Courier">USE database_name;<br/></c><c props="" props="font-family:Courier">SHOW</c><c props="font-family:Courier"> TABLES;<br/></c></p>
+<p style="Normal" xid="20"><c>Replace </c><c props="font-family:Courier">database_name</c><c> with the name of the database containing the tables you want to list.</c></p>
+<p style="Normal" xid="21"><c props="font-weight:bold">Show Tables</c><c>:</c></p>
+<p style="Normal" xid="22"><c>To display the structure of a specific table, including its columns, data types, and other information, you can use the </c><c props="font-family:Courier">DESCRIBE</c><c> or </c><c props="font-family:Courier">SHOW COLUMNS</c><c> statement:</c></p>
+<p style="Plain Text" xid="23"><c></c></p>
+<p style="Plain Text" xid="24"><c>sql</c></p>
+<p style="Plain Text" xid="25"><c></c></p>
+<p style="Plain Text" xid="26"><c props="" props="font-family:Courier">DESCRIBE</c><c props="font-family:Courier"> table_name;<br/></c></p>
+<p style="Normal" xid="27"><c>or</c></p>
+<p style="Plain Text" xid="28"><c></c></p>
+<p style="Plain Text" xid="29"><c>sql</c></p>
+<p level="1" listid="1" parentid="0" style="Normal" xid="30" props="start-value:1; text-indent:-0.3in; list-style:Numbered List; field-font:NULL; margin-left:0.50in"><c></c><field type="list_label" xid="31"></field><c type="list_label">	</c></p>
+<p level="1" listid="1" parentid="0" style="Plain Text" xid="32" props="start-value:1; text-indent:-0.3in; list-style:Numbered List; field-font:NULL; margin-left:0.50in"><c type="list_label" props="list-tag:1000"></c><field type="list_label" xid="38" props="width:0in; font-family:Times New Roman; display:inline; font-style:normal; font-weight:normal; bgcolor:transparent; lang:en-US; text-position:normal; text-transform:none; homogeneous:1; color:000000; font-variant:normal; text-decoration:none; font-size:12pt; height:0in; list-style:Numbered List; font-stretch:normal"></field></p>
+<p level="1" listid="1" parentid="0" style="Plain Text" xid="33" props="start-value:1; text-indent:-0.3in; list-style:Numbered List; field-font:NULL; margin-left:0.50in"><c props="list-tag:1001; font-family:Courier"></c><field type="list_label" xid="39" props="width:0in; font-family:Times New Roman; display:inline; font-style:normal; font-weight:normal; bgcolor:transparent; lang:en-US; text-position:normal; text-transform:none; homogeneous:1; color:000000; font-variant:normal; text-decoration:none; font-size:12pt; height:0in; list-style:Numbered List; font-stretch:normal"></field><c props="" props="font-family:Courier">SHOW</c><c props="font-family:Courier"> COLUMNS </c><c props="" props="font-family:Courier">FROM</c><c props="font-family:Courier"> table_name;<br/></c><c><br/></c></p>
+<p level="1" listid="1" parentid="0" style="Normal" xid="34" props="start-value:1; text-indent:-0.3in; list-style:Numbered List; field-font:NULL; margin-left:0.50in"><c props="list-tag:1002"></c><field type="list_label" xid="40" props="width:0in; font-family:Times New Roman; display:inline; font-style:normal; font-weight:normal; bgcolor:transparent; lang:en-US; text-position:normal; text-transform:none; homogeneous:1; color:000000; font-variant:normal; text-decoration:none; font-size:12pt; height:0in; list-style:Numbered List; font-stretch:normal"></field><c>Replace </c><c props="font-family:Courier">table_name</c><c> with the name of the table you want to show.</c></p>
+<p level="1" listid="1" parentid="0" style="Normal" xid="35" props="start-value:1; text-indent:-0.3in; list-style:Numbered List; field-font:NULL; margin-left:0.50in"><c props="list-tag:1003"></c><field type="list_label" xid="41" props="width:0in; font-family:Times New Roman; display:inline; font-style:normal; font-weight:normal; bgcolor:transparent; lang:en-US; text-position:normal; text-transform:none; homogeneous:1; color:000000; font-variant:normal; text-decoration:none; font-size:12pt; height:0in; list-style:Numbered List; font-stretch:normal"></field><c>These commands will help you navigate and inspect the databases and tables in your MySQL server.</c></p>
+<p level="1" listid="1" parentid="0" style="Normal" xid="36" props="start-value:1; text-indent:-0.3in; list-style:Numbered List; field-font:NULL; margin-left:0.50in"><c props="list-tag:1004"></c><field type="list_label" xid="42" props="width:0in; font-family:Times New Roman; display:inline; font-style:normal; font-weight:normal; bgcolor:transparent; lang:en-US; text-position:normal; text-transform:none; homogeneous:1; color:000000; font-variant:normal; text-decoration:none; font-size:12pt; height:0in; list-style:Numbered List; font-stretch:normal"></field></p>
+<p level="1" listid="1" parentid="0" style="Normal" xid="37" props="start-value:1; text-indent:-0.3in; list-style:Numbered List; field-font:NULL; margin-left:0.50in"><c props="list-tag:1005"></c><field type="list_label" xid="43" props="width:0in; font-family:Times New Roman; display:inline; font-style:normal; font-weight:normal; bgcolor:transparent; lang:en-US; text-position:normal; text-transform:none; homogeneous:1; color:000000; font-variant:normal; text-decoration:none; font-size:12pt; height:0in; list-style:Numbered List; font-stretch:normal"></field></p>
+</section>
+</abiword>

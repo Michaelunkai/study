@@ -1,0 +1,16 @@
+sudo  apt install npm -y
+
+npm cache clean -f
+
+npm install -g --unsafe-perm code-server
+ 
+npm install -g @microsoft/1ds-core-js yauzl yazl
+
+code-server
+
+## run the following to see the password:
+cat /root/.config/code-server/config.yaml
+
+
+###enter the site:
+127.0.0.1:8080/

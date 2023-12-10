@@ -1,0 +1,12 @@
+##within the container:
+apt update
+apt install openssh-server
+adduser <username>
+passwd <username>
+su <username>
+
+# find the ip of the container
+docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <container id>
+
+#ssh to it
+ssh <containerusername>@containerip

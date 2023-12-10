@@ -1,0 +1,19 @@
+
+
+
+
+
+#convert vmdk file to qcow2 file
+
+qemu-img convert -f vmdk -O qcow2 inputpathtofile.vmdk outputpathtofile.qcow2
+
+
+
+#convert every vmdk file in /media/micha/e/vmware to qcow2 format, to /media/micha/e/qcow2
+
+
+for vmdk_file in */*.vmdk; do
+    output_file="/media/micha/e/qcow2/${vmdk_file##*/}"  # Extract the filename and prepend the new directory path
+    qemu-img convert -f vmdk -O qcow2 "$vmdk_file" "$output_file"
+done
+

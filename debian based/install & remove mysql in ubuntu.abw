@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE abiword PUBLIC "-//ABISOURCE//DTD AWML 1.0 Strict//EN" "http://www.abisource.com/awml.dtd">
+<abiword template="false" xmlns:ct="http://www.abisource.com/changetracking.dtd" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:math="http://www.w3.org/1998/Math/MathML" xid-max="343" xmlns:dc="http://purl.org/dc/elements/1.1/" styles="unlocked" fileformat="1.0" xmlns:svg="http://www.w3.org/2000/svg" xmlns:awml="http://www.abisource.com/awml.dtd" xmlns="http://www.abisource.com/awml.dtd" xmlns:xlink="http://www.w3.org/1999/xlink" version="0.99.2" xml:space="preserve" props="dom-dir:ltr; document-footnote-restart-section:0; document-endnote-type:numeric; document-endnote-place-enddoc:1; document-endnote-initial:1; lang:en-US; document-endnote-restart-section:0; document-footnote-restart-page:0; document-footnote-type:numeric; document-footnote-initial:1; document-endnote-place-endsection:0">
+<!-- ======================================================================== -->
+<!-- This file is an AbiWord document.                                        -->
+<!-- AbiWord is a free, Open Source word processor.                           -->
+<!-- More information about AbiWord is available at http://www.abisource.com/ -->
+<!-- You should not edit this file by hand.                                   -->
+<!-- ======================================================================== -->
+
+<metadata>
+<m key="abiword.date_last_changed">Tue Sep 26 17:41:46 2023
+</m>
+<m key="abiword.generator">AbiWord</m>
+<m key="dc.creator">micha</m>
+<m key="dc.date">Tue Sep 26 17:41:46 2023
+</m>
+<m key="dc.format">application/x-abiword</m>
+</metadata>
+<rdf>
+</rdf>
+<history version="1" edit-time="458" last-saved="1695764506" uid="6e2ccf9e-5cb4-11ee-83af-95a270b0a219">
+<version id="1" started="1695764506" uid="7ded96f6-5cb5-11ee-83af-95a270b0a219" auto="0" top-xid="343"/>
+</history>
+<styles>
+<s type="P" name="Normal" followedby="Current Settings" props="font-family:Times New Roman; margin-top:0pt; color:000000; margin-left:0pt; text-position:normal; widows:2; font-style:normal; text-indent:0in; font-variant:normal; font-weight:normal; margin-right:0pt; font-size:12pt; text-decoration:none; margin-bottom:0pt; line-height:1.0; bgcolor:transparent; text-align:left; font-stretch:normal"/>
+<s type="P" name="Plain Text" basedon="Normal" followedby="Current Settings" props="font-family:Courier New"/>
+</styles>
+<pagesize pagetype="Letter" orientation="portrait" width="8.500000" height="11.000000" units="in" page-scale="1.000000"/>
+<section xid="290" props="page-margin-footer:0.5in; page-margin-header:0.5in">
+<p style="Normal" xid="291" props="text-indent:0.0000in; margin-left:0.0000in"><c>To thoroughly eliminate MySQL and its associated components from your Ubuntu system, follow these instructions:</c></p>
+<p style="Normal" xid="235" props="text-indent:0.0000in; margin-left:0.0000in"><c props="font-weight:bold">Cease MySQL Service:</c><c> Begin by stopping the MySQL service if it is currently operational. Use the following command:</c></p>
+<p style="Plain Text" xid="236" props="text-indent:0.0000in; margin-left:0.0000in"><c></c></p>
+<p style="Plain Text" xid="237" props="text-indent:0.0000in; margin-left:0.0000in"><c></c></p>
+<p style="Plain Text" xid="238" props="text-indent:0.0000in; margin-left:0.0000in"><c></c></p>
+<p style="Plain Text" xid="239" props="text-indent:0.0000in; margin-left:0.0000in"><c props="font-family:Courier">sudo service mysql stop<br/></c></p>
+<p style="Normal" xid="240" props="text-indent:0.0000in; margin-left:0.0000in"><c props="font-weight:bold">Uninstall MySQL Packages:</c><c> Uninstall the MySQL server and its related packages using this command:</c></p>
+<p style="Plain Text" xid="241" props="text-indent:0.0000in; margin-left:0.0000in"><c></c></p>
+<p style="Plain Text" xid="242" props="text-indent:0.0000in; margin-left:0.0000in"><c></c></p>
+<p style="Plain Text" xid="243" props="text-indent:0.0000in; margin-left:0.0000in"><c></c></p>
+<p style="Plain Text" xid="244" props="text-indent:0.0000in; margin-left:0.0000in"><c props="font-family:Courier">sudo apt-get purge mysql-server mysql-client mysql-common mysql-server-core-* mysql-client-core-*<br/></c></p>
+<p style="Normal" xid="245" props="text-indent:0.0000in; margin-left:0.0000in"><c props="font-weight:bold">Erase MySQL Configuration Files:</c><c> Remove MySQL's configuration files by executing:</c></p>
+<p style="Plain Text" xid="246" props="text-indent:0.0000in; margin-left:0.0000in"><c></c></p>
+<p style="Plain Text" xid="247" props="text-indent:0.0000in; margin-left:0.0000in"><c></c></p>
+<p style="Plain Text" xid="248" props="text-indent:0.0000in; margin-left:0.0000in"><c></c></p>
+<p style="Plain Text" xid="249" props="text-indent:0.0000in; margin-left:0.0000in"><c props="font-family:Courier">sudo </c><c props="" props="font-family:Courier">rm</c><c props="font-family:Courier"> -rf /etc/mysql /var/lib/mysql<br/></c></p>
+<p style="Normal" xid="250" props="text-indent:0.0000in; margin-left:0.0000in"><c props="font-weight:bold">Tidy Up Dependencies:</c><c> Clean up any residual dependencies with these commands:</c></p>
+<p style="Plain Text" xid="251" props="text-indent:0.0000in; margin-left:0.0000in"><c></c></p>
+<p style="Plain Text" xid="252" props="text-indent:0.0000in; margin-left:0.0000in"><c></c></p>
+<p style="Plain Text" xid="253" props="text-indent:0.0000in; margin-left:0.0000in"><c></c></p>
+<p style="Plain Text" xid="254" props="text-indent:0.0000in; margin-left:0.0000in"><c props="font-family:Courier">sudo apt-get autoremove<br/>sudo apt-get autoclean<br/></c></p>
+<p style="Normal" xid="255" props="text-indent:0.0000in; margin-left:0.0000in"><c props="font-weight:bold">Eliminate MySQL User and Group:</c><c> Delete the MySQL user and group as follows:</c></p>
+<p style="Plain Text" xid="256" props="text-indent:0.0000in; margin-left:0.0000in"><c></c></p>
+<p style="Plain Text" xid="257" props="text-indent:0.0000in; margin-left:0.0000in"><c></c></p>
+<p style="Plain Text" xid="258" props="text-indent:0.0000in; margin-left:0.0000in"><c></c></p>
+<p style="Plain Text" xid="259" props="text-indent:0.0000in; margin-left:0.0000in"><c props="font-family:Courier">sudo deluser mysql<br/>sudo delgroup mysql<br/></c></p>
+<p style="Normal" xid="260" props="text-indent:0.0000in; margin-left:0.0000in"><c props="font-weight:bold">Delete MySQL Data Directory (Caution):</c><c> Only if you are certain that you no longer require any data stored in MySQL, execute this command with caution, as it will delete the entire MySQL data directory:</c></p>
+<p style="Plain Text" xid="261" props="text-indent:0.0000in; margin-left:0.0000in"><c></c></p>
+<p style="Plain Text" xid="262" props="text-indent:0.0000in; margin-left:0.0000in"><c></c></p>
+<p style="Plain Text" xid="264" props="text-indent:0.0000in; margin-left:0.0000in"><c props="font-family:Courier">sudo </c><c props="" props="font-family:Courier">rm</c><c props="font-family:Courier"> -rf /var/lib/mysql<br/></c></p>
+<p style="Normal" xid="265" props="text-indent:0.0000in; margin-left:0.0000in"><c props="font-weight:bold">Purge MySQL Configurations:</c><c> Purge MySQL configurations using:</c></p>
+<p style="Plain Text" xid="266" props="text-indent:0.0000in; margin-left:0.0000in"><c></c></p>
+<p style="Plain Text" xid="267" props="text-indent:0.0000in; margin-left:0.0000in"><c></c></p>
+<p style="Plain Text" xid="268" props="text-indent:0.0000in; margin-left:0.0000in"><c></c></p>
+<p style="Plain Text" xid="269" props="text-indent:0.0000in; margin-left:0.0000in"><c props="font-family:Courier">sudo dpkg --purge mysql-server mysql-client mysql-common mysql-server-core-* mysql-client-core-*<br/></c></p>
+<p style="Normal" xid="270" props="text-indent:0.0000in; margin-left:0.0000in"><c props="font-weight:bold">Remove Residual Files:</c><c> Remove any remaining files with these commands:</c></p>
+<p style="Plain Text" xid="271" props="text-indent:0.0000in; margin-left:0.0000in"><c></c></p>
+<p style="Plain Text" xid="272" props="text-indent:0.0000in; margin-left:0.0000in"><c></c></p>
+<p style="Plain Text" xid="273" props="text-indent:0.0000in; margin-left:0.0000in"><c></c></p>
+<p style="Plain Text" xid="274" props="text-indent:0.0000in; margin-left:0.0000in"><c props="font-family:Courier">sudo apt-get autoremove --purge<br/>sudo apt-get autoclean<br/>sudo apt-get remove dbconfig-mysql<br/></c></p>
+<p style="Normal" xid="275" props="text-indent:0.0000in; margin-left:0.0000in"><c props="font-weight:bold">Erase MySQL Packages List Files:</c><c> Remove MySQL package list files:</c></p>
+<p style="Plain Text" xid="276" props="text-indent:0.0000in; margin-left:0.0000in"><c></c></p>
+<p style="Plain Text" xid="277" props="text-indent:0.0000in; margin-left:0.0000in"><c></c></p>
+<p style="Plain Text" xid="278" props="text-indent:0.0000in; margin-left:0.0000in"><c></c></p>
+<p style="Plain Text" xid="279" props="text-indent:0.0000in; margin-left:0.0000in"><c props="font-family:Courier">sudo </c><c props="" props="font-family:Courier">rm</c><c props="font-family:Courier"> -rf /etc/apt/sources.list.d/mysql.list<br/></c></p>
+<p style="Normal" xid="280" props="text-indent:0.0000in; margin-left:0.0000in"><c props="font-weight:bold">Delete MySQL Logs (Optional):</c><c> If you don't need MySQL log files, you can remove them with:</c></p>
+<p style="Plain Text" xid="281" props="text-indent:0.0000in; margin-left:0.0000in"><c></c></p>
+<p style="Plain Text" xid="282" props="text-indent:0.0000in; margin-left:0.0000in"><c>bash</c></p>
+<p style="Plain Text" xid="283" props="text-indent:0.0000in; margin-left:0.0000in"><c></c></p>
+<p style="Plain Text" xid="284" props="text-indent:0.0000in; margin-left:0.0000in"><c props="font-family:Courier">sudo </c><c props="" props="font-family:Courier">rm</c><c props="font-family:Courier"> -rf /var/log/mysql<br/></c></p>
+<p style="Normal" xid="285" props="text-indent:0.0000in; margin-left:0.0000in"><c props="font-weight:bold">Restart Your System:</c><c> It's advisable to restart your system to ensure complete cessation of any lingering MySQL processes or services.</c></p>
+<p style="Normal" xid="286" props="text-indent:0.0000in; margin-left:0.0000in"><c props="font-weight:bold">Verify Removal:</c><c> Confirm the thorough removal of MySQL by attempting to run the </c><c props="font-family:Courier">mysql</c><c> command. If MySQL is successfully removed, it should return an error stating that the command is not found.</c></p>
+<p style="Normal" xid="287" props="text-indent:0.0000in; margin-left:0.0000in"><c>By adhering to these instructions, you will have effectively eradicated all remnants of MySQL from your Ubuntu system. Exercise caution when deleting data and configuration files to prevent data loss. If you intend to reinstall MySQL or transition to a different database system, ensure you have backed up any critical data beforehand.</c></p>
+<p style="Normal" xid="288" props="text-indent:0.0000in; margin-left:0.0000in"><c></c></p>
+<p style="Normal" xid="289" props="text-indent:0.0000in; margin-left:0.0000in"><c>_____________________________________________________________________________________________________________________________________________________________________________________________________</c></p>
+<p style="Normal" xid="292" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c>To set up MySQL on Ubuntu without a password for the 'micha' user:</c></p>
+<p style="Normal" xid="293" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c></c></p>
+<p style="Normal" xid="294" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c>    Update the package lists:</c></p>
+<p style="Normal" xid="295" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c></c></p>
+<p style="Normal" xid="296" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c>sudo apt update</c></p>
+<p style="Normal" xid="297" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c></c></p>
+<p style="Normal" xid="298" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c>    Install the MySQL server package:</c></p>
+<p style="Normal" xid="299" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c></c></p>
+<p style="Normal" xid="300" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c>sudo apt install mysql-server</c></p>
+<p style="Normal" xid="301" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c></c></p>
+<p style="Normal" xid="302" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c>    During the installation, you will be prompted to set a root password for the MySQL server. Choose a strong password and remember it.</c></p>
+<p style="Normal" xid="303" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c></c></p>
+<p style="Normal" xid="304" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c>    Do not run the mysql_secure_installation script. This script will prompt you to set a password for the root user and other security settings, which we do not want to do in this case.</c></p>
+<p style="Normal" xid="305" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c></c></p>
+<p style="Normal" xid="306" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c>    Start and enable the MySQL service:</c></p>
+<p style="Normal" xid="307" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c></c></p>
+<p style="Normal" xid="308" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c>sudo systemctl start mysql</c></p>
+<p style="Normal" xid="309" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c>sudo systemctl enable mysql</c></p>
+<p style="Normal" xid="310" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c></c></p>
+<p style="Normal" xid="311" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c>    Check the status of the MySQL service to ensure it's running:</c></p>
+<p style="Normal" xid="312" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c></c></p>
+<p style="Normal" xid="313" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c>sudo systemctl status mysql</c></p>
+<p style="Normal" xid="314" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c></c></p>
+<p style="Normal" xid="315" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c>    Create a new MySQL user without a password:</c></p>
+<p style="Normal" xid="316" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c></c></p>
+<p style="Normal" xid="317" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c>sudo mysql -u root -p</c></p>
+<p style="Normal" xid="318" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c></c></p>
+<p style="Normal" xid="319" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c>SQL</c></p>
+<p style="Normal" xid="320" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c></c></p>
+<p style="Normal" xid="321" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c>CREATE USER 'micha'@'localhost' IDENTIFIED WITH 'unix_socket';</c></p>
+<p style="Normal" xid="322" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c></c></p>
+<p style="Normal" xid="323" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c>FLUSH PRIVILEGES;</c></p>
+<p style="Normal" xid="324" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c></c></p>
+<p style="Normal" xid="325" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c>EXIT;</c></p>
+<p style="Normal" xid="326" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c></c></p>
+<p style="Normal" xid="327" props="text-align:right; text-indent:0.0000in; dom-dir:rtl; margin-left:0.0000in"><c>יש להשתמש בקוד בזהירות. מידע נוסף</c></p>
+<p style="Normal" xid="328" props="text-align:right; text-indent:0.0000in; dom-dir:rtl; margin-left:0.0000in"><c></c></p>
+<p style="Normal" xid="329" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c>    Exit the MySQL shell.</c></p>
+<p style="Normal" xid="330" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c></c></p>
+<p style="Normal" xid="331" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c>Now, you should be able to log in to MySQL as the 'micha' user without specifying a password:</c></p>
+<p style="Normal" xid="332" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c></c></p>
+<p style="Normal" xid="333" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c>sudo mysql</c></p>
+<p style="Normal" xid="334" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c></c></p>
+<p style="Normal" xid="335" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c>Note: Setting up a MySQL user without a password is not recommended in a production environment. It is a security risk, as anyone who can access the MySQL server will be able to log in as the 'micha' user and make changes to the database.</c></p>
+<p style="Normal" xid="336" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c></c></p>
+<p style="Normal" xid="337" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c>If you need to set up a MySQL user without a password, it is important to take additional steps to secure your database, such as:</c></p>
+<p style="Normal" xid="338" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c></c></p>
+<p style="Normal" xid="339" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c>    Restrict access to the MySQL server to only trusted users.</c></p>
+<p style="Normal" xid="340" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c>    Use a firewall to block incoming connections to the MySQL server from unauthorized networks.</c></p>
+<p style="Normal" xid="341" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c>    Regularly back up your database.</c></p>
+<p style="Normal" xid="342" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c></c></p>
+<p style="Normal" xid="343" props="text-align:left; text-indent:0.0000in; dom-dir:ltr; margin-left:0.0000in"><c>Please use your own judgment when deciding whether or not to set up a MySQL user without a password.</c></p>
+</section>
+</abiword>
