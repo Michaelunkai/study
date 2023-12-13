@@ -1,0 +1,30 @@
+Understanding Group Policy:
+
+Group Policy is a feature in Windows that allows administrators to control and configure user and computer settings across a network. It's primarily used in Active Directory environments.
+Accessing Group Policy Editor:
+
+Press Windows Key + R to open the Run dialog. Type gpedit.msc and press Enter to open the Group Policy Editor.
+Group Policy Objects (GPOs):
+
+GPOs are containers for Group Policy settings that can be linked to sites, domains, or organizational units.
+Configuring User Configuration Settings:
+
+Open the Group Policy Editor (gpedit.msc). Navigate to User Configuration and explore user-related settings.
+Configuring Computer Configuration Settings:
+
+In the Group Policy Editor, navigate to Computer Configuration. Explore the settings available for computer configuration.
+Group Policy Inheritance:
+
+Settings can be inherited from parent containers to child containers, allowing configurations to flow down the hierarchy.
+Filtering Group Policy Application:
+
+To filter the application of a Group Policy to specific users or computers, use security groups, WMI filters, etc.
+Group Policy Preferences:
+
+Group Policy Preferences extend the functionality of Group Policy settings, allowing more advanced and flexible configuration than traditional settings.
+Group Policy Security Settings:
+
+Security settings include Account Policies, Local Policies, Event Log, Restricted Groups, and System Services, contributing to network security.
+Group Policy Reporting and Troubleshooting:
+
+Troubleshoot Group Policy issues using Event Viewer, gpresult, rsop.msc, and check Group Policy Operational Logs. For reporting, tools like Advanced Group Policy Management (AGPM) can be used.
