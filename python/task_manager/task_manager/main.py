@@ -1,5 +1,7 @@
 import tkinter as tk
-from tkinter import Label, Button, Entry
+from tkinter import Label, Button, Entry, Listbox
+
+tasks = []
 
 def exit_app():
     root.destroy()
@@ -9,15 +11,28 @@ def add_task():
     priority = priority_entry.get()
     due_date = due_date_entry.get()
 
-    # Add your logic to handle the task data (for now, just print it)
-    print(f"Task Name: {task_name}, Priority: {priority}, Due Date: {due_date}")
-    
+    task_details = {"Task Name": task_name, "Priority": priority, "Due Date": due_date}
+    tasks.append(task_details)
+
+    # Clear entry fields after adding a task
+    task_name_entry.delete(0, tk.END)
+    priority_entry.delete(0, tk.END)
+    due_date_entry.delete(0, tk.END)
+
+    # Update the task listbox
+    update_task_list()
+
+def update_task_list():
+    task_listbox.delete(0, tk.END)
+    for task in tasks:
+        task_listbox.insert(tk.END, f"{task['Task Name']} - Priority: {task['Priority']} - Due Date: {task['Due Date']}")
+
 # Create the main window
 root = tk.Tk()
-root.title('Task Manager')
+root.title("Task Manager")
 
 # Add a welcome label
-label = Label(root, text='Welcome!')
+label = Label(root, text="Welcome to Task Manager!")
 label.pack(pady=10)
 
 # Entry fields for task details
@@ -37,8 +52,12 @@ due_date_entry = Entry(root)
 due_date_entry.pack()
 
 # Add an "Add Task" button
-add_task_button = Button(root, text='Add Task', command=add_task)
+add_task_button = Button(root, text="Add Task", command=add_task)
 add_task_button.pack(pady=10)
+
+# Task listbox
+task_listbox = Listbox(root)
+task_listbox.pack(pady=10)
 
 # Add an exit button
 exit_button = Button(root, text="Exit", command=exit_app)
