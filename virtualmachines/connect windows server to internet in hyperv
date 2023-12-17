@@ -1,7 +1,0 @@
-hyper v manager > virtual switch manager (right panel, top) > new virtual network switch > external > create virtaul switch > name it 'internet Connection for Hyper-V' > choose the correct external network > ok > ok.
-
-
-now right click the server > settings > network adapter  > virtual switch > add the created network switch > ok. 
-
-
-now boot the vm, and you'l see a massege pops up 'connect network yes or no'
