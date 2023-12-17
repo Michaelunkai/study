@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import Label, Button, Entry, Listbox
+from tkinter import Label, Button, Entry, Listbox, Scrollbar, END
 
 tasks = []
 
@@ -21,6 +21,12 @@ def add_task():
 
     # Update the task listbox
     update_task_list()
+
+def delete_task():
+    selected_task_index = task_listbox.curselection()
+    if selected_task_index:
+        tasks.pop(selected_task_index[0])
+        update_task_list()
 
 def update_task_list():
     task_listbox.delete(0, tk.END)
@@ -55,9 +61,16 @@ due_date_entry.pack()
 add_task_button = Button(root, text="Add Task", command=add_task)
 add_task_button.pack(pady=10)
 
-# Task listbox
-task_listbox = Listbox(root)
+# Task listbox with scrollbar
+task_listbox = Listbox(root, selectmode=tk.SINGLE)
 task_listbox.pack(pady=10)
+scrollbar = Scrollbar(root, orient=tk.VERTICAL, command=task_listbox.yview)
+scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+task_listbox.config(yscrollcommand=scrollbar.set)
+
+# Add a "Delete Task" button
+delete_task_button = Button(root, text="Delete Task", command=delete_task)
+delete_task_button.pack(pady=10)
 
 # Add an exit button
 exit_button = Button(root, text="Exit", command=exit_app)
