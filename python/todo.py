@@ -15,3 +15,10 @@ title_label = tk.Label(app, text="To-Do List", font=("Helvetica", 16, "bold"))
 
 # Pack the title label into the window
 title_label.pack(pady=10)
+
+# Step 3: Creating Entry Widget for Tasks
+# Create an entry widget for tasks
+task_entry = tk.Entry(app, width=40, font=('Helvetica', 12))
+
+# Pack the task entry widget into the window
+task_entry.pack(pady=10)
