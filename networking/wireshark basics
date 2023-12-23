@@ -1,0 +1,50 @@
+Wireshark Packet Sniffing
+
+Now, let's dive into more advanced network monitoring with Wireshark, a powerful packet analysis tool.
+
+Install Wireshark:
+
+For Linux:
+bash
+Copy code
+sudo apt-get update
+sudo apt-get install wireshark
+For Windows or macOS, download and install Wireshark from wireshark.org.
+Run Wireshark:
+
+Open Wireshark and select the network interface to capture packets.
+Start Capturing:
+
+Click the "Start" button to begin capturing network traffic.
+Filter Packets:
+
+Use display filters (e.g., ip.addr == 8.8.8.8) to focus on specific packets.
+Analyze Packets:
+
+Inspect packet details, follow streams, and identify any unusual patterns.
+Save Capture:
+
+Save the capture file for future analysis or sharing.
+Wireshark provides in-depth insights into network communication. 
+
+
+
+Advanced Wireshark Techniques:
+Protocol Hierarchy:
+
+Navigate to "Statistics" > "Protocol Hierarchy" to view a breakdown of protocols used in the captured packets. This helps identify the dominant protocols.
+Follow TCP Stream:
+
+Right-click on a TCP packet and select "Follow" > "TCP Stream" to see the entire conversation between two endpoints. This is valuable for understanding application-level communication.
+Colorizing Packets:
+
+Use the "View" menu and select "Colorize Packet List" to highlight packets based on their type. It enhances visibility and makes it easier to focus on specific packets.
+Expert Info:
+
+Check the "Expert Info" pane for warnings or issues detected by Wireshark. It provides insights into potential problems with the captured traffic.
+Custom Columns:
+
+Add custom columns to the packet list by right-clicking on a column header. This allows you to display additional information, such as response time or packet size.
+Filters with Logical Operators:
+
+Combine filters using logical operators (and, or, not) for more complex filtering. For example: ip.addr == 8.8.8.8 and tcp.port == 80.
