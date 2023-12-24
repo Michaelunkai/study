@@ -390,6 +390,7 @@ alias gmail='ff https://mail.google.com/mail/u/0/'
 alias ytlater='ff https://www.youtube.com/playlist?list=WL'
 alias gamespot='ff https://www.gamespot.com/'
 alias anime='ff https://9animetv.to/home'
+alias proxmox="ff https://172.30.244.9:8006/"
 
 #EXE
 alias qb='cmd.exe /c "C:\Program Files\qBittorrent\qbittorrent.exe"'
