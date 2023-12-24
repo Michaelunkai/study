@@ -17,7 +17,6 @@ RUN pip install --no-cache-dir \
     SpeechRecognition \
     DateTime \
     wikipedia \
-    webbrowser \
     pyjokes \
     feedparser \
     twilio \
@@ -33,3 +32,4 @@ ENV NAME World
 
 # Run app.py when the container launches
 CMD ["python", "app.py"]
+
