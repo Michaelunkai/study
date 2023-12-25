@@ -154,6 +154,8 @@ alias kraken='drun gitkraken michadockermisha/backup:gitkraken sh -c "apk add rs
 
 alias krak=' cd /mnt/c/kraken/ && cmd.exe /c "gitkraken.exe"'
 
+alias dcode='docker login && cc && docker run -v /mnt/c/:/c/ -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -it --rm --name my_container michadockermisha/backup:python bash -c "echo 'y' | code --no-sandbox --user-data-dir=~/vscode-data && bash"'
+
 alias savehosts='docker commit b541bfc8a1e1 michadockermisha/backup:opensuse && \
 docker push michadockermisha/backup:opensuse && \
 docker commit c4f47b0680ca michadockermisha/backup:debian && \
@@ -324,6 +326,8 @@ sudo setfacl -m user:$USER:rw /var/run/docker.sock" && sudo systemctl enable doc
 alias getlazyd="LAZYDOCKER_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazydocker/releases/latest" | grep -Po '"tag_name": "v\K[0-9.]+') && curl -Lo lazydocker.tar.gz "https://github.com/jesseduffield/lazydocker/releases/latest/download/lazydocker_${LAZYDOCKER_VERSION}_Linux_x86_64.tar.gz" && mkdir lazydocker-temp && tar xf lazydocker.tar.gz -C lazydocker-temp && sudo mv lazydocker-temp/lazydocker /usr/local/bin && rm -rf lazydocker.tar.gz lazydocker-temp && lazydocker"
 
 alias getgoogler='apt install links w3m googler -y'
+alias getext='apt install tesseract-ocr -y'
+alias text=tesseract
 
 alias getcode='curl -fsSL https://code-server.dev/install.sh | sh'
 alias csrun='code-server'
@@ -390,7 +394,6 @@ alias gmail='ff https://mail.google.com/mail/u/0/'
 alias ytlater='ff https://www.youtube.com/playlist?list=WL'
 alias gamespot='ff https://www.gamespot.com/'
 alias anime='ff https://9animetv.to/home'
-alias proxmox="ff https://172.30.244.9:8006/"
 
 #EXE
 alias qb='cmd.exe /c "C:\Program Files\qBittorrent\qbittorrent.exe"'
@@ -435,7 +438,7 @@ alias txt='tesseract'
 
 alias defender='cmd.exe /c C:backup/windowsapps/install/afterformat/windows-defender-remover-main/windows-defender-remover-main/Script_Run.bat'
                   
-alias act='cd /mnt/c/backup/windowsapps/install/Microsoft-Activation-Scripts-master/mas/All-In-One-Version  && cmd MAS_AIO.cmd'                
+alias act='cd /mnt/c/backup/windowsapps/install/afterformat/Microsoft-Activation-Scripts-master/mas/All-In-One-Version  && cmd MAS_AIO.cmd'                  
                   
 #PYTHON
 alias python='python3'                  
