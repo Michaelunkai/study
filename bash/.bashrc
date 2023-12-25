@@ -455,5 +455,5 @@ alias cpalias='cp /mnt/c/backup/linux/wsl/alias.txt /root/.bashrc && cp /mnt/c/b
 alias cmd='cmd.exe /c'
 
 alias trash='powershell.exe -Command "Remove-Item -Path 'C:\$Recycle.Bin\*' -Force"'
-
+a
 complete -C /mnt/c/Users/micha/mc mc
