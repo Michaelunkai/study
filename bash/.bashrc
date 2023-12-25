@@ -205,7 +205,7 @@ alias ps='docker ps -a --size && docker ps --size && docker images'
 alias cc='clear'
 alias brc='gedit ~/.bashrc'
 alias brc1='source ~/.bashrc'
-alias brc2='source ~/.bashrc && source /root/.bashrc && cp /root/.bashrc /mnt/c/backup/linux/wsl/alias.txt && cp /root/.bashrc ~/bashrc && cp /root/.bashrc /mnt/c/study/bash/.bashrc'
+alias brc2='source ~/.bashrc && source /root/.bashrc && cp /root/.bashrc /mnt/c/backup/linux/wsl/alias.txt && cp /root/.bashrc ~/bashrc && rsync -aP /root/.bashrc /mnt/c/study/bash/.bashrc'
 alias savealias='cp ~/.bashrc /mnt/c/backup/linux/wsl/alias.txt && cp ~/.bashrc /root/.bashrc'
 alias savealiasr='cp /root/.bashrc /mnt/c/backup/linux/wsl/alias.txt && cp /root/.bashrc ~/bashrc'
 alias updates='sudo apt update -y && sudo apt upgrade -y && sudo apt autoremove -y'
@@ -334,7 +334,7 @@ alias csrun='code-server'
 alias cs='ff localhost:8080'
 
 # Install basic tools and dependencies
-alias basicinstall='sudo apt install -y -qq wireless-tools rsync abiword tesseract-ocr gh pv kali-win-kex \
+alias basicinstall='sudo apt install -y -qq wireless-tools rsync abiword tesseract-ocr gh pv speedtest-cli kali-win-kex \
 net-tools gedit thonny kali-desktop-xfce curl wget ansible-core jq libgtk-3-dev libcurl4-openssl-dev -y'
 
 # Install SSH
@@ -454,6 +454,4 @@ alias cpalias='cp /mnt/c/backup/linux/wsl/alias.txt /root/.bashrc && cp /mnt/c/b
 
 alias cmd='cmd.exe /c'
 
-alias trash='powershell.exe -Command "Remove-Item -Path 'C:\$Recycle.Bin\*' -Force"'
-a
 complete -C /mnt/c/Users/micha/mc mc
