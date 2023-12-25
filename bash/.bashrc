@@ -301,6 +301,8 @@ alias fkali='echo "wsl --unregister kali-linux;  wsl --import kali-linux C:\wsl2
 alias backupw='echo '\''wsl --export kali-linux C:\backup\linux\kalicurrent.tar'\'''
 alias wupdates='cat "/mnt/c/study/powershell/scripts/windowsupdates.ps1" && cp "/mnt/c/study/powershell/scripts/windowsupdates.ps1 /mnt/c/users/micha/updates.ps1"'
 
+alias wslexport='echo "wsl --export kali-linux C:\backup\linux\kalicurrent.tar"'
+
 alias freespace='cat /mnt/c/study/bash/scripts/freespace.sh && cp /mnt/c/study/bash/scripts/freespace.sh /mnt/c/freespace.sh'
 alias errors='cat /mnt/c/study/bash/scripts/fixwindowserrors.sh && cp /mnt/c/study/bash/scripts/fixwindowserrors.sh /mnt/c/errors.sh'
 
