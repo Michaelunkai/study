@@ -156,8 +156,6 @@ alias krak=' cd /mnt/c/kraken/ && cmd.exe /c "gitkraken.exe"'
 
 alias dcode='docker login && cc && docker run -v /mnt/c/:/c/ -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -it --rm --name my_container michadockermisha/backup:python bash -c "echo 'y' | code --no-sandbox --user-data-dir=~/vscode-data && bash"'
 
-alias kuma="cd /mnt/c/Users/micha/Downloads && docker-compose up -d && ff http://localhost:3001"
-
 alias savehosts='docker commit b541bfc8a1e1 michadockermisha/backup:opensuse && \
 docker push michadockermisha/backup:opensuse && \
 docker commit c4f47b0680ca michadockermisha/backup:debian && \
