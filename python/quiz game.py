@@ -181,7 +181,14 @@ def display_score(correct_guesses, guesses):
     print("Your score is: "+str(score)+"%")
 #------------------------------
 def play_again():
-    pass
+    
+    response = input("Do you want to play again?: (yes or no): ")
+    response = response.upper()
+
+    if response == "YES":
+        return True
+    else:
+        return False
 #------------------------------
 
 questions = {
@@ -198,3 +205,47 @@ options = [["A. Guido van Rossum", "B. Elon Musk", "C. Bill Gates", "D. mark Zoc
 
 new_game()
 
+while play_again():
+    new_game()
+
+print("BYEEEE!!")
+
+# output:
+
+# who create Python?: 
+# A. Guido van Rossum
+# B. Elon Musk
+# C. Bill Gates
+# D. mark Zockerburg
+# Enter (A, B, C, or D): a
+# CORRECT!
+# -------------------------
+# What year was Python created?: 
+# A. 1989
+# B. 1991
+# C. 2000
+# D. 2016
+# Enter (A, B, C, or D): b
+# CORRECT!
+# -------------------------
+# Python is tributed to which comedy group?: 
+# A. lonley Island
+# B. Smosh
+# C. Monty Python
+# D. SNL
+# Enter (A, B, C, or D): c
+# CORRECT!
+# -------------------------
+# Is the Earth round?: 
+# A. True
+# B. False
+# C. sometimes
+# D. what's Earth?
+# Enter (A, B, C, or D): a
+# CORRECT!
+# ---------------------------------
+# RESULTS
+# ---------------------------------
+# Answers: ABCAGuesses: A B C A 
+# Your score is: 100%
+# do you want to play again? (yes or no)
