@@ -142,11 +142,21 @@ def new_game():
     for key in questions:
         print("-------------------------")
         print(key)
-        for i in options:
+        for i in options[question_num-1]:
             print(i)
+        guess = input("Enter (A, B, C, or D): ")
+        guess = guess.upper()
+        guesses.append(guess)
+
+        check_answer(questions.get(key),guess)
+        question_num += 1
+
+
 #------------------------------
-def check_answer():
-    pass
+def check_answer(answer, guess):
+    
+    if answer == guess:
+        print("CORRECT!")
 #------------------------------
 def display_score():
     pass
@@ -168,3 +178,4 @@ options = [["A. Guido van Rossum", "B. Elon Musk", "C. Bill Gates", "D. mark Zoc
           ["A. True", "B. False", "C. sometimes", "D. what's Earth?"]]
 
 new_game()
+
