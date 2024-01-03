@@ -156,8 +156,6 @@ alias krak=' cd /mnt/c/kraken/ && cmd.exe /c "gitkraken.exe"'
 
 alias dcode='docker login && cc && docker run -v /mnt/c/:/c/ -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -it --rm --name my_container michadockermisha/backup:python bash -c "echo 'y' | code --no-sandbox --user-data-dir=~/vscode-data && bash"'
 
-alias kuma="cd /mnt/c/Users/micha/Downloads && docker-compose up -d && ff http://localhost:3001"
-
 alias savehosts='docker commit b541bfc8a1e1 michadockermisha/backup:opensuse && \
 docker push michadockermisha/backup:opensuse && \
 docker commit c4f47b0680ca michadockermisha/backup:debian && \
@@ -439,6 +437,19 @@ alias mp4='docker run \
                   
 alias txt='tesseract'  
                   
+                  
+alias kuma="cd /mnt/c/study/docker//files/composefiles/kuma && docker-compose up -d && ff http://localhost:3001"
+
+alias mariadb='docker run -d --name mariadb -e MYSQL_ROOT_PASSWORD=123456 -p 3307:3307 mariadb:latest && sleep 30 && docker exec -it mariadb mariadb -u root -p'
+
+alias pubip="echo  'http://87.70.162.212'"
+
+alias rip="ff 'http://192.168.1.1'"
+
+alias plex="ff 'http://87.70.162.212:32400'"
+
+
+alias getplex="updates && echo deb https://downloads.plex.tv/repo/deb public main | sudo tee /etc/apt/sources.list.d/plexmediaserver.list && curl https://downloads.plex.tv/plex-keys/PlexSign.key | sudo apt-key add - && updates && cc &&  sudo apt install plexmediaserver -y && sudo systemctl enable plexmediaserver && sudo systemctl start plexmediaserver && ff http://87.70.162.212:32400/web/ "
 
 alias defender='cmd.exe /c C:backup/windowsapps/install/afterformat/windows-defender-remover-main/windows-defender-remover-main/Script_Run.bat'
                   
