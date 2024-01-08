@@ -16,3 +16,7 @@ pve > updates > repositories:
 2) add > non subscribtion repo
 3)press refresh
 4)press upgrade
+
+**in database > storage:
+double top storage > content > enable all the boxes (important to do before creating new vms!!)
+
