@@ -17,3 +17,12 @@ class Fish(Animal):
 class Hawk(Animal):
     pass
 # 1 parent class , 3 children
+
+# creating objects from this classes:
+rabbit = Rabbit()
+fish = Fish()
+hawk = Hawk()
+
+print(rabbit.alive)
+fish.eat
+Hawk.sleep
