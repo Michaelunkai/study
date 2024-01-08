@@ -271,6 +271,7 @@ alias smetasploit='cd /mnt/c/study/metasploit'
 alias snmap='cd /mnt/c/study/nmap&wireshark'
 alias sreverse='cd /mnt/c/study/reverseSHELL'
 alias swindows='cd /mnt/c/study/windows'
+alias sproxmox="/mnt/c/study/virtualmachines/proxmox"
 
 #ANSIBLE
 alias cda='cd /mnt/c/study/ansible/etc/ansible'
@@ -396,6 +397,8 @@ alias gmail='ff https://mail.google.com/mail/u/0/'
 alias ytlater='ff https://www.youtube.com/playlist?list=WL'
 alias gamespot='ff https://www.gamespot.com/'
 alias anime='ff https://9animetv.to/home'
+alias aws="ff https://us-east-1.console.aws.amazon.com/console/home?region=us-east-1#"
+
 
 #EXE
 alias qb='cmd.exe /c "C:\Program Files\qBittorrent\qbittorrent.exe"'
