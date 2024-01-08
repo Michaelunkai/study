@@ -13,6 +13,9 @@ class Animal(Organism):
 class Dog(Animal):
 
     def bark(self):
-        print("This dog is barking")
-# Hierarchy of classes: Organism, Animal (with eating), Dog (with barking).
-        
+        print("This dog is barking")        
+
+dog = Dog()
+print(dog.alive)
+dog.eat()
+dog.bark()
