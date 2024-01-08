@@ -9,10 +9,17 @@ class Vehicle(ABC):
     def go(self):
         pass
 
+    @abstractmethod
+    def stop(self):
+        pass
+
 class Car(Vehicle):
 
     def go(self):
         print("You drive the car")
+
+    def stop(self):
+        print("This car is stopped")
 
 class Motorcycle(Vehicle):
 
@@ -20,16 +27,21 @@ class Motorcycle(Vehicle):
         print("You ride the motorcycle")
 
 
-vehicle = Vehicle()
+    def stop(self):
+        print("This Motorcycle as stopped")
+
+# vehicle = Vehicle()
 car = Car()
 motorcycle = Motorcycle()
 
-vehicle.go()
+# vehicle.go()
 car.go()
 motorcycle.go()
 
-# output: You drive the car
+car.stop()
+motorcycle.stop
+
+# output: 
+# You drive the car
 # You ride the motorcycle
-
-# output: TypeError: Can't instantiate abstract class Vehicle with abstract methods go
-
+# This car is stopped
