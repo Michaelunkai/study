@@ -9,15 +9,24 @@ class Rectangle:
 
 class Square(Rectangle):
 
-    def __init__(self, length, width):
-        super().__init__(length,width)
+    def __init__(self, side_length):
+        super().__init__(side_length, side_length)
 
+    def area(self):
+        return self.length * self.width
 
 class Cube(Rectangle):
 
-    def __init__(self, length, width, height):
-        super().__init__(length,width)
+    def __init__(self, side_length, height):
+        super().__init__(side_length, side_length)
         self.height = height
 
-Square = Square(3, 3)
-cube = Cube(3, 3, 3)
+    def volume(self):
+        return self.length * self.width * self.height
+
+square = Square(3)
+cube = Cube(3, 3)
+
+print(square.area())
+print(cube.volume())
+# output: 9 27
