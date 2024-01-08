@@ -14,3 +14,8 @@ car_3 = Car()
 print(car_2.color)
 print(car_2.color)
 print(car_2.color)
+
+# output: 
+# None
+# None
+# None
