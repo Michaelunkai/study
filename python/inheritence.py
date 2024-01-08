@@ -1,28 +1,33 @@
-# inheritence
-
-class Animal:
-
+# without inhheritence, so no need for animal class
+class Rabbit:
     alive = True
 
     def eat(self):
-        print("This animal is eating")
+        print("This rabbit is eating")
 
-    def sleep(self):
-        print("This animal is sleeping")
+    def slumber(self):
+        print("This rabbit is sleeping")
 
-class Rabbit(Animal):
-    pass
-class Fish(Animal):
-    pass
-class Hawk(Animal):
-    pass
-# 1 parent class , 3 children
+class Fish:
+    alive = True
 
-# creating objects from this classes:
+    def eat(self):
+        print("This fish is eating")
+
+    def slumber(self):
+        print("This fish is sleeping") 
+
+class Hawk:
+    def eat(self):
+        print("This hawk is eating")
+
+    def slumber(self):
+        print("This hawk is sleeping")
+
 rabbit = Rabbit()
 fish = Fish()
 hawk = Hawk()
 
 print(rabbit.alive)
-fish.eat
-Hawk.sleep
+fish.eat()
+hawk.slumber()
