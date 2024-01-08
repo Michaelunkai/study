@@ -22,7 +22,14 @@ class Car:
 
 car = Car()
 # method chaining:
-car.turn_on().drive()
+# car.turn_on().drive()
 # output: You start the engine
 # You drive the car
+
+# another example:
+car.brake().turn_off()
+
+# output: You step on the brakes
+# You turn off the engine
+
 
