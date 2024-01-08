@@ -22,10 +22,7 @@ class Car:
 
 car = Car()
 
-car.turn_on().drive().brake().turn_off()
-
-# will call of 4 methods. output: 
-# You start the engine
-# You drive the car
-# You step on the brakes
-# You turn off the engine
+car.turn_on()\
+    .drive()\
+    .brake()\
+    .turn_off()
