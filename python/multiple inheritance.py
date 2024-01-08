@@ -28,4 +28,12 @@ hawk = Hawk()
 fish = Fish()
 
 rabbit.flee()
-# output: This animal flees
+hawk.hunt()
+fish.flee()
+fish.hunt()
+
+# output:
+# This animal flees
+# This animal is hunting
+# This animal flees
+# This animal is hunting
