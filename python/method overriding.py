@@ -6,7 +6,9 @@ class Animal:
         print("This animal is eating")
 
 class Rabbit(Animal):
-    pass
+    
+    def eat(self):
+        print("This rabbit is eating a carrot")
 
 
 rabbit = Rabbit()
