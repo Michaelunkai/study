@@ -25,3 +25,14 @@ Car.wheels = 2
 
 print(car_1.wheels)
 print(car_2.wheels)
+
+# instance variable is decleared inside of
+# constructor, and they can be giving unique 
+# values.
+
+
+# class variables are decleared within a class
+# but outside of the constructor, and i can set 
+#  a default value for all instances of this 
+# class, for all unique objects that are created 
+# and i can change this values later.
