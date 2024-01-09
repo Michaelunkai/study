@@ -431,5 +431,4 @@ alias cpalias='cp /mnt/c/backup/linux/wsl/alias.txt /root/.bashrc && cp /mnt/c/b
 
 alias cmd='cmd.exe /c'
 
-complete -C /mnt/c/Users/micha/mc mcfind /var/lib/vz/images/ -type f \( -name '*.raw' -o -name '*.iso' \) -exec tar czvf /backup/proxmox_backup.tar.gz --directory=/var/lib/vz/images/ {} +
-
+complete -C /mnt/c/Users/micha/mc mc
