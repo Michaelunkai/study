@@ -1,10 +1,7 @@
-# functions to variables
-def hello():
-    print("Hello") 
+# hi = hello
+# hello()
+# hi()
 
-hi = hello
-hello()
-hi()
+say = print
+say("whoa! i cant believe this works! :0")
 
-# output: Hello
-# Hello
