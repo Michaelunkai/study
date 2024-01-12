@@ -31,8 +31,4 @@ duck = Duck()
 chicken = Chicken()
 person = Person()
 
-person.catch(duck)
-
-# output: This duck is walking
-# This duck is quacking
-# You caught the critter!
+person.catch(chicken)
