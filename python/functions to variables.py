@@ -2,9 +2,9 @@
 def hello():
     print("Hello") 
 
-print(hello)
 hi = hello
-print(hi)   
+hello()
+hi()
 
-# output: <function hello at 0x7feb3feec1f0>
-# <function hello at 0x7feb3feec1f0>
+# output: Hello
+# Hello
