@@ -7,21 +7,32 @@
 
 # example:
 
-def loud(text):
-    return text.upper()
+# def loud(text):
+#     return text.upper()
 
-def quiet(text):
-    return text.lower()
+# def quiet(text):
+#     return text.lower()
 
-def hello(func):
-    text = func("Hello")
-    print(text)
+# def hello(func):
+#     text = func("Hello")
+#     print(text)
 
 # hello(loud)
 # output: HELLO
 
-hello(loud)
-hello(quiet)
+# hello(loud)
+# hello(quiet)
 
 # output: HELLO
 # hello
+
+# ------------------------------------------
+
+def divisor(x):
+    def dividend(y):
+        return y / x
+    return dividend
+
+divide = divisor(2)
+print(divide(10))
+# output 5.0
