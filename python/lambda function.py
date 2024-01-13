@@ -11,8 +11,10 @@
 # print(double(5))
 # output : 10
 
-# double = lambda x:x * 2
-# multiply = lambda x, y: x * y
-# add = lambda x, y, z: x + y + z
-# print(add(5,6,7))
-# output: 18
+double = lambda x:x * 2
+multiply = lambda x, y: x * y
+add = lambda x, y, z: x + y + z
+full_name = lambda first_name, last_name: first_name+" "+last_name
+print(full_name("Misha", "Fedro"))
+
+# output: Misha Fedro
