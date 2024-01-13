@@ -1,0 +1,6 @@
+1)in aws:
+in top search box: iam - press it. 
+2) under IAM resources > users > press the number
+3)create user > username > next > attach policy directly >
+search for: ec2 > checkbox bext to: AmazonEC2FullAccess
+next > create user
