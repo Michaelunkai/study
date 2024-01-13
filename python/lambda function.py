@@ -5,8 +5,10 @@
 
 # syntax:
 #  lamnda parameters: expression
-def double(x):
-    return x * 2
+# def double(x):
+#     return x * 2
 
-print(double(5))
-# output: 10
+# print(double(5))
+# output : 10
+
+lambda x:x * 2
