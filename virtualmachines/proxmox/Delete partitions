@@ -70,3 +70,6 @@ Device       Start        End    Sectors  Size Type
 Command (m for help): d
 Selected partition 3
 Partition 3 has been deleted.
+
+
+to save, tap "w"
