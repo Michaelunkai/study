@@ -5,8 +5,8 @@
 
 students = ["Squidwards","Sandy","Patrick"] 
 
-students.sort()
+students.sort(reverse=True)
 
 for i in students:
     print(i)
-# this will sort my list alphabeticly 
+# this will output in reverse alphabetical order!
