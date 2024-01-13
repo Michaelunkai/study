@@ -6,4 +6,4 @@
 store = [("shirts",20.00),
          ("pants",25.00),
          ("jacket",50.00),
-         ("socks"10.00)]
+         ("socks",10.00)]
