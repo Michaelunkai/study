@@ -11,6 +11,8 @@
 # print(double(5))
 # output : 10
 
-double = lambda x:x * 2
-multiply = lambda x, y: x * y
-print(multiply(5,6))
+# double = lambda x:x * 2
+# multiply = lambda x, y: x * y
+# add = lambda x, y, z: x + y + z
+# print(add(5,6,7))
+# output: 18
