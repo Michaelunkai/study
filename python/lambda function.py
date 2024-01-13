@@ -11,4 +11,5 @@
 # print(double(5))
 # output : 10
 
-lambda x:x * 2
+double = lambda x:x * 2
+print(double(5))
