@@ -19,3 +19,4 @@ for i in store_euros:
 # ('pants', 20.5)
 # ('jacket', 41.0)
 # ('socks', 8.2)
+    
