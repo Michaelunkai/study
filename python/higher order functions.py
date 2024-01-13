@@ -17,5 +17,11 @@ def hello(func):
     text = func("Hello")
     print(text)
 
-hello(loud)
+# hello(loud)
 # output: HELLO
+
+hello(loud)
+hello(quiet)
+
+# output: HELLO
+# hello
