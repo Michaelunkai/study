@@ -12,4 +12,5 @@
 # output : 10
 
 double = lambda x:x * 2
-print(double(5))
+multiply = lambda x, y: x * y
+print(multiply(5,6))
