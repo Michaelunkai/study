@@ -12,3 +12,10 @@ def loud(text):
 
 def quiet(text):
     return text.lower()
+
+def hello(func):
+    text = func("Hello")
+    print(text)
+
+hello(loud)
+# output: HELLO
