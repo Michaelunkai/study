@@ -22,8 +22,18 @@
 
 # with it:
 
+# students = [100,90,80,70,60,50,40,30,0]
+
+# passed_students = [i for i in students if i >= 60]
+
+# print(passed_students)
+
+# _____________________-- with if/else statement:
+
 students = [100,90,80,70,60,50,40,30,0]
 
-passed_students = [i for i in students if i >= 60]
+passed_students = [i if i >= 60 else "FAILED" for i in students]
 
 print(passed_students)
+
+# output: [100, 90, 80, 70, 60, 'FAILED', 'FAILED', 'FAILED', 'FAILED']
