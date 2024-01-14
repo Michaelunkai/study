@@ -18,4 +18,4 @@ students = [100,90,80,70,60,50,40,30,0]
 
 passed_students = list(filter(lambda x: x >= 60, students))
 
-print(passed_studentss)
+print(passed_students)
