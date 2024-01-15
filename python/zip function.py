@@ -26,15 +26,29 @@
 
 
 
-usernames = ["Dude", "Bro", "Mister"]
-passwords = ("password","Abc", "guest")
+# usernames = ["Dude", "Bro", "Mister"]
+# passwords = ("password","Abc", "guest")
 
-users = list(zip(usernames, passwords))
+# users = list(zip(usernames, passwords))
 
-for i in users:
-    print(i)
+# for i in users:
+#     print(i)
 
 # output: 
 # ('Dude', 'password')
 # ('Bro', 'Abc')
 # ('Mister', 'guest')
+
+
+usernames = ["Dude", "Bro", "Mister"]
+passwords = ("password","Abc", "guest")
+
+users = dict(zip(usernames, passwords))
+
+for key,value in users.items():
+    print(key+" : "+value)
+
+# output:
+# Dude : password
+# Bro : Abc
+# Mister : guest
