@@ -271,7 +271,7 @@ alias smetasploit='cd /mnt/c/study/metasploit'
 alias snmap='cd /mnt/c/study/nmap&wireshark'
 alias sreverse='cd /mnt/c/study/reverseSHELL'
 alias swindows='cd /mnt/c/study/windows'
-alias sproxmox="cd /mnt/c/study/virtualmachines/proxmox"
+alias sproxmox="/mnt/c/study/virtualmachines/proxmox"
 
 #ANSIBLE
 alias cda='cd /mnt/c/study/ansible/etc/ansible'
@@ -473,3 +473,5 @@ alias cpalias='cp /mnt/c/backup/linux/wsl/alias.txt /root/.bashrc && cp /mnt/c/b
 alias cmd='cmd.exe /c'
 
 complete -C /mnt/c/Users/micha/mc mc
+export CATALINA_HOME=/opt/tomcat
+export PATH=$PATH:$CATALINA_HOME/bin
