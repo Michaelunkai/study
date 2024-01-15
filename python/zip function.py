@@ -6,21 +6,35 @@
 # creating an iterator that produces pairs
 # of elements.
 
-usernames = ["Dude", "Bro", "Mister"]
-passwords = ("password","Abc", "guest")
+# usernames = ["Dude", "Bro", "Mister"]
+# passwords = ("password","Abc", "guest")
 
 # to zip elements from each iterable togheter,so thair in pairs,
 #  and each pair is going to be stored as a tuple within a zip object:
 
-users = zip(usernames, passwords)
+# users = zip(usernames, passwords)
 
-for i in users:
-    print(i)
+# for i in users:
+#     print(i)
 
 # output:
 # ('Dude', 'password')
 # ('Bro', 'Abc')
 # ('Mister', 'guest')
     
-# we got a zip object of tuples! and each tuple store each pair of elemts of my 2 iretables/
-    
+# we got a zip object of tuples! and each tuple store each pair of elemts of my 2 itetables/
+
+
+
+usernames = ["Dude", "Bro", "Mister"]
+passwords = ("password","Abc", "guest")
+
+users = list(zip(usernames, passwords))
+
+for i in users:
+    print(i)
+
+# output: 
+# ('Dude', 'password')
+# ('Bro', 'Abc')
+# ('Mister', 'guest')
