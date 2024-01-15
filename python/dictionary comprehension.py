@@ -48,3 +48,6 @@ def check_temp(value):
 cities = {'New York': 32, 'Boston': 75, 'Los Angles': 100, 'Chicago': 50}
 desc_cities = {key: check_temp(value) for (key,value) in cities.items()}
 print(desc_cities)
+
+# output:
+# {'New York': 'COLD', 'Boston': 'HOT', 'Los Angles': 'HOT', 'Chicago': 'WARM'}
