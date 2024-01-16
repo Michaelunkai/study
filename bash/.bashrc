@@ -148,7 +148,8 @@ alias st='docker run -v /mnt/c/:/c/ -it --name study michadockermisha/backup:stu
 alias pushwh='docker push michadockermisha/backup:whisper'
 alias startwh='docker start -ai whisper'
 alias portainer='docker pull michadockermisha/backup:portainer && docker run -d -p 9000:9000 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock michadockermisha/backup:portainer && ff localhost:9000'
-alias runhosts=' docker run -v /mnt/c/:/c/ -it -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --ip 172.17.0.2 --name ubuntu -d michadockermisha/backup:ubuntu /bin/bash -c "service ssh start && tail -f /dev/null" && docker run -v /mnt/c/:/c/ -it -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --ip 172.17.0.3 --name fedora -d michadockermisha/backup:fedora /bin/bash -c "/usr/sbin/sshd && tail -f /dev/null" &&  docker run -v /mnt/c/:/c/ -it -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --ip 172.17.0.4 --name kali -d michadockermisha/backup:kali /bin/bash -c "service ssh start && tail -f /dev/null" && docker run -v /mnt/c/:/c/ -it -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --ip 172.17.0.5 --name debian -d michadockermisha/backup:debian /bin/bash -c "service ssh start && tail -f /dev/null" && docker run -v /mnt/c/:/c/ -it -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --ip 172.17.0.6 --name opensuse -d michadockermisha/backup:opensuse /bin/bash -c "/usr/sbin/sshd && tail -f /dev/null" '
+
+alias nmap="drun nmap michadockermisha/backup:nmap"
 
 alias kraken='drun gitkraken michadockermisha/backup:gitkraken sh -c "apk add rsync && rsync -aP /home/* /c/kraken && exit" && cd /mnt/c/kraken/ && cmd.exe /c "gitkraken.exe"'
 
@@ -246,6 +247,7 @@ alias wapps='pfiles && cd WindowsApps'
 
 
 
+
 #CD STUDY
 alias sai='cd /mnt/c/study/AI'
 alias scloud='cd /mnt/c/study/cloud'
@@ -271,7 +273,7 @@ alias smetasploit='cd /mnt/c/study/metasploit'
 alias snmap='cd /mnt/c/study/nmap&wireshark'
 alias sreverse='cd /mnt/c/study/reverseSHELL'
 alias swindows='cd /mnt/c/study/windows'
-alias sproxmox="/mnt/c/study/virtualmachines/proxmox"
+alias sproxmox="cd /mnt/c/study/virtualmachines/proxmox"
 
 #ANSIBLE
 alias cda='cd /mnt/c/study/ansible/etc/ansible'
@@ -399,6 +401,9 @@ alias gamespot='ff https://www.gamespot.com/'
 alias anime='ff https://9animetv.to/home'
 alias aws="ff https://us-east-1.console.aws.amazon.com/console/home?region=us-east-1#"
 
+alias ha="ff http://homeassistant.local:8123/"
+alias prox="ff 77.127.172.96:8006"
+alias plex="ff 77.127.172.96:32400"
 
 #EXE
 alias qb='cmd.exe /c "C:\Program Files\qBittorrent\qbittorrent.exe"'
@@ -407,7 +412,7 @@ alias drivers='cmd.exe /c "C:\Program Files\NVIDIA Corporation\NVIDIA GeForce Ex
 alias mstore='pfiles && cd WindowsApps && cd Microsoft.WindowsStore_22310.1401.8.0_x64__8wekyb3d8bbwe && cmd.exe /c "WinStore.App.exe"'
 alias gears='cd /mnt/c/games/gears5/geargame/binaries/steam && cmd Gears5.exe'
 
-
+alias catnmap="cat /mnt/c/study/'nmap&wireshark'/top20nmapcommands"
 
 #EXPORT
 export PATH=$PATH:/snap/bin
@@ -473,5 +478,3 @@ alias cpalias='cp /mnt/c/backup/linux/wsl/alias.txt /root/.bashrc && cp /mnt/c/b
 alias cmd='cmd.exe /c'
 
 complete -C /mnt/c/Users/micha/mc mc
-export CATALINA_HOME=/opt/tomcat
-export PATH=$PATH:$CATALINA_HOME/bin
