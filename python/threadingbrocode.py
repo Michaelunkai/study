@@ -26,6 +26,28 @@
 
 # with multithreathing
 
+# import threading
+# import time
+
+# def eat_breakfast():
+#     time.sleep(3)
+#     print("you eat breakfast")
+
+# def drink_coffee():
+#     time.sleep(4)
+#     print("You drank coffee")
+
+# def study():
+#     time.sleep(5)
+#     print("You study")
+
+# print(threading.active_count())
+# print(threading.enumerate())
+
+# output: 1
+# [<_MainThread(MainThread, started 140313416461184)>]
+
+
 import threading
 import time
 
@@ -41,8 +63,15 @@ def study():
     time.sleep(5)
     print("You study")
 
+eat_breakfast()
+drink_coffee()
+study()
+
 print(threading.active_count())
 print(threading.enumerate())
 
-# output: 1
-# [<_MainThread(MainThread, started 140313416461184)>]
+# output: you eat breakfast
+You drank coffee
+You study
+1
+# [<_MainThread(MainThread, started 140029643234176)>]
