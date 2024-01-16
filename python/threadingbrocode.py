@@ -71,7 +71,7 @@ print(threading.active_count())
 print(threading.enumerate())
 
 # output: you eat breakfast
-You drank coffee
-You study
-1
+# You drank coffee
+# You study
+# 1
 # [<_MainThread(MainThread, started 140029643234176)>]
