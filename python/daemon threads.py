@@ -15,8 +15,9 @@ def timer():
     while True:
         time.sleep(1)
         count += 1
-        print("logged in for: ".count, "seconds")
+        print("logged in for: ", count, "seconds")
 
-
+x = threading.Thread(target=timer)
+x.start()
 
 answer = input("Do you wish to exit?")
