@@ -37,3 +37,13 @@ x = threading.Thread(target=timer, daemon=True)
 x.start()
 
 answer = input("Do you wish to exit?")
+
+
+# In Python, a daemon thread runs in the background 
+# and automatically exits when the main
+#  program ends, suitable for tasks 
+# like garbage collection. A non-daemon thread,
+#  by contrast, blocks program exit,
+#  requiring explicit termination, 
+# and is used for tasks that should 
+# complete before program termination.
