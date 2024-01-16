@@ -6,6 +6,22 @@
 # Used for tasks like garbage collection.
 # Set with setDaemon(True).
 
+# import threading
+# import time
+
+# def timer():
+#     print()
+#     count = 0 
+#     while True:
+#         time.sleep(1)
+#         count += 1
+#         print("logged in for: ", count, "seconds")
+
+# x = threading.Thread(target=timer)
+# x.start()
+
+# answer = input("Do you wish to exit?")
+# _______________________________________________
 import threading
 import time
 
@@ -17,7 +33,7 @@ def timer():
         count += 1
         print("logged in for: ", count, "seconds")
 
-x = threading.Thread(target=timer)
+x = threading.Thread(target=timer, daemon=True)
 x.start()
 
 answer = input("Do you wish to exit?")
