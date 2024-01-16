@@ -41,5 +41,4 @@ import time
 
 time_object = time.localtime()
 print(time_object)
-
 # output: time.struct_time(tm_year=2024, tm_mon=1, tm_mday=16, tm_hour=11, tm_min=10, tm_sec=52, tm_wday=1, tm_yday=16, tm_isdst=0)
