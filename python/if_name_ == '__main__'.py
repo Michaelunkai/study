@@ -7,5 +7,13 @@
 # if __name__ == '__main__':
 #     pass
 
-print(__name__)
+# print(__name__)
 # output: __main__
+
+# ------------------------------------
+def main():
+    print("This is the main function.")
+
+if __name__ == '__main__':
+    main()
+# output: This is the main function.
