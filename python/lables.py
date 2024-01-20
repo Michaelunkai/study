@@ -1,12 +1,21 @@
 # lables
 
-from tkinter import * 
+# from tkinter import * 
 
-# label = an area widget that holds text and/or an image within a windows
+# # label = an area widget that holds text and/or an image within a windows
+
+# window = Tk()
+
+# label = Label(window, text="Hello World")
+# label.pack()
+
+# window.mainloop()
+# _______________________________________________-
+from tkinter import * 
 
 window = Tk()
 
 label = Label(window, text="Hello World")
-label.pack()
+label.place()
 
 window.mainloop()
