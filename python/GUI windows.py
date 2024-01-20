@@ -17,5 +17,6 @@ from tkinter import *
 
 window = Tk()
 window.geometry("420x420")
+window.title("Misha's first GUI program")
 
 window.mainloop()
