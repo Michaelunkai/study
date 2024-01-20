@@ -44,7 +44,8 @@ from tkinter import *
 
 window = Tk()
 
-label = Label(window, text="Hello World",font=('Ariel',40,'bold'),fg='green')
+label = Label(window, text="Hello World",font=('Ariel',40,'bold'),fg='green',bg='red')
 label.pack()
 
 window.mainloop()
+# fg = front color #bg = background color
