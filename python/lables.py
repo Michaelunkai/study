@@ -40,12 +40,27 @@
 
 # window.mainloop()
 # __________________________________________________-
+# from tkinter import * 
+
+# window = Tk()
+
+# label = Label(window, text="Hello World",font=('Ariel',40,'bold'),fg='green',bg='red')
+# label.pack()
+
+# window.mainloop()
+# fg = front color #bg = background color
+# _________________________________________________________
 from tkinter import * 
 
 window = Tk()
 
-label = Label(window, text="Hello World",font=('Ariel',40,'bold'),fg='green',bg='red')
+label = Label(window,
+               text="Hello World",
+               font=('Ariel',40,'bold'),
+               fg='blue',
+               bg='black',
+               relief=RAISED,
+               bd=10)
 label.pack()
 
 window.mainloop()
-# fg = front color #bg = background color
