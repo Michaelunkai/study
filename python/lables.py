@@ -31,11 +31,20 @@
 # window.mainloop()
 # _______________________________________________
 
+# from tkinter import * 
+
+# window = Tk()
+
+# label = Label(window, text="Hello World",font=('Ariel',40,'bold'))
+# label.pack()
+
+# window.mainloop()
+# __________________________________________________-
 from tkinter import * 
 
 window = Tk()
 
-label = Label(window, text="Hello World",font=('Ariel',40,'bold'))
+label = Label(window, text="Hello World",font=('Ariel',40,'bold'),fg='green')
 label.pack()
 
 window.mainloop()
