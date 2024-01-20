@@ -76,7 +76,8 @@ label = Label(window,
                fg='blue',
                bg='black',
                relief=SUNKEN,
-               bd=10)
+               bd=10,
+               padx=20)
 label.pack()
 
 window.mainloop()
