@@ -66,9 +66,30 @@
 # window.mainloop()
 # _______________________________________________
 # another relief:
+# from tkinter import * 
+
+# window = Tk()
+
+# label = Label(window,
+#                text="Hello World",
+#                font=('Ariel',40,'bold'),
+#                fg='blue',
+#                bg='black',
+#                relief=SUNKEN,
+#                bd=10,
+#                padx=20
+#                pady=20)
+# label.pack()
+
+# window.mainloop()
+# ______________________________________________
+
+# add photo:
 from tkinter import * 
 
 window = Tk()
+
+photo = PhotoImage(file='path\\to\\image.png')
 
 label = Label(window,
                text="Hello World",
@@ -77,7 +98,8 @@ label = Label(window,
                bg='black',
                relief=SUNKEN,
                bd=10,
-               padx=20)
+               padx=20,
+               pady=20)
 label.pack()
 
 window.mainloop()
