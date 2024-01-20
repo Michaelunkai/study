@@ -21,11 +21,21 @@
 # window.mainloop()
 # ______________________________________________-
 # example:
+# from tkinter import * 
+
+# window = Tk()
+
+# label = Label(window, text="Hello World")
+# label.place(x=0,y=0)
+
+# window.mainloop()
+# _______________________________________________
+
 from tkinter import * 
 
 window = Tk()
 
-label = Label(window, text="Hello World")
-label.place(x=0,y=0)
+label = Label(window, text="Hello World",font=('Ariel',40,'bold'))
+label.pack()
 
 window.mainloop()
