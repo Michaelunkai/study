@@ -12,7 +12,9 @@ Button = Button(window,
                 command=click,
                 font=("Comic sans",30),
                 fg="#00FF00",
-                bg="black")
+                bg="black",
+                activeforeground="#00FF00",
+                activebackground="black")
 Button.pack()
 
 window.mainloop()
