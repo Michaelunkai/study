@@ -14,7 +14,8 @@ Button = Button(window,
                 fg="#00FF00",
                 bg="black",
                 activeforeground="#00FF00",
-                activebackground="black")
+                activebackground="black",
+                state=DISABLED)
 Button.pack()
 
 window.mainloop()
