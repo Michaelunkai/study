@@ -6,6 +6,7 @@ from tkinter import *
 def submit():
     username = entry.get()
     print("Hello "+username)
+    entry.config(state=DISABLED)
 
 def delete():
     entry.delete(0,END)
