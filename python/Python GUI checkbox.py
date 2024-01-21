@@ -16,6 +16,13 @@ check_button = Checkbutton(window,
                            variable=x,
                            onvalue=1,
                            offvalue=0,
-                           command=display)
+                           command=display,
+                           font=('Ariel',20),
+                           fg='blue',
+                           bg='black',
+                           activeforeground='blue',
+                           activebackground='black',
+                           padx=25,
+                           pady=10)
 check_button.pack()
 window.mainloop()
