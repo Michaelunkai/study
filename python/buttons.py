@@ -9,7 +9,8 @@ window = Tk()
 
 Button = Button(window,
                 text="This is misha's text",
-                command=click)
+                command=click,
+                font=("Comic sans",30))
 Button.pack()
 
 window.mainloop()
