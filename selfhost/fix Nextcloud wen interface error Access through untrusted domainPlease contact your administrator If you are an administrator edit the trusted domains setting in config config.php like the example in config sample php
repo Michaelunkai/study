@@ -1,0 +1,11 @@
+1) find -name config.php
+2) nano /var/www/nextcloud/config/config.php > 
+look for this part:
+  'trusted_domains' => 
+  array (
+    0 => 'localhost',
+1 => '192.168.1.180',
+
+channge to the correct ip adress
+
+3) service apache2 restart && service nginx restart
