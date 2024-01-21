@@ -6,6 +6,8 @@ def click():
     print("You clicked my button!")
 
 window = Tk()
+# add png file to the same folder
+photo = PhotoImage(file='image.png')
 
 Button = Button(window,
                 text="This is misha's text",
@@ -15,7 +17,9 @@ Button = Button(window,
                 bg="black",
                 activeforeground="#00FF00",
                 activebackground="black",
-                state=DISABLED)
+                state=ACTIVE,
+                compound='bottom') #will set the png image under the text 
+
 Button.pack()
 
 window.mainloop()
