@@ -17,7 +17,9 @@ def backspace():
 window = Tk()
 
 entry = Entry(window,
-              font=("Ariel",50))
+              font=("Ariel",50),
+              fg="green",
+              bg="black")
 entry.pack(side=LEFT)
 
 submit_button = Button(window,text="submit",command=submit)
