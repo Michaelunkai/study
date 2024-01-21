@@ -20,8 +20,10 @@ window = Tk()
 entry = Entry(window,
               font=("Ariel",50),
               fg="green",
-              bg="black")
-entry.insert(0,'Spongbob')
+              bg="black",
+              show="*")
+
+# entry.insert(0,'Spongbob')
 entry.pack(side=LEFT)
 
 submit_button = Button(window,text="submit",command=submit)
