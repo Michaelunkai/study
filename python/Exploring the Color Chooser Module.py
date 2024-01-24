@@ -16,6 +16,15 @@ button = tk.Button(window, text="Click me", command=click)
 button.pack()
 # Explanation: We create a Tkinter window with a specified size and a button that will trigger the color selection.
 
+# Step 4: Print and extract hexadecimal color value
 color = colorchooser.askcolor()[1]
 color_hex = color[1]
 print(color_hex)
+
+# Step 5: Change the background color of the window
+window.config(bg="#87CEEB")  # Set default background color to sky blue
+
+# Step 6: Condense the code for changing the background color
+color = colorchooser.askcolor()[1]
+window.config(bg=color)
+# Explanation: We demonstrate condensing the code by directly assigning the color value to the background.
