@@ -5,7 +5,7 @@ import threading
 
 def run_command(image_tag):
     # Define the Docker run command with the specified image tag
-    docker_command = f"docker run -v /mnt/c/:/c/ -it -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -it --name michadockermisha_container michadockermisha/backup:{image_tag} sh -c 'apk add rsync && rsync -aP /home/ /c/games/ && exit'"
+    docker_command = f"docker run -v /mnt/c/:/c/ -it -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -it --name michadockermisha_container michadockermisha/backup:{image_tag} sh -c 'apk add rsync && rsync -aP /home /c/games/{image_tag} && exit'"
 
     try:
         # Run the Docker command using subprocess
@@ -22,10 +22,14 @@ def start_thread(image_tag):
 # Create the main application window
 app = tk.Tk()
 app.title("Docker Image Runner")
+app.configure(bg='black')  # Set background color to black
 
 # Create a styled Tkinter theme
 style = ttk.Style()
 style.theme_use("clam")
+
+# Customize the overall theme
+style.configure('.', font=('Arial', 12), foreground='white', background='black')  # Set default font and background color
 
 # Create a menu bar
 menu_bar = tk.Menu(app)
@@ -37,8 +41,12 @@ menu_bar.add_cascade(label="File", menu=file_menu)
 file_menu.add_command(label="Exit", command=app.destroy)
 
 # Create a frame for the buttons
-button_frame = ttk.Frame(app, padding="10")
+button_frame = ttk.Frame(app, padding="10", style='TFrame')
 button_frame.grid(column=0, row=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+
+# Customize button style
+button_style = ttk.Style()
+button_style.configure('TButton', font=('Arial', 10), foreground='white', background='#FF0000', padding=(5, 2))
 
 # Create buttons with a modern style
 button_scars_above = ttk.Button(button_frame, text="Scars Above", command=lambda: start_thread("scarsabove"))
@@ -64,3 +72,4 @@ button_nomoreheroes3.grid(column=0, row=2, padx=5, pady=5, sticky=tk.W)
 
 # Start the main event loop
 app.mainloop()
+
