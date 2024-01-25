@@ -7,7 +7,7 @@ def run_docker_command(image_name):
     formatted_image_name = image_name.replace(":", "").lower()
 
     # Simplified Docker command without unnecessary elements
-    docker_command = f'docker run -v /mnt/c/:/c/ -it -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --name {formatted_image_name} michadockermisha/backup:{formatted_image_name} sh -c "rsync -aP /home /c/games && mv /c/games/home /c/games/{formatted_image_name}"'
+    docker_command = f'docker run -v /mnt/c/:/c/ -it -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --name {formatted_image_name} michadockermisha/backup:{formatted_image_name} sh -c "apk add rsync && rsync -aP /home /c/games && mv /c/games/home /c/games/{formatted_image_name}"'
 
     # Run the command asynchronously
     subprocess.Popen(docker_command, shell=True)
@@ -24,7 +24,7 @@ font_style = ("Helvetica", 12, "bold")
 style = ttk.Style()
 style.configure("TButton", padding=6, relief="flat", foreground="black", background="red", font=font_style)
 
-games = ["Vampire Bloodlines", "control", "Scars Above", "Road 96: Mile 0", "Pentiment", "persona4", "codblackops2", "codblackops3", "outerworld", "sniperelite2", "sniperelite3", "batmantts", "doom", "doomethernal", "pizzatower", "theradstringclub", "tellmewhy", "elpasoelswere" ,"rage2", "judgment", "tloh", "brothers", "madmax", "batmantew", "witcher3", "hyperlightdrifter", "metroexodus", "transistor", "thesurge2", "ftl", "returnal", "justcause3", "starwars", "mafia", "rimword",  ]
+games = ["Vampire Bloodlines", "control", "Scars Above", "Road 96: Mile 0", "Pentiment", "persona4", "codblackops2", "codblackops3", "codww2", "codghosts", "codadvancedwarfare", "codinfinfinitewarfare", "codvanguard", "codmw", "codmw3", "outerworld", "sniperelite2", "sniperelite3", "batmantts", "doom", "doomethernal", "pizzatower", "theradstringclub", "tellmewhy", "elpasoelswere" ,"rage2", "judgment", "tloh", "brothers", "madmax", "batmantew", "witcher3", "hyperlightdrifter", "metroexodus", "transistor", "thesurge2", "ftl", "returnal", "justcause3", "starwars", "mafia", "rimword", "masseffect2", "deathstranding", "ghostrunner", "harvestmoon", "thexpanse", "tellingliies", "moonstoneisland", "residentevilvillage", "planetcoaster", "sleepingdogs", "gtaiv", "pseudoregalia", "thegreataceattorney", "goodbyevolcanohigh", "fallout4", "battlefieldbadcompany2", "battlefieldhardline", "battlefield1", "battlefieldv", "yakuza0", "yakuza3remasterd", "yakuza4", "yakuza5", "yakuza6thesongodlife", "yakuzalikeadragon", "vampiresurvivors", "highonlife"   ]
 
 # Arrange three buttons per horizontal line using the grid layout
 row_num = 0
