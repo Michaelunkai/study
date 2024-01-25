@@ -28,7 +28,7 @@ games = [
     "Vampire Bloodlines", "control", "Scars Above", "Road 96: Mile 0", "Pentiment", "persona4", "codblackops2", "codblackops3", "codww2", "codghosts",
     "codadvancedwarfare", "codinfinfinitewarfare", "codvanguard", "codmw", "moderwarfare2", "codmw3", "outerworld", "sniperelite2", "sniperelite3",
     "batmantts", "doom", "doomethernal", "pizzatower", "theradstringclub", "tellmewhy", "elpasoelswere", "rage2", "judgment", "tloh", "brothers", "madmax",
-    "batmantew", "witcher3", "hyperlightdrifter", "metroexodus", "transistor", "thesurge2", "ftl", "returnal", "justcause3", "starwars", "mafia", "rimword",
+    "batmantew", "witcher3", "hyperlightdrifter", "metroexodus", "metroredux", "transistor", "thesurge2", "ftl", "returnal", "justcause3", "starwars", "mafia", "rimword",
     "masseffect2", "deathstranding", "ghostrunner", "ghostrunner2", "harvestmoon", "thexpanse", "tellingliies", "moonstoneisland", "residentevilvillage", "residentevil4", 
     "planetcoaster", "sleepingdogs", "gtaiv", "pseudoregalia", "thegreataceattorney", "goodbyevolcanohigh", "fallout4", "battlefieldbadcompany2",
     "battlefieldhardline", "battlefield1", "battlefieldv", "yakuza0", "yakuza3remasterd", "yakuza4", "yakuza5", "yakuza6thesongodlife", "yakuzalikeadragon",
@@ -41,8 +41,7 @@ games = [
     "erica", "desperados3", "Witchfire", "ancestorshumankind", "kingdomhearts3", "cloudpunk", "bumsimulator", "solarash", "cafeownersimulation", "drift21",
     "forgottencity", "hackersimulator", "hellbladesenuasacrifice", "curseofthedeadgods", "fistforgedinshadowtorch", "lifeistrangeremasterd",
     "eiyudenchroniclerising", "bloodsrainedritualofthenight", "deadlink", "darksidersgenesis", "skaterxl", "dirtally2", "motogp21", "saintsrow3",
-    "pacmanworldrepac", "prodeus", "sniperghostwarriorcontracts", "inscryption", "trine3", "trine5", "brewmasterbeersimulator", "cheflifesimulator", "wreckfest", "detroitbecomehuman", "seriousam4", "houseflipper", "enterthegungeon", "kazeandthewildmasks", "blasphemous2", "deadisland2", "myst", "lostinplay", "blacktail", "midnightfightexpress",  ]
-
+    "pacmanworldrepac", "prodeus", "sniperghostwarriorcontracts", "inscryption", "trine3", "trine5", "brewmasterbeersimulator", "cheflifesimulator", "wreckfest", "detroitbecomehuman", "seriousam4", "houseflipper", "enterthegungeon", "kazeandthewildmasks", "blasphemous2", "deadisland2", "myst", "lostinplay", "blacktail", "midnightfightexpress", "skulheroslayer", "theinvincible", "thelastfaith", "godofwar", "sunsetoverdrive", "shadowgambit", "thecaseofthegoldenidol", "armoredcore6firesofrubicon", "robocoproguecity", "mountandblade2bannerlord", "killerfrequency", "deathmustdie", "punchclub2fastforward" ]
 
 
 # Arrange three buttons per horizontal line using the grid layout
@@ -55,7 +54,7 @@ for game in games:
 
     # Increment the column number, reset to 0 and increment the row number after every third button
     col_num += 1
-    if col_num == 8:
+    if col_num == 7:
         col_num = 0
         row_num += 1
 
