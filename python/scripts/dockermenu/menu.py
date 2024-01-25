@@ -1,75 +1,44 @@
 import tkinter as tk
 from tkinter import ttk
 import subprocess
-import threading
 
-def run_command(image_tag):
-    # Define the Docker run command with the specified image tag
-    docker_command = f"docker run -v /mnt/c/:/c/ -it -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -it --name michadockermisha_container michadockermisha/backup:{image_tag} sh -c 'apk add rsync && rsync -aP /home /c/games/{image_tag} && exit'"
+def run_docker_command(image_name):
+    # Replace or remove problematic characters, such as colon
+    formatted_image_name = image_name.replace(":", "").lower()
 
-    try:
-        # Run the Docker command using subprocess
-        subprocess.run(docker_command, shell=True)
-    except Exception as e:
-        # Handle any exceptions that may occur during command execution
-        print(f"Error: {e}")
+    # Simplified Docker command without unnecessary elements
+    docker_command = f'docker run -v /mnt/c/:/c/ -it -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --name {formatted_image_name} michadockermisha/backup:{formatted_image_name} sh -c "rsync -aP /home /c/games && mv /c/games/home /c/games/{formatted_image_name}"'
 
-def start_thread(image_tag):
-    # Create a thread for running the Docker command
-    thread = threading.Thread(target=run_command, args=(image_tag,))
-    thread.start()
+    # Run the command asynchronously
+    subprocess.Popen(docker_command, shell=True)
 
-# Create the main application window
-app = tk.Tk()
-app.title("Docker Image Runner")
-app.configure(bg='black')  # Set background color to black
+# Create the main window
+window = tk.Tk()
+window.title("Docker Commands")
+window.configure(bg="black")  # Set the background color of the window
 
-# Create a styled Tkinter theme
+# Set the overall font for the application
+font_style = ("Helvetica", 12, "bold")
+
+# Create styled buttons for various games with only the game names
 style = ttk.Style()
-style.theme_use("clam")
+style.configure("TButton", padding=6, relief="flat", foreground="black", background="red", font=font_style)
 
-# Customize the overall theme
-style.configure('.', font=('Arial', 12), foreground='white', background='black')  # Set default font and background color
+games = ["Vampire Bloodlines", "control", "Scars Above", "Road 96: Mile 0", "Pentiment", "persona4", "codblackops2", "codblackops3", "outerworld", "sniperelite2", "sniperelite3", "batmantts", "doom", "doomethernal", "pizzatower", "theradstringclub", "tellmewhy", "elpasoelswere" ,"rage2", "judgment", "tloh", "brothers", "madmax", "batmantew", "witcher3", "hyperlightdrifter", "metroexodus", "transistor", "thesurge2", "ftl", "returnal", "justcause3", "starwars", "mafia", "rimword",  ]
 
-# Create a menu bar
-menu_bar = tk.Menu(app)
-app.config(menu=menu_bar)
+# Arrange three buttons per horizontal line using the grid layout
+row_num = 0
+col_num = 0
 
-# Create a "File" menu
-file_menu = tk.Menu(menu_bar, tearoff=0)
-menu_bar.add_cascade(label="File", menu=file_menu)
-file_menu.add_command(label="Exit", command=app.destroy)
+for game in games:
+    button = ttk.Button(window, text=game, command=lambda g=game.replace(" ", "").lower(): run_docker_command(g), style="TButton")
+    button.grid(row=row_num, column=col_num, padx=5, pady=5)
 
-# Create a frame for the buttons
-button_frame = ttk.Frame(app, padding="10", style='TFrame')
-button_frame.grid(column=0, row=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+    # Increment the column number, reset to 0 and increment the row number after every third button
+    col_num += 1
+    if col_num == 5:
+        col_num = 0
+        row_num += 1
 
-# Customize button style
-button_style = ttk.Style()
-button_style.configure('TButton', font=('Arial', 10), foreground='white', background='#FF0000', padding=(5, 2))
-
-# Create buttons with a modern style
-button_scars_above = ttk.Button(button_frame, text="Scars Above", command=lambda: start_thread("scarsabove"))
-button_scars_above.grid(column=0, row=0, padx=5, pady=5, sticky=tk.W)
-
-button_ten_dates = ttk.Button(button_frame, text="Ten Dates", command=lambda: start_thread("tendates"))
-button_ten_dates.grid(column=1, row=0, padx=5, pady=5, sticky=tk.W)
-
-button_deadspace = ttk.Button(button_frame, text="Dead Space", command=lambda: start_thread("deadspace"))
-button_deadspace.grid(column=2, row=0, padx=5, pady=5, sticky=tk.W)
-
-button_road96mile0 = ttk.Button(button_frame, text="Road96 Mile0", command=lambda: start_thread("road96mile0"))
-button_road96mile0.grid(column=0, row=1, padx=5, pady=5, sticky=tk.W)
-
-button_pentiment = ttk.Button(button_frame, text="Pentiment", command=lambda: start_thread("pentiment"))
-button_pentiment.grid(column=1, row=1, padx=5, pady=5, sticky=tk.W)
-
-button_trepang2 = ttk.Button(button_frame, text="Trepang2", command=lambda: start_thread("trepang2"))
-button_trepang2.grid(column=2, row=1, padx=5, pady=5, sticky=tk.W)
-
-button_nomoreheroes3 = ttk.Button(button_frame, text="No More Heroes 3", command=lambda: start_thread("nomoreheroes3"))
-button_nomoreheroes3.grid(column=0, row=2, padx=5, pady=5, sticky=tk.W)
-
-# Start the main event loop
-app.mainloop()
-
+# Start the GUI event loop
+window.mainloop()
