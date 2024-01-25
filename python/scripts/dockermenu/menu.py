@@ -41,7 +41,10 @@ games = [
     "erica", "desperados3", "Witchfire", "ancestorshumankind", "kingdomhearts3", "cloudpunk", "bumsimulator", "solarash", "cafeownersimulation", "drift21",
     "forgottencity", "hackersimulator", "hellbladesenuasacrifice", "curseofthedeadgods", "fistforgedinshadowtorch", "lifeistrangeremasterd",
     "eiyudenchroniclerising", "bloodsrainedritualofthenight", "deadlink", "darksidersgenesis", "skaterxl", "dirtally2", "motogp21", "saintsrow3",
-    "pacmanworldrepac", "prodeus", "sniperghostwarriorcontracts", "inscryption", "trine3", "trine5", "brewmasterbeersimulator", "cheflifesimulator", "wreckfest", "detroitbecomehuman", "seriousam4", "houseflipper", "enterthegungeon", "kazeandthewildmasks", "blasphemous2", "deadisland2", "myst", "lostinplay", "blacktail", "midnightfightexpress", "skulheroslayer", "theinvincible", "thelastfaith", "godofwar", "sunsetoverdrive", "shadowgambit", "thecaseofthegoldenidol", "armoredcore6firesofrubicon", "robocoproguecity", "mountandblade2bannerlord", "killerfrequency", "deathmustdie", "punchclub2fastforward" ]
+    "pacmanworldrepac", "prodeus", "sniperghostwarriorcontracts", "inscryption", "trine3", "trine5", "brewmasterbeersimulator", "cheflifesimulator", "wreckfest", "detroitbecomehuman", "seriousam4", "houseflipper", "enterthegungeon", "kazeandthewildmasks", "blasphemous2", "deadisland2", "myst", "lostinplay", "blacktail", "midnightfightexpress", "skulheroslayer", "theinvincible", "thelastfaith", "godofwar", "sunsetoverdrive", "shadowgambit", "thecaseofthegoldenidol", "armoredcore6firesofrubicon", "robocoproguecity", "mountandblade2bannerlord", "killerfrequency", "deathmustdie", "punchclub2fastforward", "davethediver", "deusexhuman", "dishonored2", "sludgelife2", "blackskylands", "notforbroadcast", "deeprockgalactic", "assassinscreedvalhalla", "frostpunk", "torchlight2", "torchlight3", "nobodysavedtheworld", "oxenfree2", "spiritfarer", "furi", "metalgearsolidmaster", "ugly", "highlandsong", "venba", "spacefortheunbound", "covergence", "bombrushcyberfunk", "americanarcadia",
+    "covergencealolstory", "fatesamurairemnant", "tornaway", "tailsthebackbonepreludes", "wanderingsword", "showgunners", "trinityfusion"
+]
+
 
 
 # Arrange three buttons per horizontal line using the grid layout
