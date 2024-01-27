@@ -276,6 +276,8 @@ alias snmap='cd /mnt/c/study/nmap&wireshark'
 alias sreverse='cd /mnt/c/study/reverseSHELL'
 alias swindows='cd /mnt/c/study/windows'
 alias sproxmox="cd /mnt/c/study/virtualmachines/proxmox"
+alias sserver="cd /mnt/c/study/windows/server"
+alias spythons='cd /mnt/c/study/python/scripts'
 
 #ANSIBLE
 alias cda='cd /mnt/c/study/ansible/etc/ansible'
@@ -472,6 +474,8 @@ alias py='python3'
 alias encrypt='python3 /mnt/c/study/python/scripts/encrypt/encrypt.py'
 alias decrypt='python3 /mnt/c/study/python/scripts/encrypt/decrypt.py'
 alias compile='echo "& C:\Users\micha\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\Scripts\pyinstaller.exe --noconsole"'
+
+alias mygames="py /mnt/c/study/python/scripts/dockermenu/pyqtmenu.py"
 
 #wsl2
 alias backupw='echo "wsl --export kali-linux C:\backup\linux\kalifull.tar"'
