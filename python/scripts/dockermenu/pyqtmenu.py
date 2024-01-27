@@ -1,5 +1,6 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QGridLayout
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QGridLayout, QDesktopWidget
+from PyQt5.QtGui import QColor
 import subprocess
 
 class DockerApp(QWidget):
@@ -7,7 +8,10 @@ class DockerApp(QWidget):
         super().__init__()
 
         self.setWindowTitle("Docker Commands")
-        self.setGeometry(100, 100, 800, 600)
+
+        # Set the window size to full screen
+        self.showFullScreen()
+
         self.setStyleSheet("background-color: black;")
 
         font_style = "font: 10pt bold; color: black;"
@@ -18,6 +22,7 @@ class DockerApp(QWidget):
 
     def init_ui(self):
         layout = QGridLayout(self)
+
 
         games = [
             "Vampire Bloodlines", "control", "Scars Above", "Road 96: Mile 0", "Pentiment", "persona4", "codblackops2", "codblackops3", "codww2", "codghosts",
@@ -45,7 +50,10 @@ class DockerApp(QWidget):
         for game in games:
             button = QPushButton(game, self)
             button.clicked.connect(lambda checked, g=game.replace(" ", "").lower(): self.run_docker_command(g))
+            
+            # Change grey color to another color (black)
             button.setStyleSheet("padding: 0; border: none; color: black; background-color: red;")
+            
             layout.addWidget(button, row_num, col_num)
 
             col_num += 1
@@ -64,5 +72,3 @@ if __name__ == '__main__':
     docker_app = DockerApp()
     docker_app.show()
     sys.exit(app.exec_())
-    sys.exit(app.exec_())
-
