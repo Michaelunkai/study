@@ -406,6 +406,7 @@ alias ytlater='gc https://www.youtube.com/playlist?list=WL'
 alias gamespot='ff https://www.gamespot.com/'
 alias anime='ff https://9animetv.to/home'
 alias aws="gc https://us-east-1.console.aws.amazon.com/console/home?region=us-east-1#"
+alias netdata="gc http://192.168.1.222:19999/"
 
 alias ha="ff http://homeassistant.local:8123/"
 alias prox="gc 77.127.172.96:8006"
