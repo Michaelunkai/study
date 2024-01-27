@@ -14,8 +14,23 @@ in this example, i will split the file to 3 parts:
 
 split -n 3 vzdump-lxc-102-2024_01_27-22_00_40.tar.zst vzdump-part
 
+4) use scp to move al the part to my ubuntu vm:
+ 
+scp -r vzdump-partaa  vzdump-partab  vzdump-partac ubuntu@192.168.1.193:/home/ubuntu/here
+
+** cd .. rm -rf sample
 
 
+5) from my ununtu vm:
+cd /home/ubuntu/here
+mkdir 1 2 3 
+mv  vzdump-partaa 1 &&  vzdump-partab 2 && mv  vzdump-partac 3 
+cp Dockerfile 1 && cp Dockerfile 2 && cp Dockerfile3 
+
+cd into each folder seperatly, and run:
+built michadockermisha/backup:prox1 . && docker push michadockermisha/backup:prox1
+built michadockermisha/backup:prox2 . && docker push michadockermisha/backup:prox2
+built michadockermisha/backup:prox3 . && docker push michadockermisha/backup:prox3
 
 **************************************************************************Restore
 
@@ -30,3 +45,4 @@ cat /root/vzdump-partaa /root/vzdump-partab /root/vzdump-partac > /root/vzdump-l
 * run this command from the alpine CT to restore 
 
 scp -r root@192.168.1.222:/root/dump /var/lib/vz/ &&  scp -r root@192.168.1.222:/root/template /var/lib/vz/
+
