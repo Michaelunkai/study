@@ -433,7 +433,7 @@ alias compare='ff https://www.textcompare.org/python/'
 
 alias prometheus=' cd  /usr/local/bin/prometheus/ && ./prometheus'
 alias pyc=' bash /opt/pycharm-community-2021.2.3/bin/pycharm.sh'
-alias biggest=' sudo du -h --max-depth=1 . | sort -hr'
+alias biggest=' echo "du -h --max-depth=1 -a | sort -rh" '
 alias wslg='cd /mnt/wslg && biggest'
 
 
