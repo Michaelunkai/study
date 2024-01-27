@@ -233,6 +233,7 @@ alias vmkey='cat /mnt/c/backup/windowsapps/install/vmware/key.txt'
 alias ssk='ssh-keygen -t rsa -b 2048 && ssh-copy-id'
 alias scpwhisper="echo 'scp a.mp3 micha@192.168.1.195:/home/micha/' "
 alias scprox="echo 'scp  root@192.168.1.222:/root' "
+alias sshprox="ssh root@192.168.1.222"
 
 
 #CD aliases
