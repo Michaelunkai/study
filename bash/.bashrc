@@ -468,7 +468,7 @@ alias getplex="updates && echo deb https://downloads.plex.tv/repo/deb public mai
 
 alias defender='cmd.exe /c C:backup/windowsapps/install/afterformat/windows-defender-remover-main/windows-defender-remover-main/Script_Run.bat'
                   
-alias act='cd /mnt/c/backup/windowsapps/install/afterformat/Microsoft-Activation-Scripts-master/mas/All-In-One-Version  && cmd MAS_AIO.cmd'                  
+alias act=" cd /mnt/c/backup/windowsapps/install/Microsoft-Activation-Scripts-master/mas/All-In-One-Version && cmd MAS_AIO.cmd"                  
                   
 #PYTHON
 alias python='python3'                  
