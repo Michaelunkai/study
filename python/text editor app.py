@@ -26,14 +26,14 @@ class TextEditor(QMainWindow):
         self.setWindowTitle('Text Editor')
 
     def openFile(self):
-        filename, _ = QFileDialog.getOpenFileName(self, 'Open File', '', 'Text Files (*.txt);;All Files (*)')
+        filename, _ = QFileDialog.getOpenFileName(self, 'Open File', '', 'All Files (*);;Text Files (*.txt);;Python Files (*.py);;All Files (*)')
         if filename:
             with open(filename, 'r') as file:
                 content = file.read()
                 self.text_area.setPlainText(content)
 
     def saveFile(self):
-        filename, _ = QFileDialog.getSaveFileName(self, 'Save File', '', 'Text Files (*.txt);;All Files (*)')
+        filename, _ = QFileDialog.getSaveFileName(self, 'Save File', '', 'Text Files (*.txt);;Python Files (*.py);;All Files (*)')
         if filename:
             with open(filename, 'w') as file:
                 content = self.text_area.toPlainText()
