@@ -157,7 +157,7 @@ alias kraken='drun gitkraken michadockermisha/backup:gitkraken sh -c "apk add rs
 
 alias krak=' cd /mnt/c/kraken/ && cmd.exe /c "gitkraken.exe"'
 
-alias dcode='docker login && cc && docker run -v /mnt/c/:/c/ -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -it --rm --name my_container michadockermisha/backup:python bash -c "echo 'y' | code --no-sandbox --user-data-dir=~/vscode-data && bash"'
+alias dcode='docker run -v /mnt/c/:/c/ -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -it --rm --name my_container michadockermisha/backup:vscode bash -c "echo 'y' | code --no-sandbox --user-data-dir=~/vscode-data && bash"'
 
 alias savehosts='docker commit b541bfc8a1e1 michadockermisha/backup:opensuse && \
 docker push michadockermisha/backup:opensuse && \
@@ -468,7 +468,7 @@ alias getplex="updates && echo deb https://downloads.plex.tv/repo/deb public mai
 
 alias defender='cmd.exe /c C:backup/windowsapps/install/afterformat/windows-defender-remover-main/windows-defender-remover-main/Script_Run.bat'
                   
-alias act=" cd /mnt/c/backup/windowsapps/install/Microsoft-Activation-Scripts-master/mas/All-In-One-Version && cmd MAS_AIO.cmd"                  
+alias act='cd /mnt/c/backup/windowsapps/install/afterformat/Microsoft-Activation-Scripts-master/mas/All-In-One-Version  && cmd MAS_AIO.cmd'                  
                   
 #PYTHON
 alias python='python3'                  
