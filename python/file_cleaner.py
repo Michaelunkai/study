@@ -1,5 +1,6 @@
 import time
 import os
+import shutil
 from hashlib import sha256
 
 class Duplython:
@@ -47,10 +48,17 @@ class Duplython:
                     print(filename, '.. cleaned ')
             os.chdir(self.home_dir)
 
+    def cleaning_summary(self)->None:
+        mb_saved = self.Total_bytes_saved/1048576
+        mb_saved = round(mb_saved, 2)
+        print('\n\n--------------FINISHED CLEANING ------------')
+        print('File cleaned  : ', self.count_cleaned)
+        print('Total Space saved : ', mb_saved, 'MB')
+        print('-----------------------------------------------')
+
     def main(self)->None:
-      self.welcome();self.clean()
+      self.welcome();self.clean();self.cleaning_summary()
 
 if __name__ == '__main__':
     App = Duplython()
     App.main()
-    
