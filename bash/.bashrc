@@ -159,6 +159,10 @@ alias krak=' cd /mnt/c/kraken/ && cmd.exe /c "gitkraken.exe"'
 
 alias dcode='docker run -v /mnt/c/:/c/ -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -it --rm --name my_container michadockermisha/backup:vscode bash -c "echo 'y' | code --no-sandbox --user-data-dir=~/vscode-data && bash"'
 
+
+alias updatedcode="docker commit my_container michadockermisha/backup:vscode && docker push michadockermisha/backup:vscode"
+
+
 alias savehosts='docker commit b541bfc8a1e1 michadockermisha/backup:opensuse && \
 docker push michadockermisha/backup:opensuse && \
 docker commit c4f47b0680ca michadockermisha/backup:debian && \
@@ -231,9 +235,12 @@ alias vmkey='cat /mnt/c/backup/windowsapps/install/vmware/key.txt'
 
 #SSH
 alias ssk='ssh-keygen -t rsa -b 2048 && ssh-copy-id'
-alias scpwhisper="echo 'scp a.mp3 micha@192.168.1.195:/home/micha/' "
+alias scpwhisper="echo 'scp a.mp3 micha@192.168.1.247:/home/micha/' "
+alias sshwhisper="ssh micha@192.168.1.247"
 alias scprox="echo 'scp  root@192.168.1.222:/root' "
 alias sshprox="ssh root@192.168.1.222"
+alias sshserver="ssh micha@192.168.1.195"
+alias sshubuntu="ssh ubuntu@192.168.1.193"
 
 
 #CD aliases
@@ -279,6 +286,7 @@ alias swindows='cd /mnt/c/study/windows'
 alias sproxmox="cd /mnt/c/study/virtualmachines/proxmox"
 alias sserver="cd /mnt/c/study/windows/server"
 alias spythons='cd /mnt/c/study/python/scripts'
+alias sjavascript=" cd /mnt/c/study/javascript"
 
 #ANSIBLE
 alias cda='cd /mnt/c/study/ansible/etc/ansible'
@@ -391,7 +399,7 @@ alias reboot='shutdown.exe /r /t 0'
 
 
 #firefox/chrome
-alias gc="google-chrome  --no-sandbox"
+alias gc="cmd.exe /c start chrome"
 alias ff='cmd.exe /c start firefox'
 alias ffd='ff https://hub.docker.com/repository/docker/michadockermisha/backup/tags?page=1&ordering=last_updated'
 alias yt='gc youtube.com'
@@ -400,13 +408,16 @@ alias gtp='ff https://github.com/Michaelunkai/python'
 alias gpt='ff https://chat.openai.com/'
 alias pocket='ff https://getpocket.com/saves?src=navbar'
 alias 1337='ff https://1337x.to/home/'
-alias fitgirl='ff https://1337x.to/search/fitgirl/46/'
 alias gmail='ff https://mail.google.com/mail/u/0/'
 alias ytlater='gc https://www.youtube.com/playlist?list=WL'
 alias gamespot='ff https://www.gamespot.com/'
 alias anime='ff https://9animetv.to/home'
 alias aws="gc https://us-east-1.console.aws.amazon.com/console/home?region=us-east-1#"
 alias netdata="gc http://192.168.1.222:19999/"
+
+alias pfsense="gc https://192.168.1.148/"
+
+alias truenas="gc http://192.168.1.102/"
 
 alias ha="ff http://homeassistant.local:8123/"
 alias prox="gc 77.127.172.96:8006"
@@ -415,9 +426,8 @@ alias plex="ff 77.127.172.96:32400"
 #EXE
 alias qb='cmd.exe /c "C:\Program Files\qBittorrent\qbittorrent.exe"'
 alias vs="cmd.exe /c C:/Users/micha/AppData/Roaming/Microsoft/Windows/'Start Menu'/Programs/'Visual Studio Code'/'Visual Studio Code.lnk'"
-alias drivers='cmd.exe /c "C:\Program Files\NVIDIA Corporation\NVIDIA GeForce Experience\NVIDIA GeForce Experience.exe"'
-alias mstore='pfiles && cd WindowsApps && cd Microsoft.WindowsStore_22310.1401.8.0_x64__8wekyb3d8bbwe && cmd.exe /c "WinStore.App.exe"'
-alias gears='cd /mnt/c/games/gears5/geargame/binaries/steam && cmd Gears5.exe'
+alias jup="jupyter notebook --allow-root"
+
 
 alias catnmap="cat /mnt/c/study/'nmap&wireshark'/top20nmapcommands"
 
@@ -468,7 +478,7 @@ alias getplex="updates && echo deb https://downloads.plex.tv/repo/deb public mai
 
 alias defender='cmd.exe /c C:backup/windowsapps/install/afterformat/windows-defender-remover-main/windows-defender-remover-main/Script_Run.bat'
                   
-alias act='cd /mnt/c/backup/windowsapps/install/afterformat/Microsoft-Activation-Scripts-master/mas/All-In-One-Version  && cmd MAS_AIO.cmd'                  
+alias act=" cd /mnt/c/backup/windowsapps/install/Microsoft-Activation-Scripts-master/mas/All-In-One-Version && cmd MAS_AIO.cmd"                  
                   
 #PYTHON
 alias python='python3'                  
