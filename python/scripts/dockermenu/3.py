@@ -10,10 +10,10 @@ class DockerApp(QWidget):
 
         self.setWindowTitle("Docker Commands")
 
-        # Set the window size to 2/4 of the screen
+        # Set the window size to *** of the screen
         desktop_geometry = QDesktopWidget().screenGeometry()
-        width = int(desktop_geometry.width() * 1 / 2)
-        height = int(desktop_geometry.height() * 1 / 2)
+        width = int(desktop_geometry.width() * 19 / 20)
+        height = int(desktop_geometry.height() * 19 / 20)
         self.setGeometry(0, 0, width, height)
 
         self.setStyleSheet("background-color: black; font: 10pt bold; color: black;")
