@@ -207,6 +207,11 @@ alias backupst='stu && built michadockermisha/backup:study . && docker push mich
 alias backupapps='cd /mnt/c/backup/windowsapps && built michadockermisha/backup:windowsapps . && docker push michadockermisha/backup:windowsapps'
 alias backitup='backupapps && backupst && backupwsl'
 
+alias restoreapps='drun windowsapps michadockermisha/backup:windowsapps sh -c "apk add rsync && rsync -aP /home /c/backup/ && cd /c/backup/ && mv home windowsapps && exit" '
+
+
+alias restorelinux='cdbackup && mkdir linux && drun windowsapps michadockermisha/backup:wsl sh -c "apk add rsync && rsync -aP /home /c/backup/linux && cd /c/backup/linux && mv home wsl && exit" '
+
 # General aliases
 alias ps='docker ps -a --size && docker ps --size && docker images'
 alias cc='clear'
