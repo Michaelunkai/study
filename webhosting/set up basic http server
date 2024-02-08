@@ -2,7 +2,7 @@
 cd /mnt/c
 
 2)
-nano http.py
+nano custom_server
 
 3)enter this to the py file:
 
@@ -29,6 +29,6 @@ if __name__ == '__main__':
     
    
    
-4) python http.py
+4) python custom_server.py
 
 5) http://localhost:8000
