@@ -205,12 +205,20 @@ alias dcu='docker-compose up -d'
 alias backupwsl='cd /mnt/c/backup/linux/wsl && built michadockermisha/backup:wsl . && docker push michadockermisha/backup:wsl'
 alias backupst='stu && built michadockermisha/backup:study . && docker push michadockermisha/backup:study'
 alias backupapps='cd /mnt/c/backup/windowsapps && built michadockermisha/backup:windowsapps . && docker push michadockermisha/backup:windowsapps'
-alias backitup='backupapps && backupst && backupwsl'
+alias backupasus="cd /mnt/c/backup/asus built michadockermisha/backup:asus . && docker push michadockermisha/backup:asus"
+
+alias backitup='backupapps && backupst && backupwsl && backupasus'
 
 alias restoreapps='drun windowsapps michadockermisha/backup:windowsapps sh -c "apk add rsync && rsync -aP /home /c/backup/ && cd /c/backup/ && mv home windowsapps && exit" '
 
+alias restoreasus='cdbackup && drun asus michadockermisha/backup:asus sh -c "apk add rsync && rsync -aP /home /c/backup/ && cd /c/backup && mv home asus && exit" '
+
 
 alias restorelinux='cdbackup && mkdir linux && drun windowsapps michadockermisha/backup:wsl sh -c "apk add rsync && rsync -aP /home /c/backup/linux && cd /c/backup/linux && mv home wsl && exit" '
+
+
+alias restorebackup='c && mkdir backup && drun asus michadockermisha/backup:asus sh -c "apk add rsync && rsync -aP /home /c/backup/ && cd /c/backup && mv home asus && exit" && drun windowsapps michadockermisha/backup:windowsapps sh -c "apk add rsync && rsync -aP /home /c/backup/ && cd /c/backup/ && mv home windowsapps && exit" && cdbackup && mkdir linux && drun linux michadockermisha/backup:wsl sh -c "apk add rsync && rsync -aP /home /c/backup/linux && cd /c/backup/linux && mv home wsl && exit" '
+
 
 # General aliases
 alias ps='docker ps -a --size && docker ps --size && docker images'
@@ -259,7 +267,7 @@ alias cdlinux='cd /mnt/c/backup/linux'
 alias downloads='cd /mnt/c/Users/micha/Downloads'
 alias pfiles="c && cd 'Program Files'"
 alias wapps='pfiles && cd WindowsApps'
-
+alias cdbackup="c && cd backup"
 
 
 
