@@ -209,12 +209,13 @@ alias backupasus="cd /mnt/c/backup/asus built michadockermisha/backup:asus . && 
 
 alias backitup='backupapps && backupst && backupwsl && backupasus'
 
+#restore
+
 alias restoreapps='drun windowsapps michadockermisha/backup:windowsapps sh -c "apk add rsync && rsync -aP /home /c/backup/ && cd /c/backup/ && mv home windowsapps && exit" '
 
-alias restoreasus='cdbackup && drun asus michadockermisha/backup:asus sh -c "apk add rsync && rsync -aP /home /c/backup/ && cd /c/backup && mv home asus && exit" '
-
-
 alias restorelinux='cdbackup && mkdir linux && drun windowsapps michadockermisha/backup:wsl sh -c "apk add rsync && rsync -aP /home /c/backup/linux && cd /c/backup/linux && mv home wsl && exit" '
+
+alias restoreasus='cdbackup && drun asus michadockermisha/backup:wsl sh -c "apk add rsync && rsync -aP /home /c/backup/ && cd /c/backup && mv home asus && exit" '
 
 
 alias restorebackup='c && mkdir backup && drun asus michadockermisha/backup:asus sh -c "apk add rsync && rsync -aP /home /c/backup/ && cd /c/backup && mv home asus && exit" && drun windowsapps michadockermisha/backup:windowsapps sh -c "apk add rsync && rsync -aP /home /c/backup/ && cd /c/backup/ && mv home windowsapps && exit" && cdbackup && mkdir linux && drun linux michadockermisha/backup:wsl sh -c "apk add rsync && rsync -aP /home /c/backup/linux && cd /c/backup/linux && mv home wsl && exit" '
@@ -254,7 +255,8 @@ alias scprox="echo 'scp  root@192.168.1.222:/root' "
 alias sshprox="ssh root@192.168.1.222"
 alias sshserver="ssh micha@192.168.1.195"
 alias sshubuntu="ssh ubuntu@192.168.1.193"
-
+scptxt="scp *.txt ubuntu@192.168.1.193:/home/ubuntu/here"
+alias sshwindows="ssh administrator@192.168.10"
 
 #CD aliases
 alias c='cd /mnt/c/'
@@ -267,6 +269,7 @@ alias cdlinux='cd /mnt/c/backup/linux'
 alias downloads='cd /mnt/c/Users/micha/Downloads'
 alias pfiles="c && cd 'Program Files'"
 alias wapps='pfiles && cd WindowsApps'
+alias cdmp="cd /root/Downloads"
 alias cdbackup="c && cd backup"
 
 
@@ -329,6 +332,8 @@ alias choco="echo 'Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net
 alias fkali='echo "wsl --unregister kali-linux;  wsl --import kali-linux C:\wsl2 C:\backup\linux\wsl\kalifull.tar; wsl"'
 alias backupw='echo '\''wsl --export kali-linux C:\backup\linux\kalicurrent.tar'\'''
 alias wupdates='cat "/mnt/c/study/powershell/scripts/windowsupdates.ps1" && cp "/mnt/c/study/powershell/scripts/windowsupdates.ps1 /mnt/c/users/micha/updates.ps1"'
+
+alias echodkill='docker stop $(docker ps -aq) || true && docker rm $(docker ps -aq) || true && ( [ "$(docker ps -q)" ] || docker rmi $(docker images -q) || true ) && ( [ "$(docker images -q)" ] || docker system prune -a --volumes --force ) && docker network prune --force || true'
 
 alias wslexport='echo "wsl --export kali-linux C:\backup\linux\kalicurrent.tar"'
 
@@ -427,6 +432,7 @@ alias gamespot='ff https://www.gamespot.com/'
 alias anime='ff https://9animetv.to/home'
 alias aws="gc https://us-east-1.console.aws.amazon.com/console/home?region=us-east-1#"
 alias netdata="gc http://192.168.1.222:19999/"
+alias wordpress="gc https://chilltimecubehome.wordpress.com/wp-admin/customize.php?return=https%3A%2F%2Fwordpress.com%2Fhome%2Fchilltimecube.home.blog"
 
 alias pfsense="gc https://192.168.1.148/"
 
@@ -464,7 +470,7 @@ alias wslg='cd /mnt/wslg && biggest'
 alias psw='powershell.exe'
 alias ex='explorer.exe .'
 alias exd='d && ex'
-alias venv='cd ~/ && python3 -m venv venv && source venv/bin/activate'
+alias venv='python3 -m venv venv && source venv/bin/activate'
 alias mp3="docker run --rm -v $HOME/Downloads:/root/Downloads dizcza/youtube-mp3 $1"
 alias mp4='docker run \
                   --rm -i \
@@ -488,6 +494,8 @@ alias plex="ff 'http://87.70.162.212:32400'"
 
 
 alias getplex="updates && echo deb https://downloads.plex.tv/repo/deb public main | sudo tee /etc/apt/sources.list.d/plexmediaserver.list && curl https://downloads.plex.tv/plex-keys/PlexSign.key | sudo apt-key add - && updates && cc &&  sudo apt install plexmediaserver -y && sudo systemctl enable plexmediaserver && sudo systemctl start plexmediaserver && ff http://87.70.162.212:32400/web/ "
+
+alias getff="apt install firefox-esr -y"
 
 alias defender='cmd.exe /c C:backup/windowsapps/install/afterformat/windows-defender-remover-main/windows-defender-remover-main/Script_Run.bat'
                   
