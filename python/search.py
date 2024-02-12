@@ -2,7 +2,7 @@ from googleapiclient.discovery import build
 
 def google_search(query, api_key, cx):
     service = build('customsearch', 'v1', developerKey=api_key)
-    res = service.cse().list(q=query, cx=cx).execute()
+    res = service.cse().list(q=query, cx=cx, num=40).execute()  # Set num=40 to retrieve 40 search results
     return res['items']
 
 # Your API Key and Custom Search Engine ID
