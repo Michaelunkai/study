@@ -69,6 +69,51 @@ class ComingSoon(UserControl):
     def __init__(self):
         super().__init__()
 
+
+    def ComingSoonTitle(self):
+        # API xalls go here
+        # the API requests:
+        res = requests.get('https://imdb-api.com/en/API/ComingSoon/' + APIKEY)
+        # here i can call the API FROM the docds on imdb
+        # imdb types if data in docs: coming soon, top 250, top tv shows, top movies, etc...
+        # make sure to pass in my API secreate key after the last forward slash
+ 
+        # 
+        self.movie_list = GridView(
+            expand=True,
+            child_aspect_ratio=1.65,
+            horizontal=True # makes the grid horizontal
+        )
+
+        #
+
+
+
+        for movie in range(len(res.json()['items']) - 112):
+            self.movie_list.controls.append(
+                Column(
+                    horizontal_alignment=CrossAxisAlignment.CENTER,
+                    controls=[
+                        Container(
+                        expand=9,
+                        border_radius=12,
+                        image_fit=ImageFit.FILL,
+                        image_src=res.json()["items"][movies]["image"]
+                        # 
+                        ),
+                    ],
+                )
+            )
+            pass
+
+
+        return Container()
+
+
+
+        
+
+
     def build(self):
         return Container(
             width=280,
