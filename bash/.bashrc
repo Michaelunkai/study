@@ -256,7 +256,7 @@ alias sshprox="ssh root@192.168.1.222"
 alias sshserver="ssh micha@192.168.1.195"
 alias sshubuntu="ssh ubuntu@192.168.1.193"
 scptxt="scp *.txt ubuntu@192.168.1.193:/home/ubuntu/here"
-alias sshwindows="ssh administrator@192.168.1.10"
+alias sshwindows="ssh administrator@192.168.10"
 
 #CD aliases
 alias c='cd /mnt/c/'
