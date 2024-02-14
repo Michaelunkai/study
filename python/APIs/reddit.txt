@@ -1,0 +1,4 @@
+username:    Pitbul_Cheescake_8
+client ID : 0dTChDdoEu98bE5nCcVHjw
+secret key: bMT5TZJko1dVT0k5f4gqgO9Lhs3UCA
+Transit address : https://google.com
