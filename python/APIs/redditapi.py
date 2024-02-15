@@ -6,10 +6,10 @@ import webbrowser
 init(autoreset=True)
 
 # Step 1: Setting Up Authentication
-CLIENT_ID = 'XXXXXXXXXXXXXXXX'
-SECRET_KEY = 'XXXXXXXXXXXXXXXX'
-USERNAME = 'XXXXXXXXXXXXXXXX'
-PASSWORD = 'XXXXXXXXXXXXXXXX'
+CLIENT_ID = 'XXXXXXXXXXXXX'
+SECRET_KEY = 'XXXXXXXXXXXXX'
+USERNAME = 'XXXXXXXXXXXXX'
+PASSWORD = 'XXXXXXXXXXXXX'
 
 # Step 2: Installing Required Libraries
 # Run this command in your terminal or command prompt:
@@ -40,14 +40,24 @@ def print_reddit_posts(data):
     Print Reddit posts from JSON data.
     
     Args:
-        data (dict): The JSON data received from the API.
+        data (dict or list): The JSON data received from the API.
     """
-    if data is not None:
-        print(f"{Style.BRIGHT}{Fore.BLUE}Reddit Posts:")
-        print("-" * 80)  # Separator for better readability
+    if isinstance(data, dict):
+        data_children = data.get('data', {}).get('children', [])
+    elif isinstance(data, list):
+        data_children = data
+    else:
+        print(f"{Fore.RED}Invalid data type.")
+        return False
+    
+    if data_children:
+        print(f"{Style.BRIGHT}{Fore.BLUE}{Style.BRIGHT + Fore.WHITE + 'Reddit Posts':^160s}")
+        print("-" * 160)  # Separator for better readability
         
-        for index, post in enumerate(data.get('data', {}).get('children', []), start=1):
+        for index, post in enumerate(data_children, start=1):
             post_data = post.get('data', {})
+            subreddit_name = post_data.get('subreddit')
+            print(f"{Style.BRIGHT}{Fore.RED}{Style.BRIGHT + Fore.RED + subreddit_name.upper():^160s}")
             print(f"{Style.BRIGHT}{Fore.GREEN}Post {index}:")
             print(f"{Style.BRIGHT}{Fore.GREEN}Title: {post_data.get('title')}")
             print(f"{Style.BRIGHT}{Fore.YELLOW}Author: {post_data.get('author')}")
@@ -55,7 +65,6 @@ def print_reddit_posts(data):
             print(f"{Style.BRIGHT}{Fore.MAGENTA}Comments: {post_data.get('num_comments')}")
             print(f"{Style.BRIGHT}{Fore.WHITE}URL: {post_data.get('url')}")
             print(f"{Style.BRIGHT}{Fore.WHITE}Score: {post_data.get('score')}")
-            print(f"{Style.BRIGHT}{Fore.WHITE}Subreddit: {post_data.get('subreddit')}")
             print(f"{Style.BRIGHT}{Fore.WHITE}Created UTC: {post_data.get('created_utc')}")
             print(f"{Style.BRIGHT}{Fore.WHITE}---------------------------------------------")
             print()
@@ -97,37 +106,65 @@ def search_reddit(query):
     }
     return fetch_reddit_data(url, headers, params)
 
+def sort_reddit_posts(data, key):
+    """
+    Sort Reddit posts based on the given key (highest voted/lowest votes).
+    
+    Args:
+        data (dict): The JSON data containing Reddit posts.
+        key (str): The sorting key ('highest' or 'lowest').
+
+    Returns:
+        list: Sorted list of Reddit posts.
+    """
+    posts = data.get('data', {}).get('children', []) if isinstance(data, dict) else data
+    return sorted(posts, key=lambda x: x.get('data', {}).get('ups'), reverse=(key == 'highest'))
+
 def main():
     # Step 3: Making API Requests for the Front Page
     url = 'https://www.reddit.com/.json'
     headers = {
         'User-Agent': 'Custom User Agent/1.0'
     }
+    params = {
+        'limit': 100
+    }
     
     # Fetching Reddit data for the front page
-    reddit_data = fetch_reddit_data(url, headers)
+    reddit_data = fetch_reddit_data(url, headers, params)
     
     # Step 4: Handling Authentication and Errors for Front Page Posts
     if reddit_data:
         # Print Reddit posts for the front page
         while True:
             if print_reddit_posts(reddit_data):
-                user_input = input(f"{Fore.CYAN}Enter the number of the post you want to view (1-25), or enter 'search' to search for specific topics, subreddits, or posts: ")
+                user_input = input(f"{Fore.CYAN}Enter the number of the post you want to view (1-100), 'search' to search, 'sorting' to sort posts, or 'subreddit' to search for a specific subreddit: ")
                 if user_input.lower() == 'search':
                     search_query = input("Enter your search query: ")
                     search_results = search_reddit(search_query)
                     if search_results:
-                        print_reddit_posts(search_results)
+                        reddit_data = search_results
                     else:
                         print(f"{Fore.RED}No results found for the search query.")
+                elif user_input.lower() == 'sorting':
+                    sorting_key = input("Enter 'highest' to sort by highest voted, 'lowest' to sort by lowest voted: ")
+                    reddit_data = sort_reddit_posts(reddit_data, sorting_key.lower())
+                elif user_input.lower() == 'subreddit':
+                    subreddit_name = input("Enter the name of the subreddit: ")
+                    subreddit_url = f"https://www.reddit.com/r/{subreddit_name}/.json"
+                    subreddit_data = fetch_reddit_data(subreddit_url, headers)
+                    if subreddit_data:
+                        reddit_data = subreddit_data
+                    else:
+                        print(f"{Fore.RED}Failed to fetch data for the subreddit '{subreddit_name}'.")
                 elif user_input.isdigit():
                     post_number = int(user_input)
-                    if 1 <= post_number <= 25:
-                        open_post(reddit_data['data']['children'][post_number - 1]['data']['url'])
+                    if 1 <= post_number <= 100:
+                        open_post(reddit_data[post_number - 1]['data']['url'])
                     else:
-                        print(f"{Fore.RED}Invalid post number. Please enter a number between 1 and 25.")
+                        print(f"{Fore.RED}Invalid post number. Please enter a number between 1 and 100.")
                 else:
-                    print(f"{Fore.RED}Invalid input. Please enter a valid number or 'search'.")
+                    print(f"{Fore.RED}Invalid input. Please enter a valid number, 'search', 'sorting', or 'subreddit'.")
             else:
                 break
     else:
