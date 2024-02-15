@@ -1,0 +1,208 @@
+pct (for Containers):
+
+List all containers:
+
+bash
+Copy code
+pct list
+Start a container:
+
+bash
+Copy code
+pct start <vmid>
+Stop a container:
+
+bash
+Copy code
+pct stop <vmid>
+Get detailed information about a container:
+
+bash
+Copy code
+pct status <vmid>
+Enter the console of a container:
+
+bash
+Copy code
+pct enter <vmid>
+Create a new container from a template:
+
+bash
+Copy code
+pct create <vmid> <template> --storage <storage> --net0 <model>,bridge=<bridge>
+Clone a container:
+
+bash
+Copy code
+pct clone <source_vm_id> <new_vm_id> --name <new_name>
+Set the memory for a container:
+
+bash
+Copy code
+pct set <vmid> --mem <memory_in_MB>
+Set the CPU cores for a container:
+
+bash
+Copy code
+pct set <vmid> --cores <number_of_cores>
+Delete a container:
+
+bash
+Copy code
+pct destroy <vmid>
+qm (for Virtual Machines):
+
+List all virtual machines:
+
+bash
+Copy code
+qm list
+Start a virtual machine:
+
+bash
+Copy code
+qm start <vmid>
+Stop a virtual machine:
+
+bash
+Copy code
+qm stop <vmid>
+Get detailed information about a virtual machine:
+
+bash
+Copy code
+qm status <vmid>
+Enter the console of a virtual machine:
+
+bash
+Copy code
+qm terminal <vmid>
+Create a new virtual machine from an ISO image:
+
+bash
+Copy code
+qm create <vmid> --name <name> --memory <memory_in_MB> --net0 <model>,bridge=<bridge> --ide2 <iso_path>,media=cdrom
+Clone a virtual machine:
+
+bash
+Copy code
+qm clone <source_vm_id> <new_vm_id> --name <new_name>
+Set the memory for a virtual machine:
+
+bash
+Copy code
+qm set <vmid> --memory <memory_in_MB>
+Set the CPU cores for a virtual machine:
+
+bash
+Copy code
+qm set <vmid> --cores <number_of_cores>
+Delete a virtual machine:
+
+bash
+Copy code
+qm destroy <vmid>
+
+
+List the resources (CPU, memory, etc.) allocated to a container:
+
+bash
+Copy code
+pct config <vmid>
+Set the root password for a container:
+
+bash
+Copy code
+pct passwd <vmid>
+View the logs of a container:
+
+bash
+Copy code
+pct journal <vmid>
+Mount a directory from the host to a container:
+
+bash
+Copy code
+pct mount <vmid> <source_path_on_host> <destination_path_in_container>
+Unmount a directory from a container:
+
+bash
+Copy code
+pct unmount <vmid> <source_path_on_host>
+Set CPU limit for a container:
+
+bash
+Copy code
+pct set <vmid> --cpuunits <value>
+Set CPU weight for a container:
+
+bash
+Copy code
+pct set <vmid> --cpulimit <value>
+Set disk size for a container:
+
+bash
+Copy code
+pct set <vmid> --rootfs <size>
+Set swap size for a container:
+
+bash
+Copy code
+pct set <vmid> --swap <size>
+Set hostname for a container:
+
+bash
+Copy code
+pct set <vmid> --hostname <name>
+qm (for Virtual Machines):
+
+View the configuration of a virtual machine:
+
+bash
+Copy code
+qm config <vmid>
+Set the boot order for a virtual machine:
+
+bash
+Copy code
+qm boot <vmid> <order>
+Take a snapshot of a virtual machine:
+
+bash
+Copy code
+qm snapshot <vmid> <snapshot_name>
+Rollback a virtual machine to a snapshot:
+
+bash
+Copy code
+qm rollback <vmid> <snapshot_name>
+List available snapshots of a virtual machine:
+
+bash
+Copy code
+qm snapshotlist <vmid>
+Set a firewall rule for a virtual machine:
+
+bash
+Copy code
+qm set <vmid> --firewall <rule>
+Add a CD-ROM drive to a virtual machine:
+
+bash
+Copy code
+qm set <vmid> --ide2 <device>
+Change the SCSI controller type for a virtual machine:
+
+bash
+Copy code
+qm set <vmid> --scsihw <type>
+Migrate a virtual machine to another node:
+
+bash
+Copy code
+qm migrate <vmid> <target_node>
+Set the CPU type for a virtual machine:
+
+bash
+Copy code
+qm set <vmid> --cpu <type>
