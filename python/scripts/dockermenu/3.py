@@ -48,7 +48,7 @@ class DockerApp(QWidget):
     "planetcoaster", "sleepingdogs", "gtviv", "pseudoregalia", "thegreataceattorney", "goodbyevolcanohigh", "fallout4", "battlefieldbadcompany2",
     "battlefieldhardline", "battlefield1", "battlefieldv", "yakuza0", "yakuza3remasterd", "yakuza4", "yakuza5", "yakuza6thesongodlife", "yakuzalikeadragon",
     "vampiresurvivors", "highonlife", "thegodfather", "scarface", "unpacking", "scarletnexus", "haveanicedeath", "dredge", "cultofthelamb", "oblivion",
-    "seaofstarts", "citieskylines2", "eldenrings", "kingdomofamalur", "wolfenstein2", "okamihd", "thesilentage", "divinityoriginalsin2", "dordogne",
+    "seaofstars", "citieskylines2", "eldenrings", "kingdomofamalur", "wolfenstein2", "okamihd", "thesilentage", "divinityoriginalsin2", "dordogne",
     "tellmewhy", "theradstringclub", "systemshockremake", "subnautica", "riftapart", "grouned", "cosmicshake", "hotwheels", "alanwake", "alanwake2",
     "escapefromtarkov", "alyx", "plagtalerequirm", "sackboy", "remnant2", "sims4", "returntomonkeyisland", "beyond2souls", "eternalcylinder",
     "oddworldsoulstorm", "immortalsfenyxrising", "redout2", "megamanxdive", "neonabyss", "gerda", "slaytheprincess", "prisonsimulator", "videoverse",
