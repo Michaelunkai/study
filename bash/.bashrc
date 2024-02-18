@@ -256,7 +256,7 @@ alias sshprox="ssh root@192.168.1.222"
 alias sshserver="ssh micha@192.168.1.195"
 alias sshubuntu="ssh ubuntu@192.168.1.193"
 scptxt="scp *.txt ubuntu@192.168.1.193:/home/ubuntu/here"
-alias sshwindows="ssh administrator@192.168.1.10"
+alias sshwindows="ssh administrator@192.168.10"
 
 #CD aliases
 alias c='cd /mnt/c/'
@@ -518,3 +518,14 @@ alias cpalias='cp /mnt/c/backup/linux/wsl/alias.txt /root/.bashrc && cp /mnt/c/b
 alias cmd='cmd.exe /c'
 
 complete -C /mnt/c/Users/micha/mc mc
+alias wall="py /mnt/c/study/python/scripts/wallpaperdownloader.py"
+alias wall1="py /mnt/c/study/python/scripts/wallpaper1sec.py"
+alias savegames="cd /mnt/c/backup/gamesaves && drun gamesdata michadockermisha/backup:gamesaves sh -c 'apk add rsync && rsync -aP /home/* /c/backup/gamesaves && exit' && built michadockermisha/backup:gamesaves . && docker push michadockermisha/backup:gamesaves && rm -rf ./*"
+alias sshct="ssh root@192.168.1.100"
+alias pihole="gc http://192.168.1.100/admin/"
+alias savedg='cd /mnt/c/backup/gamesaves && drun gamesdata michadockermisha/backup:gamesaves sh -c "apk add rsync && rsync -aP /home/* /c/backup/gamesaves && exit" '
+alias wordpress="http://192.168.1.101/wp-admin/"
+alias reddit="py /mnt/c/study/python/APIs/my/redditapp/reddit.py"
+alias qbittorent="gc 'http://192.168.1.140:8080/' "
+alias sjavascript=" cd /mnt/c/study/frontend/javascript"
+alias sfront=" cd /mnt/c/study/frontend"
