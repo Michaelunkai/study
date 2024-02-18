@@ -205,7 +205,7 @@ alias dcu='docker-compose up -d'
 alias backupwsl='cd /mnt/c/backup/linux/wsl && built michadockermisha/backup:wsl . && docker push michadockermisha/backup:wsl'
 alias backupst='stu && built michadockermisha/backup:study . && docker push michadockermisha/backup:study'
 alias backupapps='cd /mnt/c/backup/windowsapps && built michadockermisha/backup:windowsapps . && docker push michadockermisha/backup:windowsapps'
-alias backupasus="cd /mnt/c/backup/asus built michadockermisha/backup:asus . && docker push michadockermisha/backup:asus"
+alias backupasus="cd /mnt/c/backup/asus && built michadockermisha/backup:asus . && docker push michadockermisha/backup:asus"
 
 alias backitup='backupapps && backupst && backupwsl && backupasus'
 
