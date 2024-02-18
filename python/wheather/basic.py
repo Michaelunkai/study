@@ -9,8 +9,8 @@ weather_data = requests.get(
 
 if weather_data.status_code == 200:
     weather = weather_data.json()['weather'][0]['main']
-    temp = weather_data.json()['main']['temp']
-    print("Weather:", weather)
-    print("Temperature (Celsius):", temp)
+    temp = round(weather_data.json()['main']['temp'])
+    print(f"The weather in {user_input} is: {weather}")
+    print(f"The temperature in {user_input} is: {temp}°C")
 else:
     print("Failed to retrieve weather data. Please check your input or try again later.")
