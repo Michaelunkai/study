@@ -1,10 +1,16 @@
 import requests
 
-api_key= 'dcd8c4f8fe9a2165bb574775b1a23ebc'
+api_key = 'dcd8c4f8fe9a2165bb574775b1a23ebc'
 
 user_input = input("Enter city: ")
 
-wheather_data = requests.get(
-    f"https://api.openweathermap.org/data/2.5/weather?q={user_input}&units=imperial&APPID={api_key}")
+weather_data = requests.get(
+    f"https://api.openweathermap.org/data/2.5/weather?q={user_input}&units=metric&APPID={api_key}")
 
-print(wheather_data.json())
+if weather_data.status_code == 200:
+    weather = weather_data.json()['weather'][0]['main']
+    temp = weather_data.json()['main']['temp']
+    print("Weather:", weather)
+    print("Temperature (Celsius):", temp)
+else:
+    print("Failed to retrieve weather data. Please check your input or try again later.")
