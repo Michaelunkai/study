@@ -7,3 +7,4 @@ user_input = input("Enter city: ")
 wheather_data = requests.get(
     f"https://api.openweathermap.org/data/2.5/weather?q={user_input}&units=imperial&APPID={api_key}")
 
+print(wheather_data.status_code)
