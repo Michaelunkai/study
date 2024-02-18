@@ -256,7 +256,7 @@ alias sshprox="ssh root@192.168.1.222"
 alias sshserver="ssh micha@192.168.1.195"
 alias sshubuntu="ssh ubuntu@192.168.1.193"
 scptxt="scp *.txt ubuntu@192.168.1.193:/home/ubuntu/here"
-alias sshwindows="ssh administrator@192.168.10"
+alias sshwindows="ssh administrator@192.168.1.10"
 
 #CD aliases
 alias c='cd /mnt/c/'
@@ -430,6 +430,7 @@ alias gmail='ff https://mail.google.com/mail/u/0/'
 alias ytlater='gc https://www.youtube.com/playlist?list=WL'
 alias gamespot='ff https://www.gamespot.com/'
 alias anime='ff https://9animetv.to/home'
+alias aws="gc https://us-east-1.console.aws.amazon.com/console/home?region=us-east-1#"
 alias netdata="gc http://192.168.1.222:19999/"
 alias wordpress="gc https://chilltimecubehome.wordpress.com/wp-admin/customize.php?return=https%3A%2F%2Fwordpress.com%2Fhome%2Fchilltimecube.home.blog"
 
