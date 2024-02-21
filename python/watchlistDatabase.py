@@ -51,12 +51,79 @@ def add_game():
     conn.commit()
     print("Game added successfully!")
 
+# Function to delete a listing
+def delete_listing():
+    print("\n\033[91m\033[1m\033[5m--- Delete Listing ---\033[0m")
+    print("\033[91m\033[1m\033[5mWhich category would you like to delete from?\033[0m")
+    print("\033[91m\033[1m\033[5m1. Movies\033[0m")
+    print("\033[91m\033[1m\033[5m2. TV Shows\033[0m")
+    print("\033[91m\033[1m\033[5m3. Games\033[0m")
+
+    category_choice = input("Enter your choice: ")
+
+    if category_choice == '1':
+        cursor.execute("SELECT id, title FROM movies")
+        listings = cursor.fetchall()
+        if listings:
+            print("\n\033[91m\033[1m\033[5mMovies:\033[0m")
+            for idx, item in enumerate(listings, start=1):
+                print(f"{idx}. {item[1]}")
+            selection = int(input("Enter the number of the movie to delete: "))
+            if selection <= len(listings):
+                movie_id = listings[selection - 1][0]
+                cursor.execute("DELETE FROM movies WHERE id=?", (movie_id,))
+                conn.commit()
+                print("Movie deleted successfully!")
+            else:
+                print("Invalid selection.")
+        else:
+            print("No movies found.")
+
+    elif category_choice == '2':
+        cursor.execute("SELECT id, title FROM tv_shows")
+        listings = cursor.fetchall()
+        if listings:
+            print("\n\033[91m\033[1m\033[5mTV Shows:\033[0m")
+            for idx, item in enumerate(listings, start=1):
+                print(f"{idx}. {item[1]}")
+            selection = int(input("Enter the number of the TV show to delete: "))
+            if selection <= len(listings):
+                tv_show_id = listings[selection - 1][0]
+                cursor.execute("DELETE FROM tv_shows WHERE id=?", (tv_show_id,))
+                conn.commit()
+                print("TV show deleted successfully!")
+            else:
+                print("Invalid selection.")
+        else:
+            print("No TV shows found.")
+
+    elif category_choice == '3':
+        cursor.execute("SELECT id, title FROM games")
+        listings = cursor.fetchall()
+        if listings:
+            print("\n\033[91m\033[1m\033[5mGames:\033[0m")
+            for idx, item in enumerate(listings, start=1):
+                print(f"{idx}. {item[1]}")
+            selection = int(input("Enter the number of the game to delete: "))
+            if selection <= len(listings):
+                game_id = listings[selection - 1][0]
+                cursor.execute("DELETE FROM games WHERE id=?", (game_id,))
+                conn.commit()
+                print("Game deleted successfully!")
+            else:
+                print("Invalid selection.")
+        else:
+            print("No games found.")
+
+    else:
+        print("Invalid choice!")
+
 # Function to view wishlist items
 def view_wishlist():
-    print("\n--- Wishlist ---")
-    
+    print("\n\033[91m\033[1m\033[5m--- Wishlist ---\033[0m")
+
     # View movies
-    print("\nMovies:")
+    print("\n\033[91m\033[1m\033[5mMovies:\033[0m")
     cursor.execute("SELECT * FROM movies")
     movies = cursor.fetchall()
     if movies:
@@ -66,7 +133,7 @@ def view_wishlist():
         print("No movies found.")
 
     # View TV shows
-    print("\nTV Shows:")
+    print("\n\033[91m\033[1m\033[5mTV Shows:\033[0m")
     cursor.execute("SELECT * FROM tv_shows")
     tv_shows = cursor.fetchall()
     if tv_shows:
@@ -76,7 +143,7 @@ def view_wishlist():
         print("No TV shows found.")
 
     # View games
-    print("\nGames:")
+    print("\n\033[91m\033[1m\033[5mGames:\033[0m")
     cursor.execute("SELECT * FROM games")
     games = cursor.fetchall()
     if games:
@@ -87,11 +154,12 @@ def view_wishlist():
 
 # Main loop to prompt user for actions
 while True:
-    print("\nWhat would you like to do?")
-    print("1. Add new")
-    print("2. View wishlist")
-    print("3. Exit")
-    
+    print("\n\033[91m\033[1m\033[5mWhat would you like to do?\033[0m")
+    print("\033[91m\033[1m\033[5m1. Add new\033[0m")
+    print("\033[91m\033[1m\033[5m2. View wishlist\033[0m")
+    print("\033[91m\033[1m\033[5m3. Delete listing\033[0m")
+    print("\033[91m\033[1m\033[5m4. Exit\033[0m")
+
     choice = input("Enter your choice: ")
 
     if choice == '1':
@@ -99,9 +167,9 @@ while True:
         print("1. Movie")
         print("2. TV Show")
         print("3. Game")
-        
+
         add_choice = input("Enter your choice: ")
-        
+
         if add_choice == '1':
             add_movie()
         elif add_choice == '2':
@@ -115,6 +183,9 @@ while True:
         view_wishlist()
 
     elif choice == '3':
+        delete_listing()
+
+    elif choice == '4':
         print("Exiting program...")
         break
 
