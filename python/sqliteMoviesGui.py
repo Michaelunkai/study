@@ -126,6 +126,20 @@ def view_wishlist():
     # Calculate the width for each listbox frame
     frame_width = (view_window_width - 40) // 3
 
+    def remove_all_items(category):
+        confirm = messagebox.askyesno("Confirm Remove All", f"Are you sure you want to remove all {category.replace('_', ' ')}?")
+        if confirm:
+            if category == "movies":
+                cursor.execute("DELETE FROM movies")
+            elif category == "tv_shows":
+                cursor.execute("DELETE FROM tv_shows")
+            elif category == "games":
+                cursor.execute("DELETE FROM games")
+            
+            conn.commit()
+            refresh_items_list(category)
+            messagebox.showinfo("Success", f"All {category.replace('_', ' ')} removed successfully.")
+
     # Create a frame for movies
     movie_frame = tk.Frame(view_window, bg="black", width=frame_width)
     movie_frame.pack(side=tk.LEFT, padx=10, pady=10, fill=tk.BOTH, expand=True)
@@ -146,6 +160,11 @@ def view_wishlist():
         movie_list.config(yscrollcommand=movie_scroll.set)
         items_listboxes["movies"] = movie_list
         refresh_items_list("movies")
+
+        # Create Remove All button for movies
+        remove_movie_button = tk.Button(movie_frame, text="Remove All", command=lambda: remove_all_items("movies"), font=("Helvetica", 10), fg="red", bg="black")
+        remove_movie_button.pack(pady=5)
+
     else:
         movie_label = tk.Label(movie_frame, text="No movies found", bg="black", fg="white")
         movie_label.pack()
@@ -170,6 +189,11 @@ def view_wishlist():
         tv_list.config(yscrollcommand=tv_scroll.set)
         items_listboxes["tv_shows"] = tv_list
         refresh_items_list("tv_shows")
+
+        # Create Remove All button for TV shows
+        remove_tv_button = tk.Button(tv_show_frame, text="Remove All", command=lambda: remove_all_items("tv_shows"), font=("Helvetica", 10), fg="red", bg="black")
+        remove_tv_button.pack(pady=5)
+
     else:
         tv_label = tk.Label(tv_show_frame, text="No TV shows found", bg="black", fg="white")
         tv_label.pack()
@@ -194,6 +218,11 @@ def view_wishlist():
         game_list.config(yscrollcommand=game_scroll.set)
         items_listboxes["games"] = game_list
         refresh_items_list("games")
+
+        # Create Remove All button for games
+        remove_game_button = tk.Button(game_frame, text="Remove All", command=lambda: remove_all_items("games"), font=("Helvetica", 10), fg="red", bg="black")
+        remove_game_button.pack(pady=5)
+
     else:
         game_label = tk.Label(game_frame, text="No games found", bg="black", fg="white")
         game_label.pack()
