@@ -140,12 +140,12 @@ def view_wishlist():
     view_window.configure(background="black")
 
     # Set the width and height of the view window
-    view_window_width = 800
+    view_window_width = 1000
     view_window_height = 600
     view_window.geometry(f"{view_window_width}x{view_window_height}")
 
     # Calculate the width for each listbox frame
-    frame_width = (view_window_width - 40) // 4
+    frame_width = (view_window_width - 60) // 4
 
     def remove_all_items(category):
         confirm = messagebox.askyesno("Confirm Remove All", f"Are you sure you want to remove all {category.replace('_', ' ')}?")
@@ -281,19 +281,18 @@ def view_wishlist():
 
 # Main window
 root = tk.Tk()
-root.title("Wishlist Manager")
+root.title("Michael Fedro's Wishlist Manager")
 root.configure(background="black")
-root.geometry("600x400")
 
 # Labels
 movie_label = tk.Label(root, text="Movie(s):", font=("Helvetica", 12, "bold"), fg="red", bg="black")
-movie_label.grid(row=0, column=0, padx=5, pady=5)
+movie_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 tv_show_label = tk.Label(root, text="TV Show(s):", font=("Helvetica", 12, "bold"), fg="red", bg="black")
-tv_show_label.grid(row=1, column=0, padx=5, pady=5)
+tv_show_label.grid(row=1, column=0, padx=5, pady=5, sticky="w")
 game_label = tk.Label(root, text="Game(s):", font=("Helvetica", 12, "bold"), fg="red", bg="black")
-game_label.grid(row=2, column=0, padx=5, pady=5)
+game_label.grid(row=2, column=0, padx=5, pady=5, sticky="w")
 anime_label = tk.Label(root, text="Anime(s):", font=("Helvetica", 12, "bold"), fg="red", bg="black")
-anime_label.grid(row=3, column=0, padx=5, pady=5)
+anime_label.grid(row=3, column=0, padx=5, pady=5, sticky="w")
 
 # Entry widgets
 movie_entry = tk.Text(root, height=5, width=30)
@@ -306,23 +305,22 @@ anime_entry = tk.Text(root, height=5, width=30)
 anime_entry.grid(row=3, column=1, padx=5, pady=5)
 
 # Buttons
-add_button = tk.Button(root, text="Add", width=10, command=add_movie)
-add_button.grid(row=0, column=2, padx=5, pady=5)
-add_button = tk.Button(root, text="Add", width=10, command=add_tv_show)
-add_button.grid(row=1, column=2, padx=5, pady=5)
-add_button = tk.Button(root, text="Add", width=10, command=add_game)
-add_button.grid(row=2, column=2, padx=5, pady=5)
-add_button = tk.Button(root, text="Add", width=10, command=add_anime)
-add_button.grid(row=3, column=2, padx=5, pady=5)
+add_button = tk.Button(root, text="Add Movie", width=15, command=add_movie)
+add_button.grid(row=0, column=2, padx=5, pady=5, sticky="w")
+add_button = tk.Button(root, text="Add TV Show", width=15, command=add_tv_show)
+add_button.grid(row=1, column=2, padx=5, pady=5, sticky="w")
+add_button = tk.Button(root, text="Add Game", width=15, command=add_game)
+add_button.grid(row=2, column=2, padx=5, pady=5, sticky="w")
+add_button = tk.Button(root, text="Add Anime", width=15, command=add_anime)
+add_button.grid(row=3, column=2, padx=5, pady=5, sticky="w")
 
 # View button
 view_button = tk.Button(root, text="See Wishlist", command=view_wishlist, font=("Helvetica", 12, "bold"), fg="red", bg="black")
-view_button.grid(row=4, column=0, columnspan=3, pady=10)
+view_button.grid(row=4, column=0, columnspan=3, pady=10, sticky="we")
 
 # Delete button
 delete_button = tk.Button(root, text="Delete Items", command=delete_selected_items, font=("Helvetica", 12, "bold"), fg="red", bg="black")
-delete_button.grid(row=5, column=0, columnspan=3, pady=10)
-
+delete_button.grid(row=5, column=0, columnspan=3, pady=10, sticky="we")
 
 # Dictionary to hold listboxes for each category
 items_listboxes = {}
