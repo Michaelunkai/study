@@ -44,20 +44,22 @@ def add_tv_show():
     conn.commit()
     print("TV show added successfully!")
 
-# Function to add a new game to the database
+# Function to add a new game or multiple games to the database
 def add_game():
-    title = input("Enter the title of the game: ")
-    cursor.execute("INSERT INTO games (title) VALUES (?)", (title,))
+    game_input = input("Enter the title(s) of the game(s) (separate by spaces, commas, or each on a new line): ")
+    games = [game.strip() for game in game_input.replace(',', ' ').split()]
+    for game in games:
+        cursor.execute("INSERT INTO games (title) VALUES (?)", (game,))
     conn.commit()
-    print("Game added successfully!")
+    print("Game(s) added successfully!")
 
 # Function to delete a listing
 def delete_listing():
-    print("\n\033[91m\033[1m\033[5m--- Delete Listing ---\033[0m")
-    print("\033[91m\033[1m\033[5mWhich category would you like to delete from?\033[0m")
-    print("\033[91m\033[1m\033[5m1. Movies\033[0m")
-    print("\033[91m\033[1m\033[5m2. TV Shows\033[0m")
-    print("\033[91m\033[1m\033[5m3. Games\033[0m")
+    print("\n--- Delete Listing ---")
+    print("Which category would you like to delete from?")
+    print("1. Movies")
+    print("2. TV Shows")
+    print("3. Games")
 
     category_choice = input("Enter your choice: ")
 
@@ -65,7 +67,7 @@ def delete_listing():
         cursor.execute("SELECT id, title FROM movies")
         listings = cursor.fetchall()
         if listings:
-            print("\n\033[91m\033[1m\033[5mMovies:\033[0m")
+            print("\nMovies:")
             for idx, item in enumerate(listings, start=1):
                 print(f"{idx}. {item[1]}")
             selection = int(input("Enter the number of the movie to delete: "))
@@ -83,7 +85,7 @@ def delete_listing():
         cursor.execute("SELECT id, title FROM tv_shows")
         listings = cursor.fetchall()
         if listings:
-            print("\n\033[91m\033[1m\033[5mTV Shows:\033[0m")
+            print("\nTV Shows:")
             for idx, item in enumerate(listings, start=1):
                 print(f"{idx}. {item[1]}")
             selection = int(input("Enter the number of the TV show to delete: "))
@@ -101,7 +103,7 @@ def delete_listing():
         cursor.execute("SELECT id, title FROM games")
         listings = cursor.fetchall()
         if listings:
-            print("\n\033[91m\033[1m\033[5mGames:\033[0m")
+            print("\nGames:")
             for idx, item in enumerate(listings, start=1):
                 print(f"{idx}. {item[1]}")
             selection = int(input("Enter the number of the game to delete: "))
@@ -120,10 +122,10 @@ def delete_listing():
 
 # Function to view wishlist items
 def view_wishlist():
-    print("\n\033[91m\033[1m\033[5m--- Wishlist ---\033[0m")
+    print("\n--- Wishlist ---")
 
     # View movies
-    print("\n\033[91m\033[1m\033[5mMovies:\033[0m")
+    print("\nMovies:")
     cursor.execute("SELECT * FROM movies")
     movies = cursor.fetchall()
     if movies:
@@ -133,7 +135,7 @@ def view_wishlist():
         print("No movies found.")
 
     # View TV shows
-    print("\n\033[91m\033[1m\033[5mTV Shows:\033[0m")
+    print("\nTV Shows:")
     cursor.execute("SELECT * FROM tv_shows")
     tv_shows = cursor.fetchall()
     if tv_shows:
@@ -143,7 +145,7 @@ def view_wishlist():
         print("No TV shows found.")
 
     # View games
-    print("\n\033[91m\033[1m\033[5mGames:\033[0m")
+    print("\nGames:")
     cursor.execute("SELECT * FROM games")
     games = cursor.fetchall()
     if games:
@@ -154,11 +156,11 @@ def view_wishlist():
 
 # Main loop to prompt user for actions
 while True:
-    print("\n\033[91m\033[1m\033[5mWhat would you like to do?\033[0m")
-    print("\033[91m\033[1m\033[5m1. Add new\033[0m")
-    print("\033[91m\033[1m\033[5m2. View wishlist\033[0m")
-    print("\033[91m\033[1m\033[5m3. Delete listing\033[0m")
-    print("\033[91m\033[1m\033[5m4. Exit\033[0m")
+    print("\nWhat would you like to do?")
+    print("1. Add new")
+    print("2. View wishlist")
+    print("3. Delete listing")
+    print("4. Exit")
 
     choice = input("Enter your choice: ")
 
