@@ -74,25 +74,26 @@ def delete_listings(category):
         messagebox.showinfo("Success", f"All {category.replace('_', ' ')} deleted successfully.")
 
 # Function to delete selected items
-def delete_selected_items(category):
-    if category in items_listboxes:
-        selected_indices = items_listboxes[category].curselection()
-        if selected_indices:
-            confirm = messagebox.askyesno("Confirm Delete", "Are you sure you want to delete the selected item(s)?")
-            if confirm:
-                for index in selected_indices:
-                    item_id = items_ids[category][index]
-                    if category == "movies":
-                        cursor.execute("DELETE FROM movies WHERE id=?", (item_id,))
-                    elif category == "tv_shows":
-                        cursor.execute("DELETE FROM tv_shows WHERE id=?", (item_id,))
-                    elif category == "games":
-                        cursor.execute("DELETE FROM games WHERE id=?", (item_id,))
-                conn.commit()
-                messagebox.showinfo("Success", "Selected item(s) deleted successfully.")
-                refresh_items_list(category)
-    else:
-        messagebox.showerror("Error", "No items found for deletion.")
+def delete_selected_items():
+    for category in items_listboxes:
+        if category in items_listboxes:
+            selected_indices = items_listboxes[category].curselection()
+            if selected_indices:
+                confirm = messagebox.askyesno("Confirm Delete", "Are you sure you want to delete the selected item(s)?")
+                if confirm:
+                    for index in selected_indices:
+                        item_id = items_ids[category][index]
+                        if category == "movies":
+                            cursor.execute("DELETE FROM movies WHERE id=?", (item_id,))
+                        elif category == "tv_shows":
+                            cursor.execute("DELETE FROM tv_shows WHERE id=?", (item_id,))
+                        elif category == "games":
+                            cursor.execute("DELETE FROM games WHERE id=?", (item_id,))
+                    conn.commit()
+                    refresh_items_list(category)
+                    messagebox.showinfo("Success", "Selected item(s) deleted successfully.")
+                    return
+    messagebox.showerror("Error", "No items found for deletion.")
 
 # Function to refresh items list
 def refresh_items_list(category):
@@ -232,8 +233,9 @@ view_button = tk.Button(root, text="See Wishlist", command=view_wishlist, font=(
 view_button.grid(row=3, column=0, columnspan=3, pady=10)
 
 # Delete button
-delete_button = tk.Button(root, text="Delete Items", command=lambda: delete_selected_items("movies"), font=("Helvetica", 12, "bold"), fg="red", bg="black")
+delete_button = tk.Button(root, text="Delete Items", command=delete_selected_items, font=("Helvetica", 12, "bold"), fg="red", bg="black")
 delete_button.grid(row=4, column=0, columnspan=3, pady=10)
+
 
 # Dictionary to hold listboxes for each category
 items_listboxes = {}
