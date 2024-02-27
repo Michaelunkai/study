@@ -1,0 +1,53 @@
+Question 1: What is Linux?
+
+Answer: Linux is an open-source operating system.
+Question 2: Name some well-known Linux distributions.
+
+Answer: Examples include Ubuntu, Debian, CentOS, and Fedora.
+Question 3: What is the name of the terminal/command line interface in Linux?
+
+Answer: The terminal/command line interface in Linux is commonly referred to as "bash."
+Question 4: How do you navigate between directories in the Linux terminal?
+
+Answer: You navigate between directories in the Linux terminal using the "cd" command.
+Question 5: Define what a shell is in Linux.
+
+Answer: A shell in Linux is an interface that allows users to interact with the operating system via commands.
+Question 6: What is the purpose of the "chmod" command?
+
+Answer: The "chmod" command is used to change the permissions (read, write, execute) of files or directories in Linux.
+Question 7: How do you install software packages in Linux?
+
+Answer: You can install software packages in Linux using the "sudo apt-get install <package name>" command on Debian-based distributions like Ubuntu.
+Question 8: What does the "grep" command do in Linux?
+
+Answer: The "grep" command is used to search for patterns within text files in Linux.
+
+Question 9: How do you check the IP address assigned to your Linux system?
+
+Answer: You can use the "ip a" or "ifconfig" command to display the IP address assigned to your Linux system.
+Question 10: What is the purpose of the "sudo" command in Linux?
+
+Answer: The "sudo" command is used to execute commands with elevated privileges or as another user in Linux.
+Question 11: How can you list all processes running on a Linux system?
+Answer: You can list all processes running on a Linux system using the "ps aux" command.
+
+Question 12: What is SSH, and how is it used in Linux?
+
+Answer: SSH (Secure Shell) is a cryptographic network protocol used for secure remote access to systems over unsecured networks in Linux. It provides encrypted communication for connecting to remote systems.
+
+question 13: explain the difference between a proccess and a thread in linux.
+
+answer: in linux. a process is an instance of a running program, while a thread is a lightwight process that exists within a process. processes have their own memory space, whereas threads share the memory space in their parent process.
+
+Question 14: What is the purpose of the "tar" command in Linux?
+
+answer:  The "tar" command in Linux is used to create, view, extract, and manipulate archive files.
+
+
+Question 15: What is the purpose of the "ls" command in Linux?
+
+answer:  The "ls" command in Linux is used to list files and directories in the current directory.
+
+
+
