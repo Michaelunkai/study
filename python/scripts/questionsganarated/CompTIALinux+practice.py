@@ -98,8 +98,8 @@ def main():
         else:
             print(f"Wrong! The correct answer is: {answer}")
 
-        proceed = input("Do you want to continue? (yes/no): ").lower()
-        if proceed != 'yes':
+        proceed = input("Do you want to continue? (y/n): ").lower()
+        if proceed != 'y':
             break
 
     print("Thank you for taking the Exam!")
