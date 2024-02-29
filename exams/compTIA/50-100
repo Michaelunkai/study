@@ -1,0 +1,57 @@
+Question 50: What is the purpose of the "ifconfig" command in Linux?
+Answer: The "ifconfig" command in Linux is used to configure and display information about network interfaces.
+
+Question 51: How do you monitor system resource usage in real-time in Linux, and what command would you use to achieve this?
+Answer: You can monitor system resource usage in real-time using commands like "htop" or "top" in Linux.
+
+Question 52: What command would you use to display the current working directory in Linux?
+Answer: You would use the "pwd" command to display the current working directory in Linux.
+
+Question 53: What is the purpose of the "ps" command in Linux?
+Answer: The "ps" command in Linux is used to display information about currently running processes.
+
+Question 54: How do you terminate a process by name in Linux?
+Answer: To terminate a process by name in Linux, you can use the "pkill" command followed by the name of the process.
+
+Question 55: What is the purpose of the "grep" command in Linux, and how do you use it to search for a pattern within multiple files?
+Answer: The "grep" command in Linux is used to search for patterns within files. You can use it to search for a pattern within multiple files by using the command "grep pattern files".
+
+Question 56: How do you create a compressed tar archive in Linux, and how do you extract its contents?
+Answer: You can create a compressed tar archive using the "tar" command with compression options, and extract its contents using the "tar" command with extraction options.
+
+Question 57: How do you find the total size of a directory and its contents in Linux?
+Answer: You can find the total size of a directory and its contents using the "du" command with the "-sh" options.
+
+Question 58: What command would you use to display detailed information about a file or directory in Linux, including its permissions, ownership, size, and modification time?
+Answer: You would use the "ls" command with the "-l" option to display detailed information about a file or directory in Linux.
+
+Question 59: How do you check the available disk space on your system in Linux?
+Answer: You can check the available disk space on your system using the "df" command with the "-h" option.
+
+Question 60: How do you find all files modified within the last 24 hours in a specific directory in Linux?
+Answer: You can find all files modified within the last 24 hours in a specific directory using the "find" command with the "-mtime" option.
+
+Question 60: How do you find all files modified within the last 24 hours in a specific directory in Linux?
+Answer: You can find all files modified within the last 24 hours in a specific directory using the "find" command with the "-mtime" option.
+
+Question 61: What is the purpose of the "rsync" command in Linux?
+Answer: The "rsync" command in Linux is used to synchronize files and directories between different locations.
+
+Question 62: How do you create a new user account in Linux?
+Answer: To create a new user account in Linux, you can use the "adduser" or "useradd" command, depending on your Linux distribution.
+
+Question 63: What is the purpose of the "netstat" command in Linux?
+Answer: The "netstat" command in Linux is used to display network connections, roitung ables, interfae statistics, masquerade connections and multicast membership.
+
+Question 64: How do you change your current working directory to the home directory in Linux?
+Answer: You can use the "cd" command followed by the tilde (~) character to change your current working directory to the home directory in Linux.
+Question 65: What is the purpose of the "tail" command in Linux?
+Answer: The "tail" command in Linux is used to display the ending (tail) portion of a text file.
+Question 66: How do you recursively copy a directory and its contents in Linux?
+Answer: You can recursively copy a directory and its contents in Linux using the "cp" command with the "-r" option.
+Question 67: What is the purpose of the "kill" command in Linux?
+Answer: The "kill" command in Linux is used to terminate or send signals to processes.
+Question 68: How do you list all installed packages on a Debian-based Linux system?
+Answer: You can list all installed packages on a Debian-based Linux system using the "dpkg" command with the "--get-selections" option.
+
+

@@ -49,7 +49,7 @@ class DockerApp(QWidget):
     "battlefieldhardline", "battlefield1", "battlefieldv", "yakuza0", "yakuza3remasterd", "yakuza4", "yakuza5", "yakuza6thesongodlife", "yakuzalikeadragon",
     "vampiresurvivors", "highonlife", "thegodfather", "scarface", "unpacking", "scarletnexus", "haveanicedeath", "dredge", "cultofthelamb", "oblivion",
     "seaofstars", "citieskylines2", "eldenrings", "kingdomofamalur", "wolfenstein2", "okamihd", "thesilentage", "divinityoriginalsin2", "dordogne",
-    "tellmewhy", "theradstringclub", "systemshockremake", "subnautica", "grouned", "cosmicshake", "hotwheels", "alanwake", "alanwake2",
+    "tellmewhy", "theradstringclub", "systemshockremake", "subnautica", "grouned", "cosmicshake", "alanwake", "alanwake2",
     "escapefromtarkov", "alyx", "plagtalerequirm", "sackboy", "remnant2", "sims4", "returntomonkeyisland", "beyond2souls", "eternalcylinder",
     "oddworldsoulstorm", "immortalsfenyxrising", "redout2", "megamanxdive", "neonabyss", "gerda", "slaytheprincess", "prisonsimulator", "videoverse",
     "metalhellsinger", "singularity", "turok", "eastward", "farcryprimal", "blur", "sherlockholmeschapterone", "sherlockholmestheawakened", "sherlockholmescrimesandpunishments", "theascent", "spongbobbfbbr", "talesofarise", "erica", "desperados3", "Witchfire", "ancestorshumankind", "kingdomhearts3", "cloudpunk", "bumsimulator", "solarash", "cafeownersimulation", "drift21",
