@@ -160,6 +160,101 @@ Question 130: How do you search for a specific string in all files within a dire
 A:
 grep -r "search_string" /path/to/dir
 
+Question 131: How do you create a symbolic link in Linux?
+A:
+ln -s /path/to/target path/to/link
+
+
+Question 132: How do you check the disk space usage of a specific directory in Linux?
+A:
+du -sh /path/to/dir
+
+
+Question 133: How do you recursively copy a directory and its contents to another location in Linux?
+
+A:
+cp -r /path/to/source /path/to/destination
+
+Question 134: How do you display the list of users currently logged into the system in Linux?
+A:
+who
+
+
+Question 135: How do you find all files modified within the last 24 hours in a specific directory in Linux?
+A:
+find /path/to/dir -mtime -1
+
+
+Question 136: How do you display the contents of a file one page at a time in Linux?
+A:
+less filename
+
+Question 137: How do you display the current date in a specific format in Linux?
+A:
+date +FORMAT
+**OR
+date +%Y-%m-%d
+
+
+Question 138: How do you display the total number of files and directories in a directory in Linux?
+A:
+ls -l /path/to/dir | wc -l
+
+
+Question 139: How do you find all files with a specific extension in a directory and its subdirectories in Linux?
+A:
+find /path/to/dir -name "*.ext"
+
+
+Question 140: How do you display the contents of a file starting from a specific line number in Linux?
+A:
+tail +<line_number> filename
+
+Question 141: How do you count the number of occurrences of a specific string in a file in Linux?
+A:
+grep -c "String" filename
+
+Question 142: How do you change the owner of a file in Linux?
+A:
+chown user:group /path/to/file
+
+Question 143: How do you find all files larger than a certain size in a directory and its subdirectories in Linux?
+A:
+find /path/to/dir -size +<size_specifier>
+**or
+find /path/to/dir -size +1m
+
+Question 144: How do you display the last modified time of a file in Linux?
+stat filename
+
+Question 145: How do you display the contents of a compressed file without extracting it in Linux?
+A:
+zcat filename
+
+
+Question 146: How do you recursively delete all empty directories in a directory and its subdirectories in Linux?
+A:
+find /path/to/dir -type d -empty -delete
+
+Question 147: How do you display the current date and time in Linux in UTC timezone?
+A:
+date -u
+
+
+Question 148: How do you display the disk space usage of a specific directory in Linux, showing human-readable sizes?
+A:
+du -sh /path/to/dir/* | sort -h
+
+
+
+Question 149: How do you display the first few lines of a file in Linux?
+A:
+head filename
+
+
+Question 150: How do you find all files modified within the last 7 days in a specific directory and its subdirectories in Linux?
+A:
+find /path/to/dir -mtime -7
 
 
 
