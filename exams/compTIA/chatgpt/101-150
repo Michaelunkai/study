@@ -1,0 +1,165 @@
+
+Question 101: How do you find all files owned by a specific user in a directory and its subdirectories in Linux?
+
+Answer: You can use the "find" command with the "-user" option to find all files owned by a specific user in a directory and its subdirectories.
+
+Question 102: How do you display detailed information about the CPU(s) in a Linux system?
+
+Answer:
+lscpu
+
+
+Question 103: How do you find all files modified within the last hour in a specific directory in Linux?
+
+A:
+find /path/to/dir -mmin -60
+
+
+Question 104: How do you display the routing table in Linux?
+
+Answer: 
+ip route show
+
+Question 105: How do you find the total number of files and directories in a directory and its subdirectories in Linux?
+
+Answer: 
+find /path/to/dir -type f -o -type d | wc -l
+
+
+Question 106: How do you display the contents of a file while displaying line numbers in Linux?
+
+A:
+cat -n filename
+
+
+Question 107: How do you change the permissions of a file to allow read, write, and execute for the owner, read and execute for the group, and only execute for others in Linux?
+
+Answer: 
+chmod u=rwx, g=rx, o=x filename
+
+
+Question 108: How do you display the contents of a file in reverse order in Linux?
+
+Answer: 
+tac filename
+
+Question 109: How do you list all users currently logged into a Linux system?
+
+Answer: 
+who
+
+Question 110: How do you display the disk usage of a specific directory and its subdirectories, sorted by size, in Linux?
+
+Answer: 
+
+du -h /path/to/dir | sort -h
+
+Question 111: How do you display the contents of a compressed tar archive (.tar.gz) in Linux without extracting it?
+
+Answer
+zcat file.tar.gz | tar tf -
+
+Question 112: How do you find all processes associated with a specific user in Linux?
+
+Answer:
+ps -u username
+
+Question 113: How do you display the contents of a file in hexadecimal format in Linux?
+
+Answer: 
+xxd filename
+
+Question 114: How do you find the process ID (PID) of a specific running process in Linux?
+
+Answer: 
+pgrep process_name
+
+Question 115: How do you display the number of lines, words, and characters in a file in Linux?
+
+Answer: 
+wc filename
+
+Question 116: How do you find all symbolic links in a directory and its subdirectories in Linux?
+
+Answer:
+find /path/to/dir -type 1
+
+
+Question 117: How do you display the contents of a directory recursively in Linux?
+
+Answer
+tree /path/to/directory
+**or
+ls -R /path/to/directory
+
+Question 118: How do you view the contents of a text file while continuously monitoring it for changes in Linux?
+
+Answer: 
+tail -f filename
+
+
+Question 119: How do you find all files with a specific pattern in their names in a directory and its subdirectories in Linux?
+
+Answer:  
+find /path/to/dir -name "pattern"
+
+
+Question 120: How do you display the current system uptime in Linux?
+A:
+uptime
+
+
+Question 121: How do you display the contents of a compressed file in Linux without extracting it?
+A:
+zcat filename.gz
+**or
+bzcat filename.bz2
+**or
+xzcat filename.xz
+
+Question 122: How do you find all empty files in a directory and its subdirectories in Linux?
+
+A:
+find /path/to/dir -type f -empty
+
+Question 123: How do you determine which process is listening on a specific port in Linux?
+A:nmap -sT -p <port_number> <target_IP>
+
+
+Question 124: How do you list all environment variables set in a Linux system?
+
+A:
+printenv
+
+Question 125: How do you display the contents of a file excluding specific lines matching a pattern in Linux?
+
+A:
+grep -v "pattern" filename
+
+
+Question 126: How do you find the process ID (PID) of a specific command in Linux?
+
+A:
+pgrep command_name
+
+ Question 127: How do you display the disk space usage of all files and directories in the current directory in Linux?
+ 
+ A:
+du -sh
+
+Question 128: How do you list all running processes in Linux?
+A:
+ps aux
+
+
+Question 129: How do you terminate a running process in Linux?
+A:
+kill -9 PID
+
+Question 130: How do you search for a specific string in all files within a directory and its subdirectories in Linux?
+A:
+grep -r "search_string" /path/to/dir
+
+
+
+
