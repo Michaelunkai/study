@@ -1,0 +1,70 @@
+Technical Concepts Explained:
+
+Wireless Connectivity Sporadic:
+Wireless connectivity being sporadic means it's inconsistent or unreliable. It implies that the connection may drop or become weak unpredictably, affecting internet access and communication.
+
+Irreversibly Damaging and Disabling IoT Devices:
+Permanent harm or disabling IoT devices results from physical damage, software manipulation, or security breaches, leading to loss of functionality and financial loss.
+
+PDoS (Permanent Denial of Service):
+Cyberattack rendering systems unusable indefinitely, disrupting services by corrupting firmware or software.
+
+Spoofing:
+Deceptive tactic impersonates to deceive, often online, for malicious purposes.
+
+CAT5e Cable:
+Enhanced Ethernet cable for faster networking with reduced interference, commonly used in homes and offices.
+
+EMI (Electromagnetic Interference):
+EMI disrupts electronic devices via electromagnetic radiation, affecting performance or causing malfunctions. It's common in environments with electrical equipment or radio waves.
+
+VLAN (Virtual Local Area Network):
+VLAN divides a physical network into multiple logical networks, isolating traffic for enhanced security and performance.
+
+Network Segmentation:
+Network segmentation divides a network into smaller parts to improve security and performance. It isolates critical assets and restricts unauthorized access, enhancing overall network efficiency and reliability.
+
+cat /proc/meminfo:
+Command in Linux displaying memory information, including total, free, and used memory. It provides insight into system memory usage and is useful for diagnosing performance issues or monitoring memory usage in real-time.
+
+kill -s SIGCHLD pid:
+Command in Unix-like systems to send signal SIGCHLD to process with specified PID, often used to manage child processes, typically used by system administrators or developers for process management and control.
+
+
+rpm -i installpackage.rpm --nodeps:
+Command in Linux to forcefully install an RPM package without checking dependencies. Useful for installing packages when dependency issues arise, but may lead to system instability if dependencies are not resolved manually.
+
+Symbolic Links:
+Symbolic links, or symlinks, are shortcuts pointing to files or directories. They act as references, allowing users to access files or directories from different locations without duplicating data. Symbolic links facilitate organization and reduce redundancy in file systems.
+
+chmod u=rwx, g=rx, o=x filename:
+Command in Unix-like systems to change file permissions. "u=rwx" grants the owner read, write, and execute permissions, "g=rx" grants the group read and execute permissions, and "o=x" grants others execute permission. It regulates access to files or directories based on user, group, and others.
+
+BYOD (Bring Your Own Device):
+BYOD refers to employees using personal devices for work. It offers flexibility but poses security risks. Companies establish policies to manage threats, ensuring data protection while enabling employee productivity and convenience.
+
+Secure Technical Deployment:
+Secure technical deployment involves implementing technology solutions in a protected manner to mitigate risks and safeguard data. It encompasses secure configurations, encryption, access controls, and monitoring to ensure resilience against threats and compliance with security standards.
+
+SLA (Service Level Agreement):
+SLA defines the level of service expected between a service provider and a customer. It outlines metrics like uptime, response times, and support availability, ensuring mutual understanding and accountability. SLAs help manage expectations and maintain service quality for both parties involved.
+
+
+MOU (Memorandum of Understanding):
+MOU is a formal agreement between parties outlining their intentions and responsibilities towards a common goal or project. Though not legally binding like a contract, it establishes mutual understanding and expectations, guiding future collaboration or negotiations.
+
+BIA (Business Impact Analysis):
+BIA assesses the potential impact of disruptions on business operations. It identifies critical processes, their dependencies, and recovery priorities to develop strategies for minimizing downtime and losses during disasters or emergencies, ensuring continuity and resilience for the organization.
+
+Threat Awareness:
+Threat awareness involves recognizing potential risks or dangers to systems, networks, or data. It includes understanding various threat actors, attack vectors, and vulnerabilities to proactively implement security measures and countermeasures, mitigating the impact of cyber threats on organizations and individuals.
+
+Utilizing MFA (Multi-Factor Authentication):
+Utilizing MFA adds an extra layer of security by requiring users to provide multiple forms of verification to access accounts or systems. This typically involves something the user knows (like a password) and something they have (like a smartphone or hardware token), enhancing protection against unauthorized access.
+
+Implementing SSO (Single Sign-On):
+Implementing SSO allows users to access multiple applications or services with a single set of credentials. It streamlines authentication processes, enhancing user experience and security by reducing the need for multiple passwords and centralizing identity management across different platforms.
+
+
+
+
