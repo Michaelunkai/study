@@ -1,0 +1,25 @@
+CMOS: Complementary Metal-Oxide-Semiconductor, a technology used to create integrated circuits. In computing, it's often associated with the CMOS battery, which powers the chip storing BIOS settings in computers.
+
+
+init: The first process started by the kernel during booting on Unix-like operating systems. It initializes system components and starts other processes necessary for the system to operate.
+
+
+systemd: A system and service manager for Linux operating systems, it manages system processes, logging, and services. It's designed to improve system startup times and management of dependencies.
+
+
+ASCII: American Standard Code for Information Interchange, a character encoding standard for electronic communication. It assigns unique numeric codes to represent characters, including letters, digits, punctuation marks, and control characters.
+
+
+socket: A communication endpoint that allows processes to communicate with each other, either on the same computer or across a network. It enables bidirectional data transfer between applications.
+
+
+chroot: Short for "change root", it is a Unix system call and command that changes the root directory for the current running process and its children. It's often used for creating isolated environments.
+
+
+PKI: Public Key Infrastructure, a system of digital certificates, certificate authorities, and other registration authorities that verify and authenticate the validity of each party involved in an electronic transaction.
+
+
+chroot jail: A security mechanism used to create an isolated environment within a Unix-like operating system. It limits the access a process has to the filesystem by restricting it to a specific directory subtree.
+
+
+nslookup: A network administration command-line tool used for querying the Domain Name System (DNS) to obtain domain name or IP address mapping, or other DNS records like MX and NS records. It's commonly used for troubleshooting network issues.
