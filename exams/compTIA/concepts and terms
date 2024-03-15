@@ -103,16 +103,11 @@ FireWire: A high-speed serial bus interface standard used for connecting devices
 
 eSATA: External Serial ATA. It's an interface used to connect external storage devices like hard drives to a computer, providing faster data transfer speeds compared to USB connections.
 
+SNMP (Simple Network Management Protocol): SNMP facilitates the monitoring and management of network devices like routers and switches. It enables administrators to collect data about device status and performance, aiding in network troubleshooting and optimization.
 
+DNS (Domain Name System): DNS translates human-readable domain names (like example.com) into IP addresses (like 192.0.2.1), allowing computers to locate resources on the internet. It functions as a decentralized directory service crucial for internet navigation.
 
-
-
-
-
-
-
-
-
+SSL/TLS (Secure Sockets Layer/Transport Layer Security): SSL/TLS protocols ensure secure communication over the internet by encrypting data exchanged between web browsers and servers. They safeguard sensitive information such as passwords and credit card details, protecting against eavesdropping and tampering.
 
 
 
