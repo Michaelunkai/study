@@ -1,108 +1,60 @@
-Amazon EC2:
+EC2:
 
 aws ce get-cost-and-usage \
-  --time-period Start=YYYY-MM-DD,End=$(date -d "-1 month +1 month -1 day" +%Y-%m-%d) \
+  --time-period Start=$(date -d "-1 month" +%Y-%m-01),End=$(date -d "-1 month +1 month -1 day" +%Y-%m-%d) \
   --granularity MONTHLY \
   --metrics "UnblendedCost" \
   --filter "Dimensions={Key=SERVICE,Values=Amazon Elastic Compute Cloud - Compute}" \
-  --query 'ResultsByTime[].Total.UnblendedCost.Amount'
+  --query 'ResultsByTime[0].Total.UnblendedCost.Amount'
 
-Amazon RDS:
+
+Amazon Relational Database Service (RDS):
 
 aws ce get-cost-and-usage \
-  --time-period Start=YYYY-MM-DD,End=$(date -d "-1 month +1 month -1 day" +%Y-%m-%d) \
+  --time-period Start=$(date -d "-1 month" +%Y-%m-01),End=$(date -d "-1 month +1 month -1 day" +%Y-%m-%d) \
   --granularity MONTHLY \
   --metrics "UnblendedCost" \
   --filter "Dimensions={Key=SERVICE,Values=Amazon Relational Database Service (RDS)}" \
-  --query 'ResultsByTime[].Total.UnblendedCost.Amount'
-
-Amazon S3:
+  --query 'ResultsByTime[0].Total.UnblendedCost.Amount'
+  
+Amazon Simple Storage Service (S3):
 
 aws ce get-cost-and-usage \
-  --time-period Start=YYYY-MM-DD,End=$(date -d "-1 month +1 month -1 day" +%Y-%m-%d) \
+  --time-period Start=$(date -d "-1 month" +%Y-%m-01),End=$(date -d "-1 month +1 month -1 day" +%Y-%m-%d) \
   --granularity MONTHLY \
   --metrics "UnblendedCost" \
   --filter "Dimensions={Key=SERVICE,Values=Amazon Simple Storage Service (S3)}" \
-  --query 'ResultsByTime[].Total.UnblendedCost.Amount'
-
+  --query 'ResultsByTime[0].Total.UnblendedCost.Amount'
+  
 Amazon DynamoDB:
 
 aws ce get-cost-and-usage \
-  --time-period Start=YYYY-MM-DD,End=$(date -d "-1 month +1 month -1 day" +%Y-%m-%d) \
+  --time-period Start=$(date -d "-1 month" +%Y-%m-01),End=$(date -d "-1 month +1 month -1 day" +%Y-%m-%d) \
   --granularity MONTHLY \
   --metrics "UnblendedCost" \
   --filter "Dimensions={Key=SERVICE,Values=Amazon DynamoDB}" \
-  --query 'ResultsByTime[].Total.UnblendedCost.Amount'
+  --query 'ResultsByTime[0].Total.UnblendedCost.Amount'
+  
+Amazon Elastic Block Store (EBS):
 
-Amazon EBS:
 aws ce get-cost-and-usage \
-  --time-period Start=YYYY-MM-DD,End=$(date -d "-1 month +1 month -1 day" +%Y-%m-%d) \
+  --time-period Start=$(date -d "-1 month" +%Y-%m-01),End=$(date -d "-1 month +1 month -1 day" +%Y-%m-%d) \
   --granularity MONTHLY \
   --metrics "UnblendedCost" \
   --filter "Dimensions={Key=SERVICE,Values=Amazon Elastic Block Store (EBS)}" \
-  --query 'ResultsByTime[].Total.UnblendedCost.Amount'
-
-Amazon SQS:
-
-aws ce get-cost-and-usage \
-  --time-period Start=YYYY-MM-DD,End=$(date -d "-1 month +1 month -1 day" +%Y-%m-%d) \
-  --granularity MONTHLY \
-  --metrics "UnblendedCost" \
-  --filter "Dimensions={Key=SERVICE,Values=Amazon Simple Queue Service (SQS)}" \
-  --query 'ResultsByTime[].Total.UnblendedCost.Amount'
-
-Amazon SNS:
+  --query 'ResultsByTime[0].Total.UnblendedCost.Amount'
+  
+Amazon Lambda:
 
 aws ce get-cost-and-usage \
-  --time-period Start=YYYY-MM-DD,End=$(date -d "-1 month +1 month -1 day" +%Y-%m-%d) \
+  --time-period Start=$(date -d "-1 month" +%Y-%m-01),End=$(date -d "-1 month +1 month -1 day" +%Y-%m-%d) \
   --granularity MONTHLY \
   --metrics "UnblendedCost" \
-  --filter "Dimensions={Key=SERVICE,Values=Amazon Simple Notification Service (SNS)}" \
-  --query 'ResultsByTime[].Total.UnblendedCost.Amount'
-
-Amazon EFS:
-
-aws ce get-cost-and-usage \
-  --time-period Start=YYYY-MM-DD,End=$(date -d "-1 month +1 month -1 day" +%Y-%m-%d) \
-  --granularity MONTHLY \
-  --metrics "UnblendedCost" \
-  --filter "Dimensions={Key=SERVICE,Values=Amazon Elastic File System (EFS)}" \
-  --query 'ResultsByTime[].Total.UnblendedCost.Amount'
-
-Amazon SimpleDB (SDB):
-
-aws ce get-cost-and-usage \
-  --time-period Start=YYYY-MM-DD,End=$(date -d "-1 month +1 month -1 day" +%Y-%m-%d) \
-  --granularity MONTHLY \
-  --metrics "UnblendedCost" \
-  --filter "Dimensions={Key=SERVICE,Values=Amazon SimpleDB (SDB)}" \
-  --query 'ResultsByTime[].Total.UnblendedCost.Amount'
-
-Amazon Redshift:
-
-
-aws ce get-cost-and-usage \
-  --time-period Start=YYYY-MM-DD,End=$(date -d "-1 month +1 month -1 day" +%Y-%m-%d) \
-  --granularity MONTHLY \
-  --metrics "UnblendedCost" \
-  --filter "Dimensions={Key=SERVICE,Values=Amazon Redshift}" \
-  --query 'ResultsByTime[].Total.UnblendedCost.Amount'
-
-Amazon Route 53:
-
-aws ce get-cost-and-usage \
-  --time-period Start=YYYY-MM-DD,End=$(date -d "-1 month +1 month -1 day" +%Y-%m-%d) \
-  --granularity MONTHLY \
-  --metrics "UnblendedCost" \
-  --filter "Dimensions={Key=SERVICE,Values=Amazon Route 53}" \
-  --query 'ResultsByTime[].Total.UnblendedCost.Amount'
-
-Amazon ECS:
-
-
-aws ce get-cost-and-usage \
-  --time-period Start=YYYY-MM-DD,End=$(date -d "-1 month +1 month -1 day" +%Y-%m-%d) \
-  --granularity MONTHLY \
-  --metrics "UnblendedCost" \
-  --filter "Dimensions={Key=SERVICE,Values=Amazon Elastic Container Service (ECS)}" \
-  --query 'ResultsByTime[].Total.UnblendedCost
+  --filter "Dimensions={Key=SERVICE,Values=AWS Lambda}" \
+  --query 'ResultsByTime[0].Total.UnblendedCost.Amount'
+  
+  
+  
+  
+  
+  
