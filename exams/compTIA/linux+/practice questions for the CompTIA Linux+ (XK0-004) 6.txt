@@ -1,0 +1,195 @@
+You need to search for the occurrence of the word "error" in a file named "logfile.txt". Which command would you use?
+a) grep "error" logfile.txt
+b) search "error" logfile.txt
+c) locate "error" logfile.txt
+d) find "error" logfile.txt
+
+a) grep "error" logfile.txt
+
+
+You want to display all running processes sorted by their CPU usage,
+with the most CPU-intensive processes listed first. Which command would you use?
+a) ps -ef --sort=-%cpu
+b) top -c
+c) ps -aux --sort=-%cpu
+d) pstree
+
+a) ps -ef --sort=-%cpu
+
+You need to find all files in the "/var/log" directory modified within the last 24 hours and list them along with their permissions.
+Which command would you use?
+a) find /var/log -mtime -1 -ls
+b) ls -l /var/log/* -mtime -1
+c) locate /var/log -mtime -1 -ls
+d) grep /var/log -mtime -1 -ls
+
+a) find /var/log -mtime -1 -ls
+
+You want to view the contents of a file named "file.txt"
+in real-time as new lines are appended to it.
+Which command would you use?
+a) tail -f file.txt
+b) less +F file.txt
+c) more +F file.txt
+d) cat -f file.txt
+
+a) tail -f file.txt
+
+
+You need to list all installed packages containing the string
+"apache" in their names.
+Which command would you use?
+a) dpkg -l | grep apache
+b) apt list | grep apache
+c) yum list installed | grep apache
+d) rpm -qa | grep apache
+
+b) apt list | grep apache
+
+
+You want to change the default shell for a user named "user1" to 
+"/bin/bash". Which command would you use?
+a) usermod -s /bin/bash user1
+b) chsh -s /bin/bash user1
+c) setshell /bin/bash user1
+d) modifyuser -s /bin/bash user1
+
+a) usermod -s /bin/bash user1
+
+You need to display the contents of a file named "data.txt" 
+while removing any duplicate lines. Which command would you use?
+a) uniq data.txt
+b) cat -u data.txt
+c) sort -u data.txt
+d) unique data.txt
+
+c) sort -u data.txt
+
+
+You want to list all directories in the current directory in long
+format, sorted by modification time, with the newest directories
+listed first. Which command would you use?
+a) ls -lt
+b) ls -ld
+c) ls -l --sort=time
+d) ls -l --sort=time -r
+
+a) ls -lt
+
+
+You need to extract all files from a tar archive named
+"archive.tar.gz" to the "/tmp" directory. Which command
+would you use?
+a) tar -xzf archive.tar.gz -C /tmp
+b) unzip archive.tar.gz -d /tmp
+c) tar -xf archive.tar.gz --directory=/tmp
+d) extract -zvf archive.tar.gz -d /tmp
+
+a) tar -xzf archive.tar.gz -C /tmp
+
+
+You want to display detailed information about the network
+interfaces on your system, including IP addresses,
+MAC addresses, and interface status. Which command would you use?
+a) netstat -i
+b) ip addr show
+c) ifconfig -a
+d) networkinfo
+
+b) ip addr show
+
+_______________________________________________________________
+
+You want to find all files in the "/etc" directory modified more than 30 days ago.
+ Which command would you use?
+a) find /etc -mtime +30
+b) locate /etc -mtime +30
+c) grep /etc -mtime +30
+d) search /etc -mtime +30
+
+a) find /etc -mtime +30
+
+
+You need to display the current date and time in the format "YYYY-MM-DD HH:MM:SS". Which command would you use?
+a) date +%Y-%m-%d %H:%M:%S
+b) date +%F %T
+c) date +%Y/%m/%d %H:%M:%S
+d) date +%Y-%m-%d %T
+
+a) date +%Y-%m-%d %H:%M:%S
+
+
+
+You want to remove a user named "user1" from the system, along with their home directory and mailbox. Which command would you use?
+a) userdel -r user1
+b) deluser --remove-home user1
+c) removeuser -r user1
+d) deleteuser --remove-home user1
+
+a) userdel -r user1
+
+
+You need to create a backup of a directory named "docs" and compress it using gzip,
+naming the archive "docs_backup.tar.gz". Which command would you use?
+a) tar -czf docs_backup.tar.gz docs
+b) gzip -c docs > docs_backup.tar.gz
+c) zip -r docs_backup.tar.gz docs
+d) tar -cvzf docs_backup.tar.gz docs
+
+a) tar -czf docs_backup.tar.gz docs
+
+
+You want to display the size of a directory named "data" in human-readable format,
+ including the sizes of subdirectories. Which command would you use?
+ 
+a) du -sh data
+b) ls -lsh data
+c) size -h data
+d) diskusage -h data
+
+a) du -sh data
+
+
+You need to add a user named "john" to the "sudo" group to grant
+administrative privileges. Which command would you use?
+a) usermod -aG sudo john
+b) adduser john sudo
+c) moduser -aG sudo john
+d) chuser -aG sudo john
+
+a) usermod -aG sudo john
+
+You want to find all files in the "/var/log"
+directory that contain the word "error" in their names. Which command would you use?
+a) find /var/log -name "error"
+b) locate /var/log -name "error"
+c) grep /var/log -name "error"
+d) search /var/log -name "error"
+
+a) find /var/log -name "error"
+
+
+You need to display detailed information about a process with PID 1234, 
+including its command line arguments and parent process ID. Which command would you use?
+a) ps -ef | grep 1234
+b) pstree -p 1234
+c) ps -p 1234 -o pid,ppid,args
+d) top -p 1234
+
+c) ps -p 1234 -o pid,ppid,args
+
+You want to display the contents of a file named "file.txt" in reverse order, starting with the last line. Which command would you use?
+a) cat file.txt | rev
+b) tail -r file.txt
+c) tac file.txt
+d) less -r file.txt
+
+c) tac file.txt
+
+You need to display a list of all installed packages on a Debian-based system. Which command would you use?
+a) dpkg -l
+b) rpm -qa
+c) apt list
+d) yum list installed
+
+a) dpkg -l
