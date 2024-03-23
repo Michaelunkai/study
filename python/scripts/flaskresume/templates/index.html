@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Skills</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0; /* Light gray background */
+            color: #333; /* Dark gray text */
+            margin: 0;
+            padding: 0;
+            font-weight: bold; /* All fonts bold */
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            color: #007bff; /* Blue title color */
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        /* Define unique colors for skills */
+        .skill-1 {
+            color: #ff6347; /* Tomato */
+        }
+        .skill-2 {
+            color: #4682b4; /* Steel blue */
+        }
+        .skill-3 {
+            color: #3cb371; /* Medium sea green */
+        }
+        .skill-4 {
+            color: #ffa07a; /* Light salmon */
+        }
+        .skill-5 {
+            color: #9370db; /* Medium purple */
+        }
+        .skill-6 {
+            color: #20b2aa; /* Light sea green */
+        }
+        .skill-7 {
+            color: #ffd700; /* Gold */
+        }
+        .skill-8 {
+            color: #da70d6; /* Orchid */
+        }
+        .skill-9 {
+            color: #00ced1; /* Dark turquoise */
+        }
+        .skill-10 {
+            color: #ff8c00; /* Dark orange */
+        }
+        /* Add more classes for additional skills as needed */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>My Skills</h1>
+        <ul>
+            {% for skill in skills %}
+                <li class="skill-{{ loop.index }}">{{ skill }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
