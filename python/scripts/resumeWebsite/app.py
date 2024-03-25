@@ -13,7 +13,7 @@ templates = Jinja2Templates(directory="templates")
 
 # Data for your resume
 resume_data = {
-    "name": "Your Name",
+    "name": "Michael Fedorovsky מיכאל פדורובסקי",
     "title": "Software Developer",
     "email": "your@email.com",
     "phone": "123-456-7890",
