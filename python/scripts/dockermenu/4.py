@@ -88,7 +88,7 @@ class DockerApp(QWidget):
     "thesurge2", "ftl", "returnal", "justcause3", "starwars", "mafia", "rimword", "masseffect2", "deathstranding",
     "ghostrunner", "harvestmoon", "thexpanse", "tellinglies", "moonstoneisland", "planetcoaster",
     "sleepingdogs", "gtviv", "pseudoregalia", "thegreataceattorney", "goodbyevolcanohigh", "fallout4",
-    "battlefieldbadcompany2", "yakuza0", "vampiresurvivors", "highonlife", "thegodfather", "unpacking",
+    "battlefieldbadcompany2", "yakuza0", "vampiresurvivors", "highonlife", "unpacking",
     "haveanicedeath", "cultofthelamb", "oblivion", "seaofstars", "citieskylines2", "kingdomofamalur", "wolfenstein2",
     "okamihd", "thesilentage", "divinityoriginalsin2", "dordogne", "tellmewhy", "theradstringclub", "systemshockremake",
     "grouned", "cosmicshake", "alanwake", "escapefromtarkov", "plagtalerequirm", "sackboy", "remnant2",
@@ -158,9 +158,9 @@ class DockerApp(QWidget):
         elif sender_button == self.shooter_button:
             specified_titles = ["doom", "sniperelite3", "deusexhuman"]
         elif sender_button == self.chill_button:
-            specified_titles = ["okamihd", "lostinplay", "pizzatower","octopathtraveler2","skaterxl","pacmanworldrepac","harvestmoon", "Road 96: Mile 0", "tloh", ]
+            specified_titles = ["okamihd", "lostinplay", "pizzatower","octopathtraveler2","skaterxl","pacmanworldrepac","harvestmoon", "Road 96: Mile 0", "tloh", "planetcoaster", "rimword", "brothers" ]
         elif sender_button == self.action_button:
-            specified_titles = ["saintsrow3", "farcryprimal","devilmaycry4", "godofwar", "deadspace", "fatesamurairemnant", "sunsetoverdrive", "yakuza0", "hyperlightdrifter", "doom", "ghostrunner", "metroexodus", "sleepingdogs", "returnal", "kingdomofamalur", "wolfenstein2" , "systemshockremake", "deadspace" ] 
+            specified_titles = ["saintsrow3", "farcryprimal","devilmaycry4", "godofwar", "deadspace", "fatesamurairemnant", "sunsetoverdrive", "yakuza0", "hyperlightdrifter", "doom", "ghostrunner", "metroexodus", "sleepingdogs", "returnal", "kingdomofamalur", "wolfenstein2" , "systemshockremake", "deadspace", "mafia" ] 
         elif sender_button == self.platform_button:
             specified_titles = ["sackboy","trine2","supermariowonder", "cosmicshake"] 
         
