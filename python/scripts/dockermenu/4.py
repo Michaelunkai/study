@@ -1,4 +1,5 @@
 import sys
+import os
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QScrollArea, QLineEdit, QGridLayout, QDesktopWidget
 from PyQt5.QtGui import QColor
 from PyQt5.QtCore import Qt
@@ -43,7 +44,7 @@ class DockerApp(QWidget):
         self.platform_button.setStyleSheet("font-size: 14pt; background-color: green; color: black;")
         self.platform_button.clicked.connect(self.update_games)
         button_layout.addWidget(self.platform_button)
-        
+
         # Add shooter button
         self.shooter_button = QPushButton("Shooter", self)
         self.shooter_button.setStyleSheet("font-size: 14pt; background-color: blue; color: black;")
@@ -61,7 +62,7 @@ class DockerApp(QWidget):
         self.action_button.setStyleSheet("font-size: 14pt; background-color: purple; color: black;")
         self.action_button.clicked.connect(self.update_games)
         button_layout.addWidget(self.action_button)
-        
+
         # Add the button layout to the main layout
         main_layout.addLayout(button_layout)
 
@@ -114,7 +115,7 @@ class DockerApp(QWidget):
     "circuselectricque", "alphaprotocol", "atlasfallen", "strangerofparadaise", "risen2", "deadspace", "lordsofthefallen",
     "vampyr", "tendates", "sonicsuperstarts", "seasonalettertothefuture", "immortalsofaveum", "supermariowonder",
     "trine2"
-]
+        ]
 
 
         self.displayed_games = self.all_games  # Initially, all games are displayed
@@ -142,7 +143,7 @@ class DockerApp(QWidget):
 
     def run_docker_command(self, image_name):
         formatted_image_name = image_name.replace(":", "").lower()
-        docker_command = f'docker run -v /mnt/c/:/c/ -it -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --name {formatted_image_name} michadockermisha/backup:{formatted_image_name} sh -c "apk add rsync && rsync -aP /home /c/games && mv /c/games/home /c/games/{formatted_image_name}"'
+        docker_command = f'docker run -v /mnt/c/games{formatted_image_name}:/c/games/{formatted_image_name} -it -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix --name {formatted_image_name} michadockermisha/backup:{formatted_image_name} sh -c "apk add rsync && rsync -aP /home /c/games && mv /c/games/home /c/games/{formatted_image_name}"'
         subprocess.Popen(docker_command, shell=True)
 
     def filter_buttons(self, text):
@@ -158,12 +159,12 @@ class DockerApp(QWidget):
         elif sender_button == self.shooter_button:
             specified_titles = ["doom", "sniperelite3", "deusexhuman", "elpasoelswhere", "codghosts", "battlefieldbadcompany2"]
         elif sender_button == self.chill_button:
-            specified_titles = ["okamihd", "lostinplay", "pizzatower","octopathtraveler2","skaterxl","pacmanworldrepac","harvestmoon", "Road 96: Mile 0", "tloh", "planetcoaster", "rimword", "brothers", "ftl", "unpacking" ]
+            specified_titles = ["okamihd", "lostinplay", "pizzatower","octopathtraveler2","skaterxl","pacmanworldrepac","harvestmoon", "Road 96: Mile 0", "tloh", "planetcoaster", "rimword", "brothers", "ftl", "unpacking", "seasonalettertothefuture", "enterthegungeon", "seaofstars", "thesilentage" ]
         elif sender_button == self.action_button:
-            specified_titles = ["saintsrow3", "farcryprimal","devilmaycry4", "godofwar", "deadspace", "fatesamurairemnant", "sunsetoverdrive", "yakuza0", "hyperlightdrifter", "doom", "ghostrunner", "metroexodus", "sleepingdogs", "returnal", "kingdomofamalur", "wolfenstein2" , "systemshockremake", "deadspace", "mafia", "codghosts", "battlefieldbadcompany2", "gtviv" ] 
+            specified_titles = ["saintsrow3", "farcryprimal","devilmaycry4", "godofwar", "deadspace", "fatesamurairemnant", "sunsetoverdrive", "yakuza0", "hyperlightdrifter", "doom", "ghostrunner", "metroexodus", "sleepingdogs", "returnal", "kingdomofamalur", "wolfenstein2" , "systemshockremake", "deadspace", "mafia", "codghosts", "battlefieldbadcompany2", "gtviv", "vampyr", "vampirebloodlines" ]
         elif sender_button == self.platform_button:
-            specified_titles = ["sackboy", "trine2", "supermariowonder", "cosmicshake", "pseudoregalia", "kazeandthewildmasks"] 
-        
+            specified_titles = ["sackboy", "trine2", "supermariowonder", "cosmicshake", "pseudoregalia", "kazeandthewildmasks", "haveanicedeath"]
+
         self.displayed_games = [game for game in self.all_games if game.lower().replace(" ", "") in specified_titles]
 
         for button in self.buttons:
