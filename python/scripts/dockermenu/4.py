@@ -156,13 +156,13 @@ class DockerApp(QWidget):
         elif sender_button == self.mouse_button:
             specified_titles = ["dordogne", "hackersimulator", ]
         elif sender_button == self.shooter_button:
-            specified_titles = ["doom", "sniperelite3", "deusexhuman"]
+            specified_titles = ["doom", "sniperelite3", "deusexhuman", "elpasoelswhere", "codghosts", "battlefieldbadcompany2"]
         elif sender_button == self.chill_button:
-            specified_titles = ["okamihd", "lostinplay", "pizzatower","octopathtraveler2","skaterxl","pacmanworldrepac","harvestmoon", "Road 96: Mile 0", "tloh", "planetcoaster", "rimword", "brothers" ]
+            specified_titles = ["okamihd", "lostinplay", "pizzatower","octopathtraveler2","skaterxl","pacmanworldrepac","harvestmoon", "Road 96: Mile 0", "tloh", "planetcoaster", "rimword", "brothers", "ftl", "unpacking" ]
         elif sender_button == self.action_button:
-            specified_titles = ["saintsrow3", "farcryprimal","devilmaycry4", "godofwar", "deadspace", "fatesamurairemnant", "sunsetoverdrive", "yakuza0", "hyperlightdrifter", "doom", "ghostrunner", "metroexodus", "sleepingdogs", "returnal", "kingdomofamalur", "wolfenstein2" , "systemshockremake", "deadspace", "mafia" ] 
+            specified_titles = ["saintsrow3", "farcryprimal","devilmaycry4", "godofwar", "deadspace", "fatesamurairemnant", "sunsetoverdrive", "yakuza0", "hyperlightdrifter", "doom", "ghostrunner", "metroexodus", "sleepingdogs", "returnal", "kingdomofamalur", "wolfenstein2" , "systemshockremake", "deadspace", "mafia", "codghosts", "battlefieldbadcompany2", "gtviv" ] 
         elif sender_button == self.platform_button:
-            specified_titles = ["sackboy","trine2","supermariowonder", "cosmicshake"] 
+            specified_titles = ["sackboy", "trine2", "supermariowonder", "cosmicshake", "pseudoregalia", "kazeandthewildmasks"] 
         
         self.displayed_games = [game for game in self.all_games if game.lower().replace(" ", "") in specified_titles]
 
