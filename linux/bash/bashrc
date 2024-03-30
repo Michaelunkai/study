@@ -226,7 +226,7 @@ alias ps='docker ps -a --size && docker ps --size && docker images'
 alias cc='clear'
 alias brc='gedit ~/.bashrc'
 alias brc1='source ~/.bashrc && source /root/.bashrc'
-alias brc2='brc1 && rsync -aP /root/.bashrc /mnt/c/backup/linux/wsl/alias.txt && rsync -aP /root/.bashrc ~/.bashrc && rsync -aP /root/.bashrc /mnt/c/study/linux/bash/bashrc'
+alias brc2='brc1 && rsync -aP /root/.bashrc /mnt/c/backup/linux/wsl/alias.txt && rsync -aP /root/.bashrc ~/.bashrc && rsync -aP /root/.bashrc /mnt/c/study/linux/bash/.bashrc'
 alias updates='sudo apt update -y && sudo apt upgrade -y && sudo apt autoremove -y'
 alias os='cat /etc/os-release'
 alias cpbash='sudo cp /root/.bashrc /home/kali/.bashrc'
@@ -324,8 +324,11 @@ alias gdesk='cmd C:/Users/micha/AppData/Local/GitHubDesktop/GitHubDesktop.exe'
 #ECHO
 
 alias choco="echo 'Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))'"
-alias fkali='echo "wsl --unregister kali-linux;  wsl --import kali-linux C:\wsl2 C:\backup\linux\wsl\kalifull.tar; wsl"'
-alias backupw='echo '\''wsl --export kali-linux C:\backup\linux\kalicurrent.tar'\'''
+alias fkali='echo "wsl --unregister kali-linux;  wsl --import kali-linux C:\wsl2 C:\backup\linux\wsl\kalifull.tar"'
+alias fubuntu=' echo  "wsl --unregister ubuntu;  wsl --import ubuntu C:\wsl2\ubuntu C:\wsl2 C:\backup\linux\wsl\ubuntu.tar"'
+alias fall = "fkali && fubuntu"
+
+alias backupw='echo "wsl --export kali-linux C:\backup\linux\kalicurrent.tar; wsl --export ubuntu C:\backup\linux\ubuntu.tar"' 
 alias wupdates='cat "/mnt/c/study/powershell/scripts/windowsupdates.ps1" && cp "/mnt/c/study/powershell/scripts/windowsupdates.ps1 /mnt/c/users/micha/updates.ps1"'
 
 alias echodkill='docker stop $(docker ps -aq) || true && docker rm $(docker ps -aq) || true && ( [ "$(docker ps -q)" ] || docker rmi $(docker images -q) || true ) && ( [ "$(docker images -q)" ] || docker system prune -a --volumes --force ) && docker network prune --force || true'

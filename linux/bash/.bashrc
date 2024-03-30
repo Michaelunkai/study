@@ -212,7 +212,8 @@ alias backitup='backupapps && backupst && backupwsl && backupasus'
 
 alias restoreapps='drun windowsapps michadockermisha/backup:windowsapps sh -c "apk add rsync && rsync -aP /home /c/backup/ && cd /c/backup/ && mv home windowsapps && exit" '
 
-alias restorelinux='cdbackup && mkdir linux && drun windowsapps michadockermisha/backup:wsl sh -c "apk add rsync && rsync -aP /home /c/backup/linux && cd /c/backup/linux && mv home wsl && exit" '
+alias restorelinux='cdbackup && mkdir linux && drun linux michadockermisha/backup:wsl sh -c "apk add rsync && rsync -aP /home /c/backup/linux && cd /c/backup/linux && mv home wsl && exit" '
+
 
 alias restoreasus='cdbackup && drun asus michadockermisha/backup:wsl sh -c "apk add rsync && rsync -aP /home /c/backup/ && cd /c/backup && mv home asus && exit" '
 
@@ -224,14 +225,11 @@ alias restorebackup='c && mkdir backup && drun asus michadockermisha/backup:asus
 alias ps='docker ps -a --size && docker ps --size && docker images'
 alias cc='clear'
 alias brc='gedit ~/.bashrc'
-alias brc1='source ~/.bashrc'
-alias brc2='source ~/.bashrc && source /root/.bashrc && cp /root/.bashrc /mnt/c/backup/linux/wsl/alias.txt && cp /root/.bashrc ~/bashrc && rsync -aP /root/.bashrc /mnt/c/study/linux/bash/.bashrc'
-alias savealias='cp ~/.bashrc /mnt/c/backup/linux/wsl/alias.txt && cp ~/.bashrc /root/.bashrc'
-alias savealiasr='cp /root/.bashrc /mnt/c/backup/linux/wsl/alias.txt && cp /root/.bashrc ~/bashrc'
+alias brc1='source ~/.bashrc && source /root/.bashrc'
+alias brc2='brc1 && rsync -aP /root/.bashrc /mnt/c/backup/linux/wsl/alias.txt && rsync -aP /root/.bashrc ~/.bashrc && rsync -aP /root/.bashrc /mnt/c/study/linux/bash/bashrc'
 alias updates='sudo apt update -y && sudo apt upgrade -y && sudo apt autoremove -y'
 alias os='cat /etc/os-release'
 alias cpbash='sudo cp /root/.bashrc /home/kali/.bashrc'
-
 
 
 # networking
@@ -249,12 +247,11 @@ alias vmkey='cat /mnt/c/backup/windowsapps/install/vmware/key.txt'
 alias ssk='ssh-keygen -t rsa -b 2048 && ssh-copy-id'
 alias scpwhisper="echo 'scp a.mp3 micha@192.168.1.247:/home/micha/' "
 alias sshwhisper="ssh micha@192.168.1.247"
-alias scprox="echo 'scp  root@192.168.1.222:/root' "
+alias scprox='echo "scp root@192.168.1.222:/root"'
 alias sshprox="ssh root@192.168.1.222"
 alias sshserver="ssh micha@192.168.1.195"
 alias sshubuntu="ssh ubuntu@192.168.1.193"
-scptxt="scp *.txt ubuntu@192.168.1.193:/home/ubuntu/here"
-alias sshwindows="ssh administrator@192.168.10"
+alias scptxt='scp *.txt ubuntu@192.168.1.193:/home/ubuntu/'
 
 #CD aliases
 alias c='cd /mnt/c/'
@@ -327,8 +324,11 @@ alias gdesk='cmd C:/Users/micha/AppData/Local/GitHubDesktop/GitHubDesktop.exe'
 #ECHO
 
 alias choco="echo 'Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))'"
-alias fkali='echo "wsl --unregister kali-linux;  wsl --import kali-linux C:\wsl2 C:\backup\linux\wsl\kalifull.tar; wsl"'
-alias backupw='echo '\''wsl --export kali-linux C:\backup\linux\kalicurrent.tar'\'''
+alias fkali='echo "wsl --unregister kali-linux;  wsl --import kali-linux C:\wsl2 C:\backup\linux\wsl\kalifull.tar"'
+alias fubuntu=' echo  "wsl --unregister ubuntu;  wsl --import ubuntu C:\wsl2\ubuntu C:\wsl2 C:\backup\linux\wsl\ubuntu.tar"'
+alias fall = "fkali && fubuntu"
+
+alias backupw='echo "wsl --export kali-linux C:\backup\linux\kalicurrent.tar; wsl --export ubuntu C:\backup\linux\ubuntu.tar"' 
 alias wupdates='cat "/mnt/c/study/powershell/scripts/windowsupdates.ps1" && cp "/mnt/c/study/powershell/scripts/windowsupdates.ps1 /mnt/c/users/micha/updates.ps1"'
 
 alias echodkill='docker stop $(docker ps -aq) || true && docker rm $(docker ps -aq) || true && ( [ "$(docker ps -q)" ] || docker rmi $(docker images -q) || true ) && ( [ "$(docker images -q)" ] || docker system prune -a --volumes --force ) && docker network prune --force || true'
@@ -348,8 +348,7 @@ alias getpython='sudo apt install -y -qq python3 python3-pip pyinstaller && \
   sudo apt install -y -qq sshpass && sudo apt autoremove -y -qq'
 alias getpycharm=' wget https://download.jetbrains.com/python/pycharm-community-2021.2.3.tar.gz && tar -xzf pycharm-community-2021.2.3.tar.gz && sudo mv pycharm-community-2021.2.3 /opt/ && cd /opt/pycharm-community-2021.2.3/bin && ./pycharm.sh'
 alias k8s='sudo snap install microk8s --classic'
-alias installprometheus='wget https://github.com/prometheus/prometheus/releases/download/v2.30.3/prometheus-2.30.3.linux-amd64.tar.gz  && tar xvf prometheus-2.30.3.linux-amd64.tar.gz && sudo mv prometheus-2.30.3.linux-amd64 /usr/local/bin/prometheus && echo -e "global:\n  scrape_interval: 15s\n  evaluation_interval: 15s\n\nscrape_configs:\n  - job_name: '\''prometheus'\''\n    static_configs:\n      - targets: ['\''localhost:9090'\'']\n  # Add additional jobs/targets as needed" | sudo tee -a /usr/local/bin/prometheus/prometheus.yml && cc && cd /usr/local/bin/prometheus && ./prometheus'
-# Install Docker
+
 alias getdocker='sudo apt install -y docker-compose && sudo apt install -y -qq docker.io && \
 sudo usermod -aG docker $USER && newgrp docker && sudo service docker start && \
 sudo sh -c "sudo setfacl -m user:$USER:rw /var/run/docker.sock && \
@@ -467,12 +466,8 @@ alias ex='explorer.exe .'
 alias exd='d && ex'
 alias venv='python3 -m venv venv && source venv/bin/activate'
 alias mp3="docker run --rm -v $HOME/Downloads:/root/Downloads dizcza/youtube-mp3 $1"
-alias mp4='docker run \
-                  --rm -i \
-                  -e PGID=$(id -g) \
-                  -e PUID=$(id -u) \
-                  -v "$(pwd)":/workdir:rw \
-                  mikenye/youtube-dl'
+alias mp4='docker run --rm -i -e PGID=$(id -g) -e PUID=$(id -u) -v "$(pwd)":/workdir:rw mikenye/youtube-dl'
+
                   
 alias txt='tesseract'  
                   
@@ -503,7 +498,9 @@ alias encrypt='python3 /mnt/c/study/python/scripts/encrypt/encrypt.py'
 alias decrypt='python3 /mnt/c/study/python/scripts/encrypt/decrypt.py'
 alias compile='echo "& C:\Users\micha\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\Scripts\pyinstaller.exe --noconsole"'
 
-alias mygames="py /mnt/c/study/python/scripts/dockermenu/3.py"
+alias myg="py /mnt/c/study/python/scripts/dockermenu/4.py"
+alias editg=" gedit /mnt/c/study/python/scripts/dockermenu/4.py"
+
 
 #wsl2
 alias backupw='echo "wsl --export kali-linux C:\backup\linux\kalifull.tar"'
