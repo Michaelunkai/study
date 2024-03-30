@@ -203,7 +203,8 @@ alias dcu='docker-compose up -d'
 alias backupwsl='cd /mnt/c/backup/linux/wsl && built michadockermisha/backup:wsl . && docker push michadockermisha/backup:wsl'
 alias backupst='stu && built michadockermisha/backup:study . && docker push michadockermisha/backup:study'
 alias backupapps='cd /mnt/c/backup/windowsapps && built michadockermisha/backup:windowsapps . && docker push michadockermisha/backup:windowsapps'
-alias backupasus="cd /mnt/c/backup/asus built michadockermisha/backup:asus . && docker push michadockermisha/backup:asus"
+alias backupasus="cd /mnt/c/backup/asus && built michadockermisha/backup:asus . && docker push michadockermisha/backup:asus"
+
 
 alias backitup='backupapps && backupst && backupwsl && backupasus'
 
@@ -224,11 +225,10 @@ alias ps='docker ps -a --size && docker ps --size && docker images'
 alias cc='clear'
 alias brc='gedit ~/.bashrc'
 alias brc1='source ~/.bashrc'
-alias brc2='source ~/.bashrc && source /root/.bashrc && cp /root/.bashrc /mnt/c/backup/linux/wsl/alias.txt && cp /root/.bashrc ~/bashrc && rsync -aP /root/.bashrc /mnt/c/study/bash/.bashrc'
+alias brc2='source ~/.bashrc && source /root/.bashrc && cp /root/.bashrc /mnt/c/backup/linux/wsl/alias.txt && cp /root/.bashrc ~/bashrc && rsync -aP /root/.bashrc /mnt/c/study/linux/bash/.bashrc'
 alias savealias='cp ~/.bashrc /mnt/c/backup/linux/wsl/alias.txt && cp ~/.bashrc /root/.bashrc'
 alias savealiasr='cp /root/.bashrc /mnt/c/backup/linux/wsl/alias.txt && cp /root/.bashrc ~/bashrc'
 alias updates='sudo apt update -y && sudo apt upgrade -y && sudo apt autoremove -y'
-alias ip="ip addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}'"
 alias os='cat /etc/os-release'
 alias cpbash='sudo cp /root/.bashrc /home/kali/.bashrc'
 
@@ -289,7 +289,7 @@ alias smalware='cd /mnt/c/study/malware'
 alias snetworking='cd /mnt/c/study/networking'
 alias spython='cd /mnt/c/study/python'
 alias svirtualmachines='cd /mnt/c/study/virtualmachines'
-alias sbash='cd /mnt/c/study/bash'
+alias sbash='cd /mnt/c/study/linux/bash'
 alias sdebian='cd /mnt/c/study/debian based'
 alias sexams='cd /mnt/c/study/exams'
 alias skubernetes='cd /mnt/c/study/kubernetes'
@@ -335,8 +335,6 @@ alias echodkill='docker stop $(docker ps -aq) || true && docker rm $(docker ps -
 
 alias wslexport='echo "wsl --export kali-linux C:\backup\linux\kalicurrent.tar"'
 
-alias freespace='cat /mnt/c/study/bash/scripts/freespace.sh && cp /mnt/c/study/bash/scripts/freespace.sh /mnt/c/freespace.sh'
-alias errors='cat /mnt/c/study/bash/scripts/fixwindowserrors.sh && cp /mnt/c/study/bash/scripts/fixwindowserrors.sh /mnt/c/errors.sh'
 
 #installations
 alias getsnap='sudo apt install snapd -y && updates && systemctl enable --now snapd.apparmor'
@@ -454,7 +452,6 @@ export DISPLAY=:0
 export DOCKER_CONFIG=/mnt/c/docker/DockerDesktopWSL/data
 
 alias qcow='qemu-img convert -f vmdk -O qcow2'
-alias size='du -sh /mnt/c/wsl2/ext4.vhdx'
 alias dfs='df -h /mnt/c'
 alias disk='du -sh /mnt/c /mnt/wslg'
 alias compare='ff https://www.textcompare.org/python/'
@@ -527,3 +524,22 @@ alias reddit="py /mnt/c/study/python/APIs/my/redditapp/reddit.py"
 alias qbittorent="gc 'http://192.168.1.140:8080/' "
 alias sjavascript=" cd /mnt/c/study/frontend/javascript"
 alias sfront=" cd /mnt/c/study/frontend"
+
+alias scomptia="cd /mnt/c/study/exams/compTIA"
+alias sizes="dfs && size"
+alias allips="nmap -sn 192.168.1.1/24"
+alias kstart="minikube start --driver=docker --force"
+alias sbash="cd /mnt/c/study/linux/bash"
+alias text="py /mnt/c/study/python/scripts/'text editor app'/TextEditor/app.py"
+alias sshwindows="ssh Administrator@192.168.1.10"
+
+alias tickets="gc http://192.168.1.235:3000/"
+alias fixwin="echo 'choco upgrade all -y --force; Repair-WindowsImage -Online -ScanHealth; Repair-WindowsImage -Online -RestoreHealth; sfc /scannow ; DISM.exe /Online /Cleanup-Image /CheckHealth ; DISM.exe /Online /Cleanup-Image /RestoreHealth ; dism /online /cleanup-image /startcomponentcleanup; chkdsk /f /r; net start wuauserv; ./updates.ps1 ' "
+alias fubuntu="echo 'wsl --unregister ubuntu; wsl --import ubuntu C:\wsl2\ubuntu C:\backup\linux\wsl\ubuntu.tar' "
+alias backupubu="echo 'wsl --export ubuntu C:\backup\linux\ubuntu.tar' "
+alias size='du -sh /mnt/c/wsl2/ext4.vhdx && du -sh /mnt/c/wsl2/ubuntu/ext4.vhdx'
+alias msf="cd /mnt/c/study/docker/files/dockerfiles/mfsconsole && docker build -t metasploit . && docker run -it --rm metasploit"
+alias kubedash="gc http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/cronjob?namespace=default"
+alias kubedashecho="echo 'kubectl proxy && gc http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/cronjob?namespace=default' "
+
+
