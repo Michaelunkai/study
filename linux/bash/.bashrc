@@ -503,7 +503,6 @@ alias editg=" gedit /mnt/c/study/python/scripts/dockermenu/4.py"
 
 
 #wsl2
-alias backupw='echo "wsl --export kali-linux C:\backup\linux\kalifull.tar"'
 alias aliases=' gedit /mnt/c/backup/linux/wsl/alias.txt'
 alias cpalias='cp /mnt/c/backup/linux/wsl/alias.txt /root/.bashrc && cp /mnt/c/backup/linux/wsl/alias.txt ~/.bashrc'
 
@@ -538,5 +537,3 @@ alias size='du -sh /mnt/c/wsl2/ext4.vhdx && du -sh /mnt/c/wsl2/ubuntu/ext4.vhdx'
 alias msf="cd /mnt/c/study/docker/files/dockerfiles/mfsconsole && docker build -t metasploit . && docker run -it --rm metasploit"
 alias kubedash="gc http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/cronjob?namespace=default"
 alias kubedashecho="echo 'kubectl proxy && gc http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/cronjob?namespace=default' "
-
-
