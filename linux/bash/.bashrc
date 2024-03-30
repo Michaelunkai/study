@@ -326,7 +326,7 @@ alias gdesk='cmd C:/Users/micha/AppData/Local/GitHubDesktop/GitHubDesktop.exe'
 alias choco="echo 'Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))'"
 alias fkali='echo "wsl --unregister kali-linux; wsl --import kali-linux C:\wsl2 C:\backup\linux\wsl\kalifull.tar"'
 alias fubuntu=' echo  "wsl --unregister ubuntu;  wsl --import ubuntu C:\wsl2\ubuntu C:\wsl2 C:\backup\linux\wsl\ubuntu.tar"'
-alias fall="fkali && fubuntu"
+alias fall='echo "wsl --unregister kali-linux; wsl --import kali-linux C:\wsl2 C:\backup\linux\wsl\kalifull.tar&; wsl --unregister ubuntu; wsl --import ubuntu C:\wsl2\ubuntu\ C:\backup\linux\wsl\ubuntu.tar"'
 
 alias backupw='echo "wsl --export kali-linux C:\backup\linux\kalicurrent.tar; wsl --export ubuntu C:\backup\linux\ubuntu.tar"' 
 alias wupdates='cat "/mnt/c/study/powershell/scripts/windowsupdates.ps1" && cp "/mnt/c/study/powershell/scripts/windowsupdates.ps1 /mnt/c/users/micha/updates.ps1"'
