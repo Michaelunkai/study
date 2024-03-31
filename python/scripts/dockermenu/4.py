@@ -94,14 +94,12 @@ class DockerApp(QWidget):
     "okamihd", "thesilentage", "divinityoriginalsin2", "dordogne", "tellmewhy", "theradstringclub", "systemshockremake",
     "grouned", "cosmicshake", "alanwake", "escapefromtarkov", "plagtalerequirm", "sackboy", "remnant2",
     "sims4", "returntomonkeyisland", "beyond2soul", "oddworldsoulstorm", "immortalsfenyxrising", "neonabyss", "gerda",
-    "slaytheprincess", "prisonsimulator", "videoverse", "metalhellsinger", "singularity", "farcryprimal", "blur",
+    "slaytheprincess", "prisonsimulator", "videoverse", "metalhellsinger", "singularity", "farcryprimal",
     "sherlockholmeschapterone", "sherlockholmestheawakened", "sherlockholmescrimesandpunishments", "theascent",
-    "spongbobbfbbr", "talesofarise", "erica", "desperados3", "Witchfire", "ancestorshumankind", "bumsimulator",
-    "cafeownersimulation", "forgottencity", "hackersimulator", "hellbladesenuasacrifice", "curseofthedeadgods",
-    "fistforgedinshadowtorch", "lifeistrangeremastered", "eiyudenchroniclerising", "bloodsrainedritualofthenight",
-    "darksidersgenesis", "skaterxl", "saintsrow3", "pacmanworldrepac", "prodeus",
-    "sniperghostwarriorcontracts", "inscryption", "brewmasterbeersimulator", "cheflifesimulator", "detroitbecomehuman",
-    "seriousam4", "houseflipper", "enterthegungeon", "kazeandthewildmasks", "blasphemous2", "deadisland2", "lostinplay",
+    "spongbobbfbbr", "talesofarise", "erica", "ancestorshumankind", "bumsimulator",
+    "cafeownersimulation", "forgottencity", "hackersimulator", "hellbladesenuasacrifice", "curseofthedeadgods", "fistforgedinshadowtorch", "lifeistrangeremastered", "eiyudenchroniclerising", "bloodsrainedritualofthenight",
+    "darksidersgenesis", "skaterxl", "saintsrow3", "pacmanworldrepac",
+    "sniperghostwarriorcontracts", "inscryption", "brewmasterbeersimulator", "cheflifesimulator", "detroitbecomehuman", "seriousam4", "houseflipper", "enterthegungeon", "kazeandthewildmasks", "blasphemous2", "deadisland2", "lostinplay",
     "blacktail", "midnightfightexpress", "theinvincible", "thelastfaith", "godofwar", "sunsetoverdrive", "shadowgambit",
     "thecaseofthegoldenidol", "armoredcore6firesofrubicon", "robocoproguecity", "mountandblade2bannerlord",
     "killerfrequency", "deathmustdie", "punchclub2fastforward", "deusexhuman", "sludgelife2", "blackskylands",
@@ -153,17 +151,17 @@ class DockerApp(QWidget):
     def update_games(self):
         sender_button = self.sender()
         if sender_button == self.interactive_button:
-            specified_titles = ["batmantts", "tellinglies", "erica","thexpanse", "beyond2souls", "detroitbecomehuman", "Oxenfree2" ]
+            specified_titles = ["batmantts", "tellinglies", "erica","thexpanse", "beyond2souls", "detroitbecomehuman", "Oxenfree2", "forgottencity", "sherlockholmeschapterone" ]
         elif sender_button == self.mouse_button:
-            specified_titles = ["dordogne", "hackersimulator", ]
+            specified_titles = ["dordogne", "hackersimulator", "thecaseofthegoldenidol", "sludgelife2", "videoverse" ]
         elif sender_button == self.shooter_button:
-            specified_titles = ["doom", "sniperelite3", "deusexhuman", "elpasoelswhere", "codghosts", "battlefieldbadcompany2"]
+            specified_titles = ["doom", "sniperelite3", "deusexhuman", "elpasoelswhere", "codghosts", "battlefieldbadcompany2", "theascent"]
         elif sender_button == self.chill_button:
-            specified_titles = ["okamihd", "lostinplay", "pizzatower","octopathtraveler2","skaterxl","pacmanworldrepac","harvestmoon", "Road 96: Mile 0", "tloh", "planetcoaster", "rimword", "brothers", "ftl", "unpacking", "seasonalettertothefuture", "enterthegungeon", "seaofstars", "thesilentage", "bumsimulator", "gerda", "moonstoneisland", "bumsimulator", "showgunners" ]
+            specified_titles = ["okamihd", "lostinplay", "pizzatower","octopathtraveler2","skaterxl","pacmanworldrepac","harvestmoon", "Road 96: Mile 0", "tloh", "planetcoaster", "rimword", "brothers", "ftl", "unpacking", "seasonalettertothefuture", "enterthegungeon", "seaofstars", "thesilentage", "bumsimulator", "gerda", "moonstoneisland", "bumsimulator", "showgunners", "spongbobbfbbr", "cheflifesimulator" ]
         elif sender_button == self.action_button:
-            specified_titles = ["saintsrow3", "farcryprimal","devilmaycry4", "godofwar", "deadspace", "fatesamurairemnant", "sunsetoverdrive", "yakuza0", "hyperlightdrifter", "doom", "ghostrunner", "metroexodus", "sleepingdogs", "returnal", "kingdomofamalur", "wolfenstein2" , "systemshockremake", "deadspace", "mafia", "codghosts", "battlefieldbadcompany2", "gtviv", "vampyr", "vampirebloodlines", "talesofarise", "assassinscreedvalhalla", "neotheworldendswithyou", "thegunk" ]
+            specified_titles = ["saintsrow3", "farcryprimal","devilmaycry4", "godofwar", "deadspace", "fatesamurairemnant", "sunsetoverdrive", "yakuza0", "hyperlightdrifter", "doom", "ghostrunner", "metroexodus", "sleepingdogs", "returnal", "kingdomofamalur", "wolfenstein2" , "systemshockremake", "deadspace", "mafia", "codghosts", "battlefieldbadcompany2", "gtviv", "vampyr", "vampirebloodlines", "talesofarise", "assassinscreedvalhalla", "neotheworldendswithyou", "thegunk", "metalhellsinger", "darksidersgenesis", "steelrising", "theascent" ]
         elif sender_button == self.platform_button:
-            specified_titles = ["sackboy", "trine2", "supermariowonder", "cosmicshake", "pseudoregalia", "kazeandthewildmasks", "haveanicedeath", "oddworldsoulstorm", "thelastfaith", "ugly", "enderliles", "covergence" ]
+            specified_titles = ["sackboy", "trine2", "supermariowonder", "cosmicshake", "pseudoregalia", "kazeandthewildmasks", "haveanicedeath", "oddworldsoulstorm", "thelastfaith", "ugly", "enderliles", "covergence", "spongbobbfbbr", "neonabyss", "fistforgedinshadowtorch" ]
 
         self.displayed_games = [game for game in self.all_games if game.lower().replace(" ", "") in specified_titles]
 
