@@ -97,10 +97,9 @@ class DockerApp(QWidget):
     "slaytheprincess", "prisonsimulator", "videoverse", "metalhellsinger", "singularity", "farcryprimal",
     "sherlockholmeschapterone", "sherlockholmestheawakened", "sherlockholmescrimesandpunishments", "theascent",
     "spongbobbfbbr", "talesofarise", "erica", "ancestorshumankind", "bumsimulator",
-    "cafeownersimulation", "forgottencity", "hackersimulator", "hellbladesenuasacrifice", "curseofthedeadgods", "fistforgedinshadowtorch", "lifeistrangeremastered", "eiyudenchroniclerising", "bloodsrainedritualofthenight",
-    "darksidersgenesis", "skaterxl", "saintsrow3", "pacmanworldrepac",
-    "sniperghostwarriorcontracts", "inscryption", "brewmasterbeersimulator", "cheflifesimulator", "detroitbecomehuman", "seriousam4", "houseflipper", "enterthegungeon", "kazeandthewildmasks", "blasphemous2", "deadisland2", "lostinplay",
-    "blacktail", "midnightfightexpress", "theinvincible", "thelastfaith", "godofwar", "sunsetoverdrive", "shadowgambit",
+    "cafeownersimulation", "forgottencity", "hackersimulator", "hellbladesenuasacrifice", "curseofthedeadgods", "lifeistrangeremastered", "eiyudenchroniclerising", "bloodsrainedritualofthenight",
+    "darksidersgenesis", "skaterxl", "saintsrow3", "pacmanworldrepac", "inscryption", "brewmasterbeersimulator", "cheflifesimulator", "detroitbecomehuman", "seriousam4", "houseflipper", "enterthegungeon", "kazeandthewildmasks", "blasphemous2", "deadisland2", "lostinplay",
+    "blacktail", "midnightfightexpress", "thelastfaith", "godofwar", "sunsetoverdrive",
     "thecaseofthegoldenidol", "armoredcore6firesofrubicon", "robocoproguecity", "mountandblade2bannerlord",
     "killerfrequency", "deathmustdie", "punchclub2fastforward", "deusexhuman", "sludgelife2", "blackskylands",
     "notforbroadcast", "deeprockgalactic", "assassinscreedvalhalla", "frostpunk", "torchlight2",
@@ -108,8 +107,7 @@ class DockerApp(QWidget):
     "fatesamurairemnant", "tornaway", "tailsthebackbonepreludes", "wanderingsword", "showgunners", "trinityfusion",
     "evilwest", "themageseeker", "enderliles", "nocturnal", "readyornot", "themedium", "octopathtraveler2", "devilmaycry4",
     "dragonsdogma", "bramble", "neotheworldendswithyou", "payday3", "theartfulescape", "Islets", "thegunk",
-    "marvelsguardiansofthegalaxy", "nomoreheroes3", "soulstice", "steelrising", "firemblemwarriors3hopes",
-    "circuselectricque", "atlasfallen", "strangerofparadaise", "risen2", "deadspace", "lordsofthefallen",
+    "marvelsguardiansofthegalaxy", "nomoreheroes3", "soulstice", "steelrising", "firemblemwarriors3hopes", "atlasfallen", "strangerofparadaise", "risen2", "deadspace", "lordsofthefallen",
     "vampyr", "tendates", "sonicsuperstarts", "seasonalettertothefuture", "immortalsofaveum", "supermariowonder",
     "trine2"
         ]
@@ -150,15 +148,15 @@ class DockerApp(QWidget):
     def update_games(self):
         sender_button = self.sender()
         if sender_button == self.interactive_button:
-            specified_titles = ["batmantts", "tellinglies", "erica","thexpanse", "beyond2souls", "detroitbecomehuman", "Oxenfree2", "forgottencity", "sherlockholmeschapterone", "masseffect2" ]
+            specified_titles = ["batmantts", "tellinglies", "erica","thexpanse", "beyond2souls", "detroitbecomehuman", "Oxenfree2", "forgottencity", "sherlockholmeschapterone", "masseffect2", "slaytheprincess" ]
         elif sender_button == self.mouse_button:
             specified_titles = ["dordogne", "hackersimulator", "thecaseofthegoldenidol", "sludgelife2", "videoverse", "returnofthemonkeyisland", "divinityoriginalsin2" ]
         elif sender_button == self.shooter_button:
-            specified_titles = ["doom", "sniperelite3", "deusexhuman", "elpasoelswhere", "codghosts", "battlefieldbadcompany2", "theascent", "thesurge2", "deeprockgalactic" ]
+            specified_titles = ["doom", "sniperelite3", "deusexhuman", "elpasoelswhere", "codghosts", "battlefieldbadcompany2", "theascent", "thesurge2", "deeprockgalactic", "singularity" ]
         elif sender_button == self.chill_button:
-            specified_titles = ["okamihd", "lostinplay", "pizzatower","octopathtraveler2","skaterxl","pacmanworldrepac","harvestmoon", "Road 96: Mile 0", "tloh", "planetcoaster", "rimword", "brothers", "ftl", "unpacking", "seasonalettertothefuture", "enterthegungeon", "seaofstars", "thesilentage", "bumsimulator", "gerda", "moonstoneisland", "bumsimulator", "showgunners", "spongbobbfbbr", "cheflifesimulator", "sonicsuperstarts", "sims4", "prisonsimulator", "inscryption", "eiyudenchroniclerising", "brewmasterbeersimulator", "nobodysavedtheworld", "vampiresurvivors", "bramble", "punchclub2fastforward" ]
+            specified_titles = ["okamihd", "lostinplay", "pizzatower","octopathtraveler2","skaterxl","pacmanworldrepac","harvestmoon", "Road 96: Mile 0", "tloh", "planetcoaster", "rimword", "brothers", "ftl", "unpacking", "seasonalettertothefuture", "enterthegungeon", "seaofstars", "thesilentage", "bumsimulator", "gerda", "moonstoneisland", "bumsimulator", "showgunners", "spongbobbfbbr", "cheflifesimulator", "sonicsuperstarts", "sims4", "prisonsimulator", "inscryption", "eiyudenchroniclerising", "brewmasterbeersimulator", "nobodysavedtheworld", "vampiresurvivors", "bramble", "punchclub2fastforward","blacktail" ]
         elif sender_button == self.action_button:
-            specified_titles = ["saintsrow3", "farcryprimal","devilmaycry4", "godofwar", "deadspace", "fatesamurairemnant", "sunsetoverdrive", "yakuza0", "hyperlightdrifter", "doom", "ghostrunner", "metroexodus", "sleepingdogs", "returnal", "kingdomofamalur", "wolfenstein2" , "systemshockremake", "deadspace", "mafia", "codghosts", "battlefieldbadcompany2", "gtviv", "vampyr", "vampirebloodlines", "talesofarise", "assassinscreedvalhalla", "neotheworldendswithyou", "thegunk", "metalhellsinger", "darksidersgenesis", "steelrising", "theascent", "starwars" , "thesurge2", "deathstranding", "highonlife", "oblibion", "plagtalerequirm", "deadisland2", "metalgearsolidmaster", "transistor", "justcause3", "wanderingsword", "atlasfallen", "judgment", "mountandblade2bannerlord", "ancestorshumankind" ]
+            specified_titles = ["saintsrow3", "farcryprimal","devilmaycry4", "godofwar", "deadspace", "fatesamurairemnant", "sunsetoverdrive", "yakuza0", "hyperlightdrifter", "doom", "ghostrunner", "metroexodus", "sleepingdogs", "returnal", "kingdomofamalur", "wolfenstein2" , "systemshockremake", "deadspace", "mafia", "codghosts", "battlefieldbadcompany2", "gtviv", "vampyr", "vampirebloodlines", "talesofarise", "assassinscreedvalhalla", "neotheworldendswithyou", "thegunk", "metalhellsinger", "darksidersgenesis", "steelrising", "theascent", "starwars" , "thesurge2", "deathstranding", "highonlife", "oblibion", "plagtalerequirm", "deadisland2", "metalgearsolidmaster", "transistor", "justcause3", "wanderingsword", "atlasfallen", "judgment", "mountandblade2bannerlord", "ancestorshumankind", "seriousam4" ]
         elif sender_button == self.platform_button:
             specified_titles = ["sackboy", "trine2", "supermariowonder", "cosmicshake", "pseudoregalia", "kazeandthewildmasks", "haveanicedeath", "oddworldsoulstorm", "thelastfaith", "ugly", "enderliles", "covergence", "spongbobbfbbr", "neonabyss", "fistforgedinshadowtorch", "sonicsuperstarts", "blasphemous2" ]
 
