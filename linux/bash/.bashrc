@@ -326,7 +326,7 @@ alias gdesk='cmd C:/Users/micha/AppData/Local/GitHubDesktop/GitHubDesktop.exe'
 alias choco="echo 'Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))'"
 alias fkali='echo "wsl --unregister kali-linux; wsl --import kali-linux C:\wsl2 C:\backup\linux\wsl\kalifull.tar"'
 alias fubuntu=' echo  "wsl --unregister ubuntu;  wsl --import ubuntu C:\wsl2\ubuntu C:\wsl2 C:\backup\linux\wsl\ubuntu.tar"'
-alias fall='echo "wsl --unregister kali-linux; wsl --import kali-linux C:\wsl2 C:\backup\linux\wsl\kalifull.tar&; wsl --unregister ubuntu; wsl --import ubuntu C:\wsl2\ubuntu\ C:\backup\linux\wsl\ubuntu.tar"'
+alias fall="fkali && fubuntu"
 
 alias backupw='echo "wsl --export kali-linux C:\backup\linux\kalicurrent.tar; wsl --export ubuntu C:\backup\linux\ubuntu.tar"' 
 alias wupdates='cat "/mnt/c/study/powershell/scripts/windowsupdates.ps1" && cp "/mnt/c/study/powershell/scripts/windowsupdates.ps1 /mnt/c/users/micha/updates.ps1"'
@@ -537,3 +537,17 @@ alias size='du -sh /mnt/c/wsl2/ext4.vhdx && du -sh /mnt/c/wsl2/ubuntu/ext4.vhdx'
 alias msf="cd /mnt/c/study/docker/files/dockerfiles/mfsconsole && docker build -t metasploit . && docker run -it --rm metasploit"
 alias kubedash="gc http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/cronjob?namespace=default"
 alias kubedashecho="echo 'kubectl proxy && gc http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/cronjob?namespace=default' "
+
+
+
+alias sserver="cd /mnt/c/study/windows/server"
+alias gcp="gc https://console.cloud.google.com/"
+alias sansible="cd /mnt/c/study/automation/ansible"
+alias sautomation="cd /mnt/c/study/automation"
+alias fall='echo "wsl --unregister kali-linux; wsl --import kali-linux C:\wsl2 C:\backup\linux\wsl\kalifull.tar&; wsl --unregister ubuntu; wsl --import ubuntu C:\wsl2\ubuntu\ C:\backup\linux\wsl\ubuntu.tar"'
+alias ssecurity="cd /mnt/c/study/security"
+alias shacking="cd /mnt/c/study/security/hacking"
+alias libre="libreoffice --writer"
+alias awsvm="ff 'https://us-east-1.console.aws.amazon.com/ec2/home?region=us-east-1#Instances:' "
+
+alias windowsvnc="gc https://192.168.1.222:8006/?console=kvm&novnc=1&vmid=102&vmname=windowserver22&node=pve&resize=off&cmd"
