@@ -109,7 +109,7 @@ class DockerApp(QWidget):
     "evilwest", "themageseeker", "enderliles", "nocturnal", "readyornot", "themedium", "octopathtraveler2", "devilmaycry4",
     "dragonsdogma", "bramble", "neotheworldendswithyou", "payday3", "theartfulescape", "Islets", "thegunk",
     "marvelsguardiansofthegalaxy", "nomoreheroes3", "soulstice", "steelrising", "firemblemwarriors3hopes",
-    "circuselectricque", "alphaprotocol", "atlasfallen", "strangerofparadaise", "risen2", "deadspace", "lordsofthefallen",
+    "circuselectricque", "atlasfallen", "strangerofparadaise", "risen2", "deadspace", "lordsofthefallen",
     "vampyr", "tendates", "sonicsuperstarts", "seasonalettertothefuture", "immortalsofaveum", "supermariowonder",
     "trine2"
         ]
@@ -156,11 +156,11 @@ class DockerApp(QWidget):
         elif sender_button == self.shooter_button:
             specified_titles = ["doom", "sniperelite3", "deusexhuman", "elpasoelswhere", "codghosts", "battlefieldbadcompany2", "theascent", "thesurge2", "deeprockgalactic" ]
         elif sender_button == self.chill_button:
-            specified_titles = ["okamihd", "lostinplay", "pizzatower","octopathtraveler2","skaterxl","pacmanworldrepac","harvestmoon", "Road 96: Mile 0", "tloh", "planetcoaster", "rimword", "brothers", "ftl", "unpacking", "seasonalettertothefuture", "enterthegungeon", "seaofstars", "thesilentage", "bumsimulator", "gerda", "moonstoneisland", "bumsimulator", "showgunners", "spongbobbfbbr", "cheflifesimulator", "sonicsuperstarts", "sims4", "prisonsimulator", "inscryption", "eiyudenchroniclerising", "brewmasterbeersimulator", "nobodysavedtheworld", "vampiresurvivors" ]
+            specified_titles = ["okamihd", "lostinplay", "pizzatower","octopathtraveler2","skaterxl","pacmanworldrepac","harvestmoon", "Road 96: Mile 0", "tloh", "planetcoaster", "rimword", "brothers", "ftl", "unpacking", "seasonalettertothefuture", "enterthegungeon", "seaofstars", "thesilentage", "bumsimulator", "gerda", "moonstoneisland", "bumsimulator", "showgunners", "spongbobbfbbr", "cheflifesimulator", "sonicsuperstarts", "sims4", "prisonsimulator", "inscryption", "eiyudenchroniclerising", "brewmasterbeersimulator", "nobodysavedtheworld", "vampiresurvivors", "bramble", "punchclub2fastforward" ]
         elif sender_button == self.action_button:
-            specified_titles = ["saintsrow3", "farcryprimal","devilmaycry4", "godofwar", "deadspace", "fatesamurairemnant", "sunsetoverdrive", "yakuza0", "hyperlightdrifter", "doom", "ghostrunner", "metroexodus", "sleepingdogs", "returnal", "kingdomofamalur", "wolfenstein2" , "systemshockremake", "deadspace", "mafia", "codghosts", "battlefieldbadcompany2", "gtviv", "vampyr", "vampirebloodlines", "talesofarise", "assassinscreedvalhalla", "neotheworldendswithyou", "thegunk", "metalhellsinger", "darksidersgenesis", "steelrising", "theascent", "starwars" , "thesurge2", "deathstranding", "highonlife", "oblibion", "plagtalerequirm", "deadisland2", "metalgearsolidmaster", "transistor", "justcause3", "wanderingsword", "atlasfallen", "judgment" ]
+            specified_titles = ["saintsrow3", "farcryprimal","devilmaycry4", "godofwar", "deadspace", "fatesamurairemnant", "sunsetoverdrive", "yakuza0", "hyperlightdrifter", "doom", "ghostrunner", "metroexodus", "sleepingdogs", "returnal", "kingdomofamalur", "wolfenstein2" , "systemshockremake", "deadspace", "mafia", "codghosts", "battlefieldbadcompany2", "gtviv", "vampyr", "vampirebloodlines", "talesofarise", "assassinscreedvalhalla", "neotheworldendswithyou", "thegunk", "metalhellsinger", "darksidersgenesis", "steelrising", "theascent", "starwars" , "thesurge2", "deathstranding", "highonlife", "oblibion", "plagtalerequirm", "deadisland2", "metalgearsolidmaster", "transistor", "justcause3", "wanderingsword", "atlasfallen", "judgment", "mountandblade2bannerlord", "ancestorshumankind" ]
         elif sender_button == self.platform_button:
-            specified_titles = ["sackboy", "trine2", "supermariowonder", "cosmicshake", "pseudoregalia", "kazeandthewildmasks", "haveanicedeath", "oddworldsoulstorm", "thelastfaith", "ugly", "enderliles", "covergence", "spongbobbfbbr", "neonabyss", "fistforgedinshadowtorch", "sonicsuperstarts" ]
+            specified_titles = ["sackboy", "trine2", "supermariowonder", "cosmicshake", "pseudoregalia", "kazeandthewildmasks", "haveanicedeath", "oddworldsoulstorm", "thelastfaith", "ugly", "enderliles", "covergence", "spongbobbfbbr", "neonabyss", "fistforgedinshadowtorch", "sonicsuperstarts", "blasphemous2" ]
 
         self.displayed_games = [game for game in self.all_games if game.lower().replace(" ", "") in specified_titles]
 
