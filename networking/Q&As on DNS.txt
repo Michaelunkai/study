@@ -8,4 +8,31 @@ other on the internet.
 
 answer:
 a forward lookup zone is used to map domain names to ip addresses, while a reverse lookup zone os used to map IP adresses to domain
-names.
+names.
+
+3. What are the steps to install and configure a DNS server on a Windows Server system?
+
+Answer: The steps to install and configure a DNS server on a Windows Server system include
+adding the DNS Server role, creating a forward lookup zone, and configuring the server's 
+network settings to use the local DNS server.
+
+4. What is a DNS record, and what are some common types of DNS records?
+
+Answer: A DNS record is an entry in a DNS database that maps a domain name to a specific
+IP address or other resource. Common types of DNS records include A records (for IPv4
+addresses), AAAA records (for IPv6 addresses), MX records (for email servers), and CNAME
+records (for aliases).
+
+5. What is a DNS cache, and how does it work?
+
+Answer: A DNS cache is a temporary storage area on a client or server that contains recently
+accessed DNS records. This allows the system to quickly retrieve DNS information without
+having to perform a new DNS lookup.
+
+6. What is DNS recursion, and how does it work?
+
+Answer: DNS recursion is the process by which a DNS server queries other DNS servers to
+resolve a domain name. It involves sending a query to a root DNS server, which then directs
+the query to the appropriate top-level domain server, and so on until the domain name is
+resolved.
+
