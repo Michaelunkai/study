@@ -1,0 +1,5 @@
+Elasticsearch - Used for storing & Searching collected Data
+
+Logstash - used for collecting & filtering the input data
+
+kibana - Provides a graphical user interface
