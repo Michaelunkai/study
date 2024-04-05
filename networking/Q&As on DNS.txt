@@ -36,3 +36,15 @@ resolve a domain name. It involves sending a query to a root DNS server, which t
 the query to the appropriate top-level domain server, and so on until the domain name is
 resolved.
 
+7. What is a DNS forwarder, and how is it used?
+
+Answer: A DNS forwarder is a server that is configured to forward DNS queries to another
+DNS server. This can be used to improve DNS query performance, reduce network traffic, or
+provide access to external DNS resources.
+
+8. What is DNSSEC, and how does it improve DNS security?
+
+Answer: DNSSEC is a set of security extensions to DNS that provide data integrity and
+authentication for DNS records. It works by adding digital signatures to DNS records, which
+can be verified to ensure that they have not been tampered with.
+
