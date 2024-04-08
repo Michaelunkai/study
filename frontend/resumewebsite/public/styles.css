@@ -2,8 +2,8 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background: linear-gradient(to bottom, #ffcccc, #ff99cc, #cc99ff, #99ccff);
-    /* Replace the colors above with your chosen colors */
+    background-color: #191970; /* Dark navy blue background color */
+    color: #fff; /* White text color */
 }
 
 .container {
@@ -19,7 +19,7 @@ body {
     left: 0;
     height: 100%;
     overflow-y: auto; /* Enable scrolling if the menu is taller than the viewport */
-    background: rgba(255, 255, 255, 0.8); /* Adjust the opacity as needed */
+    background: rgba(0, 0, 0, 0.8); /* Adjust the opacity as needed */
 }
 
 .menu ul {
@@ -33,7 +33,7 @@ body {
 
 .menu ul li a {
     text-decoration: none;
-    color: #333;
+    color: #fff;
     font-size: 18px;
 }
 
@@ -45,7 +45,6 @@ body {
 
 h1 {
     font-size: 48px;
-    color: #fff; /* Set the text color for the main title */
 }
 
 /* Styles for the Skills page */
@@ -57,11 +56,9 @@ h1 {
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 10px;
-    color: #333; /* Set title color */
 }
 
 .skills p {
     font-size: 18px;
     margin-bottom: 10px;
-    color: #666; /* Set text color */
 }
