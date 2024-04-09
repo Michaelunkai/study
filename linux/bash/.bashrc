@@ -550,4 +550,4 @@ alias shacking="cd /mnt/c/study/security/hacking"
 alias libre="libreoffice --writer"
 alias awsvm="ff 'https://us-east-1.console.aws.amazon.com/ec2/home?region=us-east-1#Instances:' "
 
-alias windowsvnc="gc https://192.168.1.222:8006/?console=kvm&novnc=1&vmid=102&vmname=windowserver22&node=pve&resize=off&cmd"
+alias word="find . -type f -name"
