@@ -550,4 +550,6 @@ alias shacking="cd /mnt/c/study/security/hacking"
 alias libre="libreoffice --writer"
 alias awsvm="ff 'https://us-east-1.console.aws.amazon.com/ec2/home?region=us-east-1#Instances:' "
 
-alias word="find . -type f -name"
+alias swebhosting="cd /mnt/c/study/webhosting"
+alias sfrontent="cd /mnt/c/study/frontend"
+alias word="ls | grep"
