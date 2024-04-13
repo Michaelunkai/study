@@ -337,7 +337,7 @@ alias wslexport='echo "wsl --export kali-linux C:\backup\linux\kalicurrent.tar"'
 
 
 #installations
-alias getsnap='sudo apt install snapd -y && updates && systemctl enable --now snapd.apparmor'
+alias getsnap='sudo apt install snapd -y && updates && systemctl enable --now snapd.apparmor && systemctl start snapd && systemctl enable snapd'
 alias getdocker='sudo apt update -y && sudo apt upgrade -y && \
   sudo apt install -y -qq docker.io kubectl kubernetes-client && \
   sudo usermod -aG docker $USER && newgrp docker && sudo service docker start && \
