@@ -337,7 +337,7 @@ alias wslexport='echo "wsl --export kali-linux C:\backup\linux\kalicurrent.tar"'
 
 
 #installations
-alias getsnap='sudo apt install snapd -y && updates && systemctl enable --now snapd.apparmor && systemctl start snapd && systemctl enable snapd'
+alias getsnap='sudo apt install snapd -y && updates && systemctl enable --now snapd.apparmor'
 alias getdocker='sudo apt update -y && sudo apt upgrade -y && \
   sudo apt install -y -qq docker.io kubectl kubernetes-client && \
   sudo usermod -aG docker $USER && newgrp docker && sudo service docker start && \
@@ -474,7 +474,6 @@ alias txt='tesseract'
                   
 alias kuma="cd /mnt/c/study/docker//files/composefiles/kuma && docker-compose up -d && ff http://localhost:3001"
 
-alias mariadb='docker run -d --name mariadb -e MYSQL_ROOT_PASSWORD=123456 -p 3307:3307 mariadb:latest && sleep 30 && docker exec -it mariadb mariadb -u root -p'
 
 alias pubip="echo  'http://87.70.162.212'"
 

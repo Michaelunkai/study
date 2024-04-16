@@ -1,0 +1,7 @@
+
+**backup
+ mysqldump -u root -p --all-databases > backup_all_databases.sql
+
+
+**restore
+mysql -u root -p < backup_all_databases.sql
