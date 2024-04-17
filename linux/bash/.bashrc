@@ -474,6 +474,7 @@ alias txt='tesseract'
                   
 alias kuma="cd /mnt/c/study/docker//files/composefiles/kuma && docker-compose up -d && ff http://localhost:3001"
 
+alias mariadb='docker run -d --name mariadb -e MYSQL_ROOT_PASSWORD=123456 -p 3307:3307 mariadb:latest && sleep 30 && docker exec -it mariadb mariadb -u root -p'
 
 alias pubip="echo  'http://87.70.162.212'"
 
@@ -552,3 +553,5 @@ alias awsvm="ff 'https://us-east-1.console.aws.amazon.com/ec2/home?region=us-eas
 alias swebhosting="cd /mnt/c/study/webhosting"
 alias sfrontent="cd /mnt/c/study/frontend"
 alias word="ls | grep"
+
+alias dockermariadb='docker run -d --name mariadb -e MYSQL_ROOT_PASSWORD=123456 -p 3307:3307 mariadb:latest && sleep 30 && docker exec -it mariadb mariadb -u root -p'
