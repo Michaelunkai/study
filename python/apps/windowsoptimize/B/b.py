@@ -15,6 +15,12 @@ def run_command_as_admin(command):
 
 if __name__ == "__main__":
     no_option = "-N"
+    wsl_shutdown = sys.argv[1] if len(sys.argv) > 1 else None
+    if wsl_shutdown and wsl_shutdown.lower() == "yes":
+        wsl_shutdown_command = "wsl --shutdown;"
+    else:
+        wsl_shutdown_command = ""
+    
     command = (
         "choco upgrade all -y --force " + no_option + "; "
         "Repair-WindowsImage -Online -ScanHealth " + no_option + "; "
@@ -33,18 +39,16 @@ if __name__ == "__main__":
         "dism /online /cleanup-image /startcomponentcleanup " + no_option + "; "
         "ipconfig /flushdns " + no_option + "; "
         "Dism.exe /Online /Cleanup-Image /StartComponentCleanup " + no_option + "; "
-        "Get-WindowsOptionalFeature -Online | Where-Object { $_.State -eq 'Enabled' } | Disable-WindowsOptionalFeature -Online " + no_option + "; "
         "wevtutil cl Application " + no_option + "; "
         "wevtutil cl Security " + no_option + "; "
         "wevtutil cl System " + no_option + "; "
         "Clear-DnsClientCache " + no_option + "; "
         "Get-AppXPackage -AllUsers | Foreach {Add-AppxPackage -DisableDevelopmentMode -Register \"$($_.InstallLocation)\\AppXManifest.xml\"} " + no_option + "; "
         "Start-MpScan -ScanType QuickScan " + no_option + "; "
-        "wsl --shutdown; "
+        + wsl_shutdown_command +
         "wsl --unregister kali-linux; "
         "wsl --import kali-linux C:\\wsl2 C:\\backup\\linux\\wsl\\kalifull.tar; "
         "wsl --unregister ubuntu; "
         "wsl --import ubuntu C:\\wsl2\\ubuntu\\ C:\\backup\\linux\\wsl\\ubuntu.tar"
     )
     run_command_as_admin(command)
-
