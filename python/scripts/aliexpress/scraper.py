@@ -33,7 +33,7 @@ def scrape_aliexpress(search_query):
             title = product.find_element_by_class_name('product-title').text.strip()
         except:
             title = "N/A"
-        
+
         try:
             price = product.find_element_by_class_name('price').text.strip()
         except:
