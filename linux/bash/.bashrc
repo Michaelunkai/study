@@ -462,103 +462,65 @@ alias biggest=' echo "du -h --max-depth=1 -a | sort -rh" '
 alias wslg='cd /mnt/wslg && biggest'
 
 
+
 alias psw='powershell.exe'
 alias ex='explorer.exe .'
-alias exd='d && ex'
+alias exd='cd /d && ex'
 alias venv='python3 -m venv venv && source venv/bin/activate'
-alias mp3="docker run --rm -v $HOME/Downloads:/root/Downloads dizcza/youtube-mp3 $1"
+alias mp3='docker run --rm -v $HOME/Downloads:/root/Downloads dizcza/youtube-mp3 $1'
 alias mp4='docker run --rm -i -e PGID=$(id -g) -e PUID=$(id -u) -v "$(pwd)":/workdir:rw mikenye/youtube-dl'
-
-                  
-alias txt='tesseract'  
-                  
-                  
-alias kuma="cd /mnt/c/study/docker//files/composefiles/kuma && docker-compose up -d && ff http://localhost:3001"
-
+alias txt='tesseract'
+alias kuma='cd /mnt/c/study/docker/files/composefiles/kuma && docker-compose up -d && ff http://localhost:3001'
 alias drmariadb='docker run -d --name mariadb -e MYSQL_ROOT_PASSWORD=123456 -p 3307:3307 mariadb:latest && sleep 30 && docker exec -it mariadb mariadb -u root -p'
-
-
-alias ram="py python /mnt/c/study/python/scripts/ram_monitor_dashboard/a.py"
-
-
-
-wcompile="cat /mnt/c/study/python/'compile in windows powershell' "
-
-
-
-alias tinder="echo 'cd C:/study/powershell/scripts/; ./tinderbot.ps1' "
-
-
-
+alias ram='python /mnt/c/study/python/scripts/ram_monitor_dashboard/a.py'
+alias wcompile="cat '/mnt/c/study/python/compile in windows powershell'"
+alias tinder="cd C:/study/powershell/scripts/ && ./tinderbot.ps1"
+alias bumble="cd C:/study/powershell/scripts/bots && ./bumble.ps1"
 alias wl="py /mnt/c/study/Credentials/orderbylength.py"
-
-
-
-
-alias pubip="echo  'http://87.70.162.212'"
-
+alias pubip="echo 'http://87.70.162.212'"
 alias rip="ff 'http://192.168.1.1'"
-
 alias plex="ff 'http://87.70.162.212:32400'"
-
-
-alias getplex="updates && echo deb https://downloads.plex.tv/repo/deb public main | sudo tee /etc/apt/sources.list.d/plexmediaserver.list && curl https://downloads.plex.tv/plex-keys/PlexSign.key | sudo apt-key add - && updates && cc &&  sudo apt install plexmediaserver -y && sudo systemctl enable plexmediaserver && sudo systemctl start plexmediaserver && ff http://87.70.162.212:32400/web/ "
-
+alias getplex="updates && echo deb https://downloads.plex.tv/repo/deb public main | sudo tee /etc/apt/sources.list.d/plexmediaserver.list && curl https://downloads.plex.tv/plex-keys/PlexSign.key | sudo apt-key add - && updates && cc && sudo apt install plexmediaserver -y && sudo systemctl enable plexmediaserver && sudo systemctl start plexmediaserver && ff http://87.70.162.212:32400/web/"
 alias getff="apt install firefox-esr -y"
-
-alias defender='cmd.exe /c C:backup/windowsapps/install/afterformat/windows-defender-remover-main/windows-defender-remover-main/Script_Run.bat'
-                  
-alias act=" cd /mnt/c/backup/windowsapps/install/Microsoft-Activation-Scripts-master/mas/All-In-One-Version && cmd MAS_AIO.cmd"                  
-                  
-#PYTHON
-alias python='python3'                  
+alias defender='cmd.exe /c C:/backup/windowsapps/install/afterformat/windows-defender-remover-main/windows-defender-remover-main/Script_Run.bat'
+alias act="cd /mnt/c/backup/windowsapps/install/Microsoft-Activation-Scripts-master/mas/All-In-One-Version && cmd MAS_AIO.cmd"
+alias python='python3'
 alias py='python3'
 alias encrypt='python3 /mnt/c/study/python/scripts/encrypt/encrypt.py'
 alias decrypt='python3 /mnt/c/study/python/scripts/encrypt/decrypt.py'
 alias compile='echo "& C:\Users\micha\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\Scripts\pyinstaller.exe --noconsole"'
-
 alias myg="py /mnt/c/study/python/scripts/dockermenu/4.py"
-alias editg=" gedit /mnt/c/study/python/scripts/dockermenu/4.py"
-
-
-#wsl2
-alias aliases=' gedit /mnt/c/backup/linux/wsl/alias.txt'
-alias cpalias='cp /mnt/c/backup/linux/wsl/alias.txt /root/.bashrc && cp /mnt/c/backup/linux/wsl/alias.txt ~/.bashrc'
-
+alias editg="gedit /mnt/c/study/python/scripts/dockermenu/4.py"
+alias aliases="gedit /mnt/c/backup/linux/wsl/alias.txt"
+alias cpalias="cp /mnt/c/backup/linux/wsl/alias.txt /root/.bashrc && cp /mnt/c/backup/linux/wsl/alias.txt ~/.bashrc"
 alias cmd='cmd.exe /c'
-
-complete -C /mnt/c/Users/micha/mc mc
+complete -C '/mnt/c/Users/micha/mc' mc
 alias wall="py /mnt/c/study/python/scripts/wallpaperdownloader.py"
 alias wall1="py /mnt/c/study/python/scripts/wallpaper1sec.py"
 alias savegames="cd /mnt/c/backup/gamesaves && drun gamesdata michadockermisha/backup:gamesaves sh -c 'apk add rsync && rsync -aP /home/* /c/backup/gamesaves && exit' && built michadockermisha/backup:gamesaves . && docker push michadockermisha/backup:gamesaves && rm -rf ./*"
 alias sshct="ssh root@192.168.1.100"
 alias pihole="gc http://192.168.1.100/admin/"
-alias savedg='cd /mnt/c/backup/gamesaves && drun gamesdata michadockermisha/backup:gamesaves sh -c "apk add rsync && rsync -aP /home/* /c/backup/gamesaves && exit" '
+alias savedg="cd /mnt/c/backup/gamesaves && drun gamesdata michadockermisha/backup:gamesaves sh -c 'apk add rsync && rsync -aP /home/* /c/backup/gamesaves && exit'"
 alias wordpress="http://192.168.1.101/wp-admin/"
 alias reddit="py /mnt/c/study/python/APIs/my/redditapp/reddit.py"
-alias qbittorent="gc 'http://192.168.1.140:8080/' "
-alias sjavascript=" cd /mnt/c/study/frontend/javascript"
-alias sfront=" cd /mnt/c/study/frontend"
-
+alias qbittorent="gc 'http://192.168.1.140:8080/'"
+alias sjavascript="cd /mnt/c/study/frontend/javascript"
+alias sfront="cd /mnt/c/study/frontend"
 alias scomptia="cd /mnt/c/study/exams/compTIA"
 alias sizes="dfs && size"
 alias allips="nmap -sn 192.168.1.1/24"
 alias kstart="minikube start --driver=docker --force"
 alias sbash="cd /mnt/c/study/linux/bash"
-alias text="py /mnt/c/study/python/scripts/'text editor app'/TextEditor/app.py"
+alias text="py '/mnt/c/study/python/scripts/text editor app/TextEditor/app.py'"
 alias sshwindows="ssh Administrator@192.168.1.10"
-
 alias tickets="gc http://192.168.1.235:3000/"
-alias fixwin="echo 'choco upgrade all -y --force; Repair-WindowsImage -Online -ScanHealth; Repair-WindowsImage -Online -RestoreHealth; sfc /scannow ; DISM.exe /Online /Cleanup-Image /CheckHealth ; DISM.exe /Online /Cleanup-Image /RestoreHealth ; dism /online /cleanup-image /startcomponentcleanup; chkdsk /f /r; net start wuauserv; ./updates.ps1 ' "
-alias fubuntu="echo 'wsl --unregister ubuntu; wsl --import ubuntu C:\wsl2\ubuntu C:\backup\linux\wsl\ubuntu.tar' "
-alias backupubu="echo 'wsl --export ubuntu C:\backup\linux\ubuntu.tar' "
+alias fixwin="echo 'choco upgrade all -y --force; Repair-WindowsImage -Online -ScanHealth; Repair-WindowsImage -Online -RestoreHealth; sfc /scannow ; DISM.exe /Online /Cleanup-Image /CheckHealth ; DISM.exe /Online /Cleanup-Image /RestoreHealth ; dism /online /cleanup-image /startcomponentcleanup; chkdsk /f /r; net start wuauserv; ./updates.ps1 '"
+alias fubuntu="echo 'wsl --unregister ubuntu; wsl --import ubuntu C:\wsl2\ubuntu C:\backup\linux\wsl\ubuntu.tar'"
+alias backupubu="echo 'wsl --export ubuntu C:\backup\linux\ubuntu.tar'"
 alias size='du -sh /mnt/c/wsl2/ext4.vhdx && du -sh /mnt/c/wsl2/ubuntu/ext4.vhdx'
 alias msf="cd /mnt/c/study/docker/files/dockerfiles/mfsconsole && docker build -t metasploit . && docker run -it --rm metasploit"
 alias kubedash="gc http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/cronjob?namespace=default"
-alias kubedashecho="echo 'kubectl proxy && gc http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/cronjob?namespace=default' "
-
-
-
+alias kubedashecho="echo 'kubectl proxy && gc http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/cronjob?namespace=default'"
 alias sserver="cd /mnt/c/study/windows/server"
 alias gcp="gc https://console.cloud.google.com/"
 alias sansible="cd /mnt/c/study/automation/ansible"
@@ -566,11 +528,10 @@ alias sautomation="cd /mnt/c/study/automation"
 alias ssecurity="cd /mnt/c/study/security"
 alias shacking="cd /mnt/c/study/security/hacking"
 alias libre="libreoffice --writer"
-alias awsvm="ff 'https://us-east-1.console.aws.amazon.com/ec2/home?region=us-east-1#Instances:' "
-
+alias awsvm="ff 'https://us-east-1.console.aws.amazon.com/ec2/home?region=us-east-1#Instances:'"
 alias swebhosting="cd /mnt/c/study/webhosting"
 alias sfrontent="cd /mnt/c/study/frontend"
 alias word="ls | grep"
+alias fall="echo 'wsl --unregister kali-linux; wsl --import kali-linux C:\wsl2 C:\backup\linux\wsl\kalifull.tar; wsl --unregister ubuntu; wsl --import ubuntu C:\wsl2\ubuntu\ C:\backup\linux\wsl\ubuntu.tar'"
 
 
-alias fall="wsl --unregister kali-linux; wsl --import kali-linux C:\wsl2 C:\backup\linux\wsl\kalifull.tar; wsl --unregister ubuntu; wsl --import ubuntu C:\wsl2\ubuntu\ C:\backup\linux\wsl\ubuntu.tar"
