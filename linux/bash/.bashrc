@@ -142,71 +142,42 @@ fi
 
 export DISPLAY=$(awk '/nameserver / {print $2; exit}' /etc/resolv.conf 2>/dev/null):0
 
-# Docker containers aliases
-alias whisper='docker run -v /mnt/c/:/c/ -it michadockermisha/backup:whisper bash'
-alias st='docker run -v /mnt/c/:/c/ -it --name study michadockermisha/backup:study'
-alias pushwh='docker push michadockermisha/backup:whisper'
-alias startwh='docker start -ai whisper'
-alias portainer='docker pull michadockermisha/backup:portainer && docker run -d -p 9000:9000 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock michadockermisha/backup:portainer && ff localhost:9000'
-
-alias webtop="bash /mnt/c/study/docker/files/scripts/alpinewebgui.sh"
-
-alias kraken='drun gitkraken michadockermisha/backup:gitkraken sh -c "apk add rsync && rsync -aP /home/* /c/kraken && exit" && cd /mnt/c/kraken/ && cmd.exe /c "gitkraken.exe"'
-
-alias krak=' cd /mnt/c/kraken/ && cmd.exe /c "gitkraken.exe"'
-
-alias dcode='docker run -v /mnt/c/:/c/ -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -it --rm --name my_container michadockermisha/backup:vscode bash -c "echo 'y' | code --no-sandbox --user-data-dir=~/vscode-data && bash"'
 
 
-alias updatedcode="docker commit my_container michadockermisha/backup:vscode && docker push michadockermisha/backup:vscode"
-
-
-alias savehosts='docker commit b541bfc8a1e1 michadockermisha/backup:opensuse && \
-docker push michadockermisha/backup:opensuse && \
-docker commit c4f47b0680ca michadockermisha/backup:debian && \
-docker push michadockermisha/backup:debian && \
-docker commit 0adc7d163c34 michadockermisha/backup:kali && \
-docker push michadockermisha/backup:kali && \
-docker commit 50db59e77e31 michadockermisha/backup:fedora && \
-docker push michadockermisha/backup:fedora && \
-docker commit e5403a943324 michadockermisha/backup:ubuntu && \
-docker push michadockermisha/backup:ubuntu'
-
-# Docker general aliases
 alias ds='docker search'
-alias dstart='sudo service docker start'
-alias dai='docker start -ai'
 alias dps='docker ps --size'
 alias dpsa='docker ps -a --size'
 alias dim='docker images'
 alias built='docker build -t'
-alias dpush='docker push'
-alias start='docker start -ai'
+alias dp='docker push'
 alias drun='docker run -v /mnt/c/:/c/ -it -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -it --name'
 alias dr='docker exec -it'
 alias drc='docker rm -f'
 alias dri='docker rmi -f'
 alias dc='docker commit'
+
 alias dkill='docker stop $(docker ps -aq) || true && docker rm $(docker ps -aq) || true && ( [ "$(docker ps -q)" ] || docker rmi $(docker images -q) || true ) && ( [ "$(docker images -q)" ] || docker system prune -a --volumes --force ) && docker network prune --force || true'
+
 alias commit='bash /mnt/c/study/docker/files/scripts/commit.sh'
 alias push='docker images --format '{{.Repository}}:{{.Tag}}' | xargs -L1 docker push'
 alias build="cp /mnt/c/study/docker/files/dockerfiles/buildimage ./Dockerfile && nano Dockerfile"
 alias build2='cp /mnt/c/study/docker/files/dockerfiles/buildthispath ./Dockerfile && nano Dockerfile'
-alias dl='bash /mnt/c/study/docker/originaldl.sh'
+
 alias containerip="docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "
+
 alias killc='docker stop $(docker ps -q)
 docker rm $(docker ps -aq)'
-alias ms='docker run -v /mnt/c/:/c/ -it -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix michadockermisha/backup:$2 --name $1'
+
 alias dcu='docker-compose up -d'
 
-#BACKUP TO DOCKER
+
 alias backupwsl='cd /mnt/c/backup/linux/wsl && built michadockermisha/backup:wsl . && docker push michadockermisha/backup:wsl'
 alias backupst='stu && built michadockermisha/backup:study . && docker push michadockermisha/backup:study'
 alias backupapps='cd /mnt/c/backup/windowsapps && built michadockermisha/backup:windowsapps . && docker push michadockermisha/backup:windowsapps'
-alias backupasus="cd /mnt/c/backup/asus && built michadockermisha/backup:asus . && docker push michadockermisha/backup:asus"
 
 
-alias backitup='backupapps && backupst && backupwsl && backupasus'
+
+alias backitup='backupapps && backupst && backupwsl'
 
 #restore
 
@@ -218,59 +189,37 @@ alias restorelinux='cdbackup && mkdir linux && drun linux michadockermisha/backu
 alias restoreasus='cdbackup && drun asus michadockermisha/backup:wsl sh -c "apk add rsync && rsync -aP /home /c/backup/ && cd /c/backup && mv home asus && exit" '
 
 
-alias restorebackup='c && mkdir backup && drun asus michadockermisha/backup:asus sh -c "apk add rsync && rsync -aP /home /c/backup/ && cd /c/backup && mv home asus && exit" && drun windowsapps michadockermisha/backup:windowsapps sh -c "apk add rsync && rsync -aP /home /c/backup/ && cd /c/backup/ && mv home windowsapps && exit" && cdbackup && mkdir linux && drun linux michadockermisha/backup:wsl sh -c "apk add rsync && rsync -aP /home /c/backup/linux && cd /c/backup/linux && mv home wsl && exit" '
+alias restorebackup='c && mkdir backup && drun windowsapps michadockermisha/backup:windowsapps sh -c "apk add rsync && rsync -aP /home /c/backup/ && cd /c/backup/ && mv home windowsapps && exit" && cdbackup && mkdir linux && drun linux michadockermisha/backup:wsl sh -c "apk add rsync && rsync -aP /home /c/backup/linux && cd /c/backup/linux && mv home wsl && exit" '
 
 
-# General aliases
 alias ps='docker ps -a --size && docker ps --size && docker images'
 alias cc='clear'
 alias brc='gedit ~/.bashrc'
 alias brc1='source ~/.bashrc && source /root/.bashrc'
 alias brc2='brc1 && rsync -aP /root/.bashrc /mnt/c/backup/linux/wsl/alias.txt && rsync -aP /root/.bashrc ~/.bashrc && rsync -aP /root/.bashrc /mnt/c/study/linux/bash/.bashrc'
 alias updates='sudo apt update -y && sudo apt upgrade -y && sudo apt autoremove -y'
+alias update='apt update'
 alias os='cat /etc/os-release'
 alias cpbash='sudo cp /root/.bashrc /home/kali/.bashrc'
 
-
-# networking
-alias myip="hostname -I | cut -d' ' -f1"
 alias gatway="netstat -rn | grep '^0.0.0.0'"
 
-
-# VMS
-alias server='cmd.exe /c "C:\Program Files (x86)\VMware\VMware Workstation\vmrun.exe" -T ws start "C:\windowserver22\vmware\windowserver22\windowserver22.vmx"'
-alias win='cmd.exe /c ""C:\Program Files (x86)\VMware\VMware Workstation\vmrun.exe" -T ws start "C:\windows11vm\windows11.vmx"'
-alias vmkey='cat /mnt/c/backup/windowsapps/install/vmware/key.txt'
-
-
-#SSH
 alias ssk='ssh-keygen -t rsa -b 2048 && ssh-copy-id'
-alias scpwhisper="echo 'scp a.mp3 micha@192.168.1.247:/home/micha/' "
-alias sshwhisper="ssh micha@192.168.1.247"
-alias scprox='echo "scp root@192.168.1.222:/root"'
 alias sshprox="ssh root@192.168.1.222"
-alias sshserver="ssh micha@192.168.1.195"
 alias sshubuntu="ssh ubuntu@192.168.1.193"
-alias scptxt='scp *.txt ubuntu@192.168.1.193:/home/ubuntu/'
 
-#CD aliases
+
 alias c='cd /mnt/c/'
 alias stu='cd /mnt/c/study'
-alias apps='cd /mnt/c/backup/windowsapps/installed'
-alias install='cd /mnt/c/backup/windowsapps/install'
 alias cdwsl='cd /mnt/c/backup/linux/wsl'
 alias games='cd /mnt/c/games'
-alias cdlinux='cd /mnt/c/backup/linux'
-alias downloads='cd /mnt/c/Users/micha/Downloads'
+alias down='cd /mnt/c/Users/micha/Downloads'
 alias pfiles="c && cd 'Program Files'"
 alias wapps='pfiles && cd WindowsApps'
-alias cdmp="cd /root/Downloads"
 alias cdbackup="c && cd backup"
+alias cdapps="cd /mnt/c/backup/windowsapps"
 
 
-
-#CD STUDY
-alias sai='cd /mnt/c/study/AI'
 alias scloud='cd /mnt/c/study/cloud'
 alias sdocker='cd /mnt/c/study/docker'
 alias sfirewall='cd /mnt/c/study/firewall'
@@ -278,26 +227,20 @@ alias slinux='cd /mnt/c/study/linux'
 alias smonitoring='cd /mnt/c/study/monitoring'
 alias spowershell='cd /mnt/c/study/powershell'
 alias sssh='cd /mnt/c/study/ssh'
-alias sansible='cd /mnt/c/study/ansible'
 alias sdatabases='cd /mnt/c/study/databases'
-alias sdockerfile='cd /mnt/c/study/Dockerfile'
 alias sgit='cd /mnt/c/study/git'
 alias smalware='cd /mnt/c/study/malware'
 alias snetworking='cd /mnt/c/study/networking'
 alias spython='cd /mnt/c/study/python'
 alias svirtualmachines='cd /mnt/c/study/virtualmachines'
 alias sbash='cd /mnt/c/study/linux/bash'
-alias sdebian='cd /mnt/c/study/debian based'
 alias sexams='cd /mnt/c/study/exams'
 alias skubernetes='cd /mnt/c/study/kubernetes'
-alias smetasploit='cd /mnt/c/study/metasploit'
-alias snmap='cd /mnt/c/study/nmap&wireshark'
-alias sreverse='cd /mnt/c/study/reverseSHELL'
 alias swindows='cd /mnt/c/study/windows'
 alias sproxmox="cd /mnt/c/study/virtualmachines/proxmox"
 alias sserver="cd /mnt/c/study/windows/server"
 alias spythons='cd /mnt/c/study/python/scripts'
-alias sjavascript=" cd /mnt/c/study/javascript"
+
 
 #ANSIBLE
 alias cda='cd /mnt/c/study/ansible/etc/ansible'
@@ -310,100 +253,53 @@ alias ansiblereboot='ansible docker -a "reboot"'
 alias ansibleping='ansible docker -m ping'
 alias ansibleupdate=' ansible-playbook -i /etc/ansible/hosts /etc/ansible/playbooks/update.yml'
 
-#GITHUB
+
 alias gl='apt install gh -y && gh auth login'
-alias token='echo "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" '
 alias gadd=' git add . && git commit -m "commit" && git push -u origin main'
-alias gpython=' cd /mnt/c/study/git/repos/python/python'
-alias gbash=' cd /mnt/c/study/git/repos/bash/bash'
-alias gbashrc='cd /mnt/c/study/git/repos/.bashrc/.bashrc'
-alias gps1='cd /mnt/c/study/git/repos/ps1/powershell'
-alias gdesk='cmd C:/Users/micha/AppData/Local/GitHubDesktop/GitHubDesktop.exe'
 
 
-#ECHO
-
-alias choco="echo 'Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))'"
 alias fkali='echo "wsl --unregister kali-linux; wsl --import kali-linux C:\wsl2 C:\backup\linux\wsl\kalifull.tar"'
-alias fubuntu=' echo  "wsl --unregister ubuntu;  wsl --import ubuntu C:\wsl2\ubuntu C:\wsl2 C:\backup\linux\wsl\ubuntu.tar"'
 
 
 alias backupw='echo "wsl --export kali-linux C:\backup\linux\kalifull.tar; wsl --export ubuntu C:\backup\linux\ubuntu.tar"' 
 
 alias wupdates='cat "/mnt/c/study/powershell/scripts/windowsupdates.ps1" && cp "/mnt/c/study/powershell/scripts/windowsupdates.ps1 /mnt/c/users/micha/updates.ps1"'
 
-alias echodkill='docker stop $(docker ps -aq) || true && docker rm $(docker ps -aq) || true && ( [ "$(docker ps -q)" ] || docker rmi $(docker images -q) || true ) && ( [ "$(docker images -q)" ] || docker system prune -a --volumes --force ) && docker network prune --force || true'
 
-alias wslexport='echo "wsl --export kali-linux C:\backup\linux\kalicurrent.tar"'
-
-
-#installations
 alias getsnap='sudo apt install snapd -y && updates && systemctl enable --now snapd.apparmor'
+
 alias getdocker='sudo apt update -y && sudo apt upgrade -y && \
-  sudo apt install -y -qq docker.io kubectl kubernetes-client && \
+  sudo apt install -y -qq docker.io && \
   sudo usermod -aG docker $USER && newgrp docker && sudo service docker start && \
   sudo apt install -y -qq docker.io && sudo usermod -aG docker $USER && \
-  newgrp docker && sudo service docker start && sudo sh -c "sudo setfacl -m user:$USER:rw /var/run/docker.sock && updates'
+  newgrp docker && sudo service docker start && sudo sh -c "sudo setfacl -m user:$USER:rw /var/run/docker.sock && sudo apt update -y && sudo apt upgrade -y'
+
 alias getpython='sudo apt install -y -qq python3 python3-pip pyinstaller && \
   sudo apt update -y && sudo apt upgrade -y && \
   sudo apt install -y -qq sshpass && sudo apt autoremove -y -qq'
+  
 alias getpycharm=' wget https://download.jetbrains.com/python/pycharm-community-2021.2.3.tar.gz && tar -xzf pycharm-community-2021.2.3.tar.gz && sudo mv pycharm-community-2021.2.3 /opt/ && cd /opt/pycharm-community-2021.2.3/bin && ./pycharm.sh'
-alias k8s='sudo snap install microk8s --classic'
 
-alias getdocker='sudo apt install -y docker-compose && sudo apt install -y -qq docker.io && \
-sudo usermod -aG docker $USER && newgrp docker && sudo service docker start && \
-sudo sh -c "sudo setfacl -m user:$USER:rw /var/run/docker.sock && \
-sudo setfacl -m user:$USER:rw /var/run/docker.sock" && sudo systemctl enable docker'
 
-alias getlazyd="LAZYDOCKER_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazydocker/releases/latest" | grep -Po '"tag_name": "v\K[0-9.]+') && curl -Lo lazydocker.tar.gz "https://github.com/jesseduffield/lazydocker/releases/latest/download/lazydocker_${LAZYDOCKER_VERSION}_Linux_x86_64.tar.gz" && mkdir lazydocker-temp && tar xf lazydocker.tar.gz -C lazydocker-temp && sudo mv lazydocker-temp/lazydocker /usr/local/bin && rm -rf lazydocker.tar.gz lazydocker-temp && lazydocker"
-
-alias getgoogler='apt install links w3m googler -y'
 alias getext='apt install tesseract-ocr -y'
 alias text=tesseract
 
-alias getcode='curl -fsSL https://code-server.dev/install.sh | sh'
-alias csrun='code-server'
-alias cs='ff localhost:8080'
 
-# Install basic tools and dependencies
-alias basicinstall='sudo apt install -y -qq wireless-tools rsync abiword tesseract-ocr gh pv speedtest-cli kali-win-kex \
-net-tools gedit thonny kali-desktop-xfce curl wget ansible-core jq libgtk-3-dev libcurl4-openssl-dev -y'
+alias basicinstall='sudo apt install -y -qq wireless-tools kali-win-kex && net-tools gedit kali-desktop-xfce curl wget jq libgtk-3-dev libcurl4-openssl-dev -y'
 
 # Install SSH
-alias getssh='sudo apt install -y -qq openssh-server && sudo service ssh start && \
-sudo apt install -y -qq sshpass'
-
-
-##tgpt  (-i, -c )
-alias getgpt='curl -sSL https://raw.githubusercontent.com/aandrew-me/tgpt/main/install | bash -s /usr/local/bin'
-alias i='tgpt -i'
-alias ask='tgpt'
-alias m='tgpt -m'
-
-# Full installation sequence
-alias full='updates && getgpt && getgoogler && basicinstall && getssh && getdocker && getpython && updates'
+alias getssh='sudo apt install -y -qq openssh-server && sudo service ssh start && sudo apt install -y -qq sshpass'
 
   
 export DOCKER_BUILDKIT=1
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 
 
-# SLEEP
-alias 60='sleep 60 &&'
-alias 30='sleep 30 &&'
-alias 5='sleep 300 &&'
-alias 10='sleep 600 &&'
-alias 1800='sleep 1800 &&'
-alias hour='sleep 3600 &&'
-
-# DISPLAY
 alias ed='echo $DISPLAY'
 alias x11='export DISPLAY=:0'
 
 #system
 alias reset='echo "systemreset.exe" '
-alias resetfull='echo "systemreset.exe" '
-alias scripts='echo  "Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned" '
 alias conf=' nano /etc/wsl.conf'
 alias conf2='nano /mnt/c/Users/micha/.wslconfig'
 alias cleanwsl=' cat "/mnt/c/study/powershell/scripts/optimizewsl.ps1" && cp /mnt/c/study/powershell/scripts/optimizewsl.ps1 /mnt/c/Users/micha/ccwsl.ps1'
@@ -427,36 +323,24 @@ alias ytlater='gc https://www.youtube.com/playlist?list=WL'
 alias gamespot='ff https://www.gamespot.com/'
 alias anime='ff https://9animetv.to/home'
 alias aws="gc https://us-east-1.console.aws.amazon.com/console/home?region=us-east-1#"
-alias netdata="gc http://192.168.1.222:19999/"
-alias wordpress="gc https://chilltimecubehome.wordpress.com/wp-admin/customize.php?return=https%3A%2F%2Fwordpress.com%2Fhome%2Fchilltimecube.home.blog"
 
-alias pfsense="gc https://192.168.1.148/"
 
-alias truenas="gc http://192.168.1.102/"
+alias prox="gc 192.168.1.222:8006"
+alias plex="ff 192.168.1.100:32400"
 
-alias ha="ff http://homeassistant.local:8123/"
-alias prox="gc 77.127.172.96:8006"
-alias plex="ff 77.127.172.96:32400"
-
-#EXE
-alias qb='cmd.exe /c "C:\Program Files\qBittorrent\qbittorrent.exe"'
-alias vs="cmd.exe /c C:/Users/micha/AppData/Roaming/Microsoft/Windows/'Start Menu'/Programs/'Visual Studio Code'/'Visual Studio Code.lnk'"
+alias qb='cmd.exe /c "C:\Program Files\qBittorrent\qbittorrent.exe" '
 alias jup="jupyter notebook --allow-root"
 
 
-alias catnmap="cat /mnt/c/study/'nmap&wireshark'/top20nmapcommands"
-
-#EXPORT
 export PATH=$PATH:/snap/bin
 export DISPLAY=:0
-export DOCKER_CONFIG=/mnt/c/docker/DockerDesktopWSL/data
+
 
 alias qcow='qemu-img convert -f vmdk -O qcow2'
 alias dfs='df -h /mnt/c'
 alias disk='du -sh /mnt/c /mnt/wslg'
 alias compare='ff https://www.textcompare.org/python/'
 
-alias prometheus=' cd  /usr/local/bin/prometheus/ && ./prometheus'
 alias pyc=' bash /opt/pycharm-community-2021.2.3/bin/pycharm.sh'
 alias biggest=' echo "du -h --max-depth=1 -a | sort -rh" '
 alias wslg='cd /mnt/wslg && biggest'
@@ -465,17 +349,13 @@ alias wslg='cd /mnt/wslg && biggest'
 
 alias psw='powershell.exe'
 alias ex='explorer.exe .'
-alias exd='cd /d && ex'
 alias venv='python3 -m venv venv && source venv/bin/activate'
 alias mp3='docker run --rm -v $HOME/Downloads:/root/Downloads dizcza/youtube-mp3 $1'
 alias mp4='docker run --rm -i -e PGID=$(id -g) -e PUID=$(id -u) -v "$(pwd)":/workdir:rw mikenye/youtube-dl'
 alias txt='tesseract'
-alias kuma='cd /mnt/c/study/docker/files/composefiles/kuma && docker-compose up -d && ff http://localhost:3001'
 alias drmariadb='docker run -d --name mariadb -e MYSQL_ROOT_PASSWORD=123456 -p 3307:3307 mariadb:latest && sleep 30 && docker exec -it mariadb mariadb -u root -p'
 alias ram='python /mnt/c/study/python/scripts/ram_monitor_dashboard/a.py'
 alias wcompile="cat '/mnt/c/study/python/compile in windows powershell'"
-alias tinder="cd C:/study/powershell/scripts/ && ./tinderbot.ps1"
-alias bumble="cd C:/study/powershell/scripts/bots && ./bumble.ps1"
 alias wl="py /mnt/c/study/Credentials/orderbylength.py"
 alias pubip="echo 'http://87.70.162.212'"
 alias rip="ff 'http://192.168.1.1'"
@@ -512,7 +392,7 @@ alias allips="nmap -sn 192.168.1.1/24"
 alias kstart="minikube start --driver=docker --force"
 alias sbash="cd /mnt/c/study/linux/bash"
 alias text="py '/mnt/c/study/python/scripts/text editor app/TextEditor/app.py'"
-alias sshwindows="ssh Administrator@192.168.1.10"
+alias sshwindows="ssh Administrator@192.168.1.230"
 alias tickets="gc http://192.168.1.235:3000/"
 alias fixwin="echo 'choco upgrade all -y --force; Repair-WindowsImage -Online -ScanHealth; Repair-WindowsImage -Online -RestoreHealth; sfc /scannow ; DISM.exe /Online /Cleanup-Image /CheckHealth ; DISM.exe /Online /Cleanup-Image /RestoreHealth ; dism /online /cleanup-image /startcomponentcleanup; chkdsk /f /r; net start wuauserv; ./updates.ps1 '"
 alias fubuntu="echo 'wsl --unregister ubuntu; wsl --import ubuntu C:\wsl2\ubuntu C:\backup\linux\wsl\ubuntu.tar'"
@@ -533,5 +413,22 @@ alias swebhosting="cd /mnt/c/study/webhosting"
 alias sfrontent="cd /mnt/c/study/frontend"
 alias word="ls | grep"
 alias fall="echo 'wsl --unregister kali-linux; wsl --import kali-linux C:\wsl2 C:\backup\linux\wsl\kalifull.tar; wsl --unregister ubuntu; wsl --import ubuntu C:\wsl2\ubuntu\ C:\backup\linux\wsl\ubuntu.tar'"
+
+
+alias movies=" echo 'C:\study\python\scripts\torrents; python moviesdownload.py' "
+
+
+alias tv=" echo 'C:\study\python\scripts\torrents; python tvdownload.py' "
+
+
+alias dcode='docker run -v /mnt/c/:/c/ -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -it --rm --name my_container michadockermisha/backup:python bash -c "echo 'y' | code --no-sandbox --user-data-dir=~/vscode-data && bash"'
+
+
+alias dtorch='docker run -v /mnt/c/:/c/ -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -it --rm --name my_container michadockermisha/backup:python bash -c "pip install torch torchvision torchaudio && echo 'y' | code --no-sandbox --user-data-dir=~/vscode-data && bash"'
+
+
+alias tinder="echo 'cd C:/study/powershell/scripts/bots; ./tinderbot.ps1' "
+
+alias bumble="echo 'C:/study/powershell/scripts/bots; ./bumble.ps1' "
 
 

@@ -4,3 +4,7 @@ drun gitkraken michadockermisha/backup:gitkraken sh -c "apk add rsync && rsync -
 # to run the kraken app: 
 
 cd /mnt/c/kraken/ && cmd.exe /c "gitkraken.exe"
+
+one liner:
+
+drun gitkraken michadockermisha/backup:gitkraken sh -c "apk add rsync && rsync -aP /home/* /c/kraken && exit" && cd /mnt/c/kraken/ && cmd.exe /c "gitkraken.exe"
