@@ -4,34 +4,23 @@ apk update
 apk add openssh
 
 
-2)Generate SSH Keys (if needed):
+2)Generate SSH Keys:
 
-If you don't have SSH keys set up, you may need to generate them. You can use the following commands:
-bash
-Copy code
-ssh-keygen -t rsa -b 2048
+ssh-keygen -A
 
 Configure SSH Server:
 
-Edit the SSH server configuration file, typically located at /etc/ssh/sshd_config. You may want to customize settings based on your requirements.
-bash
-Copy code
 vi /etc/ssh/sshd_config
 Make sure to set PermitRootLogin to yes if you want to allow root login, and set other configurations as needed.
+
 Start SSH Server:
 
 Start the SSH server:
-bash
-Copy code
-/etc/init.d/sshd start
-or
-bash
-Copy code
-service sshd start
+
+/usr/sbin/sshd
+
 Connect to the Container:
 
 You can now connect to the container using SSH. If you're connecting from the host machine, use the container's IP address or hostname:
 
-bash
-Copy code
 ssh username@container_ip
