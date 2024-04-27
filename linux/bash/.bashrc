@@ -434,3 +434,5 @@ alias bumble="echo 'C:/study/powershell/scripts/bots; ./bumble.ps1' "
 alias word='find "$(pwd)" -name'
 
 alias sfrontend="stu && cd frontend"
+
+
