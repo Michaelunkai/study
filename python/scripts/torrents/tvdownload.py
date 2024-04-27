@@ -2,7 +2,21 @@ import subprocess
 
 # List of titles
 titles = [
-"Sharp Objects",
+"Little Fires Everywhere",
+"Ragnarok",
+"Hollywood",
+"Into the Night",
+"Rise of Empires: Ottoman",
+"Perry Mason",
+"Killer Inside: The Mind of Aaron Hernandez (2020)",
+"Brave New World (2020)",
+"Good Omens",
+"Dead to Me",
+"See",
+"For All Mankind",
+"Midnight Mass",
+"Spartacus: Gods of the Arena",
+"The Pacific",
 "The Fall of the House of Usher",
 "Black Bird",
 "Dexter: New Blood",
