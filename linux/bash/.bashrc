@@ -272,7 +272,7 @@ alias getdocker='sudo apt update -y && sudo apt upgrade -y && \
   sudo apt install -y -qq docker.io && \
   sudo usermod -aG docker $USER && newgrp docker && sudo service docker start && \
   sudo apt install -y -qq docker.io && sudo usermod -aG docker $USER && \
-  newgrp docker && sudo service docker start && sudo sh -c "sudo setfacl -m user:$USER:rw /var/run/docker.sock" && sudo apt update -y && sudo apt upgrade -y'
+  newgrp docker && sudo service docker start && sudo sh -c "sudo setfacl -m user:$USER:rw /var/run/docker.sock && sudo apt update -y && sudo apt upgrade -y'
 
 alias getpython='sudo apt install -y -qq python3 python3-pip pyinstaller && \
   sudo apt update -y && sudo apt upgrade -y && \
@@ -431,4 +431,6 @@ alias tinder="echo 'cd C:/study/powershell/scripts/bots; ./tinderbot.ps1' "
 
 alias bumble="echo 'C:/study/powershell/scripts/bots; ./bumble.ps1' "
 
+alias word='find "$(pwd)" -name'
 
+alias sfrontend="stu && cd frontend"
