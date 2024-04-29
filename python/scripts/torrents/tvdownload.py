@@ -3,18 +3,13 @@ import subprocess
 # List of titles
 titles = [
 "Little Fires Everywhere",
-"Ragnarok",
 "Hollywood",
 "Into the Night",
-"Rise of Empires: Ottoman",
 "Perry Mason",
 "Killer Inside: The Mind of Aaron Hernandez (2020)",
 "Brave New World (2020)",
 "Good Omens",
-"Dead to Me",
-"See",
 "For All Mankind",
-"Midnight Mass",
 "Spartacus: Gods of the Arena",
 "The Pacific",
 "The Fall of the House of Usher",
@@ -43,7 +38,6 @@ titles = [
 "Miracle Workers",
 "Fresh Off the Boat",
 "Brockmire",
-"Dota: Dragon's Blood",
 "trese",
 "Castlevania: Nocturne",
 "Captain Laserhawk: A Blood Dragon Remix",
@@ -103,6 +97,20 @@ titles = [
 "the patient",
 "the english",
 "The Tourist",
+"fallout",
+" The Gentlemen",
+"Ahsoka",
+"Invincible",
+"Only Murders in the Building",
+"The Chestnut Man",
+"The Innocent",
+"baby reindeer",
+"shogun",
+"It's a Sin",
+"Inside Job",
+"Young Rock",
+"The Undoing",
+
 ]
 
 # Iterate over titles and run the command
