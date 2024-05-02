@@ -1,0 +1,69 @@
+Show current database connections:
+sql
+Copy code
+SHOW PROCESSLIST;
+Display server status:
+sql
+Copy code
+SHOW STATUS;
+View current running queries:
+sql
+Copy code
+SELECT * FROM INFORMATION_SCHEMA.PROCESSLIST WHERE COMMAND != 'Sleep';
+Check database size:
+sql
+Copy code
+SELECT table_schema "Database Name", SUM(data_length + index_length) / 1024 / 1024 "Database Size (MB)" FROM information_schema.tables GROUP BY table_schema;
+List active threads:
+sql
+Copy code
+SHOW ENGINE INNODB STATUS;
+Check table fragmentation:
+sql
+Copy code
+SHOW TABLE STATUS;
+View slow queries:
+sql
+Copy code
+SHOW VARIABLES LIKE 'slow_query_log';
+Analyze slow query log:
+sql
+Copy code
+SHOW VARIABLES LIKE 'long_query_time';
+Check index usage:
+sql
+Copy code
+SHOW INDEX FROM table_name;
+View buffer pool usage:
+sql
+Copy code
+SHOW ENGINE INNODB STATUS;
+Display query cache statistics:
+sql
+Copy code
+SHOW STATUS LIKE 'Qcache%';
+Check buffer pool hit ratio:
+sql
+Copy code
+SHOW STATUS LIKE 'Innodb_buffer_pool%';
+Monitor disk I/O:
+sql
+Copy code
+SHOW GLOBAL STATUS LIKE 'Innodb_data_reads';
+Check lock contention:
+sql
+Copy code
+SELECT * FROM INFORMATION_SCHEMA.INNODB_LOCKS;
+View replication lag:
+sql
+Copy code
+SHOW SLAVE STATUS\G;
+
+Check server uptime:
+sql
+Copy code
+SHOW STATUS LIKE 'uptime';
+View maximum allowed connections:
+sql
+Copy code
+SHOW VARIABLES LIKE 'max_connections';
