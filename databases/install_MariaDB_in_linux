@@ -124,9 +124,9 @@ Step 3: Configure MariaDB
 
 MariaDB ships with default settings that are considered weak and present loopholes which can potentially be exploited by nefarious parties leading to data breaches.
 
-To remediate this issue, you need to go an extra step and harden your MariaDB instance. To improve the security of the MariaDB database engine, you need to run the mysql_secure_installation shell script as shown.
+To remediate this issue, you need to go an extra step and harden your MariaDB instance. To improve the security of the MariaDB database engine, you need to run the my _secure_installation shell script as shown.
 
-sudo mysql_secure_installation
+sudo my _secure_installation
 
 The script walks you through a series of prompts that will require you to make changes to the security options that involve the MariaDB database engine.
 
@@ -159,7 +159,7 @@ Next, create a regular user. Here, we are creating a user called admin_user. Be 
 
 CREATE USER 'admin_user'@'localhost' IDENTIFIED BY 'secret_password';
 
-Output
+ 
 
 Query OK, 0 rows affected (0.000 sec)
 
@@ -192,13 +192,13 @@ To check the existing databases, run the command:
 
 SHOW DATABASES;
 
-Output
+ 
 
 +--------------------+
 | Database           |
 +--------------------+
 | information_schema |
-| mysql              |
+| my               |
 | performance_schema |
 +--------------------+
 4 rows in set (0.002 sec)
@@ -207,7 +207,7 @@ To create a new database, run the following query. In this example, we are creat
 
 CREATE DATABASE test_db;
 
-Output
+ 
 
 Query OK, 1 row affected (0.000 sec)
 
@@ -215,15 +215,15 @@ To apply all the changes made without restarting or reloading MariaDB run the qu
 
 > FLUSH PRIVILEGES
 
-Output
+ 
 
 Query OK, 0 rows affected (0.000 sec)
 
 To list all the existing users in your database engine, run the following query.
 
-SELECT host, user FROM mysql.user;
+SELECT host, user FROM my .user;
 
-Output
+ 
 
 +-----------+-------------+
 | Host      | User        |
@@ -238,7 +238,7 @@ To exit the MariaDB prompt, simply run:
 
 QUIT
 
-Output
+ 
 
 Bye
 
