@@ -353,7 +353,7 @@ alias venv='python3 -m venv venv && source venv/bin/activate'
 alias mp3='docker run --rm -v $HOME/Downloads:/root/Downloads dizcza/youtube-mp3 $1'
 alias mp4='docker run --rm -i -e PGID=$(id -g) -e PUID=$(id -u) -v "$(pwd)":/workdir:rw mikenye/youtube-dl'
 alias txt='tesseract'
-alias drmariadb='docker run -v /mnt/c/:/c/ -it -d --name mariadb -e MYSQL_ROOT_PASSWORD=123456 -p 3307:3307 mariadb:latest && sleep 30 && docker exec -it mariadb mariadb -u root -p'
+alias drmariadb='docker run -d --name mariadb -e MYSQL_ROOT_PASSWORD=123456 -p 3307:3307 mariadb:latest && sleep 30 && docker exec -it mariadb mariadb -u root -p'
 alias ram='python /mnt/c/study/python/scripts/ram_monitor_dashboard/a.py'
 alias wcompile="cat '/mnt/c/study/python/compile in windows powershell'"
 alias wl="py /mnt/c/study/Credentials/orderbylength.py"
@@ -434,4 +434,3 @@ alias bumble="echo 'C:/study/powershell/scripts/bots; ./bumble.ps1' "
 alias word='find "$(pwd)" -name'
 
 alias sfrontend="stu && cd frontend"
-
