@@ -8,6 +8,15 @@ libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev git
 
 curl https://pyenv.run | bash
 
+
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
+
+
+source /root/.bashrc &&  source ~/.bashrc
+
+
 #Install Python 3.10
 
 pyenv install 3.10
