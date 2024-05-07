@@ -434,3 +434,11 @@ alias bumble="echo 'C:/study/powershell/scripts/bots; ./bumble.ps1' "
 alias word='find "$(pwd)" -name'
 
 alias sfrontend="stu && cd frontend"
+
+alias fixer="py /mnt/c/study/python/scripts/filesfixer/gptpastefix.py"
+
+alias drmariadb='docker run -v /mnt/c/:/c/ -it -d --name mariadb -e MYSQL_ROOT_PASSWORD=123456 -p 3307:3307 mariadb:latest && sleep 30 && docker exec -it mariadb mariadb -u root -p'
+
+alias playlist="docker run -d -p 8081:8081 -v /mnt/c/Users/micha/videos:/downloads ghcr.io/alexta69/metube && gc localhost:8081"
+
+alias trans="py /mnt/c/study/python/scripts/youtube/transcripts/a.py"
