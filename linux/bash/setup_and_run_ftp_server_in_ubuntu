@@ -187,6 +187,7 @@ sudo mkdir /home/ubuntu/ftp/upload
 sudo chown ubuntu:ubuntu /home/ubuntu/ftp/upload
 echo "My FTP Server" | sudo tee /home/ubuntu/ftp/upload/demo.txt
 chmod 777  /home/ubuntu/ftp/upload
+sudo echo "ubuntu" | sudo tee -a /etc/vsftpd.userlist
 
 sudo restart vsftpd
 
