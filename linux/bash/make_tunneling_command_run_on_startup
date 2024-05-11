@@ -11,6 +11,8 @@ After=network.target
 [Service]
 Type=simple
 ExecStart=lt --port 32400 --subdomain plex --local-host 192.168.1.100
+Restart=always
+RestartSec=12h  # Restart the service every 12 hours
 
 [Install]
 WantedBy=multi-user.target
