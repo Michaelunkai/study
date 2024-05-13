@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['a.py'],
+    ['c.py'],
     pathex=[],
     binaries=[],
     datas=[],
@@ -10,7 +10,7 @@ a = Analysis(
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=[],
+    excludes=['sip'],
     noarchive=False,
     optimize=0,
 )
