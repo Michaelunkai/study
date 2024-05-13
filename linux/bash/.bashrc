@@ -160,8 +160,7 @@ alias dkill='docker stop $(docker ps -aq) || true && docker rm $(docker ps -aq) 
 
 alias commit='bash /mnt/c/study/docker/files/scripts/commit.sh'
 alias push='docker images --format '{{.Repository}}:{{.Tag}}' | xargs -L1 docker push'
-alias build="cp /mnt/c/study/docker/dockerfiles/buildimage ./Dockerfile && nano Dockerfile"
-alias build2='cp /mnt/c/study/docker/dockerfiles/buildthispath ./Dockerfile && nano Dockerfile'
+
 
 alias containerip="docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "
 
@@ -397,7 +396,6 @@ alias tickets="gc http://192.168.1.235:3000/"
 alias fixwin="echo 'choco upgrade all -y --force; Repair-WindowsImage -Online -ScanHealth; Repair-WindowsImage -Online -RestoreHealth; sfc /scannow ; DISM.exe /Online /Cleanup-Image /CheckHealth ; DISM.exe /Online /Cleanup-Image /RestoreHealth ; dism /online /cleanup-image /startcomponentcleanup; chkdsk /f /r; net start wuauserv; ./updates.ps1 '"
 alias fubuntu="echo 'wsl --unregister ubuntu; wsl --import ubuntu C:\wsl2\ubuntu C:\backup\linux\wsl\ubuntu.tar'"
 alias backupubu="echo 'wsl --export ubuntu C:\backup\linux\ubuntu.tar'"
-alias size='du -sh /mnt/c/wsl2/kali/ext4.vhdx && du -sh /mnt/c/wsl2/ubuntu/ext4.vhdx'
 alias msf="cd /mnt/c/study/docker/files/dockerfiles/mfsconsole && docker build -t metasploit . && docker run -it --rm metasploit"
 alias kubedash="gc http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/cronjob?namespace=default"
 alias kubedashecho="echo 'kubectl proxy && gc http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/cronjob?namespace=default'"
@@ -439,5 +437,24 @@ alias fixer="py /mnt/c/study/python/scripts/filesfixer/gptpastefix.py"
 
 alias drmariadb='docker run -v /mnt/c/:/c/ -it -d --name mariadb -e MYSQL_ROOT_PASSWORD=123456 -p 3307:3307 mariadb:latest && sleep 30 && docker exec -it mariadb mariadb -u root -p'
 
-alias playlist="docker run -d -p 8081:8081 -v /mnt/c/Users/micha/videos:/downloads ghcr.io/alexta69/metube && gc localhost:8081"
-alias trans="py /mnt/c/study/python/scripts/youtube/transcripts/a.py"
+
+alias dei="docker exec -it"
+
+
+
+alias getollama="apt update && cd /mnt/c/study/docker/compose/ollama && dcu && apt install npm nodejs -y && npm install -g localtunn el && lt --port 8080 --subdomain ollama && dps"
+
+
+
+alias playlist="py /mnt/c/users/micha/videos/a.py"
+
+
+
+alias size='du -sh /mnt/c/wsl2/ext4.vhdx && du -sh /mnt/c/wsl2/ubuntu/ext4.vhdx'
+
+
+
+alias build="cp /mnt/c/study/docker/dockerfiles/buildimage ./Dockerfile && nano Dockerfile"
+
+
+alias build2='cp /mnt/c/study/docker/dockerfiles/buildthispath ./Dockerfile && nano Dockerfile'
