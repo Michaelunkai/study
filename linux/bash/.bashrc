@@ -160,8 +160,8 @@ alias dkill='docker stop $(docker ps -aq) || true && docker rm $(docker ps -aq) 
 
 alias commit='bash /mnt/c/study/docker/files/scripts/commit.sh'
 alias push='docker images --format '{{.Repository}}:{{.Tag}}' | xargs -L1 docker push'
-alias build="cp /mnt/c/study/docker/files/dockerfiles/buildimage ./Dockerfile && nano Dockerfile"
-alias build2='cp /mnt/c/study/docker/files/dockerfiles/buildthispath ./Dockerfile && nano Dockerfile'
+alias build="cp /mnt/c/study/docker/dockerfiles/buildimage ./Dockerfile && nano Dockerfile"
+alias build2='cp /mnt/c/study/docker/dockerfiles/buildthispath ./Dockerfile && nano Dockerfile'
 
 alias containerip="docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "
 
