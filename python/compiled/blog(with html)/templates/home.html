@@ -1,0 +1,28 @@
+<!-- templates/home.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Micha Fedro's Blog</title>
+</head>
+<body>
+    <nav>
+        <a href="/">Home</a> |
+        <a href="/about">About</a> |
+        <a href="/study">Study</a>
+        <!-- Add more links as needed -->
+    </nav>
+    <h1>Micha Fedro's Blog</h1>
+    <h2>Latest Blog Posts</h2>
+    <ul>
+        {% for post in posts %}
+            <li>
+                <h3>{{ post.title }}</h3>
+                <p>{{ post.content }}</p>
+                <small>Published on {{ post.date.strftime('%B %d, %Y') }}</small>
+                <br>
+                <a href="/edit/{{ post.id }}">Edit Post</a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
