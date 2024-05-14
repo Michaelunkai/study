@@ -238,7 +238,7 @@ alias skubernetes='cd /mnt/c/study/kubernetes'
 alias swindows='cd /mnt/c/study/windows'
 alias sproxmox="cd /mnt/c/study/virtualmachines/proxmox"
 alias sserver="cd /mnt/c/study/windows/server"
-alias spythons='cd /mnt/c/study/python/scripts'
+alias spythons='cd /mnt/c/study/python/apps'
 
 
 #ANSIBLE
@@ -353,8 +353,7 @@ alias mp3='docker run --rm -v $HOME/Downloads:/root/Downloads dizcza/youtube-mp3
 alias mp4='docker run --rm -i -e PGID=$(id -g) -e PUID=$(id -u) -v "$(pwd)":/workdir:rw mikenye/youtube-dl'
 alias txt='tesseract'
 alias drmariadb='docker run -d --name mariadb -e MYSQL_ROOT_PASSWORD=123456 -p 3307:3307 mariadb:latest && sleep 30 && docker exec -it mariadb mariadb -u root -p'
-alias ram='python /mnt/c/study/python/scripts/ram_monitor_dashboard/a.py'
-alias wcompile="cat '/mnt/c/study/python/compile in windows powershell'"
+alias wcompile="cat '/mnt/c/study/python/basics/compile in windows powershell'"
 alias wl="py /mnt/c/study/Credentials/orderbylength.py"
 alias pubip="echo 'http://87.70.162.212'"
 alias rip="ff 'http://192.168.1.1'"
@@ -365,17 +364,17 @@ alias defender='cmd.exe /c C:/backup/windowsapps/install/afterformat/windows-def
 alias act="cd /mnt/c/backup/windowsapps/install/Microsoft-Activation-Scripts-master/mas/All-In-One-Version && cmd MAS_AIO.cmd"
 alias python='python3'
 alias py='python3'
-alias encrypt='python3 /mnt/c/study/python/scripts/encrypt/encrypt.py'
-alias decrypt='python3 /mnt/c/study/python/scripts/encrypt/decrypt.py'
+alias encrypt='python3 /mnt/c/study/python/apps/encrypt/encrypt.py'
+alias decrypt='python3 /mnt/c/study/python/apps/encrypt/decrypt.py'
 alias compile='echo "& C:\Users\micha\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\Scripts\pyinstaller.exe --noconsole"'
-alias myg="py /mnt/c/study/python/scripts/dockermenu/4.py"
-alias editg="gedit /mnt/c/study/python/scripts/dockermenu/4.py"
+alias myg="py /mnt/c/study/python/apps/dockermenu/4.py"
+alias editg="gedit /mnt/c/study/python/apps/dockermenu/4.py"
 alias aliases="gedit /mnt/c/backup/linux/wsl/alias.txt"
 alias cpalias="cp /mnt/c/backup/linux/wsl/alias.txt /root/.bashrc && cp /mnt/c/backup/linux/wsl/alias.txt ~/.bashrc"
 alias cmd='cmd.exe /c'
 complete -C '/mnt/c/Users/micha/mc' mc
-alias wall="py /mnt/c/study/python/scripts/wallpaperdownloader.py"
-alias wall1="py /mnt/c/study/python/scripts/wallpaper1sec.py"
+alias wall="py /mnt/c/study/python/apps/wallpaperdownloader.py"
+alias wall1="py /mnt/c/study/python/apps/wallpaper1sec.py"
 alias savegames="cd /mnt/c/backup/gamesaves && drun gamesdata michadockermisha/backup:gamesaves sh -c 'apk add rsync && rsync -aP /home/* /c/backup/gamesaves && exit' && built michadockermisha/backup:gamesaves . && docker push michadockermisha/backup:gamesaves && rm -rf ./*"
 alias sshct="ssh root@192.168.1.100"
 alias pihole="gc http://192.168.1.100/admin/"
@@ -390,7 +389,7 @@ alias sizes="dfs && size"
 alias allips="nmap -sn 192.168.1.1/24"
 alias kstart="minikube start --driver=docker --force"
 alias sbash="cd /mnt/c/study/linux/bash"
-alias text="py '/mnt/c/study/python/scripts/text editor app/TextEditor/app.py'"
+alias text="py '/mnt/c/study/python/apps/text editor app/TextEditor/app.py'"
 alias sshwindows="ssh Administrator@192.168.1.230"
 alias tickets="gc http://192.168.1.235:3000/"
 alias fixwin="echo 'choco upgrade all -y --force; Repair-WindowsImage -Online -ScanHealth; Repair-WindowsImage -Online -RestoreHealth; sfc /scannow ; DISM.exe /Online /Cleanup-Image /CheckHealth ; DISM.exe /Online /Cleanup-Image /RestoreHealth ; dism /online /cleanup-image /startcomponentcleanup; chkdsk /f /r; net start wuauserv; ./updates.ps1 '"
@@ -433,7 +432,7 @@ alias word='find "$(pwd)" -name'
 
 alias sfrontend="stu && cd frontend"
 
-alias fixer="py /mnt/c/study/python/scripts/filesfixer/gptpastefix.py"
+alias fixer="py /mnt/c/study/python/apps/filesfixer/gptpastefix.py"
 
 alias drmariadb='docker run -v /mnt/c/:/c/ -it -d --name mariadb -e MYSQL_ROOT_PASSWORD=123456 -p 3307:3307 mariadb:latest && sleep 30 && docker exec -it mariadb mariadb -u root -p'
 
@@ -459,15 +458,23 @@ alias build="cp /mnt/c/study/docker/dockerfiles/buildimage ./Dockerfile && nano 
 
 alias build2='cp /mnt/c/study/docker/dockerfiles/buildthispath ./Dockerfile && nano Dockerfile'
 
-export PYENV_ROOT="$HOME/.pyenv"
-[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
+alias compile="echo ' & \"C:\Users\micha\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\Scripts\pyinstaller\" --onefile --icon=a.ico --windowed --name=WinOptimize a.py ' "
 
-export PATH="/home/root/.local/bin:$PATH"
 
-export PATH="/usr/local/cuda-12.4/bin:$PATH"
-export LD_LIBRARY_PATH="/usr/local/cuda-12.4/lib64:$LD_LIBRARY_PATH"
-
+alias wsl="python /mnt/c/study/python/apps/ubuntuMenu/a.py"
 
 alias compile="echo ' & \"C:\Users\micha\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\Scripts\pyinstaller\" --onefile --icon=a.ico --windowed --name=WinOptimize a.py ' "
+
+alias convertico="sudo apt install imagemagick && convert -resize x16 -gravity center -crop 16x16+0+0 a.png -flatten -colors 256 -background transparent a.ico"
+
+
+alias ghs="python /mnt/c/study/python/apps/githubScraper/a.py"
+
+
+alias trans="python /mnt/c/study/python/apps/youtube/transcripts/b.py"
+
+
+
+
+
 
