@@ -474,6 +474,6 @@ alias ghs="python /mnt/c/study/python/apps/githubScraper/a.py"
 alias trans="python /mnt/c/study/python/apps/youtube/transcripts/b.py"
 
 
-alias screen="python /mnt/c/study/python/apps/screenshots/a.py"
+alias screen="echo 'python C:/study/python/apps/screenshots/b.py' "
 
 
