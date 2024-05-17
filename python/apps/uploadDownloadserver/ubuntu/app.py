@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, send_file, abort
 import os
 import shutil
 
-UPLOAD_FOLDER = '/home/ubuntu/ftp'
+UPLOAD_FOLDER = 'C:\Users\micha\Downloads'
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
