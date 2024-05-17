@@ -5,7 +5,7 @@ def replace_with_space(file_path):
         content = file.read()
     
     # Replace "Copy code", "scss", "css", and "bash" with a space
-    modified_content = re.sub(r'Copy\s+code|scss|css|bash|sql|Output|php|csharp|ruby|lua|yaml', ' ', content)
+    modified_content = re.sub(r'Copy\s+code|scss|css|bash|sql|Output|php|csharp|ruby|lua|yaml|powershell', ' ', content)
     
     with open(file_path, 'w') as file:
         file.write(modified_content)
