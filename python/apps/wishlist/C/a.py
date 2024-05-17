@@ -9,6 +9,17 @@ conn = sqlite3.connect('wishlist.db')
 # Create a cursor object
 cursor = conn.cursor()
 
+# Define SQL queries to drop existing tables if they exist (to avoid schema conflicts)
+drop_tables = """
+DROP TABLE IF EXISTS movies;
+DROP TABLE IF EXISTS tv_shows;
+DROP TABLE IF EXISTS games;
+DROP TABLE IF EXISTS anime;
+"""
+
+# Execute SQL query to drop tables
+cursor.executescript(drop_tables)
+
 # Define SQL queries to create tables for movies, TV shows, games, and anime
 create_movies_table = """CREATE TABLE IF NOT EXISTS movies (
                             id INTEGER PRIMARY KEY,
