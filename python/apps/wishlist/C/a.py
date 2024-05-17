@@ -9,17 +9,6 @@ conn = sqlite3.connect('wishlist.db')
 # Create a cursor object
 cursor = conn.cursor()
 
-# Define SQL queries to drop existing tables if they exist (to avoid schema conflicts)
-drop_tables = """
-DROP TABLE IF EXISTS movies;
-DROP TABLE IF EXISTS tv_shows;
-DROP TABLE IF EXISTS games;
-DROP TABLE IF EXISTS anime;
-"""
-
-# Execute SQL query to drop tables
-cursor.executescript(drop_tables)
-
 # Define SQL queries to create tables for movies, TV shows, games, and anime
 create_movies_table = """CREATE TABLE IF NOT EXISTS movies (
                             id INTEGER PRIMARY KEY,
@@ -57,6 +46,7 @@ def add_item(category, entry_widget):
         if title.strip():
             cursor.execute(f"INSERT INTO {category} (title) VALUES (?)", (title.strip(),))
     conn.commit()
+    refresh_items_list(category, listbox_widgets[category])
     messagebox.showinfo("Success", f"{category.capitalize()}(s) added successfully!")
 
 # Function to delete all listings from a category
@@ -65,6 +55,7 @@ def delete_listings(category):
     if confirm:
         cursor.execute(f"DELETE FROM {category}")
         conn.commit()
+        refresh_items_list(category, listbox_widgets[category])
         messagebox.showinfo("Success", f"All {category.replace('_', ' ')} deleted successfully.")
 
 # Function to delete selected items
@@ -135,10 +126,14 @@ def search_and_download():
     for category, titles in categories_dict.items():
         for title in titles:
             try:
-                if "tv_shows" in category and " s01" not in title:
+                if category == "tv_shows":
                     title += " s01"
+                elif category == "anime":
+                    title += " dual audio"
+                elif category == "movies":
+                    title += " 1080p"
                 title_with_quotes = f'"{title}"'
-                command = ["python", "-m", "1337x", title_with_quotes]
+                command = ["python", "-m", "1337x", "-s", "SEEDERS", title_with_quotes]
                 subprocess.run(["powershell", "-c", " ".join(command)], check=True)  # Open PowerShell and run command
             except subprocess.CalledProcessError:
                 pass  # Ignore invalid choice
@@ -219,6 +214,22 @@ def view_wishlist():
         listbox_widget.bind("<Button-3>", lambda event, widget=listbox_widget: show_context_menu(event, widget))
         listbox_widget.bind("<Return>", lambda event: search_and_download())
 
+# Function to paste items into a category
+def paste_items(entry_widget):
+    try:
+        pasted_text = root.clipboard_get()
+        entry_widget.insert(tk.END, pasted_text)
+    except tk.TclError:
+        messagebox.showerror("Error", "Clipboard is empty!")
+
+# Function to create a context menu with a paste option
+def create_context_menu(entry_widget):
+    context_menu = tk.Menu(root, tearoff=0)
+    context_menu.add_command(label="Paste", command=lambda: paste_items(entry_widget))
+    def show_context_menu(event):
+        context_menu.tk_popup(event.x_root, event.y_root)
+    entry_widget.bind("<Button-3>", show_context_menu)
+
 # Main window
 root = tk.Tk()
 root.title("Michael Fedro's Wishlist Manager")
@@ -236,6 +247,7 @@ for i, category in enumerate(["movies", "tv_shows", "games", "anime"]):
     entry_widget = tk.Text(root, height=5, width=30)
     entry_widget.grid(row=i, column=1, padx=5, pady=5)
     entry_widgets[category] = entry_widget
+    create_context_menu(entry_widget)  # Add context menu to entry widget
 
 # Buttons to add items
 add_buttons = {}
