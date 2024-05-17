@@ -379,9 +379,6 @@ alias savegames="cd /mnt/c/backup/gamesaves && drun gamesdata michadockermisha/b
 alias sshct="ssh root@192.168.1.100"
 alias pihole="gc http://192.168.1.100/admin/"
 alias savedg="cd /mnt/c/backup/gamesaves && drun gamesdata michadockermisha/backup:gamesaves sh -c 'apk add rsync && rsync -aP /home/* /c/backup/gamesaves && exit'"
-alias wordpress="http://192.168.1.101/wp-admin/"
-alias reddit="py /mnt/c/study/python/APIs/my/redditapp/reddit.py"
-alias qbittorent="gc 'http://192.168.1.140:8080/'"
 alias sjavascript="cd /mnt/c/study/frontend/javascript"
 alias sfront="cd /mnt/c/study/frontend"
 alias scomptia="cd /mnt/c/study/exams/compTIA"
@@ -389,15 +386,10 @@ alias sizes="dfs && size"
 alias allips="nmap -sn 192.168.1.1/24"
 alias kstart="minikube start --driver=docker --force"
 alias sbash="cd /mnt/c/study/linux/bash"
-alias text="py '/mnt/c/study/python/apps/text editor app/TextEditor/app.py'"
 alias sshwindows="ssh Administrator@192.168.1.230"
-alias tickets="gc http://192.168.1.235:3000/"
 alias fixwin="echo 'choco upgrade all -y --force; Repair-WindowsImage -Online -ScanHealth; Repair-WindowsImage -Online -RestoreHealth; sfc /scannow ; DISM.exe /Online /Cleanup-Image /CheckHealth ; DISM.exe /Online /Cleanup-Image /RestoreHealth ; dism /online /cleanup-image /startcomponentcleanup; chkdsk /f /r; net start wuauserv; ./updates.ps1 '"
 alias fubuntu="echo 'wsl --unregister ubuntu; wsl --import ubuntu C:\wsl2\ubuntu C:\backup\linux\wsl\ubuntu.tar'"
 alias backupubu="echo 'wsl --export ubuntu C:\backup\linux\ubuntu.tar'"
-alias msf="cd /mnt/c/study/docker/files/dockerfiles/mfsconsole && docker build -t metasploit . && docker run -it --rm metasploit"
-alias kubedash="gc http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/cronjob?namespace=default"
-alias kubedashecho="echo 'kubectl proxy && gc http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/cronjob?namespace=default'"
 alias sserver="cd /mnt/c/study/windows/server"
 alias gcp="gc https://console.cloud.google.com/"
 alias sansible="cd /mnt/c/study/automation/ansible"
@@ -405,28 +397,13 @@ alias sautomation="cd /mnt/c/study/automation"
 alias ssecurity="cd /mnt/c/study/security"
 alias shacking="cd /mnt/c/study/security/hacking"
 alias libre="libreoffice --writer"
-alias awsvm="ff 'https://us-east-1.console.aws.amazon.com/ec2/home?region=us-east-1#Instances:'"
 alias swebhosting="cd /mnt/c/study/webhosting"
 alias sfrontent="cd /mnt/c/study/frontend"
-alias word="ls | grep"
 alias fall="echo 'wsl --unregister kali-linux; wsl --import kali-linux C:\wsl2 C:\backup\linux\wsl\kalifull.tar; wsl --unregister ubuntu; wsl --import ubuntu C:\wsl2\ubuntu\ C:\backup\linux\wsl\ubuntu.tar'"
 
 
-alias movies=" echo 'C:\study\python\scripts\torrents; python moviesdownload.py' "
-
-
-alias tv=" echo 'C:\study\python\scripts\torrents; python tvdownload.py' "
-
 
 alias dcode='docker run -v /mnt/c/:/c/ -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -it --rm --name my_container michadockermisha/backup:python bash -c "echo 'y' | code --no-sandbox --user-data-dir=~/vscode-data && bash"'
-
-
-alias dtorch='docker run -v /mnt/c/:/c/ -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -it --rm --name my_container michadockermisha/backup:python bash -c "pip install torch torchvision torchaudio && echo 'y' | code --no-sandbox --user-data-dir=~/vscode-data && bash"'
-
-
-alias tinder="echo 'cd C:/study/powershell/scripts/bots; ./tinderbot.ps1' "
-
-alias bumble="echo 'C:/study/powershell/scripts/bots; ./bumble.ps1' "
 
 alias word='find "$(pwd)" -name'
 
@@ -439,29 +416,19 @@ alias drmariadb='docker run -v /mnt/c/:/c/ -it -d --name mariadb -e MYSQL_ROOT_P
 
 alias dei="docker exec -it"
 
-
-
 alias getollama="apt update && cd /mnt/c/study/docker/compose/ollama && dcu && apt install npm nodejs -y && npm install -g localtunn el && lt --port 8080 --subdomain ollama && dps"
-
 
 
 alias playlist="py /mnt/c/users/micha/videos/a.py"
 
 
-
 alias size='du -sh /mnt/c/wsl2/ext4.vhdx && du -sh /mnt/c/wsl2/ubuntu/ext4.vhdx'
-
 
 
 alias build="cp /mnt/c/study/docker/dockerfiles/buildimage ./Dockerfile && nano Dockerfile"
 
 
 alias build2='cp /mnt/c/study/docker/dockerfiles/buildthispath ./Dockerfile && nano Dockerfile'
-
-alias compile="echo ' & \"C:\Users\micha\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\Scripts\pyinstaller\" --onefile --icon=a.ico --windowed --name=WinOptimize a.py ' "
-
-
-alias wsl="python /mnt/c/study/python/apps/ubuntuMenu/a.py"
 
 alias compile="echo ' & \"C:\Users\micha\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\Scripts\pyinstaller\" --onefile --icon=a.ico --windowed --name=WinOptimize a.py ' "
 
@@ -473,7 +440,6 @@ alias ghs="python /mnt/c/study/python/apps/githubScraper/a.py"
 
 alias trans="python /mnt/c/study/python/apps/youtube/transcripts/b.py"
 
-
-alias screen="echo 'python C:/study/python/apps/screenshots/b.py' "
+alias gpts=" nano /mnt/c/study/automation/AI/gpts_plugins_that_are_good"
 
 
