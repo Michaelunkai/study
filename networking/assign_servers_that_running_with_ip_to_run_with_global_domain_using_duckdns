@@ -1,0 +1,7 @@
+go to duckdns.org > log in
+
+create subdomain, assign your public ip.
+
+port forward ip of server to the public ip.
+
+enter server with <subDomainName>.duckdns.org:<ServerPort>
