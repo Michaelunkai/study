@@ -7,6 +7,11 @@ code: python java c html sql javascript react web+
 Jupyter Python Data Science Expert
 react
 
+
+shells:
+powershell experts
+
+
 scraping:
 scraper
 
@@ -30,5 +35,7 @@ youtube summary
 easy video search
 project proposal gene
 
-ideas: 
+ideas/help: 
 project proposal generator
+wsl helper
+AskTheCode
