@@ -435,11 +435,15 @@ alias compile="echo ' & \"C:\Users\micha\AppData\Local\Packages\PythonSoftwareFo
 alias convertico="sudo apt install imagemagick && convert -resize x16 -gravity center -crop 16x16+0+0 a.png -flatten -colors 256 -background transparent a.ico"
 
 
-alias ghs="python /mnt/c/study/python/apps/githubScraper/a.py"
+alias ghs="python /mnt/c/study/python/apps/scrapers/githubScraper/a.py"
 
-
-alias trans="python /mnt/c/study/python/apps/youtube/transcripts/b.py"
 
 alias gpts=" nano /mnt/c/study/automation/AI/gpts_plugins_that_are_good"
+
+
+alias trans="python /mnt/c/study/python/apps/transcripts/youtubeVideoToText/b.py"
+
+
+alias getjava="sudo apt install default-jre -y && java -version"
 
 
