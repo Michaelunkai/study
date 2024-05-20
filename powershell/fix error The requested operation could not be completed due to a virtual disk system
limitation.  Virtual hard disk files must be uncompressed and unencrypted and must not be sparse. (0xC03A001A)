@@ -1,0 +1,10 @@
+check if file is compresses:
+
+ Get-Item "C:\wsl2\ext4.vhdx" | Select-Object FullName, Attributes
+
+
+** open task manager > search "wsl" and kill all the proccesses.
+
+**run this command to uncompress wsl2 file in ps1 as admin:
+
+ compact /u "C:\wsl2\ext4.vhdx"
