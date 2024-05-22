@@ -323,14 +323,6 @@ alias gamespot='ff https://www.gamespot.com/'
 alias anime='ff https://9animetv.to/home'
 alias aws="gc https://us-east-1.console.aws.amazon.com/console/home?region=us-east-1#"
 
-
-alias prox="gc 192.168.1.222:8006"
-alias plex="ff 192.168.1.100:32400"
-
-alias qb='cmd.exe /c "C:\Program Files\qBittorrent\qbittorrent.exe" '
-alias jup="jupyter notebook --allow-root"
-
-
 export PATH=$PATH:/snap/bin
 export DISPLAY=:0
 
@@ -447,3 +439,14 @@ alias trans="python /mnt/c/study/python/apps/transcripts/youtubeVideoToText/b.py
 alias getjava="sudo apt install default-jre -y && java -version"
 
 
+alias sdatascience="cd /mnt/c/study/datascience"
+
+
+alias salgo=" cd /mnt/c/study/datascience/algorithms"
+
+alias sdatasets="cd /mnt/c/study/datascience/datasets"
+
+
+alias sleetcode="cd /mnt/c/study/exams/leetcode"
+
+alias jup="jupyter notebook --allow-root"
