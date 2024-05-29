@@ -1,70 +1,96 @@
-Find an Open Source Project
+1. Fork the Repository
+First, fork the repository to your own GitHub account. This can be done by navigating to the repository's GitHub page and clicking the "Fork" button in the upper right corner.
 
-GitHub Explore: Visit GitHub Explore to find trending projects.
-Good First Issues: Use Good First Issues to find beginner-friendly issues.
-Open Source Guides: Check out Open Source Guides for more advice.
-Choose a Project
+2. Clone Your Forked Repository
+Clone the forked repository to your local machine using the following command:
 
-Look for projects that interest you or align with your skills (e.g., Python, JavaScript, etc.).
-Ensure the project is active (recent commits, open issues, etc.).
-Set Up Your Environment
+ 
+ 
+git clone https://github.com/your-username/Text-To-Speach-Javascript.git
+Replace your-username with your GitHub username.
 
-Fork the Repository: On GitHub, navigate to the repository you want to contribute to and click the "Fork" button. This creates a copy of the repository in your GitHub account.
-Clone Your Fork: Open your terminal and run:
- 
- 
-git clone https://github.com/YOUR-USERNAME/REPOSITORY-NAME.git
-Navigate to the Project Directory:
- 
- 
-cd REPOSITORY-NAME
-Install Dependencies
+3. Navigate to the Project Directory
+Change to the project directory:
 
-Follow the project’s README for setup instructions. This usually involves commands like:
  
  
-npm install  # For JavaScript projects
-pip install -r requirements.txt  # For Python projects
-Find an Issue to Work On
+cd Text-To-Speach-Javascript
+4. Create a New Branch
+Create a new branch for your changes:
 
-Good First Issue: Look for issues labeled "good first issue" or similar.
-Understand the Issue: Read the issue details carefully. If you have questions, ask for clarification in the comments.
-Fix the Issue
+ 
+ 
+git checkout -b add-guidelines-to-readme
+5. Edit the README File
+Open the README file in your preferred text editor. For example, you can use nano:
 
-Create a New Branch:
  
  
-git checkout -b your-feature-branch
-Make Your Changes: Edit the code to fix the issue. Test your changes to ensure they work as expected.
-Stage Your Changes:
- 
- 
-git add .
-Commit Your Changes:
- 
- 
-git commit -m "Brief description of the fix"
-Pu  Your Changes
+nano README.md
+Add the guidelines you want to include. For example:
 
-Pu  your changes to your forked repository:
  
  
-git pu  origin your-feature-branch
-Create a Pull Request (PR)
+## Contribution Guidelines
 
-Navigate to your forked repository on GitHub.
-Click the "Compare & pull request" button.
-Provide a clear title and description of your changes.
-Submit the pull request.
-Review and Discussion
+We welcome contributions to this project. Here are some guidelines to get you started:
 
-The project maintainers will review your PR.
-Respond to any feedback or requests for changes.
-Merge
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature-branch-name`).
+3. Make your changes.
+4. Commit your changes (`git commit -am 'Add some feature'`).
+5. Push to the branch (`git push origin feature-branch-name`).
+6. Create a new Pull Request.
 
-Once approved, your changes will be merged into the main project.
-Celebrate and Update Your GitHub Profile
+Please ensure your code follows our coding standards and includes appropriate tests.
+Save and exit the editor (for nano, you can do this by pressing Ctrl + X, then Y, and Enter).
 
-Your contributions are now part of the project! You can add this contribution to your GitHub profile.
-Add to README or Profile:
-If you have a personal website or README, mention your contribution with a link to the PR.
+6. Stage the Changes
+Stage the changes you made to the README file:
+
+ 
+ 
+git add README.md
+7. Commit the Changes
+Commit the changes with a descriptive message:
+
+ 
+ 
+git commit -m "Add contribution guidelines to README"
+8. Push the Changes to Your Fork
+Push your changes to your forked repository:
+
+ 
+ 
+git push origin add-guidelines-to-readme
+9. Create a Pull Request
+Go to your forked repository on GitHub. You should see a notification suggesting you create a pull request. Click on that link and follow the instructions to create a new pull request.
+
+10. Monitor the Pull Request
+Monitor the pull request for any feedback or requested changes. Make any necessary adjustments and push them to your branch.
+
+By following these steps, you can contribute to the "Text-To-Speach-Javascript" project by adding guidelines to the README file.
+
+
+
+
+
+Monitoring your pull request (PR) and checking its status involves a few steps on GitHub. Here’s how you can do it:
+
+1. Navigate to the Repository
+Go to the GitHub page of the original repository where you created the pull request. For your case, it's the Text-To-Speach-Javascript repository.
+
+2. Access the Pull Requests Tab
+Click on the "Pull requests" tab near the top of the page. This will take you to a list of all pull requests for the repository.
+
+3. Find Your Pull Request
+Look for your pull request in the list. It will be identified by the branch name you created and the title you gave the PR. You can also use the filters on the right-hand side to find your PR quickly.
+
+4. Check the Status
+Once you open your pull request, you can monitor its status:
+
+Open: The pull request is open and awaiting review.
+Merged: The pull request has been accepted and merged into the main branch.
+Closed: The pull request has been closed without merging. This can happen if there are issues that need to be resolved or if it was decided not to merge the changes.
+
+
