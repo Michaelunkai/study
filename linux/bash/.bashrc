@@ -451,5 +451,16 @@ alias sleetcode="cd /mnt/c/study/exams/leetcode"
 
 alias jup="jupyter notebook --allow-root"
 
-# Created by `pipx` on 2024-05-29 13:34:56
-export PATH="$PATH:/root/.local/bin"
+alias editfixer="nano /mnt/c/study/python/apps/filesfixer/gptpastefix.py"
+
+
+
+alias getaudio="cd /mnt/c/study/python/apps/transcripts/epub2tts && sudo apt install espeak-ng ffmpeg -y && pip install . && edge-tts --list-voices | grep -i hebrew"
+
+
+
+alias audioh="epub2tts a.txt --engine edge --language he --speaker he-IL-AvriNeural --audioformat wav"
+
+
+
+alias audio="epub2tts a.txt --audioformat wav"
