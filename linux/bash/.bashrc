@@ -451,5 +451,5 @@ alias sleetcode="cd /mnt/c/study/exams/leetcode"
 
 alias jup="jupyter notebook --allow-root"
 
-# Created by `pipx` on 2024-05-29 13:19:40
+# Created by `pipx` on 2024-05-29 13:34:56
 export PATH="$PATH:/root/.local/bin"
