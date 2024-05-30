@@ -462,5 +462,5 @@ alias getaudio="cd /mnt/c/study/python/apps/transcripts/epub2tts && sudo apt ins
 alias audioh="epub2tts a.txt --engine edge --language he --speaker he-IL-AvriNeural --audioformat wav"
 
 
-
+alias audiop="epub2tts a.pdf --audioformat wav"
 alias audio="epub2tts a.txt --audioformat wav"
