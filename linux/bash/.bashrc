@@ -321,7 +321,7 @@ alias gmail='ff https://mail.google.com/mail/u/0/'
 alias ytlater='gc https://www.youtube.com/playlist?list=WL'
 alias gamespot='ff https://www.gamespot.com/'
 alias anime='ff https://9animetv.to/home'
-alias aws="gc https://us-east-1.console.aws.amazon.com/console/home?region=us-east-1#"
+
 
 export PATH=$PATH:/snap/bin
 export DISPLAY=:0
@@ -462,5 +462,5 @@ alias getaudio="cd /mnt/c/study/python/apps/transcripts/epub2tts && sudo apt ins
 alias audioh="epub2tts a.txt --engine edge --language he --speaker he-IL-AvriNeural --audioformat wav"
 
 
-alias audiop="epub2tts a.pdf --audioformat wav"
+
 alias audio="epub2tts a.txt --audioformat wav"
