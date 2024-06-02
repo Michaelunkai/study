@@ -94,6 +94,7 @@ def take_freeform_screenshot():
     canvas_window = tk.Toplevel(root)
     canvas_window.attributes('-fullscreen', True)
     canvas_window.attributes('-alpha', 0.3)
+    canvas_window.attributes('-topmost', True)
     canvas = Canvas(canvas_window, cursor="cross")
     canvas.pack(fill=tk.BOTH, expand=True)
     
@@ -105,6 +106,7 @@ def take_freeform_screenshot():
 # Create tkinter window
 root = tk.Tk()
 root.title("Screenshot Taker")
+root.attributes('-topmost', True)
 
 # Create button to take screenshot
 screenshot_button = tk.Button(root, text="Take Screenshot", command=take_screenshot)
