@@ -22,6 +22,9 @@ def take_screenshot():
     # Hide the main window to avoid capturing it
     root.withdraw()
     
+    # Change the directory to C:\
+    os.chdir("C:\\Users\micha")
+    
     # Take screenshot
     screenshot = pyautogui.screenshot()
     
@@ -68,6 +71,9 @@ def take_freeform_screenshot():
         
         # Take the screenshot of the region
         region = ImageGrab.grab(bbox=(x1, y1, x2, y2))
+        
+        # Change the directory to C:\
+        os.chdir("C:\\Users\micha")
         
         # Get the next available file path
         save_path = get_next_screenshot_path()
