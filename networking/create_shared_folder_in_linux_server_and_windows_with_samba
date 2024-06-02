@@ -1,26 +1,26 @@
 Install Samba on Ubuntu Server:
 
-bash
-Copy code
+ 
+ 
 sudo apt update
 sudo apt install samba
 Create a Shared Directory:
 
-bash
-Copy code
+ 
+ 
 sudo mkdir -p /srv/samba/shared
 sudo chmod 2775 /srv/samba/shared
 sudo chown nobody:nogroup /srv/samba/shared
 Configure Samba:
 Edit the Samba configuration file:
 
-bash
-Copy code
+ 
+ 
 sudo nano /etc/samba/smb.conf
 Add the following lines at the end of the file:
 
 ini
-Copy code
+ 
 [shared]
 path = /srv/samba/shared
 browseable = yes
@@ -31,8 +31,8 @@ Save and exit the editor (Ctrl+X, then Y, and Enter).
 
 Restart Samba Service:
 
-bash
-Copy code
+ 
+ 
 sudo systemctl restart smbd
 On Windows 11
 Open File Explorer and Map Network Drive:
@@ -44,8 +44,8 @@ Map the Shared Folder:
 
 Choose a drive letter from the dropdown menu.
 In the "Folder" field, enter the IP address of your Ubuntu server and the name of the shared folder:
-php
-Copy code
+ 
+ 
 \\<Ubuntu_Server_IP>\shared
 Replace <Ubuntu_Server_IP> with the actual IP address of your Ubuntu server.
 Connect to the Shared Folder:
