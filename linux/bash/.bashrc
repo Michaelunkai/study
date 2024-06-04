@@ -397,7 +397,6 @@ alias fall="echo 'wsl --unregister kali-linux; wsl --import kali-linux C:\wsl2 C
 
 alias dcode='docker run -v /mnt/c/:/c/ -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -it --rm --name my_container michadockermisha/backup:python bash -c "echo 'y' | code --no-sandbox --user-data-dir=~/vscode-data && bash"'
 
-
 alias sfrontend="stu && cd frontend"
 
 alias fixer="py /mnt/c/study/python/apps/filesfixer/gptpastefix.py"
@@ -478,13 +477,20 @@ alias getmariadb="sudo apt install -y mariadb-server && sudo systemctl start mar
 alias menu="python /mnt/c/study/python/apps/ubuntuMenu/a.py"
 
 
-
 alias upgradeit="apt --only-upgrade install"
 
 
-
-alias word="find . -name "
+alias word='find . -name '
 
 
 
 alias getollama="update && cd && curl -fsSL https://ollama.com/install.sh | sh && sleep 5 && ollama run llama3 && docker run -d --network=host -v open-webui:/app/backend/data -e OLLAMA_BASE_URL=http://127.0.0.1:11434 --name open-webui --restart always ghcr.io/open-webui/open-webui:main && gc http://localhost:8080"
+
+
+
+export SPARK_HOME=/opt/spark
+export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+export PATH="/root/.krew/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files (x86)/Common Files/Oracle/Java/java8path:/mnt/c/Program Files (x86)/Common Files/Oracle/Java/javapath:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/Program Files/dotnet/:/mnt/c/Program Files (x86)/Microsoft SQL Server/160/DTS/Binn/:/mnt/c/Program Files (x86)/dotnet/:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA NvDLISR:/mnt/c/Program Files (x86)/AOMEI(2):/mnt/c/Program Files/Microsoft VS Code/bin:/mnt/c/Users/micha/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/micha/AppData/Local/GitHubDesktop/bin:/mnt/c/Program Files (x86)/Nmap:/mnt/c/Users/micha/AppData/Local/Docker Labs Debug Tools/bin:/mnt/c/Users/micha/AppData/Local/Programs/Ollama:/mnt/c/Program Files/mingw-w64/mingw64/bin:/mnt/c/cygwin64/bin:/mnt/c/msys64/usr/bin:/mnt/c/msys64/bin:/mnt/c/tools/msys64:/mnt/c/tools/msys64/usr/bin:/mnt/c/tools/msys64/bin:/mnt/c/Program Files (x86)/AOMEI(1):/mnt/c/Program Files/Git/cmd:/mnt/c/Users/micha/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/micha/AppData/Local/GitHubDesktop/bin:/mnt/c/Program Files (x86)/Nmap:/mnt/c/Users/micha/AppData/Local/Docker Labs Debug Tools/bin:/mnt/c/Users/micha/AppData/Local/Programs/Ollama:/mnt/c/ProgramData/mingw64/mingw64/bin:/snap/bin:/bin:/sbin"
+
+
