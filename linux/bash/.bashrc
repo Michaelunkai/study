@@ -397,7 +397,6 @@ alias fall="echo 'wsl --unregister kali-linux; wsl --import kali-linux C:\wsl2 C
 
 alias dcode='docker run -v /mnt/c/:/c/ -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -it --rm --name my_container michadockermisha/backup:python bash -c "echo 'y' | code --no-sandbox --user-data-dir=~/vscode-data && bash"'
 
-alias word='find "$(pwd)" -name'
 
 alias sfrontend="stu && cd frontend"
 
@@ -407,8 +406,6 @@ alias drmariadb='docker run -v /mnt/c/:/c/ -it -d --name mariadb -e MYSQL_ROOT_P
 
 
 alias dei="docker exec -it"
-
-alias getollama="apt update && cd /mnt/c/study/docker/compose/ollama && dcu && apt install npm nodejs -y && npm install -g localtunn el && lt --port 8080 --subdomain ollama && dps"
 
 
 alias playlist="py /mnt/c/users/micha/videos/a.py"
@@ -475,3 +472,19 @@ alias getkube='sudo mkdir -p /etc/kubernetes && sudo snap install kubectl --clas
 
 
 alias getmariadb="sudo apt install -y mariadb-server && sudo systemctl start mariadb && sudo systemctl enable mariadb && sudo mysql"
+
+
+
+alias menu="python /mnt/c/study/python/apps/ubuntuMenu/a.py"
+
+
+
+alias upgradeit="apt --only-upgrade install"
+
+
+
+alias word="find . -name "
+
+
+
+alias getollama="update && cd && curl -fsSL https://ollama.com/install.sh | sh && sleep 5 && ollama run llama3 && docker run -d --network=host -v open-webui:/app/backend/data -e OLLAMA_BASE_URL=http://127.0.0.1:11434 --name open-webui --restart always ghcr.io/open-webui/open-webui:main && gc http://localhost:8080"
