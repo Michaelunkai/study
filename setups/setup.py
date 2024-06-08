@@ -1,18 +1,10 @@
-from setuptools import setup, find_packages
+# setup.py
+# Ensure Tkinter is installed: pip install tk
+from tkinter import *
 
-with open("requirements.txt") as f:
-    requirements = f.read().splitlines()
+window = Tk()
+width, height = 500, 500
+window.geometry(f"{width}x{height}")
 
-setup(
-    name="epub2tts",
-    description="Tool to read an epub to audiobook using AI TTS",
-    author="Christopher Aedo linkedin.com/in/aedo",
-    author_email="doc@aedo.net",
-    url="https://github.com/aedocw/epub2tts",
-    license="Apache License, Version 2.0",
-    version="2.4.5",
-    packages=find_packages(),
-    install_requires=requirements,
-    py_modules=["epub2tts"],
-    entry_points={"console_scripts": ["epub2tts = epub2tts:main"]},
-)
+canvas = Canvas(window, width=width, height=height)
+canvas.pack()
