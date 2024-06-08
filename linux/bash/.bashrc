@@ -230,7 +230,7 @@ alias sdatabases='cd /mnt/c/study/databases'
 alias sgit='cd /mnt/c/study/git'
 alias smalware='cd /mnt/c/study/malware'
 alias snetworking='cd /mnt/c/study/networking'
-alias spython='cd /mnt/c/study/python'
+alias spython='cd /mnt/c/study/programming/python'
 alias svirtualmachines='cd /mnt/c/study/virtualmachines'
 alias sbash='cd /mnt/c/study/linux/bash'
 alias sexams='cd /mnt/c/study/exams'
@@ -238,7 +238,7 @@ alias skubernetes='cd /mnt/c/study/kubernetes'
 alias swindows='cd /mnt/c/study/windows'
 alias sproxmox="cd /mnt/c/study/virtualmachines/proxmox"
 alias sserver="cd /mnt/c/study/windows/server"
-alias spythons='cd /mnt/c/study/python/apps'
+
 
 
 #ANSIBLE
@@ -313,17 +313,13 @@ alias ff='cmd.exe /c start firefox'
 alias ffd='ff https://hub.docker.com/repository/docker/michadockermisha/backup/tags?page=1&ordering=last_updated'
 alias yt='gc youtube.com'
 alias gt='gc github.com'
-alias gtp='ff https://github.com/Michaelunkai/python'
 alias gpt='ff https://chat.openai.com/'
 alias pocket='ff https://getpocket.com/saves?src=navbar'
 alias 1337='ff https://1337x.to/home/'
 alias gmail='ff https://mail.google.com/mail/u/0/'
 alias ytlater='gc https://www.youtube.com/playlist?list=WL'
 alias gamespot='ff https://www.gamespot.com/'
-alias anime='ff https://9animetv.to/home'
 alias aws="gc https://us-east-1.console.aws.amazon.com/console/home?region=us-east-1#"
-
-export PATH=$PATH:/usr/local/bin
 
 export PATH=$PATH:/snap/bin
 export DISPLAY=:0
@@ -347,7 +343,7 @@ alias mp3='docker run --rm -v $HOME/Downloads:/root/Downloads dizcza/youtube-mp3
 alias mp4='docker run --rm -i -e PGID=$(id -g) -e PUID=$(id -u) -v "$(pwd)":/workdir:rw mikenye/youtube-dl'
 alias txt='tesseract'
 alias drmariadb='docker run -d --name mariadb -e MYSQL_ROOT_PASSWORD=123456 -p 3307:3307 mariadb:latest && sleep 30 && docker exec -it mariadb mariadb -u root -p'
-alias wcompile="cat '/mnt/c/study/python/basics/compile in windows powershell'"
+alias wcompile="cat '/mnt/c/study/programming/python/basics/compile in windows powershell'"
 alias wl="py /mnt/c/study/Credentials/orderbylength.py"
 alias pubip="echo 'http://87.70.162.212'"
 alias rip="ff 'http://192.168.1.1'"
@@ -358,23 +354,18 @@ alias defender='cmd.exe /c C:/backup/windowsapps/install/afterformat/windows-def
 alias act="cd /mnt/c/backup/windowsapps/install/Microsoft-Activation-Scripts-master/mas/All-In-One-Version && cmd MAS_AIO.cmd"
 alias python='python3'
 alias py='python3'
-alias encrypt='python3 /mnt/c/study/python/apps/encrypt/encrypt.py'
-alias decrypt='python3 /mnt/c/study/python/apps/encrypt/decrypt.py'
-alias compile='echo "& C:\Users\micha\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\Scripts\pyinstaller.exe --noconsole"'
-alias myg="py /mnt/c/study/python/apps/dockermenu/4.py"
-alias editg="gedit /mnt/c/study/python/apps/dockermenu/4.py"
+alias myg="py /mnt/c/study/programming/python/apps/dockermenu/4.py"
+alias editg="gedit /mnt/c/study/programming/python/apps/dockermenu/4.py"
 alias aliases="gedit /mnt/c/backup/linux/wsl/alias.txt"
 alias cpalias="cp /mnt/c/backup/linux/wsl/alias.txt /root/.bashrc && cp /mnt/c/backup/linux/wsl/alias.txt ~/.bashrc"
 alias cmd='cmd.exe /c'
 complete -C '/mnt/c/Users/micha/mc' mc
-alias wall="py /mnt/c/study/python/apps/wallpaperdownloader.py"
-alias wall1="py /mnt/c/study/python/apps/wallpaper1sec.py"
 alias savegames="cd /mnt/c/backup/gamesaves && drun gamesdata michadockermisha/backup:gamesaves sh -c 'apk add rsync && rsync -aP /home/* /c/backup/gamesaves && exit' && built michadockermisha/backup:gamesaves . && docker push michadockermisha/backup:gamesaves && rm -rf ./*"
 alias sshct="ssh root@192.168.1.100"
 alias pihole="gc http://192.168.1.100/admin/"
 alias savedg="cd /mnt/c/backup/gamesaves && drun gamesdata michadockermisha/backup:gamesaves sh -c 'apk add rsync && rsync -aP /home/* /c/backup/gamesaves && exit'"
-alias sjavascript="cd /mnt/c/study/frontend/javascript"
-alias sfront="cd /mnt/c/study/frontend"
+alias sjavascript="cd /mnt/c/study/programming/frontend/javascript"
+alias sfront="cd /mnt/c/study/programming/frontend"
 alias scomptia="cd /mnt/c/study/exams/compTIA"
 alias sizes="dfs && size"
 alias allips="nmap -sn 192.168.1.1/24"
@@ -392,16 +383,14 @@ alias ssecurity="cd /mnt/c/study/security"
 alias shacking="cd /mnt/c/study/security/hacking"
 alias libre="libreoffice --writer"
 alias swebhosting="cd /mnt/c/study/webhosting"
-alias sfrontent="cd /mnt/c/study/frontend"
 alias fall="echo 'wsl --unregister kali-linux; wsl --import kali-linux C:\wsl2 C:\backup\linux\wsl\kalifull.tar; wsl --unregister ubuntu; wsl --import ubuntu C:\wsl2\ubuntu\ C:\backup\linux\wsl\ubuntu.tar'"
 
 
 
 alias dcode='docker run -v /mnt/c/:/c/ -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -it --rm --name my_container michadockermisha/backup:python bash -c "echo 'y' | code --no-sandbox --user-data-dir=~/vscode-data && bash"'
 
-alias sfrontend="stu && cd frontend"
 
-alias fixer="py /mnt/c/study/python/apps/filesfixer/gptpastefix.py"
+alias fixer="py /mnt/c/study/programming/python/apps/filesfixer/gptpastefix.py"
 
 alias drmariadb='docker run -v /mnt/c/:/c/ -it -d --name mariadb -e MYSQL_ROOT_PASSWORD=123456 -p 3307:3307 mariadb:latest && sleep 30 && docker exec -it mariadb mariadb -u root -p'
 
@@ -425,13 +414,13 @@ alias compile="echo ' & \"C:\Users\micha\AppData\Local\Packages\PythonSoftwareFo
 alias convertico="sudo apt install imagemagick && convert -resize x16 -gravity center -crop 16x16+0+0 a.png -flatten -colors 256 -background transparent a.ico"
 
 
-alias ghs="python /mnt/c/study/python/apps/scrapers/githubScraper/a.py"
+alias ghs="python /mnt/c/study/programming/python/apps/scrapers/githubScraper/a.py"
 
 
 alias gpts=" nano /mnt/c/study/automation/AI/gpts_plugins_that_are_good"
 
 
-alias trans="python /mnt/c/study/python/apps/transcripts/youtubeVideoToText/b.py"
+alias trans="python /mnt/c/study/programming//python/apps/transcripts/youtubeVideoToText/b.py"
 
 
 alias getjava="sudo apt install openjdk-11-jdk -y"
@@ -449,11 +438,11 @@ alias sleetcode="cd /mnt/c/study/exams/leetcode"
 
 alias jup="jupyter notebook --allow-root"
 
-alias editfixer="nano /mnt/c/study/python/apps/filesfixer/gptpastefix.py"
+alias editfixer="nano /mnt/c/study/programming/python/apps/filesfixer/gptpastefix.py"
 
 
 
-alias getaudio="cd /mnt/c/study/python/apps/transcripts/epub2tts && sudo apt install espeak-ng ffmpeg -y && pip install . && edge-tts --list-voices | grep -i hebrew"
+alias getaudio="cd /mnt/c/study/programming//python/apps/transcripts/epub2tts && sudo apt install espeak-ng ffmpeg -y && pip install . && edge-tts --list-voices | grep -i hebrew"
 
 
 
@@ -463,7 +452,7 @@ alias audioh="epub2tts a.txt --engine edge --language he --speaker he-IL-AvriNeu
 
 alias audio="epub2tts a.txt --audioformat wav"
 
-alias gptbot="python /mnt/c/study/python/apps/chatGPTbot/automateAnswerAndSend/a.py"
+alias gptbot="python /mnt/c/study/programming/python/apps/chatGPTbot/automateAnswerAndSend/a.py"
 
 
 
@@ -476,7 +465,7 @@ alias getmariadb="sudo apt install -y mariadb-server && sudo systemctl start mar
 
 
 
-alias menu="python /mnt/c/study/python/apps/ubuntuMenu/a.py"
+alias menu="python /mnt/c/study/programming/python/apps/ubuntuMenu/a.py"
 
 
 alias upgradeit="apt --only-upgrade install"
@@ -487,3 +476,30 @@ alias word='find . -name '
 
 
 alias getollama="update && cd && curl -fsSL https://ollama.com/install.sh | sh && sleep 5 && ollama run llama3 && docker run -d --network=host -v open-webui:/app/backend/data -e OLLAMA_BASE_URL=http://127.0.0.1:11434 --name open-webui --restart always ghcr.io/open-webui/open-webui:main && gc http://localhost:8080"
+
+
+alias restorestudy='c && cd study && drun study michadockermisha/backup:study sh -c "apk add rsync && rsync -aP /home/* /c/study/&& exit"'
+
+
+
+alias sources="cd /etc/apt/sources.list.d"
+
+
+
+alias ftp="gc http://192.168.1.195:5000/"
+
+
+
+alias qna="cd /mnt/c/study/exams/QNA"
+
+
+
+alias epub2text="apt install calibre -y && ebook-convert a.epub a.txt"
+
+
+
+alias hebrew="py /mnt/c/study/programming/python/apps/translate2hebrew/a.py"
+
+
+
+alias getnpm="apt install npm nodejs -y"
