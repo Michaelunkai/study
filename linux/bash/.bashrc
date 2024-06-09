@@ -498,7 +498,7 @@ alias epub2text="apt install calibre -y && ebook-convert a.epub a.txt"
 
 
 
-alias hebrew="py /mnt/c/study/programming/python/apps/translate2hebrew/a.py"
+alias hebrew="py /mnt/c/study/programming/python/apps/translate2hebrew/wsl/a.py"
 
 
 
