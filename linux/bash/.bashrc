@@ -319,7 +319,7 @@ alias 1337='ff https://1337x.to/home/'
 alias gmail='ff https://mail.google.com/mail/u/0/'
 alias ytlater='gc https://www.youtube.com/playlist?list=WL'
 alias gamespot='ff https://www.gamespot.com/'
-
+alias awsweb="gc https://us-east-1.console.aws.amazon.com/console/home?region=us-east-1#"
 
 export PATH=$PATH:/snap/bin
 export DISPLAY=:0
@@ -504,6 +504,39 @@ alias hebrew="py /mnt/c/study/programming/python/apps/translate2hebrew/a.py"
 
 alias getnpm="apt install npm nodejs -y"
 
-# Created by `pipx` on 2024-06-10 13:56:35
-export PATH="$PATH:/root/.local/bin"
-if [ -f "/root/.config/fabric/fabric-bootstrap.inc" ]; then . "/root/.config/fabric/fabric-bootstrap.inc"; fi
+alias sporg="cd /mnt/c/study/programming"
+
+
+
+alias hebrew="py /mnt/c/study/programming/python/apps/translate2hebrew/wsl/a.py"
+
+
+
+alias getgres="sudo apt install -y postgresql postgresql-contrib && sudo systemctl start postgresql && sudo -i -u postgres psql"
+
+
+
+alias setups="cd /mnt/c/study/setups"
+
+
+
+alias find="grep -iRl"
+
+
+
+alias awsconf="apt install awscli -y && cat /mnt/c/study/credentials/AWS/AccessKey.txt && aws configure"
+
+
+
+alias saws="cd /mnt/c/study/cloud/aws/awscli"
+
+
+
+alias pdata="cd /mnt/c/study/programming/python/datascience"
+
+
+alias getelk=alias getelk='apt-get update && sudo apt-get install openjdk-17-jre-headless -y && sudo apt-get install nginx -y && wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add - && sudo apt-get install apt-transport-https -y && echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee –a /etc/apt/sources.list.d/elastic-7.x.list && sudo apt-get update && sudo apt-get install elasticsearch && rm -rf /etc/elasticsearch/elasticsearch.yml && cp /mnt/c/study/monitoring/ELK/installationfiles/"etc elasticsearch elasticsearch.yml" /etc/elasticsearch/elasticsearch.yml && rm -rf /etc/elasticsearch/jvm.options && cp /mnt/c/study/monitoring/ELK/installationfiles/"etc elasticsearch jvm.options" /etc/elasticsearch/jvm.options && sudo systemctl start elasticsearch.service && sudo systemctl enable elasticsearch.service && clear && curl -X GET "localhost:9200" && sudo apt-get install kibana -y && rm -rf /etc/kibana/kibana.yml && cp /mnt/c/study/monitoring/ELK/installationfiles/"etc kibana kibana.yml" /etc/kibana/kibana.yml && sudo systemctl start kibana && sudo systemctl enable kibana && sudo ufw allow 5601/tcp && sudo apt-get install logstash -y && sudo systemctl start logstash && sudo systemctl enable logstash && sudo apt-get install filebeat -y && rm -rf /etc/filebeat/filebeat.yml && cp /mnt/c/study/monitoring/ELK/installationfiles/"etc filebeat filebeat.yml" /etc/filebeat/filebeat.yml && sudo filebeat modules enable system && sudo filebeat setup --index-management -E output.logstash.enabled=false -E "output.elasticsearch.hosts=[\"localhost:9200\"]" && sudo systemctl start filebeat && sudo systemctl enable filebeat && clear && curl -XGET http://localhost:9200/_cat/indices?v'
+
+
+export SPARK_HOME=/opt/spark
+export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
