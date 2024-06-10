@@ -540,3 +540,5 @@ alias getelk=alias getelk='apt-get update && sudo apt-get install openjdk-17-jre
 
 export SPARK_HOME=/opt/spark
 export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
+export SPARK_HOME=/opt/spark
+export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
