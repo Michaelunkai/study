@@ -319,7 +319,7 @@ alias 1337='ff https://1337x.to/home/'
 alias gmail='ff https://mail.google.com/mail/u/0/'
 alias ytlater='gc https://www.youtube.com/playlist?list=WL'
 alias gamespot='ff https://www.gamespot.com/'
-alias aws="gc https://us-east-1.console.aws.amazon.com/console/home?region=us-east-1#"
+
 
 export PATH=$PATH:/snap/bin
 export DISPLAY=:0
@@ -498,8 +498,12 @@ alias epub2text="apt install calibre -y && ebook-convert a.epub a.txt"
 
 
 
-alias hebrew="py /mnt/c/study/programming/python/apps/translate2hebrew/wsl/a.py"
+alias hebrew="py /mnt/c/study/programming/python/apps/translate2hebrew/a.py"
 
 
 
 alias getnpm="apt install npm nodejs -y"
+
+# Created by `pipx` on 2024-06-10 13:56:35
+export PATH="$PATH:/root/.local/bin"
+if [ -f "/root/.config/fabric/fabric-bootstrap.inc" ]; then . "/root/.config/fabric/fabric-bootstrap.inc"; fi
