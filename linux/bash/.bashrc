@@ -347,7 +347,6 @@ alias wcompile="cat '/mnt/c/study/programming/python/basics/compile in windows p
 alias wl="py /mnt/c/study/Credentials/orderbylength.py"
 alias pubip="echo 'http://87.70.162.212'"
 alias rip="ff 'http://192.168.1.1'"
-alias plex="ff 'http://87.70.162.212:32400'"
 alias getplex="updates && echo deb https://downloads.plex.tv/repo/deb public main | sudo tee /etc/apt/sources.list.d/plexmediaserver.list && curl https://downloads.plex.tv/plex-keys/PlexSign.key | sudo apt-key add - && updates && cc && sudo apt install plexmediaserver -y && sudo systemctl enable plexmediaserver && sudo systemctl start plexmediaserver && ff http://87.70.162.212:32400/web/"
 alias getff="apt install firefox-esr -y"
 alias defender='cmd.exe /c C:/backup/windowsapps/install/afterformat/windows-defender-remover-main/windows-defender-remover-main/Script_Run.bat'
@@ -538,5 +537,31 @@ alias pdata="cd /mnt/c/study/programming/python/datascience"
 alias getelk=alias getelk='apt-get update && sudo apt-get install openjdk-17-jre-headless -y && sudo apt-get install nginx -y && wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add - && sudo apt-get install apt-transport-https -y && echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee –a /etc/apt/sources.list.d/elastic-7.x.list && sudo apt-get update && sudo apt-get install elasticsearch && rm -rf /etc/elasticsearch/elasticsearch.yml && cp /mnt/c/study/monitoring/ELK/installationfiles/"etc elasticsearch elasticsearch.yml" /etc/elasticsearch/elasticsearch.yml && rm -rf /etc/elasticsearch/jvm.options && cp /mnt/c/study/monitoring/ELK/installationfiles/"etc elasticsearch jvm.options" /etc/elasticsearch/jvm.options && sudo systemctl start elasticsearch.service && sudo systemctl enable elasticsearch.service && clear && curl -X GET "localhost:9200" && sudo apt-get install kibana -y && rm -rf /etc/kibana/kibana.yml && cp /mnt/c/study/monitoring/ELK/installationfiles/"etc kibana kibana.yml" /etc/kibana/kibana.yml && sudo systemctl start kibana && sudo systemctl enable kibana && sudo ufw allow 5601/tcp && sudo apt-get install logstash -y && sudo systemctl start logstash && sudo systemctl enable logstash && sudo apt-get install filebeat -y && rm -rf /etc/filebeat/filebeat.yml && cp /mnt/c/study/monitoring/ELK/installationfiles/"etc filebeat filebeat.yml" /etc/filebeat/filebeat.yml && sudo filebeat modules enable system && sudo filebeat setup --index-management -E output.logstash.enabled=false -E "output.elasticsearch.hosts=[\"localhost:9200\"]" && sudo systemctl start filebeat && sudo systemctl enable filebeat && clear && curl -XGET http://localhost:9200/_cat/indices?v'
 
 
-export SPARK_HOME=/opt/spark
-export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
+
+alias getspark="getjava && wget https://archive.apache.org/dist/spark/spark-3.3.2/spark-3.3.2-bin-hadoop3.tgz && tar -xvzf spark-3.3.2-bin-hadoop3.tgz && sudo mv spark-3.3.2-bin-hadoop3 /opt/spark && echo -e "export SPARK_HOME=/opt/spark\nexport PATH=\$PATH:\$SPARK_HOME/bin:\$SPARK_HOME/sbin" >> /root/.bashrc && brc2 && spark-shell"
+
+
+
+alias ndc="nano docker-compose.yml"
+
+
+
+alias smicro="cd /mnt/c/study/microservices"
+
+
+
+alias getprom="sudo apt update && sudo apt install prometheus -y && sudo systemctl start prometheus"
+
+
+
+alias getredis="sudo apt update && sudo apt install -y redis-server && sudo systemctl start redis-server && sudo systemctl enable redis-server && redis-cli"
+
+
+
+alias n="nano"
+
+alias oneliners="cd /mnt/c/study/automation/oneliners"
+
+alias getmongo=' sudo apt install gnupg curl -y && curl -fsSL https://www.mongodb.org/static/pgp/server-7.0.asc |    sudo gpg -o /usr/share/keyrings/mongodb-server-7.0.gpg    --dearmor && echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list && update && cc && sudo apt-get install -y mongodb-org -y && sudo systemctl start mongod && sudo systemctl daemon-reload &&  sudo systemctl enable mongod && clear && mongosh'
+
+alias plex="gc http://192.168.1.100:32400"
