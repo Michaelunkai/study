@@ -566,4 +566,6 @@ alias getmongo=' sudo apt install gnupg curl -y && curl -fsSL https://www.mongod
 
 alias plex="gc http://192.168.1.100:32400"
 
-alias mvliners="/mnt/c/study/automation/oneliners"
+
+
+
