@@ -1,0 +1,1 @@
+cd && mkdir -p /usr/share/wordlists && wget https://github.com/brannondorsey/naive-hashcat/releases/download/data/rockyou.txt -O /usr/share/wordlists/rockyou.txt && ls /usr/share/wordlists
