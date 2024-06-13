@@ -267,12 +267,6 @@ alias wupdates='cat "/mnt/c/study/powershell/scripts/windowsupdates.ps1" && cp "
 
 alias getsnap='sudo apt install snapd -y && updates && systemctl enable --now snapd.apparmor'
 
-alias getdocker='sudo apt update -y && sudo apt upgrade -y && \
-  sudo apt install -y -qq docker.io && \
-  sudo usermod -aG docker $USER && \
-  sudo service docker start && \
-  sudo sh -c "sudo setfacl -m user:$USER:rw /var/run/docker.sock"'
-
 
 alias getpython='sudo apt install -y -qq python3 python3-pip pyinstaller && \
   sudo apt update -y && sudo apt upgrade -y && \
@@ -566,3 +560,32 @@ alias oneliners="cd /mnt/c/study/automation/oneliners"
 alias getmongo=' sudo apt install gnupg curl -y && curl -fsSL https://www.mongodb.org/static/pgp/server-7.0.asc |    sudo gpg -o /usr/share/keyrings/mongodb-server-7.0.gpg    --dearmor && echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list && update && cc && sudo apt-get install -y mongodb-org -y && sudo systemctl start mongod && sudo systemctl daemon-reload &&  sudo systemctl enable mongod && clear && mongosh'
 
 alias plex="gc http://192.168.1.100:32400"
+
+alias getkuma="cd /mnt/c/study/docker/compose/kuma && dcu && gc http:localhost:3001"
+
+
+
+alias systatus="systemctl status"
+
+
+
+alias systart="systemctl start"
+
+
+
+alias syenable="systemctl enable"
+
+
+
+alias getall="updates && getjava && getdocker && getkube && getnpm && getelk && getprom && getspark"
+
+
+
+alias getdocker='sudo apt update -y && sudo apt upgrade -y && \ sudo apt install -y -qq docker.io && \ sudo usermod -aG docker $USER && \ sudo service docker start && \ sudo sh -c "sudo setfacl -m user:$USER:rw /var/run/docker.sock"'
+
+
+alias scred="cd /mnt/c/study/Credentials"
+
+alias space='for file in *\ *; do mv "$file" "${file// /_}"; done'
+
+alias sapps="cd /mnt/c/study/programming/python/apps"
