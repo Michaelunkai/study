@@ -1,0 +1,20 @@
+Backing Up DD-WRT Settings Using HTTrack
+Disclaimer: This does not backup 100% of the settings in DD-WRT, but it is a great way to capture the settings prior to upgrading so values can be copied/pasted back into place
+
+Download HTTrack Download
+Extract the download hhtrack-noinst zip archive
+Create a directory to store your DD-WRT backup
+Launch WinHTTrack.exe
+Click Next
+Set Project name: DD-WRT
+Set Base path to the directory created in step 3
+Click Next
+Click Add URL...
+Set URL: to your DD-WRT IP Address
+Login: your DD-WRT user name
+Password: your DD-WRT password
+
+Click OK
+Click Next
+Wait for the process to complete
+Browse the site created by HTTrack
