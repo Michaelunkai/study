@@ -6,3 +6,5 @@ powershell/fix error The requested operation could not be completed due to a vir
 limitation.  Virtual hard disk files must be uncompressed and unencrypted and must not be sparse. (0xC03A001A)
 *. (0xC03A001A)
 python/compiled/stickynotes/StickyNotes/dist/notes.db
+ssh/connect automatically to virtual machines with ssh.abw
+ssh/"connect automatically to virtual machines with ssh".abw
