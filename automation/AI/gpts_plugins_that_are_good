@@ -12,6 +12,7 @@ go golang
 shells:
 powershell experts
 bash scripting
+bash one liner
 
 scraping:
 scraper
