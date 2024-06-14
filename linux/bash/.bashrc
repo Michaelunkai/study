@@ -339,7 +339,6 @@ alias mp4='docker run --rm -i -e PGID=$(id -g) -e PUID=$(id -u) -v "$(pwd)":/wor
 alias txt='tesseract'
 alias drmariadb='docker run -d --name mariadb -e MYSQL_ROOT_PASSWORD=123456 -p 3307:3307 mariadb:latest && sleep 30 && docker exec -it mariadb mariadb -u root -p'
 alias wcompile="cat '/mnt/c/study/programming/python/basics/compile in windows powershell'"
-alias wl="py /mnt/c/study/Credentials/orderbylength.py"
 alias pubip="echo 'http://87.70.162.212'"
 alias rip="ff 'http://192.168.1.1'"
 alias getplex="updates && echo deb https://downloads.plex.tv/repo/deb public main | sudo tee /etc/apt/sources.list.d/plexmediaserver.list && curl https://downloads.plex.tv/plex-keys/PlexSign.key | sudo apt-key add - && updates && cc && sudo apt install plexmediaserver -y && sudo systemctl enable plexmediaserver && sudo systemctl start plexmediaserver && ff http://87.70.162.212:32400/web/"
@@ -459,14 +458,7 @@ alias getmariadb="sudo apt install -y mariadb-server && sudo systemctl start mar
 
 
 
-alias menu="python /mnt/c/study/programming/python/apps/ubuntuMenu/a.py"
-
-
 alias upgradeit="apt --only-upgrade install"
-
-
-alias word='find . -name '
-
 
 
 alias getollama="update && cd && curl -fsSL https://ollama.com/install.sh | sh && sleep 5 && ollama run llama3 && docker run -d --network=host -v open-webui:/app/backend/data -e OLLAMA_BASE_URL=http://127.0.0.1:11434 --name open-webui --restart always ghcr.io/open-webui/open-webui:main && gc http://localhost:8080"
@@ -589,3 +581,28 @@ alias scred="cd /mnt/c/study/Credentials"
 alias space='for file in *\ *; do mv "$file" "${file// /_}"; done'
 
 alias sapps="cd /mnt/c/study/programming/python/apps"
+
+
+alias getkafka='
+docker run -d --name zookeeper -e ZOOKEEPER_CLIENT_PORT=2181 confluentinc/cp-zookeeper:latest && \
+docker run -d --name kafka -e KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181 -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 -e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 --link zookeeper:zookeeper -p 9092:9092 confluentinc/cp-kafka:latest && \
+docker run -d --name akhq -p 8080:8080 -e AKHQ_CONFIGURATION="$(echo -e "akhq:\n connections:\n docker-kafka:\n properties:\n bootstrap.servers: \"kafka:9092\"")" -e JAVA_OPTS="-Dlogback.configurationFile=logback.xml" --link kafka:kafka tchiotludo/akhq && \
+open http://localhost:8080'
+
+
+alias sapache="cd /mnt/c/study/webhosting/apache"
+
+
+alias sssl="cd /mnt/c/study/security/SSL"
+
+
+alias getmysql="sudo apt-get install -y mysql-server && sudo systemctl start mysql && sudo systemctl enable mysql && sudo mysql"
+
+
+alias svb="cd /mnt/c/study/virtualmachines/VirtualBox"
+
+alias menu="py /mnt/c/study/programming/python/apps/UbuntuMenu/c.py"
+
+
+
+
