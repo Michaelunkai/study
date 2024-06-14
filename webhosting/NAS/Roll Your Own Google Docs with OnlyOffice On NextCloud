@@ -1,0 +1,61 @@
+Roll Your Own Google Docs with OnlyOffice On NextCloud
+Prerequisites
+Nextcloud (Tutorial)
+Installing OnlyOffice Document Server
+Log into the Linux device
+Run the following commands in a terminal:
+# check for an install software updates
+sudo apt update
+sudo apt upgrade
+# install postgreSQL
+sudo apt install postgresql
+# create the OnlyOffice database, user and grant permissions
+sudo -i -u postgres psql -c "CREATE DATABASE onlyoffice;"
+sudo -i -u postgres psql -c "CREATE USER onlyoffice WITH password '0nly0ff1c3';"
+sudo -i -u postgres psql -c "GRANT ALL privileges ON DATABASE onlyoffice TO onlyoffice;"
+# install redis and rabbitmq
+sudo apt install redis-server rabbitmq-server
+# if running on the same server as nextcloud, stop apache
+sudo systemctl stop apache2
+# install nginx extras
+sudo apt-get install nginx-extras
+# set the onlyoffice port, using port 1440 here
+echo onlyoffice-documentserver onlyoffice/ds-port select 1440 | sudo debconf-set-selections
+# add the onlyoffice document server apt repository
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys CB2DE8E5
+sudo echo "deb https://download.onlyoffice.com/repo/debian squeeze main" | sudo tee /etc/apt/sources.list.d/onlyoffice.list
+sudo apt update
+# install onlyoffice document server
+sudo apt-get install onlyoffice-documentserver
+Paste the onlyoffice database password from above when prompted
+Continue the setup by running the following command in terminal
+# modify the default nginx port
+sudo nano /etc/nginx/sites-available/default
+Change the port from :80 to :801
+Press CTRL+O, Enter, CTRL+X to write the changes to default and close it
+Continue the configuration by running the following commands in terminal:
+# edit NextCloud configuration file
+sudo nano /var/www/nextcloud/config/config.php
+Find the trusted_domains array and add the DNS entry for the OnlyOffice host
+Add the following line inside the array
+'allow_local_remote_servers' => true
+
+Press CTRL+O, Enter, CTRL+X
+Continue with the following in terminal
+# restart nginx
+sudo systemctl restart nginx
+# start apache2
+sudo systemctl start apache2
+Open a web browser and navigate to http://DNSorIP:1440 to verify OnlyOffice Document Server is up and running
+Enabling OnlyOffice Document Editing in NextCloud
+Log into NextCloud
+Click the user avatar > Apps
+Select Office & text from the left navigation
+Scroll down to find the OnlyOffice app > Click Download and enable
+After the download completes, click the user avatar > Settings
+Click ONLYOFFICE in the left navigation
+Enter the document server URL in the Document Editing Service address field > Click Save
+Click on Files in the top navigation
+Click the + icon > Select New Document
+Give the document a name and press Enter
+The new document should load in a word processor inside the web browser and be ready for editing
