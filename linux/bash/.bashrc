@@ -606,3 +606,24 @@ alias menu="py /mnt/c/study/programming/python/apps/UbuntuMenu/c.py"
 
 
 
+alias getphp="sudo apt install -y php php-cli php-fpm php-json php-common php-mysql php-zip php-gd php-mbstring php-curl php-xml php-pear php-bcmath"
+
+
+
+alias startkube="minikube start --driver=docker --force"
+
+
+
+alias getapache="apt install apache2 -y && sudo systemctl start apache2"
+
+
+
+alias fixupdates="updates --fix-missing"
+
+
+
+alias croot="rm -rf /root/*"
+
+
+
+alias sgcp="cd /mnt/c/study/cloud/GCP/cli"
