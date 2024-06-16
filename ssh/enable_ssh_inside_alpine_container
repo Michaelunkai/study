@@ -1,0 +1,26 @@
+1)
+
+apk update
+apk add openssh
+
+
+2)Generate SSH Keys:
+
+ssh-keygen -A
+
+Configure SSH Server:
+
+vi /etc/ssh/sshd_config
+Make sure to set PermitRootLogin to yes if you want to allow root login, and set other configurations as needed.
+
+Start SSH Server:
+
+Start the SSH server:
+
+/usr/sbin/sshd
+
+Connect to the Container:
+
+You can now connect to the container using SSH. If you're connecting from the host machine, use the container's IP address or hostname:
+
+ssh username@container_ip
