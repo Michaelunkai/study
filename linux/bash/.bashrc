@@ -604,8 +604,6 @@ alias svb="cd /mnt/c/study/virtualmachines/VirtualBox"
 alias menu="py /mnt/c/study/programming/python/apps/UbuntuMenu/c.py"
 
 
-
-
 alias getphp="sudo apt install -y php php-cli php-fpm php-json php-common php-mysql php-zip php-gd php-mbstring php-curl php-xml php-pear php-bcmath"
 
 
@@ -618,7 +616,7 @@ alias getapache="apt install apache2 -y && sudo systemctl start apache2"
 
 
 
-alias fixupdates="updates --fix-missing"
+alias fixupdates="sudo apt update --fix-missing && sudo apt upgrade --fix-missing"
 
 
 
@@ -627,3 +625,8 @@ alias croot="rm -rf /root/*"
 
 
 alias sgcp="cd /mnt/c/study/cloud/GCP/cli"
+
+
+alias getwordpress='sudo apt update && sudo apt install -y mariadb-server wget && wget -c https://wordpress.org/latest.tar.gz && tar -xvzf latest.tar.gz && sudo mv wordpress /var/www/html/ && sudo chown -R www-data:www-data /var/www/html/wordpress && sudo chmod -R 755 /var/www/html/wordpress && sudo mariadb --execute="ALTER USER '\''root'\''@'\''localhost'\'' IDENTIFIED BY '\''123456'\''; FLUSH PRIVILEGES;" && sudo mariadb --user=root --password=123456 --execute="DELETE FROM mysql.user WHERE User=''; DROP DATABASE IF EXISTS test; DELETE FROM mysql.db WHERE Db='\''test'\'' OR Db='\''test\\_%'\''; FLUSH PRIVILEGES;" && sudo mariadb --user=root --password=123456 --execute="CREATE DATABASE wordpress DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci; CREATE USER '\''wpuser'\''@'\''localhost'\'' IDENTIFIED BY '\''123456'\''; GRANT ALL PRIVILEGES ON wordpress.* TO '\''wpuser'\''@'\''localhost'\''; FLUSH PRIVILEGES;" && sudo cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/wordpress.conf && sudo sed -i '\''s|DocumentRoot /var/www/html|DocumentRoot /var/www/html/wordpress|'\'' /etc/apache2/sites-available/wordpress.conf && sudo a2ensite wordpress.conf && sudo a2enmod rewrite && sudo systemctl restart apache2 && sudo systemctl enable apache2 && echo -e "<?php\nphpinfo();\n?>" | sudo tee /var/www/html/wordpress/info.php > /dev/null && sudo systemctl restart apache2 && xdg-open "http://localhost/wordpress"'
+
+
