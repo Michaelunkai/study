@@ -583,13 +583,6 @@ alias space='for file in *\ *; do mv "$file" "${file// /_}"; done'
 alias sapps="cd /mnt/c/study/programming/python/apps"
 
 
-alias getkafka='
-docker run -d --name zookeeper -e ZOOKEEPER_CLIENT_PORT=2181 confluentinc/cp-zookeeper:latest && \
-docker run -d --name kafka -e KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181 -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 -e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 --link zookeeper:zookeeper -p 9092:9092 confluentinc/cp-kafka:latest && \
-docker run -d --name akhq -p 8080:8080 -e AKHQ_CONFIGURATION="$(echo -e "akhq:\n connections:\n docker-kafka:\n properties:\n bootstrap.servers: \"kafka:9092\"")" -e JAVA_OPTS="-Dlogback.configurationFile=logback.xml" --link kafka:kafka tchiotludo/akhq && \
-open http://localhost:8080'
-
-
 alias sapache="cd /mnt/c/study/webhosting/apache"
 
 
@@ -629,7 +622,7 @@ alias sgcp="cd /mnt/c/study/cloud/GCP/cli"
 
 alias getwordpress='sudo apt update && sudo apt install -y mariadb-server wget && wget -c https://wordpress.org/latest.tar.gz && tar -xvzf latest.tar.gz && sudo mv wordpress /var/www/html/ && sudo chown -R www-data:www-data /var/www/html/wordpress && sudo chmod -R 755 /var/www/html/wordpress && sudo mariadb --execute="ALTER USER '\''root'\''@'\''localhost'\'' IDENTIFIED BY '\''123456'\''; FLUSH PRIVILEGES;" && sudo mariadb --user=root --password=123456 --execute="DELETE FROM mysql.user WHERE User=''; DROP DATABASE IF EXISTS test; DELETE FROM mysql.db WHERE Db='\''test'\'' OR Db='\''test\\_%'\''; FLUSH PRIVILEGES;" && sudo mariadb --user=root --password=123456 --execute="CREATE DATABASE wordpress DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci; CREATE USER '\''wpuser'\''@'\''localhost'\'' IDENTIFIED BY '\''123456'\''; GRANT ALL PRIVILEGES ON wordpress.* TO '\''wpuser'\''@'\''localhost'\''; FLUSH PRIVILEGES;" && sudo cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/wordpress.conf && sudo sed -i '\''s|DocumentRoot /var/www/html|DocumentRoot /var/www/html/wordpress|'\'' /etc/apache2/sites-available/wordpress.conf && sudo a2ensite wordpress.conf && sudo a2enmod rewrite && sudo systemctl restart apache2 && sudo systemctl enable apache2 && echo -e "<?php\nphpinfo();\n?>" | sudo tee /var/www/html/wordpress/info.php > /dev/null && sudo systemctl restart apache2 && xdg-open "http://localhost/wordpress"'
 
-alias scprc="sshpass -p '123456' scp /root/.bashrc ubuntu@192.168.1.193:/home/ubuntu/.bashrc_temp && \ sshpass -p '123456' ssh ubuntu@192.168.1.193 'echo 123456 | sudo -S mv /home/ubuntu/.bashrc_temp /root/.bashrc && sudo cp /root/.bashrc /home/ubuntu/.bashrc && source ~/.bashrc' "
+alias scprc=" bash /mnt/c/study/linux/bash/scripts/sshpass.sh "
 
 
 
@@ -638,3 +631,9 @@ alias getjenkins='docker run -d -p 8080:8080 -p 50000:50000 -v jenkins_home:/var
 
 
 getera='wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg && echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list && sudo apt update && sudo apt install terraform -y'
+
+
+
+alias skafka="cd /mnt/c/study/datascience/Data_Flow/KAFKA"
+
+alias getkafka="sudo apt-get update && sudo apt-get install -y openjdk-11-jre && sudo docker pull confluentinc/cp-kafka:7.3.2 && sudo docker pull confluentinc/cp-zookeeper:7.3.2 && sudo docker network create kafka-net && sudo docker run -d --net=kafka-net --name=zookeeper -e ZOOKEEPER_CLIENT_PORT=2181 confluentinc/cp-zookeeper:7.3.2 && sudo docker run -d --net=kafka-net --name=kafka -p 7000:7000 -e KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181 -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:7000 -e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 confluentinc/cp-kafka:7.3.2 "
