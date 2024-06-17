@@ -451,30 +451,7 @@ alias gptbot="python /mnt/c/study/programming/python/apps/chatGPTbot/automateAns
 
 alias sAI="cd /mnt/c/study/automation/AI"
 
-alias getkube='sudo mkdir -p /etc/kubernetes && \
-sudo snap install kubectl --classic && \
-sudo snap install kubeadm --classic && \
-sudo snap install kubelet --classic && \
-sudo snap install microk8s --classic && \
-sudo snap install helm --classic && \
-curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && \
-sudo install minikube-linux-amd64 /usr/local/bin/minikube && \
-sudo touch /etc/kubernetes/admin.conf /etc/kubernetes/kubelet.conf /etc/kubernetes/controller-manager.conf /etc/kubernetes/scheduler.conf && \
-minikube start --driver=docker --force && \
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml && \
-kubectl create sa kube-ds-viewer -n kube-system && \
-kubectl create sa kube-ds-editor -n kube-system && \
-kubectl create sa kube-ds-admin -n kube-system && \
-kubectl create clusterrolebinding kube-ds-viewer-role-binding --clusterrole=view --serviceaccount=kube-system:kube-ds-viewer && \
-kubectl create clusterrolebinding kube-ds-editor-role-binding --clusterrole=edit --serviceaccount=kube-system:kube-ds-editor && \
-kubectl create clusterrolebinding kube-ds-admin-role-binding --clusterrole=admin --serviceaccount=kube-system:kube-ds-admin && \
-kubectl create secret generic kube-ds-viewer-token --from-literal=token=$(kubectl get secret $(kubectl get sa kube-ds-viewer -n kube-system -o jsonpath="{.secrets[0].name}") -n kube-system -o jsonpath="{.data.token}" | base64 -d) -n kube-system && \
-kubectl create secret generic kube-ds-editor-token --from-literal=token=$(kubectl get secret $(kubectl get sa kube-ds-editor -n kube-system -o jsonpath="{.secrets[0].name}") -n kube-system -o jsonpath="{.data.token}" | base64 -d) -n kube-system && \
-kubectl create secret generic kube-ds-admin-token --from-literal=token=$(kubectl get secret $(kubectl get sa kube-ds-admin -n kube-system -o jsonpath="{.secrets[0].name}") -n kube-system -o jsonpath="{.data.token}" | base64 -d) -n kube-system && \
-kubectl get secret kube-ds-viewer-token -n kube-system -o jsonpath="{.data.token}" | base64 -d && \
-kubectl get secret kube-ds-editor-token -n kube-system -o jsonpath="{.data.token}" | base64 -d && \
-kubectl get secret kube-ds-admin-token -n kube-system -o jsonpath="{.data.token}" | base64 -d || echo -e "\a"'
-
+alias getkube='sudo mkdir -p /etc/kubernetes && sudo snap install kubectl --classic && sudo snap install kubeadm --classic && sudo snap install kubelet --classic && sudo snap install microk8s --classic && sudo snap install helm --classic && curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && sudo install minikube-linux-amd64 /usr/local/bin/minikube && sudo touch /etc/kubernetes/admin.conf /etc/kubernetes/kubelet.conf /etc/kubernetes/controller-manager.conf /etc/kubernetes/scheduler.conf && minikube start --driver=docker --force && kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml && kubectl create sa kube-ds-viewer -n kube-system && kubectl create sa kube-ds-editor -n kube-system && kubectl create sa kube-ds-admin -n kube-system && kubectl create clusterrolebinding kube-ds-viewer-role-binding --clusterrole=view --serviceaccount=kube-system:kube-ds-viewer && kubectl create clusterrolebinding kube-ds-editor-role-binding --clusterrole=edit --serviceaccount=kube-system:kube-ds-editor && kubectl create clusterrolebinding kube-ds-admin-role-binding --clusterrole=admin --serviceaccount=kube-system:kube-ds-admin && kubectl create secret generic kube-ds-viewer-token --from-literal=token=$(kubectl get secret $(kubectl get sa kube-ds-viewer -n kube-system -o jsonpath="{.secrets[0].name}") -n kube-system -o jsonpath="{.data.token}" | base64 -d) -n kube-system && kubectl create secret generic kube-ds-editor-token --from-literal=token=$(kubectl get secret $(kubectl get sa kube-ds-editor -n kube-system -o jsonpath="{.secrets[0}.name}") -n kube-system -o jsonpath="{.data.token}" | base64 -d) -n kube-system && kubectl create secret generic kube-ds-admin-token --from-literal=token=$(kubectl get secret $(kubectl get sa kube-ds-admin -n kube-system -o jsonpath="{.secrets[0].name}") -n kube-system -o jsonpath="{.data.token}" | base64 -d) -n kube-system && kubectl get secret kube-ds-viewer-token -n kube-system -o jsonpath="{.data.token}" | base64 -d && kubectl get secret kube-ds-editor-token -n kube-system -o jsonpath="{.data.token}" | base64 -d && kubectl get secret kube-ds-admin-token -n kube-system -o jsonpath="{.data.token}" | base64 -d || echo -e "\a"'
 
 
 alias getmariadb="sudo apt install -y mariadb-server && sudo systemctl start mariadb && sudo systemctl enable mariadb && sudo mysql"
@@ -652,7 +629,12 @@ alias sgcp="cd /mnt/c/study/cloud/GCP/cli"
 
 alias getwordpress='sudo apt update && sudo apt install -y mariadb-server wget && wget -c https://wordpress.org/latest.tar.gz && tar -xvzf latest.tar.gz && sudo mv wordpress /var/www/html/ && sudo chown -R www-data:www-data /var/www/html/wordpress && sudo chmod -R 755 /var/www/html/wordpress && sudo mariadb --execute="ALTER USER '\''root'\''@'\''localhost'\'' IDENTIFIED BY '\''123456'\''; FLUSH PRIVILEGES;" && sudo mariadb --user=root --password=123456 --execute="DELETE FROM mysql.user WHERE User=''; DROP DATABASE IF EXISTS test; DELETE FROM mysql.db WHERE Db='\''test'\'' OR Db='\''test\\_%'\''; FLUSH PRIVILEGES;" && sudo mariadb --user=root --password=123456 --execute="CREATE DATABASE wordpress DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci; CREATE USER '\''wpuser'\''@'\''localhost'\'' IDENTIFIED BY '\''123456'\''; GRANT ALL PRIVILEGES ON wordpress.* TO '\''wpuser'\''@'\''localhost'\''; FLUSH PRIVILEGES;" && sudo cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/wordpress.conf && sudo sed -i '\''s|DocumentRoot /var/www/html|DocumentRoot /var/www/html/wordpress|'\'' /etc/apache2/sites-available/wordpress.conf && sudo a2ensite wordpress.conf && sudo a2enmod rewrite && sudo systemctl restart apache2 && sudo systemctl enable apache2 && echo -e "<?php\nphpinfo();\n?>" | sudo tee /var/www/html/wordpress/info.php > /dev/null && sudo systemctl restart apache2 && xdg-open "http://localhost/wordpress"'
 
-
-
 alias scprc="sshpass -p '123456' scp /root/.bashrc ubuntu@192.168.1.193:/home/ubuntu/.bashrc_temp && \ sshpass -p '123456' ssh ubuntu@192.168.1.193 'echo 123456 | sudo -S mv /home/ubuntu/.bashrc_temp /root/.bashrc && sudo cp /root/.bashrc /home/ubuntu/.bashrc && source ~/.bashrc' "
 
+
+
+alias getjenkins='docker run -d -p 8080:8080 -p 50000:50000 -v jenkins_home:/var/jenkins_home --name jenkins jenkins/jenkins:lts && sleep 30 && docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword && echo "Access Jenkins at: http://$(hostname -I | awk '\''{print $1}'\''):8080" && gc http://172.27.127.95:8080'
+
+
+
+getera='wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg && echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list && sudo apt update && sudo apt install terraform -y'
