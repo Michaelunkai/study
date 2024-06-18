@@ -637,3 +637,22 @@ getera='wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o 
 alias skafka="cd /mnt/c/study/datascience/Data_Flow/KAFKA"
 
 alias getkafka="sudo apt-get update && sudo apt-get install -y openjdk-11-jre && sudo docker pull confluentinc/cp-kafka:7.3.2 && sudo docker pull confluentinc/cp-zookeeper:7.3.2 && sudo docker network create kafka-net && sudo docker run -d --net=kafka-net --name=zookeeper -e ZOOKEEPER_CLIENT_PORT=2181 confluentinc/cp-zookeeper:7.3.2 && sudo docker run -d --net=kafka-net --name=kafka -p 7000:7000 -e KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181 -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:7000 -e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 confluentinc/cp-kafka:7.3.2 "
+
+
+alias fixkube="sudo sysctl fs.protected_regular=0 && sudo minikube delete && sudo chown -R $USER:$USER /tmp/juju* && minikube start --driver=docker --force"
+
+
+
+alias samba='cd /srv/samba/shared'
+
+
+
+alias rmsamba='rm -rf /srv/samba/shared/*'
+
+
+
+alias sud="sudo su"
+
+
+
+alias csources="rm -rf /etc/apt/sources.list.d/*"
