@@ -1,0 +1,30 @@
+▲A  A▼
+Running Virtual Machines on Debian/Ubuntu using QEMU, libvirt and Virt Manager
+Log into the Linux device
+Run the following commands in a terminal window
+# update software repositories
+sudo apt update
+# install available software updates
+sudo apt upgrade -y
+# install qemu
+sudo apt install qemu qemu-kvm qemu-system qemu-utils -y
+# install libvirt
+sudo apt install libvirt-clients libvirt-daemon-system virtinst -y
+# install virt-manager UI
+sudo apt install virt-manager -y
+Launch Virt-Manager from the applications menu
+When prompted, enter the sudo password
+Click the Create VM button
+Select an installation method, Local install media in the example
+Click the Forward button
+Browse to the installation media
+If the operating system is not found automatically, uncheck the Automatically detect checkbox and use the search box to manually set the OS
+Click the Forward button
+Set the amount of memory and number of CPUs for the VM
+Click the Forward button
+Enter the size of the virtual disk to be created for the VM
+Click the Forward button
+Enter a name for the VM
+Click the Finish button
+If prompted, select Yes to start the virtual network interface
+ 
