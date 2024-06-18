@@ -21,7 +21,7 @@ CHANNEL_IDS_FILE = "channel_ids.json"
 CHANNEL_NAMES = [
     "Patrick Cc:", "Visual Venture", "Johnny Harris", "Alex Meyers",
     "Karsten Runquist", "Moon", "SunnyV2", "penguinz0", "JRE Clips",
-    "Kurzgesagt – In a Nutshell", "SpookyRice", "Fireship", "Cr1tiKaL Stream",
+    "Kurzgesagt â€“ In a Nutshell", "SpookyRice", "Fireship", "Cr1tiKaL Stream",
     "DuduFaruk", "YMS", "Eddy Burback", "ralphthemoviemaker", "Tell Us More",
     "videogamedunkey", "MagnatesMedia", "PowerfulJRE", "Ghost Gum",
     "Nox Jackson", "Everything Critical", "PodSip", "ClipCove", "Louis C.K.",
@@ -102,7 +102,7 @@ def save_cached_channel_ids(channel_ids):
 def get_channel_id(youtube, channel_name, cached_channel_ids, current_quota):
     if channel_name in cached_channel_ids:
         return cached_channel_ids[channel_name], current_quota
-    
+
     if current_quota + QUOTA_COST_SEARCH > MAX_QUOTA:
         print("Quota limit reached. Cannot perform further API calls.")
         return None, current_quota
