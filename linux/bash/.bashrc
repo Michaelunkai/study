@@ -488,8 +488,6 @@ alias hebrew="py /mnt/c/study/programming/python/apps/translate2hebrew/a.py"
 
 
 
-alias getnpm="apt install npm nodejs -y"
-
 alias sporg="cd /mnt/c/study/programming"
 
 
@@ -656,3 +654,17 @@ alias sud="sudo su"
 
 
 alias csources="rm -rf /etc/apt/sources.list.d/*"
+
+alias ssql='cd /mnt/c/study/datascience/databases/sql'
+
+
+
+alias snosql='cd /mnt/c/study/datascience/databases/nosql'
+
+
+
+alias remove="sudo apt autoremove -y"
+
+
+
+alias getnpm="cd && apt install npm -y && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash && source ~/.bashrc && nvm install 18 && nvm use 18"
