@@ -1,0 +1,16 @@
+example:
+
+
+virt-install \
+--name metasploitable \
+--ram 1024 \
+--vcpus 1 \
+--os-type linux \
+--os-variant generic \
+--hvm \
+--network default \
+--graphics none \
+--console pty,target_type=serial \
+--import \
+--disk path=metasploitable.qcow2,format=qcow2
+
