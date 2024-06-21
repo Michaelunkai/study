@@ -1,0 +1,42 @@
+▲A  A▼
+Running WordPress Containerized in Docker
+What is WordPress?
+WordPress is open source software you can use to create a beautiful website, blog, or app. -https://wordpress.org/
+Installing Docker
+Log into the Linux based device
+Run the following commands in the terminal
+# install prerequisites
+sudo apt install apt-transport-https ca-certificates curl software-properties-common gnupg-agent -y
+# add docker gpg key
+curl -fsSL https://download.docker.com/linux/$(awk -F'=' '/^ID=/{ print $NF }' /etc/os-release)/gpg | sudo apt-key add -
+# add docker software repository
+sudo add-apt-repository "deb [arch=$(dpkg --print-architecture)] https://download.docker.com/linux/$(awk -F'=' '/^ID=/{ print $NF }' /etc/os-release) $(lsb_release -cs) stable"
+# install docker
+sudo apt install docker-ce docker-compose containerd.io -y
+# enable and start docker service
+sudo systemctl enable docker && sudo systemctl start docker
+# add the current user to the docker group
+sudo usermod -aG docker $USER
+# reauthenticate for the new group membership to take effect
+su - $USER
+Running the WordPress Container
+Now that Docker is installed, run the following commands to setup the WordPress Docker container and run it
+# create working directories
+mkdir ~/docker/wordpress -p && mkdir ~/docker/mariadb -p
+# set ownership on the working directories
+sudo chown "$USER":"$USER" ~/docker -R
+# create containers network
+docker network create containers
+# run the mariadb docker container
+docker run -d --name mariadb -e MYSQL_ROOT_PASSWORD=r00tp@$$ -e MYSQL_USER=wordpress_rw -e MYSQL_PASSWORD='W0rdPr3ss!!' -e MYSQL_DATABASE=wordpress -v ~/docker/mariadb:/var/lib/mysql --network containers --restart unless-stopped mariadb
+# run the wordpress docker container
+docker run -d --name=wordpress -p 8880:80 -e WORDPRESS_DB_HOST=mariadb -e WORDPRESS_DB_USER=wordpress_rw -e WORDPRESS_DB_PASSWORD='W0rdPr3ss!!' -e WORDPRESS_DB_NAME=wordpress -v ~/docker/wordpress:/var/www/html --network containers --restart unless-stopped wordpress
+Open a web browser and navigate to http://DNSorIP:8880
+The WordPress setup screen should be displayed
+Select a language > Click Continue
+Create a site title and WordPress login > Click Install WordPress
+When the installation completes, login with the WordPress credentials created in the previous step
+Welcome to WordPress running as a Docker container
+Documentation: https://hub.docker.com/_/wordpress
+
+ 
