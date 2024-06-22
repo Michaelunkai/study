@@ -171,6 +171,7 @@ alias dcu='docker-compose up -d'
 
 
 alias backupwsl='cd /mnt/c/backup/linux/wsl && built michadockermisha/backup:wsl . && docker push michadockermisha/backup:wsl'
+alias backupst='stu && built michadockermisha/backup:study . && docker push michadockermisha/backup:study'
 alias backupapps='cd /mnt/c/backup/windowsapps && built michadockermisha/backup:windowsapps . && docker push michadockermisha/backup:windowsapps'
 
 
@@ -229,7 +230,6 @@ alias sdatabases='cd /mnt/c/study/datascience/databases'
 alias sgit='cd /mnt/c/study/git'
 alias smalware='cd /mnt/c/study/malware'
 alias spython='cd /mnt/c/study/programming/python'
-alias svirtualmachines='cd /mnt/c/study/virtualmachines'
 alias sbash='cd /mnt/c/study/linux/bash'
 alias sexams='cd /mnt/c/study/exams'
 alias skubernetes='cd /mnt/c/study/kubernetes'
@@ -578,7 +578,7 @@ alias space='for file in *\ *; do mv "$file" "${file// /_}"; done'
 alias sapps="cd /mnt/c/study/programming/python/apps"
 
 
-alias sapache="cd /mnt/c/study/webhosting/apache"
+alias sapache="cd /mnt/c/study/hosting/apache"
 
 
 alias sssl="cd /mnt/c/study/security/SSL"
@@ -666,6 +666,8 @@ alias remove="sudo apt autoremove -y"
 
 alias getnpm="cd && apt install npm -y && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash && source ~/.bashrc && nvm install 18 && nvm use 18"
 
+
+
 alias backupst='drun study michadockermisha/backup:study sh -c "apk add rsync && rsync -aP /c/study/* /home && exit" '
 
 
@@ -679,3 +681,16 @@ alias shost='cd /mnt/c/study/hosting'
 
 
 alias swrt="cd /mnt/c/study/networking/openWRT"
+
+
+
+alias cicd="cd /mnt/c/study/automation/CI-CD"
+
+
+
+alias sdc="cd /mnt/c/study/datascience"
+
+alias svm='cd /mnt/c/study/virtualmachines'
+
+
+alias getgraf='sudo apt-get install -y apt-transport-https software-properties-common wget && sudo mkdir -p /etc/apt/keyrings/ && wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/grafana.gpg > /dev/null && echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list && sudo apt-get update && sudo apt-get install -y grafana && sudo systemctl daemon-reload && sudo systemctl start grafana-server && sudo systemctl status grafana-server && gc http://localhost:3000/login'
