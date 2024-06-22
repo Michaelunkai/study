@@ -1,0 +1,77 @@
+▲A  A▼
+Run Self-Hosted Desktop as a Service with Kasm Workspaces in Docker
+What is Kasm Workspaces?
+Kasm Workspaces is a docker container streaming platform that enables you to deliver browser-based access to desktops, applications, and web services. Kasm uses a modern DevOps approach for programmatic delivery of services via Containerized Desktop Infrastructure (CDI) technology to create on-demand, disposable, docker containers that are accessible via web browser. -https://github.com/kasmtech/workspaces-core-images
+Installing Docker
+Log into the Linux based device
+Run the following commands in the terminal
+# install prerequisites
+sudo apt install apt-transport-https ca-certificates curl software-properties-common gnupg-agent -y
+# add docker gpg key
+curl -fsSL https://download.docker.com/linux/$(awk -F'=' '/^ID=/{ print $NF }' /etc/os-release)/gpg | sudo apt-key add -
+# add docker software repository
+sudo add-apt-repository "deb [arch=$(dpkg --print-architecture)] https://download.docker.com/linux/$(awk -F'=' '/^ID=/{ print $NF }' /etc/os-release) $(lsb_release -cs) stable"
+# install docker
+sudo apt install docker-ce docker-compose containerd.io -y
+# enable and start docker service
+sudo systemctl enable docker && sudo systemctl start docker
+# add the current user to the docker group
+sudo usermod -aG docker $USER
+# reauthenticate for the new group membership to take effect
+su - $USER
+Deploying Kasm Workspaces [Simple Method]
+This is the recommended installation method, but requires the most disk space. I choose to be more selective about the Kasm images running, so I use the second installation option outlined later on.
+
+Continue with the following commands in a terminal window
+# change directory to /tmp
+cd /tmp
+# download the latest kasm workspaces release
+curl -O https://kasm-static-content.s3.amazonaws.com/kasm_release_1.11.0.18142e.tar.gz
+# extract the downloaded tar.gz
+tar -xf kasm_release*.tar.gz
+# execute the installation script
+sudo bash kasm_release/install.sh
+Take note of the credentials displayed in the output
+Open a web browser and navigate to https://DNSorIP
+Log in using username admin@kasm.local and the password found in the installation output
+Deploying Kasm Workspaces [Selective Method]
+This method can use far less disk space, but requires more time and setup to add Kasm images manually. I only add the Kasm images I use regularly.
+
+Continue with the following commands in a terminal window
+# change directory to /tmp
+cd /tmp
+# download the latest kasm workspaces release
+curl -O https://kasm-static-content.s3.amazonaws.com/kasm_release_1.11.0.18142e.tar.gz
+# extract the downloaded tar.gz
+tar -xf kasm_release*.tar.gz
+# execute the installation script
+# installing only the core images
+# and setting a custom https port
+sudo bash kasm_release/install.sh -I -L 8443
+Take note of the credentials displayed in the output
+Open a web browser and navigate to https://DNSorIP:8443
+Log in using username admin@kasm.local and the password found in the installation output
+Adding Kasm Desktop/Application Images
+Navigate to https://hub.docker.com/u/kasmweb to view the available Kasm images
+Select Admin at the top of the Kasm web UI
+Select Images from the left navigation menu
+Click the Add Image button
+Complete the Add Image form as follows (Adding Brave Browser in this example)
+Docker Image: kasmweb/brave:1.11.0-rolling
+Description: Brave Browser
+Friendly Name: Brave Browser
+Thumbnail URL: https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Brave_lion_icon.svg/654px-Brave_lion_icon.svg.png
+Cores: 1
+Memory (MB): 1024
+GPU Count: 0
+Docker Registry: hub.docker.com
+Persistent Profile Path: /home/{username}/brave
+
+Scroll to the bottom of the form and click the Submit button
+Click Workspaces at the top of the Kasm web UI
+Click the new image > Click Launch Session
+Documentation: https://kasmweb.com/docs/latest/index.html
+
+Source: https://kasmweb.com/docs/latest/install/single_server_install.html
+
+ 
