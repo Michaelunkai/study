@@ -171,7 +171,6 @@ alias dcu='docker-compose up -d'
 
 
 alias backupwsl='cd /mnt/c/backup/linux/wsl && built michadockermisha/backup:wsl . && docker push michadockermisha/backup:wsl'
-alias backupst='stu && built michadockermisha/backup:study . && docker push michadockermisha/backup:study'
 alias backupapps='cd /mnt/c/backup/windowsapps && built michadockermisha/backup:windowsapps . && docker push michadockermisha/backup:windowsapps'
 
 
@@ -229,7 +228,6 @@ alias sssh='cd /mnt/c/study/ssh'
 alias sdatabases='cd /mnt/c/study/datascience/databases'
 alias sgit='cd /mnt/c/study/git'
 alias smalware='cd /mnt/c/study/malware'
-alias snetworking='cd /mnt/c/study/networking'
 alias spython='cd /mnt/c/study/programming/python'
 alias svirtualmachines='cd /mnt/c/study/virtualmachines'
 alias sbash='cd /mnt/c/study/linux/bash'
@@ -375,7 +373,6 @@ alias sautomation="cd /mnt/c/study/automation"
 alias ssecurity="cd /mnt/c/study/security"
 alias shacking="cd /mnt/c/study/security/hacking"
 alias libre="libreoffice --writer"
-alias swebhosting="cd /mnt/c/study/webhosting"
 alias fall="echo 'wsl --unregister kali-linux; wsl --import kali-linux C:\wsl2 C:\backup\linux\wsl\kalifull.tar; wsl --unregister ubuntu; wsl --import ubuntu C:\wsl2\ubuntu\ C:\backup\linux\wsl\ubuntu.tar'"
 
 
@@ -668,3 +665,17 @@ alias remove="sudo apt autoremove -y"
 
 
 alias getnpm="cd && apt install npm -y && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash && source ~/.bashrc && nvm install 18 && nvm use 18"
+
+alias backupst='drun study michadockermisha/backup:study sh -c "apk add rsync && rsync -aP /c/study/* /home && exit" '
+
+
+
+alias snet="cd /mnt/c/study/networking"
+
+
+
+alias shost='cd /mnt/c/study/hosting'
+
+
+
+alias swrt="cd /mnt/c/study/networking/openWRT"
