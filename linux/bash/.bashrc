@@ -263,8 +263,6 @@ alias backupw='echo "wsl --export kali-linux C:\backup\linux\kalifull.tar; wsl -
 alias wupdates='cat "/mnt/c/study/powershell/scripts/windowsupdates.ps1" && cp "/mnt/c/study/powershell/scripts/windowsupdates.ps1 /mnt/c/users/micha/updates.ps1"'
 
 
-alias getsnap='sudo apt install snapd -y && updates && systemctl enable --now snapd.apparmor'
-
 
 alias getpython='sudo apt install -y -qq python3 python3-pip pyinstaller && \
   sudo apt update -y && sudo apt upgrade -y && \
@@ -695,12 +693,48 @@ alias svm='cd /mnt/c/study/virtualmachines'
 
 alias getgraf='sudo apt-get install -y apt-transport-https software-properties-common wget && sudo mkdir -p /etc/apt/keyrings/ && wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/grafana.gpg > /dev/null && echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list && sudo apt-get update && sudo apt-get install -y grafana && sudo systemctl daemon-reload && sudo systemctl start grafana-server && sudo systemctl status grafana-server && gc http://localhost:3000/login'
 
-export HADOOP_HOME=/usr/local/hadoop
-export HADOOP_INSTALL=$HADOOP_HOME
-export HADOOP_MAPRED_HOME=$HADOOP_HOME
-export HADOOP_COMMON_HOME=$HADOOP_HOME
-export HADOOP_HDFS_HOME=$HADOOP_HOME
-export YARN_HOME=$HADOOP_HOME
-export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
-export PATH=$PATH:$HADOOP_HOME/sbin:$HADOOP_HOME/bin
+alias rmsources="rm -rf /etc/apt/sources.list.d/*"
 
+
+
+alias sapis="cd /mnt/c/study/programming/APIs"
+
+
+
+alias smicro="cd /mnt/c/study/microservices"
+
+
+
+alias rmf="rm -rf"
+
+
+
+alias getsnap='sudo apt install snapd -y && updates && systemctl enable --now snapd.apparmor && systemctl start snapd'
+
+
+
+alias gethadoop="cd && sudo apt-get install -y openjdk-11-jdk && wget https://downloads.apache.org/hadoop/common/hadoop-3.3.6/hadoop-3.3.6.tar.gz && tar -xzvf hadoop-3.3.6.tar.gz && sudo mv hadoop-3.3.6 /usr/local/hadoop && export HADOOP_HOME=/usr/local/hadoop && export PATH=$PATH:$HADOOP_HOME/bin && export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 && $HADOOP_HOME/bin/hadoop version"
+
+
+
+alias gitoken="cat /mnt/c/study/Credentials/github/accessToken.txt"
+
+
+
+alias gitpush='cd /mnt/c/study && git add . && git commit -m "commit" && git push origin main'
+
+
+
+alias gitpull="git pull origin main"
+
+
+
+alias gitadd='psw -Command "gitadd" '
+
+
+
+alias gitpush='psw -Command "gitpush"'
+
+
+
+alias stud="cd /home/ubuntu/study"
