@@ -721,10 +721,6 @@ alias gitoken="cat /mnt/c/study/Credentials/github/accessToken.txt"
 
 
 
-alias gitpush='cd /mnt/c/study && git add . && git commit -m "commit" && git push origin main'
-
-
-
 alias gitpull="git pull origin main"
 
 

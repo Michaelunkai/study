@@ -1,0 +1,25 @@
+first in wsl2 wich is where i mainly use my repo, i created the following aliases:
+
+alias psw='powershell.exe'
+
+
+
+alias gitpush='cd /mnt/c/study && git add . && git commit -m "commit" && git push origin main'
+
+
+
+alias gitpull="git pull origin main"
+
+
+
+alias gitadd='psw -Command "gitadd" 
+
+
+
+alias gitpush='psw -Command "gitpush"'
+
+
+
+alias stud="cd /home/ubuntu/study"
+
+alias gitgo="gitadd && gitpush"
