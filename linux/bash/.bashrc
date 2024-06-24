@@ -263,7 +263,7 @@ alias backupw='echo "wsl --export kali-linux C:\backup\linux\kalifull.tar; wsl -
 alias wupdates='cat "/mnt/c/study/powershell/scripts/windowsupdates.ps1" && cp "/mnt/c/study/powershell/scripts/windowsupdates.ps1 /mnt/c/users/micha/updates.ps1"'
 
 
-alias getsnap='sudo apt install snapd -y && updates && systemctl enable --now snapd.apparmor && systemctl start snapd'
+alias getsnap='sudo apt install snapd -y && updates && systemctl enable --now snapd.apparmor'
 
 
 alias getpython='sudo apt install -y -qq python3 python3-pip pyinstaller && \
@@ -520,7 +520,7 @@ alias getelk=alias getelk='apt-get update && sudo apt-get install openjdk-17-jre
 
 
 
-alias getspark="getjava && wget https://archive.apache.org/dist/spark/spark-3.5.1/spark-3.5.1-bin-hadoop3.tgz && tar -xvzf spark-3.5.1-bin-hadoop3.tgz && sudo mv spark-3.5.1-bin-hadoop3 /opt/spark && echo -e "export SPARK_HOME=/opt/spark\nexport PATH=\$PATH:\$SPARK_HOME/bin:\$SPARK_HOME/sbin" >> /root/.bashrc && brc2 && spark-shell"
+alias getspark="getjava && wget https://archive.apache.org/dist/spark/spark-3.3.2/spark-3.3.2-bin-hadoop3.tgz && tar -xvzf spark-3.3.2-bin-hadoop3.tgz && sudo mv spark-3.3.2-bin-hadoop3 /opt/spark && echo -e "export SPARK_HOME=/opt/spark\nexport PATH=\$PATH:\$SPARK_HOME/bin:\$SPARK_HOME/sbin" >> /root/.bashrc && brc2 && spark-shell"
 
 
 
@@ -694,3 +694,13 @@ alias svm='cd /mnt/c/study/virtualmachines'
 
 
 alias getgraf='sudo apt-get install -y apt-transport-https software-properties-common wget && sudo mkdir -p /etc/apt/keyrings/ && wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/grafana.gpg > /dev/null && echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list && sudo apt-get update && sudo apt-get install -y grafana && sudo systemctl daemon-reload && sudo systemctl start grafana-server && sudo systemctl status grafana-server && gc http://localhost:3000/login'
+
+export HADOOP_HOME=/usr/local/hadoop
+export HADOOP_INSTALL=$HADOOP_HOME
+export HADOOP_MAPRED_HOME=$HADOOP_HOME
+export HADOOP_COMMON_HOME=$HADOOP_HOME
+export HADOOP_HDFS_HOME=$HADOOP_HOME
+export YARN_HOME=$HADOOP_HOME
+export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
+export PATH=$PATH:$HADOOP_HOME/sbin:$HADOOP_HOME/bin
+
