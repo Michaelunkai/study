@@ -743,3 +743,5 @@ alias sauto="cd /mnt/c/study/automation"
 alias gitlock="stu && rm .git/index.lock"
 
 
+export DISPLAY=$(grep -oP '(?<=nameserver\s)[\d.]+' /etc/resolv.conf):0
+export LIBGL_ALWAYS_INDIRECT=1
