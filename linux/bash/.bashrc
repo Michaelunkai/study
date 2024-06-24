@@ -367,7 +367,6 @@ alias backupubu="echo 'wsl --export ubuntu C:\backup\linux\ubuntu.tar'"
 alias sserver="cd /mnt/c/study/windows/server"
 alias gcp="gc https://console.cloud.google.com/"
 alias sansible="cd /mnt/c/study/automation/ansible"
-alias sautomation="cd /mnt/c/study/automation"
 alias ssecurity="cd /mnt/c/study/security"
 alias shacking="cd /mnt/c/study/security/hacking"
 alias libre="libreoffice --writer"
@@ -736,5 +735,11 @@ alias gitpush='psw -Command "gitpush"'
 alias stud="cd /home/ubuntu/study"
 
 alias gitgo="gitadd && sleep 5 && gitpush"
+
+alias sauto="cd /mnt/c/study/automation"
+
+
+
+alias gitlock="stu && rm .git/index.lock"
 
 
