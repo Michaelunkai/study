@@ -23,3 +23,26 @@ alias gitpush='psw -Command "gitpush"'
 alias stud="cd /home/ubuntu/study"
 
 alias gitgo="gitadd && gitpush"
+
+
+
+
+no i can run "gitgo" to push changes fast.
+
+
+
+in ubuntu deskto VM server:
+
+
+
+Edit the Cron Tab:
+
+crontab -e
+Add the Following Line to Pull Changes Every Minute:
+
+* * * * * cd /home/ubuntu/study && git pull origin main  # for the Ubuntu server
+
+
+and save.
+
+now it will autmatically fetch all latest pushed changed in the repo to the ubuntu server every minute!

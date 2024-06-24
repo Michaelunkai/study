@@ -735,4 +735,6 @@ alias gitpush='psw -Command "gitpush"'
 
 alias stud="cd /home/ubuntu/study"
 
-alias gitgo="gitadd && gitpush"
+alias gitgo="gitadd && sleep 5 && gitpush"
+
+
