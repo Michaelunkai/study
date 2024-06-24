@@ -1,0 +1,129 @@
+### Problem Statement (Explained Like You're 12):
+
+You have two words: a `beginWord` and an `endWord`, and a list of words called `wordList`. You need to transform `beginWord` into `endWord` using the words in `wordList`. Each step in the transformation must change only one letter, and each transformed word must be in `wordList`. The goal is to find the shortest transformation sequence from `beginWord` to `endWord`.
+
+For example:
+- If `beginWord` is "hit" and `endWord` is "cog", and `wordList` is ["hot", "dot", "dog", "lot", "log", "cog"], the shortest transformation sequence is ["hit", "hot", "dot", "dog", "cog"].
+
+### Python Solution:
+
+```python
+from collections import defaultdict, deque
+from string import ascii_lowercase
+
+class Solution:
+    def findLadders(self, beginWord: str, endWord: str, wordList: List[str]) -> List[List[str]]:
+        if endWord not in wordList:
+            return []
+
+        wordList = set(wordList)
+        wordList.add(beginWord)
+        
+        neighbors = defaultdict(list)
+        for word in wordList:
+            for i in range(len(word)):
+                pattern = word[:i] + '*' + word[i+1:]
+                neighbors[pattern].append(word)
+
+        def bfs_layers(beginWord):
+            layers = {}
+            queue = deque([beginWord])
+            layers[beginWord] = [[beginWord]]
+            while queue:
+                current_word = queue.popleft()
+                for i in range(len(current_word)):
+                    pattern = current_word[:i] + '*' + current_word[i+1:]
+                    for neighbor in neighbors[pattern]:
+                        if neighbor not in layers:
+                            queue.append(neighbor)
+                            layers[neighbor] = []
+                        if len(layers[neighbor]) == 0 or len(layers[neighbor][0]) == len(layers[current_word][0]) + 1:
+                            layers[neighbor].extend([path + [neighbor] for path in layers[current_word]])
+            return layers
+
+        layers = bfs_layers(beginWord)
+        return layers[endWord] if endWord in layers else []
+```
+
+### Explanation of the Code:
+
+1. **Imports and Initialization**:
+    ```python
+    from collections import defaultdict, deque
+    from string import ascii_lowercase
+    ```
+
+    - Import necessary libraries for creating default dictionaries and using deque for BFS.
+
+2. **Function Definition**:
+    ```python
+    class Solution:
+        def findLadders(self, beginWord: str, endWord: str, wordList: List[str]) -> List[List[str]]:
+    ```
+
+    - Define the `findLadders` function which takes `beginWord`, `endWord`, and `wordList` as inputs.
+
+3. **Check for End Word**:
+    ```python
+    if endWord not in wordList:
+        return []
+    ```
+
+    - If `endWord` is not in `wordList`, return an empty list because it's impossible to reach `endWord`.
+
+4. **Prepare Word List and Neighbors**:
+    ```python
+    wordList = set(wordList)
+    wordList.add(beginWord)
+    
+    neighbors = defaultdict(list)
+    for word in wordList:
+        for i in range(len(word)):
+            pattern = word[:i] + '*' + word[i+1:]
+            neighbors[pattern].append(word)
+    ```
+
+    - Convert `wordList` to a set for faster lookup.
+    - Add `beginWord` to the set.
+    - Create a dictionary of neighbors where each key is a pattern with one letter replaced by `*`, and the value is a list of words matching that pattern.
+
+5. **BFS to Find Layers**:
+    ```python
+    def bfs_layers(beginWord):
+        layers = {}
+        queue = deque([beginWord])
+        layers[beginWord] = [[beginWord]]
+        while queue:
+            current_word = queue.popleft()
+            for i in range(len(current_word)):
+                pattern = current_word[:i] + '*' + current_word[i+1:]
+                for neighbor in neighbors[pattern]:
+                    if neighbor not in layers:
+                        queue.append(neighbor)
+                        layers[neighbor] = []
+                    if len(layers[neighbor]) == 0 or len(layers[neighbor][0]) == len(layers[current_word][0]) + 1:
+                        layers[neighbor].extend([path + [neighbor] for path in layers[current_word]])
+        return layers
+    ```
+
+    - Define a function `bfs_layers` to perform BFS and find all shortest paths.
+    - Use a deque for BFS.
+    - Track layers of transformations using a dictionary `layers`.
+    - For each word, generate its patterns and find all neighbors.
+    - Update the queue and layers dictionary accordingly.
+
+6. **Get Result**:
+    ```python
+    layers = bfs_layers(beginWord)
+    return layers[endWord] if endWord in layers else []
+    ```
+
+    - Call the `bfs_layers` function and get the layers dictionary.
+    - Return the paths to `endWord` if it exists in the layers dictionary, otherwise return an empty list.
+
+### Summary:
+
+1. Check if `endWord` is in `wordList`.
+2. Create a neighbors dictionary where each key is a pattern with one letter replaced by `*`, and the value is a list of words matching that pattern.
+3. Use BFS to find all shortest paths from `beginWord` to `endWord`.
+4. Return the paths if they exist, otherwise return an empty list.
