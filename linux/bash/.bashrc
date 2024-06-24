@@ -743,5 +743,14 @@ alias sauto="cd /mnt/c/study/automation"
 alias gitlock="stu && rm .git/index.lock"
 
 
-export DISPLAY=$(grep -oP '(?<=nameserver\s)[\d.]+' /etc/resolv.conf):0
-export LIBGL_ALWAYS_INDIRECT=1
+
+
+alias screen='psw -command "screen"'
+
+
+
+alias getsqlite="sudo apt install -y sqlite3 && sqlite3"
+
+alias getgcloud='pip install pyqt5 && sudo apt-get update -y && sudo apt-get upgrade -y && sudo apt-get install -y apt-transport-https ca-certificates gnupg curl sudo && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg && echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && sudo apt-get update -y && sudo apt-get install -y google-cloud-cli && gcloud init'
+
+
