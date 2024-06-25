@@ -2,6 +2,7 @@ import curses
 import subprocess
 import ctypes
 import sys
+import os
 
 # Define the commands
 commands = [
@@ -59,7 +60,7 @@ def run_command_as_admin(command):
 
 def run_selected_commands(selected_commands):
     commands_script = "\n".join(selected_commands)
-    script_file = "commands_script.ps1"
+    script_file = os.path.join(os.path.expanduser("~"), "commands_script.ps1")
     
     with open(script_file, "w") as file:
         file.write(commands_script)
@@ -72,13 +73,13 @@ def main(stdscr):
     stdscr.clear()
     current_tab = 0
     current_selection = 0
-    selected_commands = []
     command_selection = [False] * len(commands)
     
     def draw_menu():
         stdscr.clear()
         tabs = ["Not Bulk", "Bulk", "WSL2"]
         y, x = stdscr.getmaxyx()
+        
         for i, tab in enumerate(tabs):
             if i == current_tab:
                 stdscr.addstr(0, i*10, tab, curses.A_REVERSE)
@@ -86,21 +87,20 @@ def main(stdscr):
                 stdscr.addstr(0, i*10, tab)
         
         current_commands = get_current_tab_commands(current_tab)
+        max_items_to_display = y - 5
+        
         for i, cmd in enumerate(current_commands):
+            if i >= max_items_to_display:
+                break
+            display_str = "[X] " + cmd["name"] if command_selection[commands.index(cmd)] else "[ ] " + cmd["name"]
             if i == current_selection:
-                if command_selection[i]:
-                    stdscr.addstr(i+2, 2, "[X] " + cmd["name"], curses.A_REVERSE)
-                else:
-                    stdscr.addstr(i+2, 2, "[ ] " + cmd["name"], curses.A_REVERSE)
+                stdscr.addstr(i+2, 2, display_str, curses.A_REVERSE)
             else:
-                if command_selection[i]:
-                    stdscr.addstr(i+2, 2, "[X] " + cmd["name"])
-                else:
-                    stdscr.addstr(i+2, 2, "[ ] " + cmd["name"])
+                stdscr.addstr(i+2, 2, display_str)
 
+        stdscr.addstr(y-3, 2, "Press Z to select all, X to deselect all")
         stdscr.addstr(y-2, 2, "Press TAB to switch tabs")
         stdscr.addstr(y-1, 2, "Press SPACE to select/deselect commands, ENTER to run selected commands")
-        stdscr.addstr(y-3, 2, "Press Z to select all, X to deselect all")
         stdscr.refresh()
 
     def get_current_tab_commands(tab_index):
@@ -113,13 +113,13 @@ def main(stdscr):
 
     def select_all():
         current_commands = get_current_tab_commands(current_tab)
-        for i, cmd in enumerate(current_commands):
-            command_selection[i] = True
+        for cmd in current_commands:
+            command_selection[commands.index(cmd)] = True
 
     def deselect_all():
         current_commands = get_current_tab_commands(current_tab)
-        for i, cmd in enumerate(current_commands):
-            command_selection[i] = False
+        for cmd in current_commands:
+            command_selection[commands.index(cmd)] = False
 
     while True:
         draw_menu()
@@ -133,7 +133,7 @@ def main(stdscr):
             run_selected_commands(selected_cmds)
         elif key == 32:  # SPACE key
             current_commands = get_current_tab_commands(current_tab)
-            command_selection[current_selection] = not command_selection[current_selection]
+            command_selection[commands.index(current_commands[current_selection])] = not command_selection[commands.index(current_commands[current_selection])]
         elif key == curses.KEY_UP:
             current_selection = max(current_selection - 1, 0)
         elif key == curses.KEY_DOWN:
@@ -146,3 +146,4 @@ def main(stdscr):
 
 if __name__ == "__main__":
     curses.wrapper(main)
+    
