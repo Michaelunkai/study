@@ -14,12 +14,10 @@ wsl --export Ubuntu $env:TEMP\ubuntu.tar
 wsl --import $newDistroName $newDistroPath $env:TEMP\ubuntu.tar
 
 # Set the default user for the new distro
-wsl -d $newDistroName usermod -s /bin/bash $username
-wsl -d $newDistroName chsh -s /bin/bash $username
+wsl -d $newDistroName -u root usermod -l $username ubuntu
 
 # Update the new distro
-wsl -d $newDistroName apt update
-wsl -d $newDistroName apt upgrade -y
+wsl -d $newDistroName -u $username bash -c "sudo apt update && sudo apt upgrade -y"
 
 # Remove the tarball
 Remove-Item $env:TEMP\ubuntu.tar
