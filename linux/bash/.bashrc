@@ -779,3 +779,4 @@ alias getgitea='cd && sudo apt-get update && sudo apt-get install -y mariadb-ser
 alias cps='cp "$(ls -t | head -n 1)" /mnt/c/study/setups'
 alias cpd='cp "$(ls -t | head -n 1)" /mnt/c/study/docker/guides'
 alias cpo='cp "$(ls -t | head -n 1)" /mnt/c/study/automation/oneliners'
+alias cpt='cp "$(ls -t | head -n 1)" /mnt/c/study/troubleshooting'
