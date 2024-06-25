@@ -10,7 +10,7 @@ def run_command_as_admin(command):
             if ctypes.windll.shell32.IsUserAnAdmin() != 0:
                 subprocess.Popen(["powershell", "-NoExit", "-Command", command], shell=True)
             else:
-                ctypes.windll.shell32.ShellExecuteW(None, "runas", "powershell", "-NoExit -Command " + command, None, 1)
+                ctypes.windll.shell32.ShellExecuteW(None, "runas", "powershell", f"-NoExit -Command {command}", None, 1)
     except Exception as e:
         print("Error:", e)
 
@@ -18,9 +18,10 @@ def run_selected_commands():
     selected_commands = []
     for cmd, var in zip(commands, command_vars):
         if var.isChecked():
-            selected_commands.append(cmd["command"])
-
+            selected_commands.append(f"Write-Host 'Running: {cmd['name']}'; {cmd['command']}; if ($?) {{ Write-Host 'Finished: {cmd['name']}' }} else {{ Write-Host 'Failed: {cmd['name']}' }}")
+    
     command_to_run = "; ".join(selected_commands)
+    print("Running commands:", command_to_run)  # Debugging statement
     run_command_as_admin(command_to_run)
 
 def choose_all():
@@ -108,23 +109,52 @@ if __name__ == "__main__":
         {"name": "Clear System Log", "command": "wevtutil cl System"},
         {"name": "Clear DNS Cache", "command": "Clear-DnsClientCache"},
         {"name": "Reinstall Microsoft Store", "command": "Get-AppxPackage -allusers Microsoft.WindowsStore | foreach {Add-AppxPackage -register \"$($_.InstallLocation)\\appxmanifest.xml\" -DisableDevelopmentMode}"},
-        {"name": "Start Defender Scan", "command": "Start-MpScan -ScanType QuickScan"},
-        {"name": "Defender full Scan", "command": "Start-MpScan -ScanType FullScan"},
         {"name": "Unregister Kali WSL", "command": "wsl --unregister kali-linux"},
         {"name": "Import Kali WSL", "command": "wsl --import kali-linux C:\\wsl2 C:\\backup\\linux\\wsl\\kalifull.tar"},
         {"name": "Unregister Ubuntu WSL", "command": "wsl --unregister ubuntu"},
         {"name": "Import Ubuntu WSL", "command": "wsl --import ubuntu C:\\wsl2\\ubuntu\\ C:\\backup\\linux\\wsl\\ubuntu.tar"},
-        {"name": "Export WSL2 distros", "command": "wsl --export kali-linux C:\\backup\\linux\\kalifull.tar; wsl --export ubuntu C:\\backup\\linux\\ubuntu.tar"},
+        {"name": "Export WSL2 Distros", "command": "wsl --export kali-linux C:\\backup\\linux\\kalifull.tar; wsl --export ubuntu C:\\backup\\linux\\ubuntu.tar"},
         {"name": "Turbo Mod", "command": "python C:\\backup\\windowsapps\\powerplans\\turbo.py"},
         {"name": "PowerSaving Mod", "command": "python C:\\backup\\windowsapps\\powerplans\\powersavings.py"},
-        {"name": "Disable Windows Firewall", "command": "Set-MpPreference -DisableRealtimeMonitoring $true; Set-NetFirewallProfile -Profile Domain, Private, Public -Enabled False"},
-        {"name": "Enable Windows Firewall", "command": "Set-MpPreference -DisableRealtimeMonitoring $false; Set-NetFirewallProfile -Profile Domain, Private, Public -Enabled True"},
         {"name": "Enable SSH", "command": "Add-WindowsCapability -Online -Name OpenSSH.Server; Start-Service sshd; Set-Service -Name sshd -StartupType 'Automatic'; New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22; Get-Service sshd"},
         {"name": "Ram Usage", "command": "$totalMemory = (Get-WmiObject Win32_ComputerSystem).TotalPhysicalMemory; Get-Process | Sort-Object -Property WorkingSet -Descending | Select-Object Name, @{Name='MemoryUsage(MB)'; Expression={[math]::Round($_.WorkingSet / 1MB, 2)}}, @{Name='MemoryUsage(%)'; Expression={($_.WorkingSet / $totalMemory) * 100}}"},
         {"name": "cleanmgr Tool", "command": "cleanmgr /sageset:1"},
+        {"name": "Delete TEMP folders", "command": "Remove-Item -Path $env:TEMP\\*,$env:WINDIR\\Temp\\*,$env:WINDIR\\Prefetch\\*,\"C:\\Users\\*\\AppData\\Local\\Temp\\*\" -Force -Recurse -ErrorAction SilentlyContinue"},
+        {"name": "Clear Event Logs", "command": "wevtutil cl Application; wevtutil cl Security; wevtutil cl System"},
+        {"name": "Compact Windows Installation", "command": "compact.exe /CompactOS:always"},
+        {"name": "Remove Restore Points", "command": "vssadmin delete shadows /for=c: /all /quiet"},
+        {"name": "Uninstall Pre-installed Bloatware", "command": "Get-AppxPackage -AllUsers | Remove-AppxPackage"},
+        {"name": "Disable All Startup Programs", "command": 'Get-ItemProperty -Path "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run" | ForEach-Object { Remove-ItemProperty -Path "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run" -Name $_.PSObject.Properties.Name; Write-Output "Disabled startup program: $($_.PSObject.Properties.Name)" }; Get-CimInstance -ClassName Win32_StartupCommand | ForEach-Object { $_ | Invoke-CimMethod -MethodName Disable; Write-Output "Disabled startup program in Task Manager: $($_.Name)" }'},
+        {"name": "Energy Report", "command": "powercfg -energy"},
+        {"name": "Memory Diagnostic", "command": "mdsched"},
+        {"name": "Performance Monitor", "command": "perfmon /report"},
+        {"name": "System Config", "command": "msconfig"},
+        {"name": "Malicious Software Removal", "command": "mrt"},
+        {"name": "System Properties", "command": "sysdm.cpl"},
+        {"name": "Remove Bloatware 2", "command": "Get-AppxPackage | Remove-AppxPackage"},
+        {"name": "Optimize Disk Caching", "command": "fsutil behavior set memoryusage 2"},
+        {"name": "Enable TCP Window Scaling", "command": "netsh int tcp set global autotuninglevel=normal"},
+        {"name": "Reclaim Unused Space", "command": "Optimize-Volume -DriveLetter C -ReTrim -Verbose"},
+        {"name": "Optimize TCP Network Performance", "command": "netsh int tcp set global autotuninglevel=highlyrestricted"},
+        {"name": "Enable Direct Cache Access (DCA)", "command": "netsh int tcp set global dca=enabled"},
+        {"name": "Explicit Congestion Notification (ECN) Capability", "command": "netsh int tcp set global ecncapability=enabled"},
+        {"name": "Cleaning Up Low Disk Space", "command": "cleanmgr /lowdisk"},
+        {"name": "Disable Firewall", "command": "Set-NetFirewallProfile -Profile Domain, Private, Public -Enabled False"},
+        {"name": "Enable Firewall", "command": "Set-NetFirewallProfile -Profile Domain, Private, Public -Enabled True"},
     ]
 
-    bulk_commands = ["Update choco Packages", "Scan System Health", "Restore System Health", "Check System Files", "Check Image Health", "Restore Image Health", "Cleanup Component Store", "Start Update Service", "windows updates", "Defragment C Drive", "Reset TCP/IP Stack", "Reset Winsock", "Analyze Component Store", "Cleanup Component Store", "Flush DNS Cache", "Clear Application Log", "Clear Security Log", "Clear System Log", "Clear DNS Cache", "Start Defender Scan", "Reset/Renew IP", "cleanmgr Tool"]
+    bulk_commands = [
+        "Update choco Packages", "Scan System Health", "Restore System Health", "Check System Files",
+        "Check Image Health", "Restore Image Health", "Cleanup Component Store", "Start Update Service",
+        "windows updates", "Defragment C Drive", "Reset TCP/IP Stack", "Reset Winsock", "Analyze Component Store",
+        "Cleanup Component Store", "Flush DNS Cache", "Clear Application Log", "Clear Security Log", "Clear System Log",
+        "Clear DNS Cache", "Quick Scan", "Full Scan", "Reset/Renew IP", "cleanmgr Tool", "Delete TEMP folders",
+        "Clear Event Logs", "Compact Windows Installation", "Optimize Disk Caching", "Enable TCP Window Scaling",
+        "Reclaim Unused Space", "Optimize TCP Network Performance", "Cleaning Up Low Disk Space",
+        "Reset TCP/IP Stack", "Reset/Renew IP", "Reset Winsock", "Flush DNS Cache", "Clear DNS Cache", 
+        "Enable TCP Window Scaling", "Optimize TCP Network Performance", "Enable Direct Cache Access (DCA)", 
+        "Explicit Congestion Notification (ECN) Capability"
+    ]
 
     for cmd in commands:
         checkbox = QCheckBox(cmd['name'], parent=root)
