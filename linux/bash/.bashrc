@@ -158,11 +158,9 @@ alias dc='docker commit'
 
 alias dkill='docker stop $(docker ps -aq) || true && docker rm $(docker ps -aq) || true && ( [ "$(docker ps -q)" ] || docker rmi $(docker images -q) || true ) && ( [ "$(docker images -q)" ] || docker system prune -a --volumes --force ) && docker network prune --force || true'
 
-alias commit='bash /mnt/c/study/docker/files/scripts/commit.sh'
-alias push='docker images --format '{{.Repository}}:{{.Tag}}' | xargs -L1 docker push'
 
 
-alias containerip="docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "
+alias conip="docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "
 
 alias killc='docker stop $(docker ps -q)
 docker rm $(docker ps -aq)'
@@ -220,11 +218,10 @@ alias cdapps="cd /mnt/c/backup/windowsapps"
 
 
 alias scloud='cd /mnt/c/study/cloud'
-alias sdocker='cd /mnt/c/study/docker'
 alias sfirewall='cd /mnt/c/study/firewall'
 alias slinux='cd /mnt/c/study/linux'
 alias smonitoring='cd /mnt/c/study/monitoring'
-alias spowershell='cd /mnt/c/study/powershell'
+alias spowershell='cd /mnt/c/study/windows/powershell'
 alias sssh='cd /mnt/c/study/ssh'
 alias sdatabases='cd /mnt/c/study/datascience/databases'
 alias sgit='cd /mnt/c/study/git'
@@ -260,7 +257,7 @@ alias fkali='echo "wsl --unregister kali-linux; wsl --import kali-linux C:\wsl2 
 
 alias backupw='echo "wsl --export kali-linux C:\backup\linux\kalifull.tar; wsl --export ubuntu C:\backup\linux\ubuntu.tar"' 
 
-alias wupdates='cat "/mnt/c/study/powershell/scripts/windowsupdates.ps1" && cp "/mnt/c/study/powershell/scripts/windowsupdates.ps1 /mnt/c/users/micha/updates.ps1"'
+alias wupdates='cat "/mnt/c/study//windows/powershell/scripts/windowsupdates.ps1" && cp "/mnt/c/study/windows/powershell/scripts/windowsupdates.ps1 /mnt/c/users/micha/updates.ps1"'
 
 
 
@@ -292,16 +289,16 @@ alias x11='export DISPLAY=:0'
 alias reset='echo "systemreset.exe" '
 alias conf=' nano /etc/wsl.conf'
 alias conf2='nano /mnt/c/Users/micha/.wslconfig'
-alias cleanwsl=' cat "/mnt/c/study/powershell/scripts/optimizewsl.ps1" && cp /mnt/c/study/powershell/scripts/optimizewsl.ps1 /mnt/c/Users/micha/ccwsl.ps1'
+alias cleanwsl=' cat "/mnt/c/study/windows/powershell/scripts/optimizewsl.ps1" && cp /mnt/c/study/windows/powershell/scripts/optimizewsl.ps1 /mnt/c/Users/micha/ccwsl.ps1'
 alias ccwsl='echo "wsl --shutdown; ./ccwsl.ps1; wsl"'
 alias poweroff='shutdown.exe /s /t 0'
 alias reboot='shutdown.exe /r /t 0'
 
 
-#firefox/chrome
+
 alias gc="cmd.exe /c start chrome"
 alias ff='cmd.exe /c start firefox'
-alias ffd='ff https://hub.docker.com/repository/docker/michadockermisha/backup/tags?page=1&ordering=last_updated'
+alias dockhub='gc https://hub.docker.com/repository/docker/michadockermisha/backup/tags?page=1&ordering=last_updated'
 alias yt='gc youtube.com'
 alias gt='gc github.com'
 alias gpt='ff https://chat.openai.com/'
@@ -545,17 +542,13 @@ alias getmongo=' sudo apt install gnupg curl -y && curl -fsSL https://www.mongod
 
 alias plex="gc http://192.168.1.100:32400"
 
-alias getkuma="cd /mnt/c/study/docker/compose/kuma && dcu && gc http:localhost:3001"
+
+alias systat="systemctl status"
 
 
+alias syst="systemctl start"
 
-alias systatus="systemctl status"
-
-
-
-alias systart="systemctl start"
-
-
+alias sysen="systemctl enable"
 
 alias syenable="systemctl enable"
 
@@ -622,7 +615,7 @@ alias getjenkins='docker run -d -p 8080:8080 -p 50000:50000 -v jenkins_home:/var
 
 
 
-getera='wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg && echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list && sudo apt update && sudo apt install terraform -y'
+alias getera='wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg && echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list && sudo apt update && sudo apt install terraform -y'
 
 
 
@@ -752,5 +745,36 @@ alias screen='psw -command "screen"'
 alias getsqlite="sudo apt install -y sqlite3 && sqlite3"
 
 alias getgcloud='pip install pyqt5 && sudo apt-get update -y && sudo apt-get upgrade -y && sudo apt-get install -y apt-transport-https ca-certificates gnupg curl sudo && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg && echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && sudo apt-get update -y && sudo apt-get install -y google-cloud-cli && gcloud init'
+
+
+alias getkuma="sudo docker run -d --restart always -p 3001:3001 -v /var/kuma:/app/data louislam/uptime-kuma:1 && gc http://localhost:3001"
+
+
+
+alias prox='gc http://192.168.1.222:8006'
+
+
+
+alias kube="getkube && fixkube && cc && startkube"
+
+
+
+alias rmdata="apt purge mariadb-server mariadb-client -y && remove"
+
+
+
+alias react="docker run -it --rm -v $(pwd):/app -w /app -p 3000:3000 node:latest /bin/bash"
+
+
+
+alias sdocker="cd /mnt/c/study/docker/guides"
+
+
+
+alias sjs="cd /mnt/c/study/programming/frontend/javascript"
+
+alias getgitea='cd && sudo apt-get update && sudo apt-get install -y mariadb-server && sudo systemctl start mariadb && sudo mysql -e "CREATE DATABASE gitea; GRANT ALL PRIVILEGES ON gitea.* TO '\''gitea'\''@'\''localhost'\'' IDENTIFIED BY '\''123456'\''; FLUSH PRIVILEGES;" && sudo apt-get install -y bash-completion wget curl git sqlite3 && sudo adduser --system --shell /bin/bash --gecos '\''Git Version Control'\'' --group --disabled-password --home /home/git git && sudo wget -O /tmp/gitea https://dl.gitea.io/gitea/1.20/gitea-1.20-linux-amd64 && sudo mv /tmp/gitea /usr/local/bin/gitea && sudo chmod +x /usr/local/bin/gitea && sudo mkdir -p /var/lib/gitea/{custom,data,log} && sudo chown -R git:git /var/lib/gitea/ && sudo chmod -R 750 /var/lib/gitea/ && sudo mkdir /etc/gitea && sudo chown root:git /etc/gitea && sudo chmod 770 /etc/gitea && sudo -u git mkdir -p /var/lib/gitea/data && mkdir /usr/local/bin/data && chmod 777 /usr/local/bin/data && mkdir /usr/local/bin/log && chmod 777 /usr/local/bin/log && mkdir /usr/local/bin/custom && chmod 777 /usr/local/bin/custom && sudo -u git /usr/local/bin/gitea web'
+
+
 
 
