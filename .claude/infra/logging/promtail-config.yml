@@ -1,0 +1,331 @@
+# ============================================================================
+# PROMTAIL CONFIGURATION - TovPlay Production
+# ============================================================================
+# Log collector that ships logs to Grafana Loki
+# Collects from: Docker containers, system logs, application logs
+# ============================================================================
+
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+  log_level: info
+
+# ============================================================================
+# POSITIONS - Track log file positions (for resuming after restart)
+# ============================================================================
+positions:
+  filename: /tmp/positions.yaml
+  sync_period: 10s
+  ignore_invalid_yaml: false
+
+# ============================================================================
+# CLIENTS - Where to send logs (Loki)
+# ============================================================================
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+    batchwait: 1s
+    batchsize: 1048576 # 1MB
+    timeout: 10s
+    backoff_config:
+      min_period: 500ms
+      max_period: 5m
+      max_retries: 10
+    external_labels:
+      environment: production
+      service: tovplay
+
+# ============================================================================
+# SCRAPE CONFIGS - Log sources
+# ============================================================================
+scrape_configs:
+
+  # ==========================================================================
+  # DOCKER CONTAINERS - All container logs
+  # ==========================================================================
+  - job_name: docker
+    docker_sd_configs:
+      - host: unix:///var/run/docker.sock
+        refresh_interval: 5s
+        filters:
+          - name: label
+            values: ["logging=promtail"]
+
+    relabel_configs:
+      # Container name
+      - source_labels: ['__meta_docker_container_name']
+        regex: '/(.*)'
+        target_label: 'container'
+
+      # Container ID
+      - source_labels: ['__meta_docker_container_id']
+        target_label: 'container_id'
+
+      # Container image
+      - source_labels: ['__meta_docker_container_image']
+        target_label: 'image'
+
+      # Log path
+      - source_labels: ['__meta_docker_container_log_stream']
+        target_label: 'stream'
+
+    pipeline_stages:
+      # Parse JSON logs from Docker
+      - json:
+          expressions:
+            timestamp: time
+            message: log
+            stream: stream
+
+      # Extract timestamp
+      - timestamp:
+          source: timestamp
+          format: RFC3339Nano
+
+      # Parse structured JSON logs from application
+      - json:
+          expressions:
+            level: level
+            logger: logger
+            correlation_id: correlation_id
+            user_id: user_id
+            action: action
+            duration_ms: duration_ms
+          source: message
+
+      # Add labels from parsed fields
+      - labels:
+          level:
+          logger:
+          correlation_id:
+          user_id:
+          action:
+
+      # Output only the message
+      - output:
+          source: message
+
+  # ==========================================================================
+  # TOVPLAY BACKEND - Application logs
+  # ==========================================================================
+  - job_name: tovplay-backend
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: tovplay-backend
+          __path__: /var/log/tovplay/tovplay-backend.log
+
+    pipeline_stages:
+      # Parse JSON logs
+      - json:
+          expressions:
+            timestamp: timestamp
+            level: level
+            logger: logger
+            message: message
+            correlation_id: correlation_id
+            user_id: user_id
+            username: username
+            action: action
+            method: method
+            path: path
+            status_code: status_code
+            duration_ms: duration_ms
+            ip: ip
+
+      # Parse timestamp
+      - timestamp:
+          source: timestamp
+          format: RFC3339
+
+      # Add labels
+      - labels:
+          level:
+          logger:
+          correlation_id:
+          user_id:
+          action:
+          method:
+          path:
+
+      # Filter out health check noise (optional)
+      # - match:
+      #     selector: '{path="/health"}'
+      #     action: drop
+
+  # ==========================================================================
+  # POSTGRESQL - Database logs
+  # ==========================================================================
+  - job_name: postgresql
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: postgresql
+          __path__: /var/log/postgresql/*.log
+
+    pipeline_stages:
+      # Parse PostgreSQL log format
+      - regex:
+          expression: '^(?P<timestamp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3} \w+) \[(?P<pid>\d+)\] (?P<level>\w+): +(?P<message>.*)'
+
+      # Parse timestamp
+      - timestamp:
+          source: timestamp
+          format: '2006-01-02 15:04:05.000 MST'
+
+      # Add labels
+      - labels:
+          level:
+          pid:
+
+      # Extract query duration
+      - regex:
+          expression: 'duration: (?P<duration_ms>[\d.]+) ms'
+          source: message
+
+      # Add duration label
+      - labels:
+          duration_ms:
+
+  # ==========================================================================
+  # NGINX - Web server logs
+  # ==========================================================================
+  - job_name: nginx-access
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: nginx-access
+          __path__: /var/log/nginx/access.log
+
+    pipeline_stages:
+      # Parse nginx log format
+      - regex:
+          expression: '^(?P<ip>[\d.]+) - (?P<user>[\w-]+) \[(?P<timestamp>[^\]]+)\] "(?P<method>\w+) (?P<path>[^\s]+) HTTP/[\d.]+" (?P<status_code>\d+) (?P<bytes>\d+) "(?P<referer>[^"]*)" "(?P<user_agent>[^"]*)"'
+
+      # Parse timestamp
+      - timestamp:
+          source: timestamp
+          format: '02/Jan/2006:15:04:05 -0700'
+
+      # Add labels
+      - labels:
+          method:
+          path:
+          status_code:
+
+      # Extract request time (if configured in nginx)
+      - regex:
+          expression: 'request_time=(?P<request_time>[\d.]+)'
+          source: message
+
+  - job_name: nginx-error
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: nginx-error
+          __path__: /var/log/nginx/error.log
+
+    pipeline_stages:
+      # Parse nginx error format
+      - regex:
+          expression: '^(?P<timestamp>\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}) \[(?P<level>\w+)\] (?P<pid>\d+)#(?P<tid>\d+): \*(?P<cid>\d+) (?P<message>.*)'
+
+      # Parse timestamp
+      - timestamp:
+          source: timestamp
+          format: '2006/01/02 15:04:05'
+
+      # Add labels
+      - labels:
+          level:
+
+  # ==========================================================================
+  # SYSTEM LOGS - Syslog
+  # ==========================================================================
+  - job_name: syslog
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: syslog
+          __path__: /var/log/syslog
+
+    pipeline_stages:
+      # Parse syslog format
+      - regex:
+          expression: '^(?P<timestamp>\w+ \d+ \d{2}:\d{2}:\d{2}) (?P<hostname>[\w-]+) (?P<process>[\w-]+)(\[(?P<pid>\d+)\])?: (?P<message>.*)'
+
+      # Parse timestamp
+      - timestamp:
+          source: timestamp
+          format: 'Jan 02 15:04:05'
+          action_on_failure: skip
+
+      # Add labels
+      - labels:
+          hostname:
+          process:
+
+  # ==========================================================================
+  # SYSTEMD JOURNAL - Systemd services
+  # ==========================================================================
+  - job_name: systemd-journal
+    journal:
+      max_age: 12h
+      path: /var/log/journal
+      labels:
+        job: systemd-journal
+
+    relabel_configs:
+      # Service name
+      - source_labels: ['__journal__systemd_unit']
+        target_label: 'unit'
+
+      # Priority (log level)
+      - source_labels: ['__journal_priority']
+        target_label: 'priority'
+
+      # Hostname
+      - source_labels: ['__journal__hostname']
+        target_label: 'hostname'
+
+# ============================================================================
+# LIMITS - Rate limiting to prevent overload
+# ============================================================================
+limits_config:
+  readline_rate: 10000
+  readline_burst: 20000
+
+# ============================================================================
+# NOTES
+# ============================================================================
+#
+# DEPLOYMENT:
+# 1. Mount Docker socket: /var/run/docker.sock:/var/run/docker.sock:ro
+# 2. Mount log directories: /var/log:/var/log:ro
+# 3. Add label to containers you want to monitor: logging=promtail
+#
+# DOCKER LABELS:
+# Add this label to docker-compose services:
+#   labels:
+#     - "logging=promtail"
+#
+# LOG FORMATS SUPPORTED:
+# - JSON logs (from structured_logger.py)
+# - Plain text logs
+# - Docker logs
+# - Syslog
+# - Systemd journal
+# - Nginx logs
+# - PostgreSQL logs
+#
+# PERFORMANCE:
+# - 10,000 lines/second rate limit
+# - 20,000 lines burst
+# - 1MB batch size
+# - 1 second batch wait
+#
+# ============================================================================

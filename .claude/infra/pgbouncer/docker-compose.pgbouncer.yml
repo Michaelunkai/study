@@ -1,0 +1,185 @@
+version: '3.9'
+
+# ============================================================================
+# PGBOUNCER CONNECTION POOLER - TovPlay Production
+# ============================================================================
+# Solves "too many clients" PostgreSQL error
+# Deploy this container on production server (193.181.213.220)
+# Update backend DATABASE_URL to point to pgbouncer:6432 instead of DB:5432
+# ============================================================================
+
+services:
+  pgbouncer:
+    image: edoburu/pgbouncer:latest
+    container_name: tovplay-pgbouncer
+    restart: always
+
+    ports:
+      - "6432:6432"  # Application connects to this port
+
+    environment:
+      # Database connection
+      - DATABASE_URL=postgresql://raz@tovtech.org:CaptainForgotCreatureBreak@45.148.28.196:5432/TovPlay
+
+      # Pool settings
+      - POOL_MODE=transaction
+      - MAX_CLIENT_CONN=1000
+      - DEFAULT_POOL_SIZE=25
+      - MIN_POOL_SIZE=10
+      - RESERVE_POOL_SIZE=5
+      - MAX_DB_CONNECTIONS=100
+      - MAX_USER_CONNECTIONS=100
+
+      # Timeouts
+      - SERVER_IDLE_TIMEOUT=600
+      - SERVER_LIFETIME=3600
+      - SERVER_CONNECT_TIMEOUT=15
+      - QUERY_TIMEOUT=120
+      - QUERY_WAIT_TIMEOUT=120
+
+      # Logging
+      - VERBOSE=1
+      - LOG_CONNECTIONS=1
+      - LOG_DISCONNECTIONS=1
+
+      # Authentication
+      - AUTH_TYPE=md5
+      - ADMIN_USERS=raz@tovtech.org
+      - STATS_USERS=raz@tovtech.org
+
+    volumes:
+      # Mount custom config if needed
+      - ./pgbouncer/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini:ro
+      - ./pgbouncer/userlist.txt:/etc/pgbouncer/userlist.txt:ro
+      - pgbouncer_logs:/var/log/pgbouncer
+
+    networks:
+      - tovplay-network
+
+    healthcheck:
+      test: ["CMD", "psql", "-h", "localhost", "-p", "6432", "-U", "raz@tovtech.org", "-d", "pgbouncer", "-c", "SHOW POOLS;"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.5'
+        reservations:
+          memory: 64M
+          cpus: '0.1'
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+        labels: "service=pgbouncer,environment=production"
+
+networks:
+  tovplay-network:
+    external: true
+    name: tovplay-network
+
+volumes:
+  pgbouncer_logs:
+    driver: local
+
+# ============================================================================
+# DEPLOYMENT INSTRUCTIONS
+# ============================================================================
+#
+# 1. SSH to production server:
+#    wsl -d ubuntu bash -c "sshpass -p 'EbTyNkfJG6LM' ssh admin@193.181.213.220"
+#
+# 2. Create pgbouncer directory:
+#    mkdir -p /home/admin/tovplay/pgbouncer
+#    cd /home/admin/tovplay/pgbouncer
+#
+# 3. Upload these files:
+#    - docker-compose.pgbouncer.yml
+#    - pgbouncer.ini
+#    - userlist.txt
+#
+# 4. Create network if doesn't exist:
+#    docker network create tovplay-network || true
+#
+# 5. Start PgBouncer:
+#    docker-compose -f docker-compose.pgbouncer.yml up -d
+#
+# 6. Verify PgBouncer is running:
+#    docker logs tovplay-pgbouncer
+#    docker exec -it tovplay-pgbouncer psql -p 6432 -U raz@tovtech.org pgbouncer
+#
+# 7. Test connection through PgBouncer:
+#    PGPASSWORD='CaptainForgotCreatureBreak' psql -h localhost -p 6432 -U raz@tovtech.org -d TovPlay -c "SELECT 1;"
+#
+# 8. Update backend .env to use PgBouncer:
+#    OLD: DATABASE_URL=postgresql://raz@tovtech.org:CaptainForgotCreatureBreak@45.148.28.196:5432/TovPlay
+#    NEW: DATABASE_URL=postgresql://raz@tovtech.org:CaptainForgotCreatureBreak@pgbouncer:6432/TovPlay
+#
+# 9. Restart backend container:
+#    docker restart tovplay-backend
+#
+# 10. Monitor PgBouncer stats:
+#     docker exec -it tovplay-pgbouncer psql -p 6432 -U raz@tovtech.org pgbouncer -c "SHOW STATS;"
+#     docker exec -it tovplay-pgbouncer psql -p 6432 -U raz@tovtech.org pgbouncer -c "SHOW POOLS;"
+#     docker exec -it tovplay-pgbouncer psql -p 6432 -U raz@tovtech.org pgbouncer -c "SHOW CLIENTS;"
+#
+# ============================================================================
+# MONITORING COMMANDS
+# ============================================================================
+#
+# Connect to PgBouncer admin console:
+# docker exec -it tovplay-pgbouncer psql -p 6432 -U raz@tovtech.org pgbouncer
+#
+# Show connection statistics:
+# SHOW STATS;
+#
+# Show pool status:
+# SHOW POOLS;
+#
+# Show active clients:
+# SHOW CLIENTS;
+#
+# Show active server connections:
+# SHOW SERVERS;
+#
+# Show configuration:
+# SHOW CONFIG;
+#
+# Reload configuration (after changes):
+# RELOAD;
+#
+# Pause all connections (maintenance):
+# PAUSE;
+#
+# Resume connections:
+# RESUME;
+#
+# ============================================================================
+# TROUBLESHOOTING
+# ============================================================================
+#
+# Issue: "FATAL: no such database: pgbouncer"
+# Solution: You're trying to connect to application database, use 'pgbouncer' for admin
+#
+# Issue: "FATAL: too many connections"
+# Solution: Increase max_client_conn in pgbouncer.ini
+#
+# Issue: "connection timeout"
+# Solution: Check PostgreSQL is reachable from PgBouncer container
+#
+# Issue: "authentication failed"
+# Solution: Regenerate MD5 hash in userlist.txt
+#
+# Test direct DB connection (bypass PgBouncer):
+# PGPASSWORD='CaptainForgotCreatureBreak' psql -h 45.148.28.196 -p 5432 -U raz@tovtech.org -d TovPlay -c "SELECT version();"
+#
+# Test PgBouncer connection:
+# PGPASSWORD='CaptainForgotCreatureBreak' psql -h localhost -p 6432 -U raz@tovtech.org -d TovPlay -c "SELECT version();"
+#
+# ============================================================================

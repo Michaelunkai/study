@@ -1,0 +1,61 @@
+services:
+  backend:
+    image: tovtech/tovplaybackend:latest
+    container_name: tovplay-backend
+    restart: unless-stopped
+    environment:
+      FLASK_ENV: production
+      PYTHONPATH: /app/src
+      # External PostgreSQL instance configured via .env.production file
+      DATABASE_URL: ${DATABASE_URL}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      SECRET_KEY: ${SECRET_KEY}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      EMAIL_SENDER: ${EMAIL_SENDER}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+      SMTP_SERVER: ${SMTP_SERVER}
+      SMTP_PORT: ${SMTP_PORT}
+      WEBSITE_URL: ${WEBSITE_URL}
+      API_KEY: ${API_KEY}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS}
+      LOG_LEVEL: WARNING
+      RATE_LIMIT_PER_MINUTE: 60
+      RATE_LIMIT_PER_HOUR: 3600
+    ports:
+      - "8000:5001"
+    entrypoint: []
+    command: >
+      gunicorn 
+      -w 2 
+      -b 0.0.0.0:5001 
+      --max-requests 1000 
+      --max-requests-jitter 100 
+      --timeout 30 
+      --worker-class sync 
+      --worker-connections 1000 
+      --preload 
+      --access-logfile - 
+      --error-logfile - 
+      wsgi:app
+    mem_limit: 512m
+    memswap_limit: 512m
+    networks:
+      - tovplay-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+networks:
+  tovplay-network:
+    driver: bridge
+    name: tovplay-network
+
+# Note: PostgreSQL is running natively on the server, not containerized
+# Frontend is served by nginx as static files from /var/www/tovplay

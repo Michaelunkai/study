@@ -1,0 +1,35 @@
+{
+  "service_strategies": [
+    {
+      "service": "tovplay-backend",
+      "type": "probabilistic",
+      "param": 1.0,
+      "operation_strategies": [
+        {
+          "operation": "/health",
+          "type": "probabilistic",
+          "param": 0.1
+        },
+        {
+          "operation": "/metrics",
+          "type": "probabilistic",
+          "param": 0.1
+        },
+        {
+          "operation": "/*",
+          "type": "probabilistic",
+          "param": 1.0
+        }
+      ]
+    },
+    {
+      "service": "tovplay-frontend",
+      "type": "probabilistic",
+      "param": 0.5
+    }
+  ],
+  "default_strategy": {
+    "type": "probabilistic",
+    "param": 0.1
+  }
+}

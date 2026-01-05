@@ -1,0 +1,83 @@
+version: '3.9'
+
+# ============================================================================
+# TOVPLAY STAGING - BULLETPROOF DOCKER COMPOSE
+# ============================================================================
+# All containers configured for maximum uptime and auto-recovery
+# restart: always - Restart no matter what (includes after server reboot)
+# Frontend: One-shot container copies files to /var/www/tovplay-staging/
+#           then nginx on host serves the files
+# ============================================================================
+
+services:
+  # --------------------------------------------------------------------------
+  # Backend API - Flask/Gunicorn (Staging)
+  # --------------------------------------------------------------------------
+  backend-staging:
+    image: tovtech/tovplaybackend:staging
+    container_name: tovplay-backend-staging
+    restart: always
+    env_file:
+      - .env.staging
+    environment:
+      FLASK_ENV: staging
+      PYTHONPATH: /app/src
+      LOG_LEVEL: DEBUG
+      IS_STAGING: "true"
+    ports:
+      - "8001:5000"
+    command: >
+      gunicorn
+      -w 2
+      -b 0.0.0.0:5000
+      --chdir /app
+      --timeout 60
+      --access-logfile -
+      --error-logfile -
+      --log-level debug
+      --graceful-timeout 30
+      'wsgi:create_app()'
+    mem_limit: 512m
+    memswap_limit: 512m
+    networks:
+      - tovplay-staging-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+
+  # --------------------------------------------------------------------------
+  # Frontend - One-shot file deployment (nginx on host serves files)
+  # --------------------------------------------------------------------------
+  frontend-staging:
+    image: tovtech/tovplayfrontend:staging
+    container_name: tovplay-frontend-staging
+    restart: "no"
+    volumes:
+      - /var/www/tovplay-staging:/target
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        cp -r /usr/share/nginx/html/* /target/
+        chown -R 33:33 /target/
+        chmod -R 755 /target/
+        echo "Frontend files deployed successfully at $(date)"
+    networks:
+      - tovplay-staging-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  tovplay-staging-network:
+    driver: bridge
+    name: tovplay-staging-network

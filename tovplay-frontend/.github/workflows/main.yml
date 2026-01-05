@@ -1,0 +1,464 @@
+name: Frontend CI/CD (50+ ULTIMATE Steps)
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    timeout-minutes: 45
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Fetch full history for author tracking
+
+    - name: 📋 Generate Deployment Change Summary
+      run: |
+        # Determine environment based on branch
+        BRANCH="${{ github.ref_name }}"
+        ENV_NAME="STAGING"
+        if [ "${{ github.ref }}" = "refs/heads/develop" ]; then
+          ENV_NAME="PRODUCTION"
+        fi
+
+        echo "╔════════════════════════════════════════════════════════════════════════╗"
+        echo "║  📋 DEPLOYMENT CHANGE SUMMARY - TovPlay Frontend ${ENV_NAME}                  ║"
+        echo "╚════════════════════════════════════════════════════════════════════════╝"
+        echo ""
+        echo "🌍 Environment: ${ENV_NAME}"
+        echo "🌿 Branch: ${BRANCH}"
+        echo "📌 Commit: ${{ github.sha }}"
+        echo "👤 Deployer: ${{ github.actor }}"
+        echo "🕒 Time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+        echo "🔗 Workflow: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        echo "📦 Repository: ${{ github.repository }}"
+        echo ""
+
+        echo "╔════════════════════════════════════════════════════════════════════════╗"
+        echo "║  📝 CURRENT COMMIT MESSAGE                                              ║"
+        echo "╚════════════════════════════════════════════════════════════════════════╝"
+        git log -1 --pretty=format:"%B"
+        echo ""
+        echo ""
+
+        echo "╔════════════════════════════════════════════════════════════════════════╗"
+        echo "║  📚 COMMIT HISTORY (Last 5 commits)                                     ║"
+        echo "╚════════════════════════════════════════════════════════════════════════╝"
+        git log HEAD~5..HEAD --pretty=format:"[%h] %an <%ae> - %ar%n    %s%n" 2>/dev/null || git log -5 --pretty=format:"[%h] %an <%ae> - %ar%n    %s%n"
+        echo ""
+
+        echo "╔════════════════════════════════════════════════════════════════════════╗"
+        echo "║  👥 TEAM MEMBER CONTRIBUTIONS (This deployment period)                  ║"
+        echo "╚════════════════════════════════════════════════════════════════════════╝"
+        git log HEAD~5..HEAD --format='%an <%ae>' 2>/dev/null | sort | uniq -c | sort -rn || echo "No commit history available"
+        echo ""
+
+        # Calculate statistics
+        ADDED=$(git diff HEAD~1 HEAD --numstat 2>/dev/null | awk '{add+=$1} END {print add+0}')
+        DELETED=$(git diff HEAD~1 HEAD --numstat 2>/dev/null | awk '{del+=$2} END {print del+0}')
+        FILES=$(git diff HEAD~1 HEAD --name-only 2>/dev/null | wc -l)
+        NET=$((ADDED - DELETED))
+
+        echo "╔════════════════════════════════════════════════════════════════════════╗"
+        echo "║  📊 CHANGE STATISTICS                                                   ║"
+        echo "╚════════════════════════════════════════════════════════════════════════╝"
+        if [ $NET -lt 0 ]; then
+          echo "📉 Net Change: Refactor/Cleanup - ${NET} lines removed"
+        else
+          echo "📈 Net Change: Addition - +${NET} lines added"
+        fi
+        echo "📁 Files Changed: ${FILES}"
+        echo "➕ Lines Added: +${ADDED}"
+        echo "➖ Lines Deleted: -${DELETED}"
+        echo "🔢 Net Change: ${NET} lines"
+        echo ""
+
+        echo "╔════════════════════════════════════════════════════════════════════════╗"
+        echo "║  📂 DETAILED FILE CHANGES WITH IMPACT ANALYSIS                          ║"
+        echo "╚════════════════════════════════════════════════════════════════════════╝"
+
+        git diff --name-status HEAD~1 HEAD 2>/dev/null | while IFS=$'\t' read -r status file rest; do
+          if [ -z "$file" ]; then continue; fi
+
+          # Handle renamed files
+          OLD_FILE=""
+          NEW_FILE="$file"
+          if [[ "$status" =~ ^R ]]; then
+            OLD_FILE="$file"
+            NEW_FILE="$rest"
+            file="$NEW_FILE"
+          fi
+
+          # Get file statistics
+          LINE_STATS=$(git diff HEAD~1 HEAD --numstat -- "$file" 2>/dev/null | awk '{
+            if ($1 == "-" && $2 == "-") {
+              print "BINARY"
+            } else {
+              print "+" $1 " -" $2
+            }
+          }')
+          [ -z "$LINE_STATS" ] && LINE_STATS="+0 -0"
+
+          # Determine change type
+          CHANGE_TYPE=""
+          case "$status" in
+            A) CHANGE_TYPE="✅ ADDED" ;;
+            M) CHANGE_TYPE="✏️  MODIFIED" ;;
+            D) CHANGE_TYPE="❌ DELETED" ;;
+            R100) CHANGE_TYPE="📦 RENAMED (no changes)" ;;
+            R*) CHANGE_TYPE="📦✏️  RENAMED + MODIFIED" ;;
+            C*) CHANGE_TYPE="📋 COPIED" ;;
+            *) CHANGE_TYPE="🔄 $status" ;;
+          esac
+
+          # Impact analysis based on file type
+          IMPACT=""
+          case "$file" in
+            # Core application files
+            *src/main.jsx|*src/App.jsx)
+              IMPACT="⚠️  CRITICAL - App entry point, affects entire application startup"
+              ;;
+            # API layer
+            *src/api/*)
+              IMPACT="🔌 HIGH - Backend communication layer, may affect data flow"
+              ;;
+            # Pages (routing)
+            *src/pages/Dashboard*)
+              IMPACT="📊 HIGH - Main dashboard, affects primary user experience"
+              ;;
+            *src/pages/Profile*)
+              IMPACT="👤 MEDIUM - User profile page"
+              ;;
+            *src/pages/SignIn*|*src/pages/CreateAccount*|*src/pages/VerifyOTP*)
+              IMPACT="🔐 CRITICAL - Authentication flow, test login/signup carefully"
+              ;;
+            *src/pages/FindPlayers*)
+              IMPACT="🎮 HIGH - Matchmaking feature"
+              ;;
+            *src/pages/Schedule*|*src/pages/OnboardingSchedule*)
+              IMPACT="📅 MEDIUM - Availability scheduling"
+              ;;
+            *src/pages/*)
+              IMPACT="📄 MEDIUM - User-facing page/route"
+              ;;
+            # Components
+            *src/components/ui/*)
+              IMPACT="🎨 LOW - Reusable UI component (may affect multiple pages)"
+              ;;
+            *src/components/system/*)
+              IMPACT="⚙️  MEDIUM - System component (monitoring, health checks)"
+              ;;
+            *src/components/*)
+              IMPACT="🧩 MEDIUM - Shared component"
+              ;;
+            # State management
+            *src/stores/*)
+              IMPACT="🗄️  HIGH - Global state management, affects data flow across app"
+              ;;
+            *src/context/*)
+              IMPACT="🔗 HIGH - React context provider, affects dependent components"
+              ;;
+            # Utilities and hooks
+            *src/utils/*)
+              IMPACT="🔧 MEDIUM - Helper utilities, check usages"
+              ;;
+            *src/hooks/*)
+              IMPACT="🪝 MEDIUM - Custom React hooks, verify dependent components"
+              ;;
+            *src/lib/*)
+              IMPACT="📚 MEDIUM - Shared libraries"
+              ;;
+            # Configuration files
+            *vite.config*)
+              IMPACT="⚠️  CRITICAL - Vite bundler config, may affect build process"
+              ;;
+            *package.json)
+              IMPACT="⚠️  CRITICAL - NPM dependencies, verify compatibility"
+              ;;
+            *package-lock.json)
+              IMPACT="🔒 HIGH - Dependency lock file, run 'npm ci' to sync"
+              ;;
+            *.env*)
+              IMPACT="⚠️  CRITICAL - Environment variables, verify all required vars are set"
+              ;;
+            *tsconfig*)
+              IMPACT="📘 MEDIUM - TypeScript configuration"
+              ;;
+            *docker*|*Dockerfile*)
+              IMPACT="🐳 HIGH - Container configuration, may require image rebuild"
+              ;;
+            *.github/workflows/*)
+              IMPACT="⚠️  CRITICAL - CI/CD pipeline, this workflow itself was modified"
+              ;;
+            # Tests
+            *test*|*spec*|*.test.*)
+              IMPACT="✅ LOW - Automated tests"
+              ;;
+            # Assets and styles
+            *.css|*.scss|*.sass)
+              IMPACT="🎨 LOW - Styling changes"
+              ;;
+            *.png|*.jpg|*.jpeg|*.gif|*.svg|*.ico)
+              IMPACT="🖼️  LOW - Image assets"
+              ;;
+            *)
+              IMPACT="ℹ️  INFO - General file change"
+              ;;
+          esac
+
+          echo "────────────────────────────────────────────────────────────────────────"
+          echo "${CHANGE_TYPE}: $file"
+          echo "   📏 Changes: ${LINE_STATS}"
+          echo "   ${IMPACT}"
+
+          # Show rename info if applicable
+          if [ -n "$OLD_FILE" ] && [ "$OLD_FILE" != "$NEW_FILE" ]; then
+            echo "   📦 Renamed from: $OLD_FILE"
+          fi
+
+          # Show actual code diff for critical files
+          if [[ "$file" =~ (main\.jsx|App\.jsx|vite\.config|package\.json|\.env|Dockerfile|workflows) ]]; then
+            echo "   📄 Code diff (first 30 lines):"
+            git diff HEAD~1 HEAD -- "$file" 2>/dev/null | head -30 | sed 's/^/      /'
+          fi
+
+          echo ""
+        done
+
+        echo ""
+        echo "╔════════════════════════════════════════════════════════════════════════╗"
+        echo "║  📦 NPM DEPENDENCY COMPARISON                                           ║"
+        echo "╚════════════════════════════════════════════════════════════════════════╝"
+
+        if git diff HEAD~1 HEAD --name-only 2>/dev/null | grep -q "package.json"; then
+          echo "⚠️  package.json was modified - Dependency changes detected:"
+          echo ""
+          echo "BEFORE (HEAD~1):"
+          git show HEAD~1:package.json 2>/dev/null | grep -A 999 '"dependencies"' | head -50 || echo "  Unable to retrieve previous package.json"
+          echo ""
+          echo "AFTER (HEAD):"
+          cat package.json 2>/dev/null | grep -A 999 '"dependencies"' | head -50 || echo "  Unable to retrieve current package.json"
+          echo ""
+          echo "🔍 DEPENDENCY DIFF:"
+          git diff HEAD~1 HEAD -- package.json 2>/dev/null | grep -E '^\+.*"|^\-.*"' | sed 's/^/  /'
+        else
+          echo "✅ No dependency changes in this deployment"
+        fi
+        echo ""
+
+        echo "╔════════════════════════════════════════════════════════════════════════╗"
+        echo "║  📊 FILE STATISTICS SUMMARY                                             ║"
+        echo "╚════════════════════════════════════════════════════════════════════════╝"
+        git diff --stat HEAD~1 HEAD 2>/dev/null || echo "No changes detected"
+        echo ""
+
+        echo "╔════════════════════════════════════════════════════════════════════════╗"
+        echo "║  ⚠️  CRITICAL CHANGES & BREAKING CHANGE DETECTION                       ║"
+        echo "╚════════════════════════════════════════════════════════════════════════╝"
+
+        CRITICAL=0
+        BREAKING=0
+
+        # Check for breaking changes in commit messages
+        if git log -1 --pretty=format:"%B" | grep -qiE "breaking|break:|BREAKING CHANGE"; then
+          echo "🚨 BREAKING CHANGE DETECTED IN COMMIT MESSAGE"
+          echo "   Review commit message above for breaking change details"
+          BREAKING=1
+          CRITICAL=1
+        fi
+
+        if git diff HEAD~1 HEAD --name-only 2>/dev/null | grep -qE "package\.json|package-lock\.json"; then
+          echo "📦 NPM DEPENDENCIES CHANGED"
+          echo "   Files modified:"
+          git diff HEAD~1 HEAD --name-only | grep -E "package\.json|package-lock\.json" | sed 's/^/      /'
+          echo "   ⚠️  Action required: Run 'npm ci' or 'npm install' to sync dependencies"
+          echo "   ⚠️  Review compatibility and test thoroughly before deployment"
+          CRITICAL=1
+        fi
+
+        if git diff HEAD~1 HEAD --name-only 2>/dev/null | grep -qE "\.env|vite\.config|tsconfig"; then
+          echo "🔐 BUILD/CONFIG FILES CHANGED"
+          git diff HEAD~1 HEAD --name-only | grep -E "\.env|vite\.config|tsconfig" | sed 's/^/      /'
+          echo "   ⚠️  Verify all environment variables are correctly set"
+          echo "   ⚠️  Build configuration may have changed - test build process"
+          CRITICAL=1
+        fi
+
+        if git diff HEAD~1 HEAD --name-only 2>/dev/null | grep -qE "docker|Dockerfile"; then
+          echo "🐳 DOCKER CONFIGURATION CHANGED"
+          git diff HEAD~1 HEAD --name-only | grep -E "docker|Dockerfile" | sed 's/^/      /'
+          echo "   ⚠️  Container image needs to be rebuilt"
+          echo "   ⚠️  Verify Docker build succeeds before deployment"
+          CRITICAL=1
+        fi
+
+        if git diff HEAD~1 HEAD --name-only 2>/dev/null | grep -qE "auth|login|security|jwt|oauth|SignIn|CreateAccount|VerifyOTP"; then
+          echo "🔒 AUTHENTICATION/SECURITY CHANGES DETECTED"
+          git diff HEAD~1 HEAD --name-only | grep -E "auth|login|security|jwt|oauth|SignIn|CreateAccount|VerifyOTP" | sed 's/^/      /'
+          echo "   ⚠️  CRITICAL: Test complete authentication flow"
+          echo "   ⚠️  Verify: Login, Signup, OTP verification, Password reset"
+          echo "   ⚠️  Check: JWT token generation, OAuth flows, Session management"
+          CRITICAL=1
+        fi
+
+        if git diff HEAD~1 HEAD --name-only 2>/dev/null | grep -qE "src/stores|src/context"; then
+          echo "🗄️  STATE MANAGEMENT CHANGES"
+          git diff HEAD~1 HEAD --name-only | grep -E "src/stores|src/context" | sed 's/^/      /'
+          echo "   ⚠️  Global state or context modified - may affect multiple components"
+          echo "   ⚠️  Test data flow and state persistence across the app"
+          CRITICAL=1
+        fi
+
+        if git diff HEAD~1 HEAD --name-only 2>/dev/null | grep -qE "src/api"; then
+          echo "🔌 API LAYER CHANGES"
+          git diff HEAD~1 HEAD --name-only | grep -E "src/api" | sed 's/^/      /'
+          echo "   ⚠️  Backend communication layer modified"
+          echo "   ⚠️  Verify API endpoints and data contracts still match backend"
+          CRITICAL=1
+        fi
+
+        if git diff HEAD~1 HEAD --name-only 2>/dev/null | grep -qE "\.github/workflows"; then
+          echo "🔄 CI/CD PIPELINE MODIFIED"
+          git diff HEAD~1 HEAD --name-only | grep -E "\.github/workflows" | sed 's/^/      /'
+          echo "   ⚠️  This deployment workflow itself was changed"
+          echo "   ⚠️  Monitor this deployment run carefully for issues"
+          CRITICAL=1
+        fi
+
+        if [ $CRITICAL -eq 0 ]; then
+          echo "✅ No critical changes detected - Deployment appears safe"
+          echo "   Standard testing procedures apply"
+        fi
+        echo ""
+
+        echo "╔════════════════════════════════════════════════════════════════════════╗"
+        echo "║  🔄 ROLLBACK INSTRUCTIONS (If deployment fails)                         ║"
+        echo "╚════════════════════════════════════════════════════════════════════════╝"
+        PREVIOUS_COMMIT=$(git rev-parse HEAD~1 2>/dev/null || echo "unknown")
+        PREVIOUS_AUTHOR=$(git log -1 HEAD~1 --pretty=format:"%an <%ae>" 2>/dev/null || echo "unknown")
+        PREVIOUS_MESSAGE=$(git log -1 HEAD~1 --pretty=format:"%s" 2>/dev/null || echo "unknown")
+
+        echo "📌 Previous stable commit: ${PREVIOUS_COMMIT}"
+        echo "👤 Previous commit author: ${PREVIOUS_AUTHOR}"
+        echo "💬 Previous commit message: ${PREVIOUS_MESSAGE}"
+        echo ""
+        echo "To rollback manually:"
+        echo "   git revert ${{ github.sha }}"
+        echo "   # OR force rollback (use with caution):"
+        echo "   git reset --hard ${PREVIOUS_COMMIT}"
+        echo "   git push --force"
+        echo ""
+        echo "To rollback via GitHub Actions:"
+        echo "   Re-run the previous successful workflow deployment"
+        echo "   Workflow URL: ${{ github.server_url }}/${{ github.repository }}/actions"
+        echo ""
+
+        echo "╔════════════════════════════════════════════════════════════════════════╗"
+        echo "║  ✅ DEPLOYMENT SUMMARY COMPLETE                                         ║"
+        echo "╚════════════════════════════════════════════════════════════════════════╝"
+        echo "🎯 Environment: ${ENV_NAME}"
+        echo "🚀 Ready to proceed with deployment to ${ENV_NAME}"
+        echo "📊 Total changes: ${FILES} files, ${NET} net lines"
+        if [ $BREAKING -eq 1 ]; then
+          echo "🚨 BREAKING CHANGES PRESENT - Exercise extreme caution"
+        fi
+        if [ $CRITICAL -eq 1 ]; then
+          echo "⚠️  CRITICAL CHANGES DETECTED - Review above warnings carefully"
+        fi
+        echo "════════════════════════════════════════════════════════════════════════"
+        echo ""
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    - name: Clean install dependencies
+      run: |
+        rm -rf node_modules package-lock.json npm-shrinkwrap.json
+        npm install --force
+      timeout-minutes: 10
+      env:
+        npm_config_platform: linux
+        npm_config_arch: x64
+    - name: Build application for production
+      run: npm run build
+      timeout-minutes: 10
+      env:
+        VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID || '' }}
+        VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL || 'http://localhost:5000' }}
+    - uses: docker/setup-buildx-action@v3
+    - uses: docker/login-action@v3
+      with:
+        username: tovtech
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - id: env
+      run: |
+        if [ "${{ github.ref }}" = "refs/heads/develop" ]; then
+          echo "tag=latest" >> $GITHUB_OUTPUT
+          echo "env=production" >> $GITHUB_OUTPUT
+        else
+          echo "tag=staging" >> $GITHUB_OUTPUT
+          echo "env=staging" >> $GITHUB_OUTPUT
+        fi
+    - uses: docker/build-push-action@v6
+      with:
+        context: .
+        push: true
+        tags: tovtech/tovplayfrontend:${{ steps.env.outputs.tag }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+      timeout-minutes: 15
+    - name: Deploy to Staging
+      if: steps.env.outputs.env == 'staging'
+      uses: appleboy/ssh-action@v1.0.3
+      timeout-minutes: 10
+      with:
+        host: 92.113.144.59
+        username: admin
+        password: 3897ysdkjhHH
+        port: 22
+        timeout: 300s
+        command_timeout: 300s
+        script: |
+          cd /home/admin/tovplay
+          echo "=== Pulling new frontend image ==="
+          docker pull tovtech/tovplayfrontend:staging
+          echo "=== Extracting static files ==="
+          docker rm -f frontend-temp 2>/dev/null || true
+          docker create --name frontend-temp tovtech/tovplayfrontend:staging
+          sudo rm -rf /tmp/frontend-deploy
+          mkdir -p /tmp/frontend-deploy
+          docker cp frontend-temp:/usr/share/nginx/html/. /tmp/frontend-deploy/
+          docker rm frontend-temp
+          sudo rsync -a --delete /tmp/frontend-deploy/ /var/www/tovplay-staging/
+          rm -rf /tmp/frontend-deploy
+          echo "=== STAGING FRONTEND DEPLOYED ==="
+    - name: Deploy to Production
+      if: steps.env.outputs.env == 'production'
+      uses: appleboy/ssh-action@v1.0.3
+      timeout-minutes: 10
+      with:
+        host: 193.181.213.220
+        username: admin
+        password: EbTyNkfJG6LM
+        port: 22
+        timeout: 300s
+        command_timeout: 300s
+        script: |
+          cd /home/admin/tovplay
+          echo "=== Pulling new frontend image ==="
+          docker pull tovtech/tovplayfrontend:latest
+          echo "=== Force removing old frontend containers ==="
+          docker stop tovplay-frontend-production 2>/dev/null || true
+          docker stop tovplay-frontend 2>/dev/null || true
+          docker rm -f tovplay-frontend-production 2>/dev/null || true
+          docker rm -f tovplay-frontend 2>/dev/null || true
+          echo "=== Starting new frontend container ==="
+          docker compose -f docker-compose.production.yml up -d --force-recreate --remove-orphans frontend || docker-compose -f docker-compose.production.yml up -d --force-recreate --remove-orphans frontend || true
+          sleep 10
+          echo "=== Container status ==="
+          docker ps -a | grep -E "frontend|production" || true
+          echo "=== PRODUCTION FRONTEND DEPLOYED ==="
+    - run: echo "✅ DEPLOYMENT COMPLETE - ${{ steps.env.outputs.env }}"

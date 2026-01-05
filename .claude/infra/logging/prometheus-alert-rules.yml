@@ -1,0 +1,375 @@
+# ============================================================================
+# PROMETHEUS ALERT RULES - TovPlay Production
+# ============================================================================
+# Alerting rules for critical events, anomalies, and security incidents
+# Integrates with AlertManager for notification delivery
+# ============================================================================
+
+groups:
+
+  # ==========================================================================
+  # DATABASE ALERTS
+  # ==========================================================================
+  - name: database_alerts
+    interval: 30s
+    rules:
+
+      # Database connection exhaustion
+      - alert: DatabaseConnectionExhaustion
+        expr: |
+          (
+            sum(pg_stat_database_numbackends{datname="TovPlay"})
+            /
+            pg_settings_max_connections
+          ) > 0.9
+        for: 2m
+        labels:
+          severity: critical
+          category: database
+        annotations:
+          summary: "Database connection pool near exhaustion"
+          description: "PostgreSQL connection usage is at {{ $value | humanizePercentage }}. Max connections will be reached soon."
+          impact: "Application will start rejecting new connections"
+          action: "1. Deploy PgBouncer connection pooler. 2. Check for connection leaks in application. 3. Increase max_connections if needed."
+          runbook_url: "https://app.tovplay.org/logs/runbooks/connection-exhaustion"
+
+      # Database down
+      - alert: DatabaseDown
+        expr: pg_up == 0
+        for: 1m
+        labels:
+          severity: critical
+          category: database
+        annotations:
+          summary: "PostgreSQL database is down"
+          description: "Cannot connect to PostgreSQL database at 45.148.28.196:5432"
+          impact: "Complete application outage - no data access"
+          action: "1. Check database server status. 2. Verify network connectivity. 3. Check PostgreSQL logs. 4. Restart database if needed."
+          runbook_url: "https://app.tovplay.org/logs/runbooks/database-down"
+
+      # Mass delete detection (database wipe)
+      - alert: DatabaseMassDelete
+        expr: |
+          sum(increase(pg_stat_user_tables_n_tup_del[5m])) > 100
+        for: 0m
+        labels:
+          severity: critical
+          category: security
+        annotations:
+          summary: "Mass deletion detected - possible database wipe"
+          description: "{{ $value }} rows deleted in last 5 minutes - potential data loss incident"
+          impact: "Critical data loss - immediate investigation required"
+          action: "1. Check audit_log_db for who/when/what. 2. Stop application immediately. 3. Restore from backup if needed. 4. Review deletion patterns."
+          runbook_url: "https://app.tovplay.org/logs/runbooks/database-wipe"
+
+      # Slow queries
+      - alert: DatabaseSlowQueries
+        expr: |
+          rate(pg_stat_statements_mean_exec_time[5m]) > 1000
+        for: 5m
+        labels:
+          severity: warning
+          category: performance
+        annotations:
+          summary: "Database queries are slow"
+          description: "Average query execution time is {{ $value }}ms"
+          action: "Check pg_stat_statements for slow queries. Add indexes if needed."
+
+  # ==========================================================================
+  # SECURITY ALERTS
+  # ==========================================================================
+  - name: security_alerts
+    interval: 30s
+    rules:
+
+      # Brute force attack detection
+      - alert: BruteForceAttack
+        expr: |
+          sum by (ip) (
+            rate({job="tovplay-backend"} | json | action="LOGIN" | success="false" [1m])
+          ) > 10
+        for: 0m
+        labels:
+          severity: critical
+          category: security
+        annotations:
+          summary: "Brute force attack detected"
+          description: "{{ $value }} failed login attempts per minute from IP {{ $labels.ip }}"
+          impact: "Potential account compromise"
+          action: "1. Block IP address. 2. Review failed login attempts. 3. Check if any accounts were compromised. 4. Enable rate limiting."
+          runbook_url: "https://app.tovplay.org/logs/runbooks/brute-force"
+
+      # Unauthorized access attempts
+      - alert: UnauthorizedAccessAttempts
+        expr: |
+          sum(rate({job="tovplay-backend"} | json | status_code =~ "401|403" [5m])) > 20
+        for: 2m
+        labels:
+          severity: warning
+          category: security
+        annotations:
+          summary: "High rate of unauthorized access attempts"
+          description: "{{ $value }} unauthorized access attempts per second"
+          action: "Review access logs for patterns. Check for credential stuffing or API abuse."
+
+      # Privilege escalation
+      - alert: PrivilegeEscalation
+        expr: |
+          count(rate({job="tovplay-backend"} | json | action="PERMISSION_CHANGE" [5m])) > 5
+        for: 0m
+        labels:
+          severity: critical
+          category: security
+        annotations:
+          summary: "Unusual privilege changes detected"
+          description: "{{ $value }} permission changes in 5 minutes"
+          impact: "Potential unauthorized access to admin functions"
+          action: "Check audit_log for who made permission changes. Verify changes are legitimate."
+
+      # API key leaked (high usage from unusual IPs)
+      - alert: PossibleAPIKeyLeak
+        expr: |
+          count by (api_key) (
+            count_over_time({job="tovplay-backend"} | json | api_key!="" [1h])
+          ) > 1000
+        for: 5m
+        labels:
+          severity: warning
+          category: security
+        annotations:
+          summary: "Possible API key leak - unusually high usage"
+          description: "API key {{ $labels.api_key }} used {{ $value }} times in 1 hour"
+          action: "Revoke API key. Contact key owner. Generate new key."
+
+  # ==========================================================================
+  # APPLICATION ALERTS
+  # ==========================================================================
+  - name: application_alerts
+    interval: 30s
+    rules:
+
+      # Backend down
+      - alert: BackendDown
+        expr: up{job="tovplay-backend"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          category: application
+        annotations:
+          summary: "TovPlay backend is down"
+          description: "Backend service is not responding"
+          impact: "Complete application outage"
+          action: "1. Check container status. 2. Review application logs. 3. Restart backend if needed."
+          runbook_url: "https://app.tovplay.org/logs/runbooks/backend-down"
+
+      # High error rate
+      - alert: HighErrorRate
+        expr: |
+          (
+            sum(rate({job="tovplay-backend"} | json | level="ERROR" [5m]))
+            /
+            sum(rate({job="tovplay-backend"} | json [5m]))
+          ) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+          category: application
+        annotations:
+          summary: "High application error rate"
+          description: "Error rate is {{ $value | humanizePercentage }} (threshold: 5%)"
+          action: "Check error logs for patterns. Review recent deployments."
+
+      # High latency
+      - alert: HighLatency
+        expr: |
+          histogram_quantile(0.95,
+            rate({job="tovplay-backend"} | json | unwrap duration_ms [5m])
+          ) > 1000
+        for: 10m
+        labels:
+          severity: warning
+          category: performance
+        annotations:
+          summary: "High API latency detected"
+          description: "P95 latency is {{ $value }}ms (threshold: 1000ms)"
+          action: "Check slow queries. Review application performance. Scale resources if needed."
+
+      # Too many 5xx errors
+      - alert: HighServerErrors
+        expr: |
+          sum(rate({job="tovplay-backend"} | json | status_code >= 500 [5m])) > 10
+        for: 5m
+        labels:
+          severity: critical
+          category: application
+        annotations:
+          summary: "High rate of 5xx errors"
+          description: "{{ $value }} server errors per second"
+          impact: "Users experiencing failures"
+          action: "Check application logs for exceptions. Review recent changes."
+
+  # ==========================================================================
+  # INFRASTRUCTURE ALERTS
+  # ==========================================================================
+  - name: infrastructure_alerts
+    interval: 30s
+    rules:
+
+      # High CPU usage
+      - alert: HighCPUUsage
+        expr: |
+          100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 10m
+        labels:
+          severity: warning
+          category: infrastructure
+        annotations:
+          summary: "High CPU usage on {{ $labels.instance }}"
+          description: "CPU usage is {{ $value }}%"
+          action: "Check top processes. Scale resources if sustained."
+
+      # High memory usage
+      - alert: HighMemoryUsage
+        expr: |
+          (
+            1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)
+          ) * 100 > 85
+        for: 10m
+        labels:
+          severity: warning
+          category: infrastructure
+        annotations:
+          summary: "High memory usage on {{ $labels.instance }}"
+          description: "Memory usage is {{ $value }}%"
+          action: "Check memory-intensive processes. Scale resources if needed."
+
+      # Disk space low
+      - alert: DiskSpaceLow
+        expr: |
+          (
+            1 - (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"})
+          ) * 100 > 80
+        for: 5m
+        labels:
+          severity: warning
+          category: infrastructure
+        annotations:
+          summary: "Disk space low on {{ $labels.instance }}"
+          description: "Disk usage is {{ $value }}%"
+          action: "Clean up logs and temporary files. Expand disk if needed."
+
+      # Container down
+      - alert: ContainerDown
+        expr: |
+          time() - container_last_seen{name=~"tovplay-.*"} > 60
+        for: 1m
+        labels:
+          severity: critical
+          category: infrastructure
+        annotations:
+          summary: "Container {{ $labels.name }} is down"
+          description: "Container has been down for more than 1 minute"
+          action: "Check container logs. Restart container if needed."
+
+  # ==========================================================================
+  # AUDIT & COMPLIANCE ALERTS
+  # ==========================================================================
+  - name: audit_alerts
+    interval: 30s
+    rules:
+
+      # Critical severity events
+      - alert: CriticalAuditEvent
+        expr: |
+          sum(rate({job="tovplay-backend"} | json | severity="CRITICAL" [5m])) > 0
+        for: 0m
+        labels:
+          severity: critical
+          category: audit
+        annotations:
+          summary: "Critical severity audit event detected"
+          description: "{{ $value }} critical events per second"
+          action: "Review audit_log immediately for details."
+
+      # Unusual delete activity
+      - alert: UnusualDeleteActivity
+        expr: |
+          sum by (user_id) (
+            rate({job="tovplay-backend"} | json | action="DELETE" [5m])
+          ) > 10
+        for: 2m
+        labels:
+          severity: warning
+          category: audit
+        annotations:
+          summary: "Unusual delete activity by user {{ $labels.user_id }}"
+          description: "{{ $value }} deletes per second"
+          action: "Review user activity in audit logs."
+
+      # Data export (potential data exfiltration)
+      - alert: DataExportDetected
+        expr: |
+          sum(rate({job="tovplay-backend"} | json | action="EXPORT" [5m])) > 5
+        for: 1m
+        labels:
+          severity: warning
+          category: security
+        annotations:
+          summary: "Data export activity detected"
+          description: "{{ $value }} export operations per second"
+          action: "Verify exports are legitimate. Check for unusual patterns."
+
+  # ==========================================================================
+  # BUSINESS METRICS ALERTS
+  # ==========================================================================
+  - name: business_alerts
+    interval: 1m
+    rules:
+
+      # No user signups in 1 hour (potential issue)
+      - alert: NoUserSignups
+        expr: |
+          sum(increase({job="tovplay-backend"} | json | action="USER_SIGNUP" [1h])) == 0
+        for: 1h
+        labels:
+          severity: warning
+          category: business
+        annotations:
+          summary: "No user signups in the last hour"
+          description: "Zero user registrations detected"
+          action: "Check signup flow. Verify forms are working."
+
+      # High user churn (many account deletions)
+      - alert: HighUserChurn
+        expr: |
+          sum(rate({job="tovplay-backend"} | json | action="USER_DELETE" [1h])) > 5
+        for: 10m
+        labels:
+          severity: warning
+          category: business
+        annotations:
+          summary: "High user account deletion rate"
+          description: "{{ $value }} account deletions per hour"
+          action: "Review user feedback. Check for issues driving churn."
+
+# ============================================================================
+# DEPLOYMENT INSTRUCTIONS
+# ============================================================================
+#
+# 1. Place this file in: /etc/prometheus/alerts/tovplay-rules.yml
+#
+# 2. Update prometheus.yml to include this file:
+#    rule_files:
+#      - "/etc/prometheus/alerts/*.yml"
+#
+# 3. Reload Prometheus configuration:
+#    curl -X POST http://localhost:9090/-/reload
+#    Or: docker exec tovplay-prometheus kill -HUP 1
+#
+# 4. Verify rules are loaded:
+#    http://193.181.213.220:9090/rules
+#
+# 5. Test alert:
+#    curl -XPOST http://localhost:9093/api/v1/alerts -d '[{"labels":{"alertname":"TestAlert","severity":"warning"}}]'
+#
+# ============================================================================

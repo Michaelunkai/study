@@ -1,0 +1,229 @@
+version: '3.9'
+
+# ============================================================================
+# JAEGER DISTRIBUTED TRACING - TovPlay Production
+# ============================================================================
+# Traces requests from frontend → backend → database
+# Provides detailed performance analysis and bottleneck identification
+# Integrates with correlation IDs from structured_logger.py
+# ============================================================================
+
+services:
+
+  # ==========================================================================
+  # Jaeger All-in-One (includes collector, query, UI)
+  # ==========================================================================
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: tovplay-jaeger
+    restart: always
+
+    ports:
+      # Jaeger UI
+      - "16686:16686"
+
+      # Jaeger Collector (HTTP)
+      - "14268:14268"
+
+      # Jaeger Collector (gRPC)
+      - "14250:14250"
+
+      # Jaeger Agent (compact thrift)
+      - "6831:6831/udp"
+
+      # Jaeger Agent (binary thrift)
+      - "6832:6832/udp"
+
+      # Zipkin compatibility
+      - "9411:9411"
+
+      # Admin port
+      - "14269:14269"
+
+    environment:
+      # Storage backend
+      - SPAN_STORAGE_TYPE=badger
+      - BADGER_EPHEMERAL=false
+      - BADGER_DIRECTORY_VALUE=/badger/data
+      - BADGER_DIRECTORY_KEY=/badger/key
+
+      # Collector settings
+      - COLLECTOR_ZIPKIN_HOST_PORT=:9411
+      - COLLECTOR_OTLP_ENABLED=true
+
+      # Query settings
+      - QUERY_BASE_PATH=/jaeger
+
+      # Sampling
+      - SAMPLING_STRATEGIES_FILE=/etc/jaeger/sampling.json
+
+      # Metrics
+      - METRICS_BACKEND=prometheus
+      - METRICS_HTTP_ROUTE=/metrics
+
+    volumes:
+      - jaeger_data:/badger
+      - ./jaeger/sampling.json:/etc/jaeger/sampling.json:ro
+
+    networks:
+      - tovplay-network
+
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:14269/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+        reservations:
+          memory: 256M
+          cpus: '0.25'
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+        labels: "service=jaeger,environment=production"
+
+networks:
+  tovplay-network:
+    external: true
+    name: tovplay-network
+
+volumes:
+  jaeger_data:
+    driver: local
+
+# ============================================================================
+# PYTHON CLIENT INTEGRATION
+# ============================================================================
+#
+# Install Jaeger client:
+# pip install jaeger-client opentracing-instrumentation flask-opentracing
+#
+# Add to Flask app (src/app/__init__.py):
+#
+# from jaeger_client import Config
+# from flask_opentracing import FlaskTracing
+#
+# def init_jaeger(app):
+#     config = Config(
+#         config={
+#             'sampler': {'type': 'probabilistic', 'param': 1.0},
+#             'local_agent': {'reporting_host': 'jaeger', 'reporting_port': 6831},
+#             'logging': True,
+#         },
+#         service_name='tovplay-backend',
+#         validate=True
+#     )
+#     tracer = config.initialize_tracer()
+#     tracing = FlaskTracing(tracer, True, app)
+#     return tracer
+#
+# # In create_app():
+# tracer = init_jaeger(app)
+#
+# # Trace database queries:
+# from opentracing.ext import tags
+#
+# @tracer.trace()
+# def query_database(query):
+#     span = tracer.active_span
+#     span.set_tag(tags.DATABASE_TYPE, 'postgresql')
+#     span.set_tag(tags.DATABASE_STATEMENT, query)
+#     # ... execute query
+#
+# ============================================================================
+# JAVASCRIPT CLIENT INTEGRATION
+# ============================================================================
+#
+# Install Jaeger client:
+# npm install jaeger-client
+#
+# Add to React app (src/main.jsx or src/utils/tracer.js):
+#
+# import { initTracer } from 'jaeger-client';
+#
+# const config = {
+#   serviceName: 'tovplay-frontend',
+#   sampler: { type: 'probabilistic', param: 1.0 },
+#   reporter: {
+#     collectorEndpoint: 'http://193.181.213.220:14268/api/traces',
+#     logSpans: true
+#   }
+# };
+#
+# const tracer = initTracer(config);
+#
+# // Trace API calls:
+# export async function tracedFetch(url, options = {}) {
+#   const span = tracer.startSpan('http_request');
+#   span.setTag('http.url', url);
+#   span.setTag('http.method', options.method || 'GET');
+#
+#   try {
+#     const response = await fetch(url, {
+#       ...options,
+#       headers: {
+#         ...options.headers,
+#         'X-Trace-ID': span.context().toTraceId(),
+#         'X-Span-ID': span.context().toSpanId()
+#       }
+#     });
+#     span.setTag('http.status_code', response.status);
+#     return response;
+#   } catch (error) {
+#     span.setTag('error', true);
+#     span.log({ event: 'error', message: error.message });
+#     throw error;
+#   } finally {
+#     span.finish();
+#   }
+# }
+#
+# ============================================================================
+# ACCESSING JAEGER UI
+# ============================================================================
+#
+# URL: http://193.181.213.220:16686
+#
+# Features:
+# - Search traces by service, operation, tags
+# - View trace timeline (request flow)
+# - Identify performance bottlenecks
+# - Compare traces
+# - Service dependencies graph
+#
+# Example searches:
+# - Service: tovplay-backend
+# - Operation: /api/games
+# - Tags: user_id=123
+# - Duration: > 1000ms
+#
+# ============================================================================
+# CORRELATION WITH LOGS
+# ============================================================================
+#
+# Link traces to logs using correlation IDs:
+#
+# 1. In structured_logger.py, add trace context:
+#    span = tracer.active_span
+#    if span:
+#        set_log_context(
+#            trace_id=span.context().trace_id,
+#            span_id=span.context().span_id
+#        )
+#
+# 2. In Grafana, search logs by trace ID:
+#    {job="tovplay-backend"} | json | trace_id="<TRACE_ID>"
+#
+# 3. In Jaeger, add Grafana link to traces:
+#    http://193.181.213.220:3002/explore?datasource=Loki&query={trace_id="<TRACE_ID>"}
+#
+# ============================================================================

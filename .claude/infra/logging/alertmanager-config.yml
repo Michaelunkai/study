@@ -1,0 +1,257 @@
+# ============================================================================
+# ALERTMANAGER CONFIGURATION - TovPlay Production
+# ============================================================================
+# Real-time alerting for critical events and anomalies
+# Sends alerts to: Discord, Email, PagerDuty (optional)
+# ============================================================================
+
+global:
+  # Default values
+  resolve_timeout: 5m
+  smtp_from: 'noreply@tovtech.org'
+  smtp_smarthost: 'iah-s01.nixihost.com:465'
+  smtp_auth_username: 'noreply@tovtech.org'
+  smtp_auth_password: 'hD%hCt7hyxFFDuH6'
+  smtp_require_tls: true
+
+# ============================================================================
+# ROUTE TREE - Alert routing logic
+# ============================================================================
+route:
+  # Default receiver for all alerts
+  receiver: 'discord-general'
+
+  # Group alerts by these labels
+  group_by: ['alertname', 'severity', 'environment']
+
+  # How long to wait before sending initial notification
+  group_wait: 10s
+
+  # How long to wait before sending notification about new alerts
+  group_interval: 5m
+
+  # How long to wait before re-sending resolved alerts
+  repeat_interval: 4h
+
+  # Child routes (specific routing rules)
+  routes:
+    # Critical alerts -> Discord + Email + PagerDuty
+    - match:
+        severity: critical
+      receiver: 'discord-critical'
+      group_wait: 5s
+      repeat_interval: 1h
+
+    # Database alerts
+    - match_re:
+        alertname: '^(DatabaseDown|DatabaseWipe|ConnectionExhaustion)$'
+      receiver: 'discord-database'
+      group_wait: 5s
+
+    # Security alerts
+    - match_re:
+        alertname: '^(UnauthorizedAccess|BruteForce|MassDelete|SecurityEvent)$'
+      receiver: 'discord-security'
+      group_wait: 0s
+
+    # Performance alerts
+    - match_re:
+        alertname: '^(HighLatency|HighErrorRate|HighCPU|HighMemory)$'
+      receiver: 'discord-performance'
+      repeat_interval: 30m
+
+    # Application alerts
+    - match_re:
+        alertname: '^(BackendDown|FrontendDown|APIError)$'
+      receiver: 'discord-application'
+
+# ============================================================================
+# INHIBIT RULES - Suppress redundant alerts
+# ============================================================================
+inhibit_rules:
+  # Inhibit low severity when high severity is firing
+  - source_match:
+      severity: 'critical'
+    target_match_re:
+      severity: 'warning|info'
+    equal: ['alertname', 'environment']
+
+  # Inhibit error rate alerts when service is down
+  - source_match:
+      alertname: 'BackendDown'
+    target_match_re:
+      alertname: '.*Error.*'
+    equal: ['environment']
+
+  # Inhibit connection errors when database is down
+  - source_match:
+      alertname: 'DatabaseDown'
+    target_match_re:
+      alertname: '.*Connection.*'
+    equal: ['environment']
+
+# ============================================================================
+# RECEIVERS - Where to send alerts
+# ============================================================================
+receivers:
+
+  # --------------------------------------------------------------------------
+  # DISCORD - General channel
+  # --------------------------------------------------------------------------
+  - name: 'discord-general'
+    webhook_configs:
+      - url: 'https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN'
+        send_resolved: true
+        title: '{{ .GroupLabels.alertname }}'
+        message: |
+          **Alert**: {{ .GroupLabels.alertname }}
+          **Severity**: {{ .CommonLabels.severity }}
+          **Environment**: {{ .CommonLabels.environment }}
+          **Summary**: {{ .CommonAnnotations.summary }}
+          **Description**: {{ .CommonAnnotations.description }}
+          **Firing**: {{ .Alerts.Firing | len }}
+          **Time**: {{ .CommonAnnotations.timestamp }}
+
+  # --------------------------------------------------------------------------
+  # DISCORD - Critical alerts channel
+  # --------------------------------------------------------------------------
+  - name: 'discord-critical'
+    webhook_configs:
+      - url: 'https://discord.com/api/webhooks/YOUR_CRITICAL_WEBHOOK_ID/YOUR_CRITICAL_WEBHOOK_TOKEN'
+        send_resolved: true
+        title: '🔴 CRITICAL ALERT: {{ .GroupLabels.alertname }}'
+        message: |
+          @everyone **CRITICAL ALERT**
+
+          **Alert**: {{ .GroupLabels.alertname }}
+          **Severity**: {{ .CommonLabels.severity }}
+          **Environment**: {{ .CommonLabels.environment }}
+          **Summary**: {{ .CommonAnnotations.summary }}
+          **Description**: {{ .CommonAnnotations.description }}
+          **Impact**: {{ .CommonAnnotations.impact }}
+          **Action Required**: {{ .CommonAnnotations.action }}
+          **Runbook**: {{ .CommonAnnotations.runbook_url }}
+          **Firing**: {{ .Alerts.Firing | len }}
+          **Time**: {{ .CommonAnnotations.timestamp }}
+
+    email_configs:
+      - to: 'roman.fesunenko@gmail.com'
+        headers:
+          Subject: '🔴 CRITICAL: {{ .GroupLabels.alertname }}'
+        text: |
+          CRITICAL ALERT
+
+          Alert: {{ .GroupLabels.alertname }}
+          Severity: {{ .CommonLabels.severity }}
+          Environment: {{ .CommonLabels.environment }}
+          Summary: {{ .CommonAnnotations.summary }}
+          Description: {{ .CommonAnnotations.description }}
+          Time: {{ .CommonAnnotations.timestamp }}
+
+  # --------------------------------------------------------------------------
+  # DISCORD - Database alerts channel
+  # --------------------------------------------------------------------------
+  - name: 'discord-database'
+    webhook_configs:
+      - url: 'https://discord.com/api/webhooks/YOUR_DATABASE_WEBHOOK_ID/YOUR_DATABASE_WEBHOOK_TOKEN'
+        send_resolved: true
+        title: '🗄️ DATABASE ALERT: {{ .GroupLabels.alertname }}'
+        message: |
+          **Database Alert**: {{ .GroupLabels.alertname }}
+          **Severity**: {{ .CommonLabels.severity }}
+          **Summary**: {{ .CommonAnnotations.summary }}
+          **Description**: {{ .CommonAnnotations.description }}
+          **Database**: {{ .CommonLabels.database }}
+          **Time**: {{ .CommonAnnotations.timestamp }}
+
+  # --------------------------------------------------------------------------
+  # DISCORD - Security alerts channel
+  # --------------------------------------------------------------------------
+  - name: 'discord-security'
+    webhook_configs:
+      - url: 'https://discord.com/api/webhooks/YOUR_SECURITY_WEBHOOK_ID/YOUR_SECURITY_WEBHOOK_TOKEN'
+        send_resolved: true
+        title: '🔒 SECURITY ALERT: {{ .GroupLabels.alertname }}'
+        message: |
+          @here **SECURITY ALERT**
+
+          **Alert**: {{ .GroupLabels.alertname }}
+          **Severity**: {{ .CommonLabels.severity }}
+          **Summary**: {{ .CommonAnnotations.summary }}
+          **Description**: {{ .CommonAnnotations.description }}
+          **User**: {{ .CommonLabels.user_id }}
+          **IP**: {{ .CommonLabels.ip_address }}
+          **Action**: {{ .CommonLabels.action }}
+          **Time**: {{ .CommonAnnotations.timestamp }}
+
+  # --------------------------------------------------------------------------
+  # DISCORD - Performance alerts channel
+  # --------------------------------------------------------------------------
+  - name: 'discord-performance'
+    webhook_configs:
+      - url: 'https://discord.com/api/webhooks/YOUR_PERFORMANCE_WEBHOOK_ID/YOUR_PERFORMANCE_WEBHOOK_TOKEN'
+        send_resolved: true
+        title: '⚡ PERFORMANCE ALERT: {{ .GroupLabels.alertname }}'
+        message: |
+          **Performance Alert**: {{ .GroupLabels.alertname }}
+          **Severity**: {{ .CommonLabels.severity }}
+          **Summary**: {{ .CommonAnnotations.summary }}
+          **Metric**: {{ .CommonLabels.metric }}
+          **Current Value**: {{ .CommonAnnotations.current_value }}
+          **Threshold**: {{ .CommonAnnotations.threshold }}
+          **Time**: {{ .CommonAnnotations.timestamp }}
+
+  # --------------------------------------------------------------------------
+  # DISCORD - Application alerts channel
+  # --------------------------------------------------------------------------
+  - name: 'discord-application'
+    webhook_configs:
+      - url: 'https://discord.com/api/webhooks/YOUR_APPLICATION_WEBHOOK_ID/YOUR_APPLICATION_WEBHOOK_TOKEN'
+        send_resolved: true
+        title: '🚀 APPLICATION ALERT: {{ .GroupLabels.alertname }}'
+        message: |
+          **Application Alert**: {{ .GroupLabels.alertname }}
+          **Severity**: {{ .CommonLabels.severity }}
+          **Summary**: {{ .CommonAnnotations.summary }}
+          **Description**: {{ .CommonAnnotations.description }}
+          **Service**: {{ .CommonLabels.service }}
+          **Time**: {{ .CommonAnnotations.timestamp }}
+
+# ============================================================================
+# TEMPLATES (for custom formatting)
+# ============================================================================
+templates:
+  - '/etc/alertmanager/templates/*.tmpl'
+
+# ============================================================================
+# NOTES
+# ============================================================================
+#
+# DISCORD WEBHOOKS SETUP:
+# 1. Go to Discord Server Settings -> Integrations -> Webhooks
+# 2. Create webhook for each channel (general, critical, database, security, etc.)
+# 3. Copy webhook URL and replace placeholders above
+#
+# WEBHOOK URL FORMAT:
+# https://discord.com/api/webhooks/WEBHOOK_ID/WEBHOOK_TOKEN
+#
+# EMAIL SETUP:
+# Already configured with TovTech SMTP server
+# From: noreply@tovtech.org
+# Server: iah-s01.nixihost.com:465
+#
+# TESTING ALERTS:
+# Send test alert:
+# curl -H "Content-Type: application/json" -d '[{"labels":{"alertname":"TestAlert","severity":"warning"}}]' http://localhost:9093/api/v1/alerts
+#
+# SILENCING ALERTS:
+# Create silence via UI: http://193.181.213.220:9093
+# Or via API:
+# curl -XPOST http://localhost:9093/api/v1/silences -d '{
+#   "matchers": [{"name":"alertname","value":"TestAlert"}],
+#   "startsAt": "2025-12-15T10:00:00Z",
+#   "endsAt": "2025-12-15T12:00:00Z",
+#   "comment": "Maintenance window"
+# }'
+#
+# ============================================================================

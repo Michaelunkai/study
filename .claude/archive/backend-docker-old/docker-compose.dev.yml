@@ -1,0 +1,78 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: tovplay-postgres-dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: tovplay_dev
+      POSTGRES_USER: tovplay_user
+      POSTGRES_PASSWORD: tovplay_dev_password
+      POSTGRES_HOST_AUTH_METHOD: md5
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database_init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./init.sql/init_extensions.sql:/docker-entrypoint-initdb.d/01-init_extensions.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tovplay_user -d tovplay_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - tovplay-dev
+
+  backend:
+    build:
+      context: .
+      target: development
+    container_name: tovplay-backend-dev
+    restart: unless-stopped
+    environment:
+      FLASK_ENV: development
+      FLASK_APP: wsgi:create_app
+      # Loaded from staging server environment variables
+      DATABASE_URL: ${DATABASE_URL}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      SECRET_KEY: ${SECRET_KEY}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      EMAIL_SENDER: ${EMAIL_SENDER}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+      SMTP_SERVER: ${SMTP_SERVER}
+      SMTP_PORT: ${SMTP_PORT}
+      WEBSITE_URL: ${WEBSITE_URL}
+      API_KEY: ${API_KEY}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS}
+      RATE_LIMIT_PER_MINUTE: 120
+      RATE_LIMIT_PER_HOUR: 7200
+      LOG_LEVEL: DEBUG
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./src:/app/src
+      - ./config:/app/config
+    depends_on:
+      postgres:
+        condition: service_healthy
+    entrypoint: []
+    command: >
+      bash -c "cd /app && python -m flask run --host=0.0.0.0 --port=5001 --debug"
+    networks:
+      - tovplay-dev
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:
+
+networks:
+  tovplay-dev:
+    driver: bridge
+    name: tovplay-dev

@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Environment files (keep .env.template)
+.env
+.env.local
+
+# Build output
+dist/
+
+# IDEs
+.idea/
+.vscode/
+.DS_Store
+
+# Session artifacts
+.gemini/
+
+# Testing
+coverage/
+.nyc_output/
+test-results/
+playwright-report/
+
+# Logs
+logs/
+*.log

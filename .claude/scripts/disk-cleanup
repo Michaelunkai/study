@@ -1,0 +1,10 @@
+#!/bin/bash
+# Safe disk cleanup - NO database operations
+USAGE=$(df / | tail -1 | awk '{print $5}' | tr -d '%')
+if [ "$USAGE" -gt 70 ]; then
+    docker system prune -f 2>/dev/null
+    truncate -s 0 /var/lib/docker/volumes/monitoring_prometheus-data/_data/query.log 2>/dev/null
+    journalctl --vacuum-size=100M 2>/dev/null
+    find /var/log -name "*.log" -size +50M -exec truncate -s 0 {} \;
+    echo "$(date): Cleanup done, was $USAGE%" >> /var/log/disk-cleanup.log
+fi

@@ -1,0 +1,25 @@
+{
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "100m",
+    "max-file": "5"
+  },
+  "live-restore": true,
+  "storage-driver": "overlay2",
+  "default-ulimits": {
+    "nofile": {
+      "Name": "nofile",
+      "Hard": 65536,
+      "Soft": 65536
+    }
+  },
+  "default-restart-policy": {
+    "Name": "always",
+    "MaximumRetryCount": 0
+  },
+  "features": {
+    "buildkit": true
+  },
+  "metrics-addr": "0.0.0.0:9323",
+  "experimental": false
+}
