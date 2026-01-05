@@ -1,0 +1,320 @@
+You're an expert DevOps engineer and full-stack developer specializing in real-time logging systems, Flask backends, and production infrastructure management. You have deep expertise in Grafana Loki, Docker containerization, and building monitoring dashboards.
+
+## TASK: Deploy and Verify TovPlay Error-Only Dashboard with Team Attribution & Severity Levels
+
+### CONTEXT
+TovPlay is a gaming companion platform running on production server **193.181.213.220** (SSH password: `EbTyNkfJG6LM`). A real-time logging dashboard exists at `/opt/tovplay-logging-dashboard/` using Loki + Promtail + Flask, but it currently shows **no logs** and needs enhancement to:
+
+1. **Show ONLY error logs** (ERROR, CRITICAL, EXCEPTION, FAIL) - filter out all INFO/DEBUG logs
+2. **Add team member attribution** next to every error (identify which team member is responsible)
+3. **Add severity levels 1-5** with color coding:
+   - **Level 5 (RED)**: CRITICAL - Immediate fix needed (database crash, data loss, security breach)
+   - **Level 4 (ORANGE)**: URGENT (500 errors, connection refused, auth failures)
+   - **Level 3 (YELLOW)**: HIGH PRIORITY (errors, exceptions, timeouts)
+   - **Level 2 (LIGHT BLUE)**: MEDIUM (warnings, deprecated code)
+   - **Level 1 (BLUE)**: LOW (minor issues)
+4. **Verify ALL buttons and filters work perfectly** (time range filters, refresh, etc.)
+5. **Test with Playwright** automated browser test
+
+### INFRASTRUCTURE DETAILS
+- **Production Server**: 193.181.213.220 (SSH: `wsl -d ubuntu bash -c "sshpass -p 'EbTyNkfJG6LM' ssh admin@193.181.213.220"`)
+- **Dashboard Directory**: `/opt/tovplay-logging-dashboard/`
+- **Dashboard Port**: 7778 (accessible at `http://193.181.213.220:7778` or `https://app.tovplay.org/logs/`)
+- **Loki Port**: 3100
+- **Docker Network**: monitoring (external)
+- **Container Names**: `tovplay-loki`, `tovplay-logging-dashboard`, `tovplay-promtail`
+
+### CRITICAL FILES TO CREATE/UPDATE
+
+**1. Enhanced Flask App (`/opt/tovplay-logging-dashboard/app.py`)**
+```python
+#!/usr/bin/env python3
+"""
+TovPlay Error-Only Logging Dashboard with Team Attribution & Severity Levels
+Shows ONLY errors with team member identification and severity scoring (1-5)
+"""
+
+from flask import Flask, render_template, jsonify, request
+from flask_cors import CORS
+from datetime import datetime, timedelta
+import requests
+import json
+import os
+import logging
+import re
+
+app = Flask(__name__)
+CORS(app)
+
+# Configuration
+LOKI_URL = os.getenv('LOKI_URL', 'http://loki:3100')
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Team member mapping with roles
+TEAM_MEMBERS = {
+    'romanfesu': {'name': 'Roman Fesunenko', 'role': 'DevOps', 'color': '#58a6ff'},
+    'lilachHerzog': {'name': 'Lilach Herzog', 'role': 'Frontend', 'color': '#a371f7'},
+    'sharon': {'name': 'Sharon Keinar', 'role': 'Backend', 'color': '#3fb950'},
+    'yuval': {'name': 'Yuval Zeyger', 'role': 'Contributor', 'color': '#d29922'},
+    'raz@tovtech.org': {'name': 'Roman Fesunenko', 'role': 'DevOps', 'color': '#58a6ff'},
+    'roman': {'name': 'Roman Fesunenko', 'role': 'DevOps', 'color': '#58a6ff'},
+    'lilach': {'name': 'Lilach Herzog', 'role': 'Frontend', 'color': '#a371f7'},
+}
+
+# Severity rules: 1 (blue) to 5 (red)
+SEVERITY_RULES = [
+    {'pattern': r'(?i)(CRITICAL|FATAL|database.*crash|data.*loss|truncate|drop table|security.*breach)', 'level': 5, 'label': 'CRITICAL - FIX NOW'},
+    {'pattern': r'(?i)(500.*error|connection.*refused|out of memory|disk.*full|authentication.*fail)', 'level': 4, 'label': 'URGENT'},
+    {'pattern': r'(?i)(error|exception|failed|timeout|not found|unable to)', 'level': 3, 'label': 'HIGH PRIORITY'},
+    {'pattern': r'(?i)(warning|deprecated|slow.*query)', 'level': 2, 'label': 'MEDIUM'},
+    {'pattern': r'.*', 'level': 1, 'label': 'LOW'}
+]
+
+def identify_team_member(text):
+    """Identify team member from log text"""
+    if not text:
+        return None
+    text_lower = text.lower()
+    for username, info in TEAM_MEMBERS.items():
+        if username.lower() in text_lower or info['name'].lower() in text_lower:
+            return info
+    return None
+
+def calculate_severity(message):
+    """Calculate error severity (1-5) based on message content"""
+    message_lower = message.lower() if message else ''
+    for rule in SEVERITY_RULES:
+        if re.search(rule['pattern'], message_lower):
+            colors = {5: '#dc3545', 4: '#fd7e14', 3: '#ffc107', 2: '#17a2b8', 1: '#58a6ff'}
+            return {'level': rule['level'], 'label': rule['label'], 'color': colors.get(rule['level'], '#58a6ff')}
+    return {'level': 1, 'label': 'LOW', 'color': '#58a6ff'}
+
+def query_loki(query, start=None, end=None, limit=1000):
+    """Query Loki for logs"""
+    if not start:
+        start = (datetime.utcnow() - timedelta(hours=24)).isoformat() + 'Z'
+    if not end:
+        end = datetime.utcnow().isoformat() + 'Z'
+
+    params = {'query': query, 'start': start, 'end': end, 'limit': limit}
+    try:
+        response = requests.get(f'{LOKI_URL}/loki/api/v1/query_range', params=params, timeout=5)
+        response.raise_for_status()
+        return response.json()
+    except Exception as e:
+        logger.error(f"Loki query failed: {e}")
+        return {'status': 'error', 'error': str(e)}
+
+@app.route('/api/errors')
+def get_errors():
+    """Get ONLY error logs with team attribution and severity"""
+    time_range = request.args.get('time_range', '5m')
+    limit = request.args.get('limit', 500, type=int)
+
+    now = datetime.utcnow()
+    time_map = {'1m': 1, '5m': 5, '30m': 30, '1h': 60, '24h': 1440, '7d': 10080}
+    minutes = time_map.get(time_range, 5)
+    start = (now - timedelta(minutes=minutes)).isoformat() + 'Z'
+    end = now.isoformat() + 'Z'
+
+    # Query for errors only
+    error_query = '{job=~".+"} |~ "(?i)error|exception|fail|critical|fatal"'
+    data = query_loki(error_query, start=start, end=end, limit=limit)
+
+    if data.get('status') != 'success':
+        return jsonify({'errors': [], 'error': data.get('error', 'Unknown error')})
+
+    enriched_errors = []
+    for result in data.get('data', {}).get('result', []):
+        for timestamp, message in result.get('values', []):
+            enriched_errors.append({
+                'timestamp': timestamp,
+                'message': message,
+                'team_member': identify_team_member(message),
+                'severity': calculate_severity(message),
+                'job': result.get('stream', {}).get('job', 'unknown')
+            })
+
+    enriched_errors.sort(key=lambda x: (x['timestamp'], -x['severity']['level']), reverse=True)
+    return jsonify({'errors': enriched_errors, 'total': len(enriched_errors), 'time_range': time_range})
+
+@app.route('/api/team-members')
+def get_team_members():
+    return jsonify(TEAM_MEMBERS)
+
+@app.route('/api/health')
+def health_check():
+    loki_health = False
+    try:
+        r = requests.get(f'{LOKI_URL}/ready', timeout=2)
+        loki_health = r.status_code == 200
+    except:
+        pass
+    return jsonify({'status': 'healthy', 'loki_connected': loki_health, 'timestamp': datetime.utcnow().isoformat()})
+
+@app.route('/api/stats')
+def get_stats():
+    error_data = get_errors().json
+    errors = error_data.get('errors', [])
+    severity_counts = {5: 0, 4: 0, 3: 0, 2: 0, 1: 0}
+    team_error_counts = {}
+
+    for error in errors:
+        severity_counts[error['severity']['level']] += 1
+        if error.get('team_member'):
+            name = error['team_member']['name']
+            team_error_counts[name] = team_error_counts.get(name, 0) + 1
+
+    return jsonify({'total_errors': len(errors), 'by_severity': severity_counts, 'by_team_member': team_error_counts})
+
+@app.route('/')
+def index():
+    return render_template('errors_dashboard.html')
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=7778, debug=False)
+```
+
+**2. Enhanced HTML Dashboard (`/opt/tovplay-logging-dashboard/templates/errors_dashboard.html`)**
+*(Full HTML with Bootstrap 5, dark theme, severity color coding, team badges, time filters, auto-refresh every 10s, statistics panel)*
+
+Key features:
+- Dark GitHub-style theme
+- Error entries with left border color-coded by severity
+- Team member badges with custom colors
+- Time filter buttons (1m, 5m, 30m, 1h, 24h, 7d)
+- Statistics sidebar showing counts by severity level
+- Auto-refresh every 10 seconds
+- Real-time connection status badge
+
+### STEP-BY-STEP IMPLEMENTATION PLAN
+
+**Create these TODO items at the start:**
+
+1. **Connect to production server and verify current state**
+   - SSH into 193.181.213.220
+   - Check if logging-dashboard containers are running
+   - Check Loki connectivity and logs
+
+2. **Create enhanced Flask app locally with error-only filtering**
+   - Build `app_errors_only.py` with team member mapping
+   - Implement severity calculation (1-5 levels)
+   - Create `/api/errors` endpoint with LogQL query filtering
+
+3. **Create enhanced HTML dashboard with severity UI**
+   - Build `errors_dashboard.html` with Bootstrap 5
+   - Add severity color coding (blue → red)
+   - Add team member badges
+   - Add time filter buttons
+
+4. **Deploy files to production server**
+   - Copy `app_errors_only.py` → `/opt/tovplay-logging-dashboard/app.py`
+   - Copy `errors_dashboard.html` → `/opt/tovplay-logging-dashboard/templates/errors_dashboard.html`
+   - Verify files uploaded correctly
+
+5. **Restart dashboard container and verify**
+   - Run `docker-compose restart logging-dashboard`
+   - Check logs: `docker logs tovplay-logging-dashboard`
+   - Test health: `curl http://localhost:7778/api/health`
+
+6. **Test all API endpoints**
+   - `/api/health` - Loki connection status
+   - `/api/errors?time_range=5m` - Error logs
+   - `/api/team-members` - Team list
+   - `/api/stats` - Error statistics
+
+7. **Install Playwright and create automated test**
+   - Install: `npm install playwright`
+   - Create `test_error_dashboard.js` with 12 test cases
+   - Run: `node test_error_dashboard.js`
+
+8. **Verify all dashboard functionality**
+   - Time filter buttons (1m, 5m, 30m, 1h, 24h, 7d)
+   - Error display with severity levels
+   - Team member attribution
+   - Statistics panel
+   - Auto-refresh
+   - Connection status
+
+9. **Take screenshot and verify visually**
+   - Playwright full-page screenshot
+   - Verify severity colors: red (5), orange (4), yellow (3), light blue (2), blue (1)
+   - Verify team badges appear next to errors
+
+10. **Update documentation**
+    - Document error dashboard in `.claude/ERROR_DASHBOARD.md`
+    - Update `CLAUDE.md` with dashboard access info
+    - Clean up temporary files
+
+### TESTING CHECKLIST
+
+**Functional Tests:**
+- ✅ Dashboard loads without errors
+- ✅ Shows ONLY error logs (no INFO/DEBUG)
+- ✅ Severity levels 1-5 displayed with correct colors
+- ✅ Team member badges appear next to errors
+- ✅ Time filter buttons work (1m, 5m, 30m, 1h, 24h, 7d)
+- ✅ Statistics panel shows counts by severity
+- ✅ Auto-refresh works (every 10 seconds)
+- ✅ Connection status badge updates
+- ✅ Error count badge updates
+
+**API Tests:**
+- ✅ `/api/health` returns `{"loki_connected": true}`
+- ✅ `/api/errors` returns array of enriched errors
+- ✅ `/api/team-members` returns team mapping
+- ✅ `/api/stats` returns severity breakdown
+
+**Visual Tests:**
+- ✅ Red border = Critical (level 5)
+- ✅ Orange border = Urgent (level 4)
+- ✅ Yellow border = High (level 3)
+- ✅ Light blue border = Medium (level 2)
+- ✅ Blue border = Low (level 1)
+
+### DEPLOYMENT COMMANDS
+
+```powershell
+# Connect to server
+wsl -d ubuntu bash -c "sshpass -p 'EbTyNkfJG6LM' ssh admin@193.181.213.220"
+
+# Check container status
+cd /opt/tovplay-logging-dashboard
+docker-compose ps
+
+# Upload files (from local F:\tovplay\)
+sshpass -p 'EbTyNkfJG6LM' scp app_errors_only.py admin@193.181.213.220:/opt/tovplay-logging-dashboard/app.py
+sshpass -p 'EbTyNkfJG6LM' scp errors_dashboard.html admin@193.181.213.220:/opt/tovplay-logging-dashboard/templates/errors_dashboard.html
+
+# Restart dashboard
+docker-compose restart logging-dashboard
+
+# Verify
+curl http://localhost:7778/api/health
+curl http://localhost:7778/api/errors?time_range=5m | jq .
+```
+
+### SUCCESS CRITERIA
+
+The task is **100% complete** when:
+1. Dashboard accessible at `https://app.tovplay.org/logs/`
+2. Shows ONLY error logs (no INFO/DEBUG messages visible)
+3. Each error has severity badge (1-5) with correct color
+4. Team member badges appear next to relevant errors
+5. All 6 time filter buttons work correctly
+6. Statistics panel shows accurate counts
+7. Playwright test passes all 12 test cases
+8. Screenshot shows working dashboard with all features
+9. Documentation updated in `.claude/` folder
+
+### IMPORTANT NOTES
+
+- **Docker network alias**: Use `http://loki:3100` not `http://tovplay-loki:3100` (service name, not container name)
+- **SSH connection**: May timeout - use short timeouts and retry if needed
+- **LogQL query**: `{job=~".+"} |~ "(?i)error|exception|fail|critical|fatal"` filters for errors only
+- **Auto-refresh**: Implemented in JavaScript, refreshes every 10 seconds
+- **Team detection**: Case-insensitive search in log message for usernames/names
+- **Severity calculation**: Regex pattern matching on error message content
+
+**START WORKING IMMEDIATELY - DO NOT ASK QUESTIONS. Complete all 10 TODO steps sequentially, mark each complete, and verify 100% functionality before finishing.**

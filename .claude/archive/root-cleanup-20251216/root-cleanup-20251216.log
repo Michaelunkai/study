@@ -1,0 +1,35 @@
+# Root Directory Cleanup - Dec 16, 2025 15:20
+
+## Rule 8 Compliance: TovPlay Zero-Touch Architecture
+
+**Issue**: Root directory contained 14+ unnecessary files violating Rule 8.
+
+**Cleanup Actions**:
+1. Archived 11 files to `.claude/archive/root-cleanup-20251216/`:
+   - CONSOLIDATION_SUMMARY.md, SETUP.md (duplicate docs)
+   - install-deps.bat, run-all.ps1, start-dev.bat, start-dev.ps1 (launcher scripts)
+   - tovrun.bat, tovrun.ps1 (replaced by PowerShell profile function)
+   - kill_all_db_connections.sh, kill_db_connections.py (utilities moved to backend)
+   - package-lock.json (npm artifact without package.json)
+
+2. Removed 2 directories:
+   - `F:tovplay.claudeinfrapgbouncer/` (orphaned directory with malformed name)
+   - `logs/` (replaced with `.logs/` per convention)
+
+3. Created: `.logs/` directory
+
+**Final Root Structure** (9 items):
+```
+F:/tovplay/
+├── .claude/          (documentation & scripts)
+├── .env              (local environment config)
+├── .env.template     (team reference template)
+├── .git/             (version control)
+├── .logs/            (application logs)
+├── CLAUDE.md         (project instructions)
+├── docker-compose.yml (unified container config)
+├── tovplay-backend/  (Flask API)
+└── tovplay-frontend/ (React UI)
+```
+
+**Result**: ✅ Rule 8 fully compliant - only essential directories, launcher scripts in PowerShell profile, documentation in .claude/, zero bloat

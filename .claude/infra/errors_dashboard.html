@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TovPlay Error Dashboard - ERRORS ONLY</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --border: #30363d;
+            --critical: #ff0000;
+            --urgent: #ff6b00;
+            --high: #ffcc00;
+            --medium: #66ccff;
+            --low: #0066ff;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+        }
+
+        .dashboard-header {
+            background: linear-gradient(135deg, #ff0000 0%, #ff6b00 100%);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            border: 2px solid var(--border);
+        }
+
+        .dashboard-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            margin: 0;
+        }
+
+        .dashboard-subtitle {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.1rem;
+            margin-top: 0.5rem;
+        }
+
+        .card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .card-header {
+            background-color: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border);
+            font-weight: 600;
+        }
+
+        .btn-time {
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            margin: 0.25rem;
+        }
+
+        .btn-time:hover {
+            background-color: var(--bg-secondary);
+            border-color: #58a6ff;
+            color: #58a6ff;
+        }
+
+        .btn-time.active {
+            background-color: #1f6feb;
+            border-color: #1f6feb;
+            color: white;
+        }
+
+        .error-log {
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            position: relative;
+        }
+
+        .error-log:hover {
+            border-color: #58a6ff;
+            box-shadow: 0 0 8px rgba(88, 166, 255, 0.3);
+        }
+
+        .severity-badge {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            font-weight: 700;
+            font-size: 0.75rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .severity-5 { background-color: var(--critical); color: white; }
+        .severity-4 { background-color: var(--urgent); color: white; }
+        .severity-3 { background-color: var(--high); color: black; }
+        .severity-2 { background-color: var(--medium); color: black; }
+        .severity-1 { background-color: var(--low); color: white; }
+
+        .team-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+            color: white;
+        }
+
+        .timestamp {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .log-content {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            word-wrap: break-word;
+            margin-top: 0.5rem;
+            padding: 0.75rem;
+            background-color: var(--bg-primary);
+            border-radius: 4px;
+            border-left: 3px solid #58a6ff;
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .stats-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .no-errors {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            border: 3px solid var(--border);
+            border-top: 3px solid #58a6ff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert-critical {
+            background-color: rgba(255, 0, 0, 0.1);
+            border-left: 4px solid var(--critical);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+        }
+
+        .db-error-badge {
+            background-color: #8b0000;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-left: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">🔥 TovPlay Error Dashboard</h1>
+            <p class="dashboard-subtitle">
+                ERROR-ONLY MODE • Team Attribution • Severity Levels 1-5 • Real-time Database Monitoring
+            </p>
+        </div>
+
+        <!-- Time Range Filters -->
+        <div class="card mb-4">
+            <div class="card-header">
+                ⏱️ Time Range
+            </div>
+            <div class="card-body">
+                <div class="btn-group" role="group">
+                    <button class="btn btn-time" data-range="1m">1 Minute</button>
+                    <button class="btn btn-time" data-range="5m">5 Minutes</button>
+                    <button class="btn btn-time" data-range="30m">30 Minutes</button>
+                    <button class="btn btn-time active" data-range="1h">1 Hour</button>
+                    <button class="btn btn-time" data-range="24h">24 Hours</button>
+                    <button class="btn btn-time" data-range="7d">7 Days</button>
+                </div>
+                <button class="btn btn-primary ms-3" id="refreshBtn">🔄 Refresh Now</button>
+                <span class="ms-3 text-secondary" id="lastUpdate">Last updated: Never</span>
+            </div>
+        </div>
+
+        <!-- Statistics Panel -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <p class="stats-number text-danger" id="totalErrors">-</p>
+                    <p class="stats-label">Total Errors</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <p class="stats-number text-danger" id="criticalErrors">-</p>
+                    <p class="stats-label">Critical Errors</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <p class="stats-number text-warning" id="databaseErrors">-</p>
+                    <p class="stats-label">Database Errors</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <p class="stats-number text-info" id="lastHourErrors">-</p>
+                    <p class="stats-label">Last Hour</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Logs -->
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>📋 Error Logs</span>
+                <span class="badge bg-danger" id="errorCount">0 errors</span>
+            </div>
+            <div class="card-body">
+                <div id="errorLogs">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Loading error logs...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentRange = '1h';
+        let autoRefreshInterval;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadErrors();
+            loadStats();
+            startAutoRefresh();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            // Time range buttons
+            document.querySelectorAll('.btn-time').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.btn-time').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentRange = this.dataset.range;
+                    loadErrors();
+                    loadStats();
+                });
+            });
+
+            // Refresh button
+            document.getElementById('refreshBtn').addEventListener('click', function() {
+                loadErrors();
+                loadStats();
+            });
+        }
+
+        function startAutoRefresh() {
+            // Auto-refresh every 10 seconds
+            autoRefreshInterval = setInterval(() => {
+                loadErrors();
+                loadStats();
+            }, 10000);
+        }
+
+        async function loadErrors() {
+            try {
+                const response = await fetch(`/api/errors?range=${currentRange}`);
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    displayErrors(data.errors);
+                    updateLastUpdate();
+                } else {
+                    showError('Failed to load errors');
+                }
+            } catch (error) {
+                console.error('Error loading logs:', error);
+                showError('Network error: ' + error.message);
+            }
+        }
+
+        async function loadStats() {
+            try {
+                const response = await fetch(`/api/stats?range=${currentRange}`);
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    updateStats(data.stats);
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        function displayErrors(errors) {
+            const container = document.getElementById('errorLogs');
+            const countBadge = document.getElementById('errorCount');
+
+            if (errors.length === 0) {
+                container.innerHTML = '<div class="no-errors"><h4>✅ No errors found!</h4><p>All systems operational</p></div>';
+                countBadge.textContent = '0 errors';
+                return;
+            }
+
+            countBadge.textContent = `${errors.length} errors`;
+
+            const html = errors.map(error => {
+                const severity = error.severity;
+                const teamMember = error.team_member;
+                const timestamp = new Date(error.timestamp).toLocaleString();
+                const isDbError = /database|postgres|psycopg2|sqlalchemy|sql|connection.*pool|query/i.test(error.log);
+
+                return `
+                    <div class="error-log">
+                        <div class="severity-badge severity-${severity.level}">
+                            ${severity.label}
+                        </div>
+                        <div class="timestamp">
+                            🕐 ${timestamp}
+                            ${isDbError ? '<span class="db-error-badge">💾 DATABASE</span>' : ''}
+                        </div>
+                        ${teamMember ? `
+                            <div>
+                                <span class="team-badge" style="background-color: ${teamMember.color}">
+                                    👤 ${teamMember.name} • ${teamMember.role}
+                                </span>
+                            </div>
+                        ` : ''}
+                        <div class="log-content">${escapeHtml(error.log)}</div>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = html;
+        }
+
+        function updateStats(stats) {
+            document.getElementById('totalErrors').textContent = stats.total_errors || 0;
+            document.getElementById('criticalErrors').textContent = stats.critical_errors || 0;
+            document.getElementById('databaseErrors').textContent = stats.database_errors || 0;
+            document.getElementById('lastHourErrors').textContent = stats.total_errors || 0;
+        }
+
+        function updateLastUpdate() {
+            const now = new Date().toLocaleTimeString();
+            document.getElementById('lastUpdate').textContent = `Last updated: ${now}`;
+        }
+
+        function showError(message) {
+            const container = document.getElementById('errorLogs');
+            container.innerHTML = `<div class="alert alert-danger">${message}</div>`;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>

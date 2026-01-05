@@ -1,0 +1,332 @@
+================================================================================
+                    TOVPLAY DEVOPS - QUICK REFERENCE CARD
+================================================================================
+
+EMERGENCY CONTACTS
+==================
+DevOps Lead: Roman Fesunenko (Discord: TovTechOrg)
+Backend Lead: Sharon Keinar
+Frontend Lead: Lilach Herzog
+Team Discord: https://discord.gg/FSVxjGAW
+
+================================================================================
+SERVER ACCESS
+================================================================================
+
+PRODUCTION (193.181.213.220)
+SSH: ssh admin@193.181.213.220
+Password: EbTyNkfJG6LM
+Domain: https://app.tovplay.org
+
+STAGING (92.113.144.59)
+SSH: ssh admin@92.113.144.59
+Password: 3897ysdkjhHH
+Domain: https://staging.tovplay.org
+
+DATABASE (45.148.28.196:5432)
+User: raz@tovtech.org
+Password: CaptainForgotCreatureBreak
+Database: TovPlay
+PowerShell Connect:
+  wsl -d ubuntu bash -c "PGPASSWORD='CaptainForgotCreatureBreak' psql -h 45.148.28.196 -U 'raz@tovtech.org' -d TovPlay"
+
+================================================================================
+CRITICAL MONITORING URLS
+================================================================================
+
+ERROR DASHBOARD     → https://app.tovplay.org/logs/ (Port 7778)
+DATABASE VIEWER     → http://193.181.213.220:7777/database-viewer ⚠️ MONITOR DAILY
+GRAFANA             → http://193.181.213.220:3002
+PROMETHEUS          → http://193.181.213.220:9090 (Production only)
+PRODUCTION SITE     → https://app.tovplay.org
+STAGING SITE        → https://staging.tovplay.org
+
+================================================================================
+DOCKER CONTAINERS (Production) - Check these FIRST
+================================================================================
+
+View all containers:
+  ssh admin@193.181.213.220 'sudo docker ps --format "table {{.Names}}\t{{.Status}}"'
+
+Backend (Port 8000→5001):
+  Check: sudo docker logs tovplay-backend --tail 50
+  Restart: sudo docker restart tovplay-backend
+  Health: curl http://localhost:8000/health
+
+PgBouncer (Port 6432):
+  Check: sudo netstat -tuln | grep 6432
+  Restart: sudo docker restart pgbouncer
+
+Frontend (Nginx):
+  Check: sudo systemctl status nginx
+  Files: ls -la /var/www/tovplay/
+  Restart: sudo systemctl restart nginx
+
+Prometheus, Grafana, Loki, Promtail:
+  All running on production: docker ps | grep -E "prometheus|grafana|loki"
+
+================================================================================
+DATABASE QUICK CHECKS (PowerShell)
+================================================================================
+
+# Is database alive?
+wsl -d ubuntu bash -c "PGPASSWORD='CaptainForgotCreatureBreak' psql -h 45.148.28.196 -U 'raz@tovtech.org' -d TovPlay -c 'SELECT now();'"
+
+# How many tables?
+wsl -d ubuntu bash -c "PGPASSWORD='CaptainForgotCreatureBreak' psql -h 45.148.28.196 -U 'raz@tovtech.org' -d TovPlay -c 'SELECT count(*) FROM information_schema.tables WHERE table_schema='\''public'\'';'"
+
+# Database size?
+wsl -d ubuntu bash -c "PGPASSWORD='CaptainForgotCreatureBreak' psql -h 45.148.28.196 -U 'raz@tovtech.org' -d TovPlay -c 'SELECT pg_size_pretty(pg_database_size(current_database()));'"
+
+# Active connections?
+wsl -d ubuntu bash -c "PGPASSWORD='CaptainForgotCreatureBreak' psql -h 45.148.28.196 -U 'raz@tovtech.org' -d TovPlay -c 'SELECT count(*) FROM pg_stat_activity;'"
+
+# Kill idle connections (if exhausted):
+wsl -d ubuntu bash -c "PGPASSWORD='CaptainForgotCreatureBreak' psql -h 45.148.28.196 -U 'raz@tovtech.org' -d TovPlay -c 'SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE state='\''idle'\'';'"
+
+================================================================================
+DATABASE BACKUP/RECOVERY
+================================================================================
+
+# CREATE BACKUP (Do this frequently!)
+$f="F:\backup\tovplay\DB\tovplay_$(Get-Date -Format 'yyyyMMdd_HHmmss').sql"
+wsl -d ubuntu bash -c "PGPASSWORD='CaptainForgotCreatureBreak' pg_dump -h 45.148.28.196 -U 'raz@tovtech.org' -d TovPlay" > $f
+Write-Host "✅ Backup: $f"
+
+# LIST RECENT BACKUPS
+Get-ChildItem "F:\backup\tovplay\DB\" | Sort-Object LastWriteTime -Descending | Select-Object -First 5
+
+# EMERGENCY: DATABASE DROPPED?
+# Step 1: Verify database is gone
+wsl -d ubuntu bash -c "PGPASSWORD='CaptainForgotCreatureBreak' psql -h 45.148.28.196 -U 'raz@tovtech.org' -d postgres -l | grep TovPlay"
+
+# Step 2: Create empty database
+wsl -d ubuntu bash -c "PGPASSWORD='CaptainForgotCreatureBreak' psql -h 45.148.28.196 -U 'raz@tovtech.org' -d postgres -c 'CREATE DATABASE \"TovPlay\";'"
+
+# Step 3: Restore from latest backup
+$latest = Get-ChildItem "F:\backup\tovplay\DB\" | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+wsl -d ubuntu bash -c "PGPASSWORD='CaptainForgotCreatureBreak' psql -h 45.148.28.196 -U 'raz@tovtech.org' -d TovPlay < '$($latest.FullName)'"
+
+# Step 4: Verify restored
+wsl -d ubuntu bash -c "PGPASSWORD='CaptainForgotCreatureBreak' psql -h 45.148.28.196 -U 'raz@tovtech.org' -d TovPlay -c 'SELECT count(*) FROM information_schema.tables;'"
+
+# Step 5: Restart backend
+ssh admin@193.181.213.220 'sudo docker restart tovplay-backend'
+
+================================================================================
+COMMON ISSUES & FIXES
+================================================================================
+
+ISSUE: "502 Bad Gateway" or Backend Not Responding
+FIX:
+  1. ssh admin@193.181.213.220
+  2. sudo docker logs tovplay-backend --tail 50
+  3. If errors: sudo docker restart tovplay-backend
+  4. Check database: (use checks above)
+  5. Test: curl http://localhost:8000/health
+
+ISSUE: "Connection refused" or "Database does not exist"
+FIX:
+  1. Check if TovPlay database exists (see quick checks above)
+  2. If not: Emergency recovery (backup/restore above)
+  3. Restart backend: ssh admin@193.181.213.220 'sudo docker restart tovplay-backend'
+
+ISSUE: Connection Pool Exhausted (max connections errors)
+FIX:
+  1. Kill idle connections: (see quick checks above)
+  2. Restart backend: ssh admin@193.181.213.220 'sudo docker restart tovplay-backend'
+  3. Monitor: http://193.181.213.220:7777/database-viewer
+
+ISSUE: Staging Can't Pull Docker Images
+FIX:
+  1. Docker Hub IPv4 blocked on staging
+  2. SCP images from production (see: .claude/infra/docker-compose.staging-full.yml)
+  3. Or: docker pull <image> on production, docker save, scp, docker load on staging
+
+ISSUE: Frontend Shows Blank Page
+FIX:
+  1. SSH: ssh admin@193.181.213.220
+  2. Check files: ls /var/www/tovplay/dist/
+  3. Check nginx: sudo nginx -t
+  4. If needed: sudo systemctl restart nginx
+  5. Clear browser cache: Ctrl+Shift+Delete (all time)
+
+ISSUE: Errors in Error Dashboard
+FIX:
+  1. Check backend logs: ssh admin@193.181.213.220 'sudo docker logs tovplay-backend'
+  2. Check database health: (quick checks above)
+  3. Review error context: https://app.tovplay.org/logs/
+  4. Assign to team on Discord
+
+================================================================================
+DAILY MONITORING CHECKLIST
+================================================================================
+
+☐ Visit Database Viewer: http://193.181.213.220:7777/database-viewer
+☐ Check Error Dashboard: https://app.tovplay.org/logs/
+☐ SSH to prod: ssh admin@193.181.213.220
+☐ Run: docker ps (verify all containers running)
+☐ Run: df -h (check disk usage < 85%)
+☐ Run: top -b -n 1 (check CPU/memory < 80%)
+☐ Spot-check critical endpoints
+
+Critical Endpoints to Test:
+  https://app.tovplay.org/health
+  https://staging.tovplay.org/health
+  https://app.tovplay.org/logs/api/health
+  http://193.181.213.220:3002 (Grafana)
+
+================================================================================
+WEEKLY MAINTENANCE
+================================================================================
+
+☐ Create full database backup (see backup command above)
+☐ Review Grafana dashboards for anomalies
+☐ Check disk usage trends
+☐ Review logs for recurring errors
+☐ Test critical user workflows (login, create game, schedule)
+
+================================================================================
+DEPLOYMENT & CI/CD
+================================================================================
+
+Branch Strategy:
+  main → Staging
+  develop → Production
+
+View Latest Deployment:
+  gh run list --limit 1
+
+View Deployment Summary (with changes):
+  gh run view <run-id> --log | grep -A 300 "Generate Deployment Change Summary"
+
+Manual Deploy All:
+  tovpu3
+
+================================================================================
+IMPORTANT DATES & INCIDENTS
+================================================================================
+
+DATABASE INCIDENT LOG:
+  Dec 22, 2025 ~06:00 UTC: Database dropped (2nd incident)
+  Dec 22, 2025: Restored from backup (Dec 18, 2025)
+  Backup contains: 30 users, 28 tables, 9.2MB
+
+PROTECTION ACTIVE:
+  Event triggers block DROP TABLE, TRUNCATE, ALTER TABLE
+  CREATE privilege revoked from all users
+  Database viewer provides early warning
+
+================================================================================
+CONFIG FILES LOCATION
+================================================================================
+
+Local Machine (Windows):
+  CLAUDE.md → Project reference guide
+  .claude/DEVOPS_DIAGNOSTIC_REFERENCE.md → This guide (comprehensive)
+  .claude/DIAGNOSTIC_PROCEDURES.md → Step-by-step procedures
+  .claude/database_drop_protection.sql → Protection triggers
+
+Production Server:
+  /opt/tovplay-logging-dashboard/ → Error Dashboard code
+  /var/www/tovplay/ → Frontend files
+  Docker configs: /etc/docker/compose/ (or docker inspect)
+
+Backups:
+  F:\backup\tovplay\DB\ → Database backups (local machine)
+
+Infrastructure Configs:
+  .claude/infra/app_enhanced.py → Error Dashboard
+  .claude/infra/docker-compose.staging-full.yml → Staging stack
+  .claude/infra/prometheus-staging.yml → Monitoring config
+
+================================================================================
+ESCALATION PROCEDURE
+================================================================================
+
+LEVEL 1 (Self - Typical Issues):
+  ✓ Check logs, restart service, check database
+  ✓ Follow troubleshooting procedures
+  ✓ Document in .claude/learned.md
+
+LEVEL 2 (Code Issues - Backend/Frontend):
+  → Contact: Sharon Keinar (Backend) or Lilach Herzog (Frontend)
+  ← Provide: Error logs, affected users, reproduction steps
+
+LEVEL 3 (Infrastructure Issues):
+  → Contact: Roman Fesunenko (DevOps Lead)
+  ← Provide: Server status, diagnostic output, timeline
+
+LEVEL 4 (Hosting/Network Issues):
+  → Contact: Hosting provider
+  ← Provide: Server IPs, issue description, error codes
+
+================================================================================
+USEFUL COMMANDS
+================================================================================
+
+# List all Docker containers with status
+docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+
+# Watch logs in real-time
+sudo docker logs <container> -f --tail 100
+
+# SSH directly to container
+sudo docker exec -it <container> /bin/bash
+
+# Check port listening
+sudo netstat -tuln | grep <port>
+
+# Find process on port
+sudo lsof -i :<port>
+
+# Disk usage
+df -h                          # Overall
+du -sh /var/*                  # By directory
+du -sh /var/lib/docker/*       # Docker storage
+
+# System resources
+top -b -n 1 | head -20         # CPU/Memory
+free -h                        # Memory detail
+iostat -x 1 5                  # Disk I/O
+
+# Network
+ping 45.148.28.196             # Database host
+curl -v https://app.tovplay.org  # Connection test
+traceroute 45.148.28.196       # Route to database
+
+================================================================================
+NOTES FOR ROMAN
+================================================================================
+
+1. Database protection is CRITICAL - it's been dropped twice
+   → Check protection: .claude/database_drop_protection.sql
+   → Monitor daily via: http://193.181.213.220:7777/database-viewer
+
+2. Staging is missing monitoring stack (Docker Hub blocked)
+   → Workaround ready in: .claude/infra/docker-compose.staging-full.yml
+   → Copy images from production or implement workaround
+
+3. Regular backups are ESSENTIAL
+   → Backup script ready (see DATABASE BACKUP section)
+   → Schedule daily at off-peak hours
+   → Test recovery monthly on non-production
+
+4. Error Dashboard is primary diagnostic tool
+   → Always check: https://app.tovplay.org/logs/ first
+   → 60+ filters already applied to reduce noise
+   → Filters focus on HIGH severity and real errors only
+
+5. If anything goes wrong:
+   → Check: .claude/learned.md for patterns
+   → Document: In .claude/learned.md for next session
+   → Contact: Roman (Discord) for collaboration
+
+================================================================================
+
+Generated: December 22, 2025
+Last Updated: December 22, 2025
+Maintained By: Claude DevOps AI
+For Issues: Contact Roman Fesunenko on Discord (TovTechOrg)
+
+================================================================================

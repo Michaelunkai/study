@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TovPlay DevOps Dashboard - Real-time Error Monitoring</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --border: #30363d;
+            --accent: #58a6ff;
+            --critical: #ff0000;
+            --urgent: #ff6b00;
+            --high: #ffcc00;
+            --medium: #66ccff;
+            --low: #0066ff;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .main-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background-color: var(--bg-secondary);
+            border-right: 1px solid var(--border);
+            padding: 1rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 1rem;
+        }
+
+        .sidebar-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .category-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .category-item {
+            display: flex;
+            align-items: center;
+            padding: 0.6rem 0.75rem;
+            margin: 0.25rem 0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            color: var(--text-secondary);
+        }
+
+        .category-item:hover {
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .category-item.active {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .category-icon {
+            font-size: 1.1rem;
+            margin-right: 0.75rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .category-name {
+            flex: 1;
+            font-size: 0.9rem;
+        }
+
+        .category-count {
+            background-color: var(--bg-tertiary);
+            color: var(--text-secondary);
+            padding: 0.15rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .category-item.active .category-count {
+            background-color: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 1.5rem;
+        }
+
+        /* Header */
+        .dashboard-header {
+            background: linear-gradient(135deg, #1a1f2e 0%, #2d3748 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-bottom: 1.5rem;
+        }
+
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .dashboard-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+        }
+
+        .dashboard-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+
+        .status-badges {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.4rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-healthy {
+            background-color: rgba(46, 160, 67, 0.2);
+            color: #3fb950;
+        }
+
+        .status-unhealthy {
+            background-color: rgba(248, 81, 73, 0.2);
+            color: #f85149;
+        }
+
+        .pulse {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: currentColor;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        /* Controls */
+        .controls-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .control-label {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .btn-group-custom {
+            display: flex;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .btn-filter {
+            background-color: var(--bg-tertiary);
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.5rem 0.75rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .btn-filter:hover {
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .btn-filter.active {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .btn-refresh {
+            background-color: var(--accent);
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .btn-refresh:hover {
+            background-color: #4090e0;
+        }
+
+        .last-update {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            margin-left: auto;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.25rem;
+            text-align: center;
+            transition: all 0.15s ease;
+        }
+
+        .stat-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 0.25rem;
+        }
+
+        .stat-critical { color: var(--critical); }
+        .stat-urgent { color: var(--urgent); }
+        .stat-high { color: var(--high); }
+        .stat-normal { color: var(--accent); }
+
+        /* Top Categories */
+        .top-categories {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .top-categories-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+        }
+
+        .category-bar {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .category-bar:last-child {
+            border-bottom: none;
+        }
+
+        .category-bar-icon {
+            width: 24px;
+            margin-right: 0.5rem;
+        }
+
+        .category-bar-name {
+            flex: 1;
+            font-size: 0.85rem;
+        }
+
+        .category-bar-progress {
+            width: 100px;
+            height: 6px;
+            background-color: var(--bg-tertiary);
+            border-radius: 3px;
+            margin-right: 0.75rem;
+            overflow: hidden;
+        }
+
+        .category-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .category-bar-count {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            min-width: 30px;
+            text-align: right;
+        }
+
+        /* Error List */
+        .error-list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .error-list-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .error-count-badge {
+            background-color: var(--critical);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .error-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            margin-bottom: 0.75rem;
+            overflow: hidden;
+            transition: all 0.15s ease;
+        }
+
+        .error-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .error-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background-color: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .error-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .error-timestamp {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .severity-badge {
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .severity-5 { background-color: var(--critical); color: white; }
+        .severity-4 { background-color: var(--urgent); color: white; }
+        .severity-3 { background-color: var(--high); color: black; }
+        .severity-2 { background-color: var(--medium); color: black; }
+        .severity-1 { background-color: var(--low); color: white; }
+
+        .error-categories {
+            display: flex;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+        }
+
+        .category-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .error-card-body {
+            padding: 0.75rem 1rem;
+        }
+
+        .team-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .team-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .error-content {
+            font-family: 'Courier New', Consolas, monospace;
+            font-size: 0.8rem;
+            line-height: 1.5;
+            background-color: var(--bg-primary);
+            padding: 0.75rem;
+            border-radius: 6px;
+            border-left: 3px solid var(--accent);
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        /* No Errors */
+        .no-errors {
+            text-align: center;
+            padding: 4rem 2rem;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+        }
+
+        .no-errors-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .no-errors-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #3fb950;
+            margin-bottom: 0.5rem;
+        }
+
+        .no-errors-text {
+            color: var(--text-secondary);
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 220px;
+            }
+            .main-content {
+                margin-left: 220px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .main-container {
+                flex-direction: column;
+            }
+            .category-list {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            .category-item {
+                flex: 0 0 auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Sidebar with Categories -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">📊 Categories</h2>
+            </div>
+            <ul class="category-list" id="categoryList">
+                <li class="category-item active" data-category="all">
+                    <span class="category-icon">🔍</span>
+                    <span class="category-name">All Errors</span>
+                    <span class="category-count" id="count-all">0</span>
+                </li>
+                <!-- Categories will be populated by JavaScript -->
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <div class="dashboard-header">
+                <div class="header-row">
+                    <div>
+                        <h1 class="dashboard-title">🔥 TovPlay DevOps Dashboard</h1>
+                        <p class="dashboard-subtitle">Real-time Error Monitoring • 20 Categories • Team Attribution</p>
+                    </div>
+                    <div class="status-badges">
+                        <span class="status-badge" id="lokiStatus">
+                            <span class="pulse"></span>
+                            <span id="lokiStatusText">Checking...</span>
+                        </span>
+                        <span class="status-badge status-healthy">
+                            <span class="pulse"></span>
+                            v2.0
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="controls-bar">
+                <div class="control-group">
+                    <span class="control-label">Time:</span>
+                    <div class="btn-group-custom">
+                        <button class="btn-filter" data-range="1m">1m</button>
+                        <button class="btn-filter" data-range="5m">5m</button>
+                        <button class="btn-filter" data-range="30m">30m</button>
+                        <button class="btn-filter active" data-range="1h">1h</button>
+                        <button class="btn-filter" data-range="6h">6h</button>
+                        <button class="btn-filter" data-range="24h">24h</button>
+                        <button class="btn-filter" data-range="7d">7d</button>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <span class="control-label">Sort:</span>
+                    <div class="btn-group-custom">
+                        <button class="btn-filter active" data-sort="time">Time</button>
+                        <button class="btn-filter" data-sort="severity">Severity</button>
+                        <button class="btn-filter" data-sort="category">Category</button>
+                    </div>
+                </div>
+                <button class="btn-refresh" id="refreshBtn">🔄 Refresh</button>
+                <span class="last-update" id="lastUpdate">Last update: --</span>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <p class="stat-value stat-critical" id="totalErrors">0</p>
+                    <p class="stat-label">Total Errors</p>
+                </div>
+                <div class="stat-card">
+                    <p class="stat-value stat-critical" id="criticalErrors">0</p>
+                    <p class="stat-label">Critical (Lvl 5)</p>
+                </div>
+                <div class="stat-card">
+                    <p class="stat-value stat-urgent" id="urgentErrors">0</p>
+                    <p class="stat-label">Urgent (Lvl 4)</p>
+                </div>
+                <div class="stat-card">
+                    <p class="stat-value stat-normal" id="databaseErrors">0</p>
+                    <p class="stat-label">Database</p>
+                </div>
+                <div class="stat-card">
+                    <p class="stat-value stat-normal" id="apiErrors">0</p>
+                    <p class="stat-label">API</p>
+                </div>
+                <div class="stat-card">
+                    <p class="stat-value stat-normal" id="securityErrors">0</p>
+                    <p class="stat-label">Security</p>
+                </div>
+            </div>
+
+            <!-- Top Categories Chart -->
+            <div class="top-categories" id="topCategories">
+                <div class="top-categories-title">📈 Top Error Categories</div>
+                <!-- Populated by JavaScript -->
+            </div>
+
+            <!-- Error List -->
+            <div class="error-list-header">
+                <span class="error-list-title">📋 Error Logs</span>
+                <span class="error-count-badge" id="errorCountBadge">0 errors</span>
+            </div>
+            <div id="errorList">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading errors...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // State
+        let currentRange = '1h';
+        let currentCategory = 'all';
+        let currentSort = 'time';
+        let categories = [];
+        let autoRefreshInterval;
+
+        // 20 DevOps Categories
+        const CATEGORIES = [
+            { id: 'database', name: 'Database', icon: '🗄️', color: '#e74c3c' },
+            { id: 'nginx', name: 'Nginx', icon: '🌐', color: '#27ae60' },
+            { id: 'cicd', name: 'CI/CD', icon: '🔄', color: '#9b59b6' },
+            { id: 'production', name: 'Production', icon: '🚀', color: '#e91e63' },
+            { id: 'staging', name: 'Staging', icon: '🧪', color: '#ff9800' },
+            { id: 'frontend', name: 'Frontend', icon: '🎨', color: '#00bcd4' },
+            { id: 'backend', name: 'Backend', icon: '⚙️', color: '#3f51b5' },
+            { id: 'security', name: 'Security', icon: '🔐', color: '#f44336' },
+            { id: 'resources', name: 'Resources', icon: '📊', color: '#ff5722' },
+            { id: 'docker', name: 'Docker', icon: '🐳', color: '#2196f3' },
+            { id: 'network', name: 'Network', icon: '🌍', color: '#009688' },
+            { id: 'authentication', name: 'Auth', icon: '🔑', color: '#673ab7' },
+            { id: 'api', name: 'API', icon: '🔌', color: '#795548' },
+            { id: 'websocket', name: 'WebSocket', icon: '⚡', color: '#4caf50' },
+            { id: 'email', name: 'Email', icon: '📧', color: '#607d8b' },
+            { id: 'scheduler', name: 'Scheduler', icon: '⏰', color: '#8bc34a' },
+            { id: 'migration', name: 'Migration', icon: '📦', color: '#cddc39' },
+            { id: 'monitoring', name: 'Monitoring', icon: '📈', color: '#ffc107' },
+            { id: 'cloudflare', name: 'Cloudflare', icon: '☁️', color: '#ff6f00' },
+            { id: 'system', name: 'System', icon: '💻', color: '#9e9e9e' }
+        ];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            populateCategories();
+            loadErrors();
+            loadStats();
+            checkHealth();
+            startAutoRefresh();
+            setupEventListeners();
+        });
+
+        function populateCategories() {
+            const list = document.getElementById('categoryList');
+            CATEGORIES.forEach(cat => {
+                const li = document.createElement('li');
+                li.className = 'category-item';
+                li.dataset.category = cat.id;
+                li.innerHTML = `
+                    <span class="category-icon">${cat.icon}</span>
+                    <span class="category-name">${cat.name}</span>
+                    <span class="category-count" id="count-${cat.id}">0</span>
+                `;
+                list.appendChild(li);
+            });
+        }
+
+        function setupEventListeners() {
+            // Category filters
+            document.getElementById('categoryList').addEventListener('click', function(e) {
+                const item = e.target.closest('.category-item');
+                if (item) {
+                    document.querySelectorAll('.category-item').forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                    currentCategory = item.dataset.category;
+                    loadErrors();
+                }
+            });
+
+            // Time range filters
+            document.querySelectorAll('[data-range]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('[data-range]').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentRange = this.dataset.range;
+                    loadErrors();
+                    loadStats();
+                });
+            });
+
+            // Sort filters
+            document.querySelectorAll('[data-sort]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('[data-sort]').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentSort = this.dataset.sort;
+                    loadErrors();
+                });
+            });
+
+            // Refresh button
+            document.getElementById('refreshBtn').addEventListener('click', function() {
+                loadErrors();
+                loadStats();
+                checkHealth();
+            });
+        }
+
+        function startAutoRefresh() {
+            autoRefreshInterval = setInterval(() => {
+                loadErrors();
+                loadStats();
+            }, 10000);
+        }
+
+        async function checkHealth() {
+            try {
+                const response = await fetch('/api/health');
+                const data = await response.json();
+                const statusEl = document.getElementById('lokiStatus');
+                const textEl = document.getElementById('lokiStatusText');
+
+                if (data.loki === 'healthy') {
+                    statusEl.className = 'status-badge status-healthy';
+                    textEl.textContent = 'Loki Connected';
+                } else {
+                    statusEl.className = 'status-badge status-unhealthy';
+                    textEl.textContent = 'Loki ' + data.loki;
+                }
+            } catch (error) {
+                document.getElementById('lokiStatus').className = 'status-badge status-unhealthy';
+                document.getElementById('lokiStatusText').textContent = 'Offline';
+            }
+        }
+
+        async function loadErrors() {
+            try {
+                const url = `/api/errors?range=${currentRange}&category=${currentCategory}&sort=${currentSort}&order=desc`;
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    displayErrors(data.errors);
+                    updateCategoryCounts(data.errors);
+                    updateLastUpdate();
+                } else {
+                    showError('Failed to load errors: ' + (data.message || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error loading logs:', error);
+                showError('Network error: ' + error.message);
+            }
+        }
+
+        async function loadStats() {
+            try {
+                const response = await fetch(`/api/stats?range=${currentRange}`);
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    const stats = data.stats;
+                    document.getElementById('totalErrors').textContent = stats.total_errors || 0;
+                    document.getElementById('criticalErrors').textContent = stats.critical_errors || 0;
+                    document.getElementById('urgentErrors').textContent = stats.urgent_errors || 0;
+                    document.getElementById('databaseErrors').textContent = stats.category_breakdown?.database || 0;
+                    document.getElementById('apiErrors').textContent = stats.category_breakdown?.api || 0;
+                    document.getElementById('securityErrors').textContent = stats.category_breakdown?.security || 0;
+
+                    displayTopCategories(stats.top_categories || []);
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        function displayTopCategories(topCats) {
+            const container = document.getElementById('topCategories');
+            const maxCount = topCats.length > 0 ? topCats[0].count : 1;
+
+            let html = '<div class="top-categories-title">📈 Top Error Categories</div>';
+
+            if (topCats.length === 0) {
+                html += '<p style="color: var(--text-secondary); text-align: center; padding: 1rem;">No errors to display</p>';
+            } else {
+                topCats.slice(0, 6).forEach(cat => {
+                    const catInfo = CATEGORIES.find(c => c.id === cat.id) || { icon: '❓', color: '#6e7681' };
+                    const percentage = (cat.count / maxCount) * 100;
+                    html += `
+                        <div class="category-bar">
+                            <span class="category-bar-icon">${catInfo.icon}</span>
+                            <span class="category-bar-name">${cat.name}</span>
+                            <div class="category-bar-progress">
+                                <div class="category-bar-fill" style="width: ${percentage}%; background-color: ${catInfo.color}"></div>
+                            </div>
+                            <span class="category-bar-count">${cat.count}</span>
+                        </div>
+                    `;
+                });
+            }
+
+            container.innerHTML = html;
+        }
+
+        function updateCategoryCounts(errors) {
+            // Reset counts
+            document.getElementById('count-all').textContent = errors.length;
+            CATEGORIES.forEach(cat => {
+                const countEl = document.getElementById(`count-${cat.id}`);
+                if (countEl) countEl.textContent = 0;
+            });
+
+            // Count by category
+            const counts = {};
+            errors.forEach(error => {
+                error.categories.forEach(cat => {
+                    counts[cat.id] = (counts[cat.id] || 0) + 1;
+                });
+            });
+
+            // Update UI
+            Object.entries(counts).forEach(([id, count]) => {
+                const countEl = document.getElementById(`count-${id}`);
+                if (countEl) countEl.textContent = count;
+            });
+        }
+
+        function displayErrors(errors) {
+            const container = document.getElementById('errorList');
+            const countBadge = document.getElementById('errorCountBadge');
+            countBadge.textContent = `${errors.length} errors`;
+
+            if (errors.length === 0) {
+                container.innerHTML = `
+                    <div class="no-errors">
+                        <div class="no-errors-icon">✅</div>
+                        <div class="no-errors-title">All Systems Operational</div>
+                        <div class="no-errors-text">No errors found in the selected time range</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = errors.map(error => {
+                const timestamp = new Date(error.timestamp).toLocaleString();
+                const severity = error.severity;
+                const teamMember = error.team_member;
+                const categories = error.categories;
+
+                return `
+                    <div class="error-card">
+                        <div class="error-card-header">
+                            <div class="error-meta">
+                                <span class="error-timestamp">🕐 ${timestamp}</span>
+                                <span class="severity-badge severity-${severity.level}">${severity.label}</span>
+                            </div>
+                            <div class="error-categories">
+                                ${categories.map(cat => `
+                                    <span class="category-badge" style="background-color: ${cat.color}">
+                                        ${cat.icon} ${cat.name}
+                                    </span>
+                                `).join('')}
+                            </div>
+                        </div>
+                        <div class="error-card-body">
+                            ${teamMember ? `
+                                <div class="team-info">
+                                    <span class="team-badge" style="background-color: ${teamMember.color}">
+                                        👤 ${teamMember.name} • ${teamMember.role}
+                                    </span>
+                                </div>
+                            ` : ''}
+                            <div class="error-content">${escapeHtml(error.log)}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateLastUpdate() {
+            const now = new Date().toLocaleTimeString();
+            document.getElementById('lastUpdate').textContent = `Last update: ${now}`;
+        }
+
+        function showError(message) {
+            document.getElementById('errorList').innerHTML = `
+                <div class="no-errors" style="border-color: var(--critical);">
+                    <div class="no-errors-icon">⚠️</div>
+                    <div class="no-errors-title" style="color: var(--critical);">Error Loading Data</div>
+                    <div class="no-errors-text">${message}</div>
+                </div>
+            `;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>

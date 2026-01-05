@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TovPlay - Unified Logging Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --border-color: #30363d;
+            --accent-blue: #58a6ff;
+            --accent-green: #3fb950;
+            --accent-red: #f85149;
+            --accent-yellow: #d29922;
+            --accent-purple: #a371f7;
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: var(--bg-secondary) !important;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+        }
+
+        .card-header {
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+        }
+
+        .log-entry {
+            font-family: 'SF Mono', 'Consolas', monospace;
+            font-size: 12px;
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.2s;
+        }
+
+        .log-entry:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .log-timestamp {
+            color: var(--text-secondary);
+            min-width: 180px;
+        }
+
+        .log-level {
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        .log-level-error, .log-level-fail, .log-level-critical {
+            background: rgba(248, 81, 73, 0.2);
+            color: var(--accent-red);
+        }
+
+        .log-level-warn, .log-level-warning {
+            background: rgba(210, 153, 34, 0.2);
+            color: var(--accent-yellow);
+        }
+
+        .log-level-info {
+            background: rgba(88, 166, 255, 0.2);
+            color: var(--accent-blue);
+        }
+
+        .log-level-success, .log-level-ok {
+            background: rgba(63, 185, 80, 0.2);
+            color: var(--accent-green);
+        }
+
+        .log-source {
+            background: var(--bg-tertiary);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            color: var(--accent-purple);
+        }
+
+        .team-member-badge {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            border: 1px solid;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .log-message {
+            flex: 1;
+            word-break: break-word;
+        }
+
+        .stats-card {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .stats-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .stats-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .log-container {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .filter-btn {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 6px 12px;
+            border-radius: 6px;
+            margin: 2px;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+            color: white;
+        }
+
+        .time-btn {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 6px 12px;
+            border-radius: 6px;
+            margin: 2px;
+            transition: all 0.2s;
+            font-size: 12px;
+        }
+
+        .time-btn:hover, .time-btn.active {
+            background: var(--accent-green);
+            border-color: var(--accent-green);
+            color: white;
+        }
+
+        .search-input {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 10px 16px;
+            border-radius: 6px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.2);
+        }
+
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .timeline-event {
+            padding: 12px 16px;
+            border-left: 3px solid var(--border-color);
+            margin-left: 20px;
+            position: relative;
+        }
+
+        .timeline-event::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 16px;
+            width: 12px;
+            height: 12px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--accent-blue);
+            border-radius: 50%;
+        }
+
+        .timeline-event.error::before {
+            border-color: var(--accent-red);
+        }
+
+        .timeline-event.success::before {
+            border-color: var(--accent-green);
+        }
+
+        .badge-job {
+            font-size: 10px;
+            padding: 3px 8px;
+        }
+
+        .error-highlight {
+            animation: errorFlash 0.5s ease;
+        }
+
+        @keyframes errorFlash {
+            0%, 100% { background: transparent; }
+            50% { background: rgba(248, 81, 73, 0.2); }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+                <i class="bi bi-journal-code" style="color: var(--accent-blue);"></i>
+                <span>TovPlay Logs</span>
+                <span class="badge bg-success">Enhanced</span>
+            </a>
+            <div class="d-flex align-items-center gap-3">
+                <div class="live-indicator">
+                    <span class="live-dot"></span>
+                    <span class="text-muted small">Live</span>
+                </div>
+                <span class="text-muted small" id="lastUpdate">Last update: --</span>
+                <button class="btn btn-outline-light btn-sm" onclick="refreshAll()">
+                    <i class="bi bi-arrow-clockwise"></i> Refresh
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid py-4">
+        <!-- Time Range Selector -->
+        <div class="card mb-3">
+            <div class="card-body py-2">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="text-muted small"><i class="bi bi-clock-history"></i> Time Range:</span>
+                    <button class="time-btn" data-time="1m">Last 1 min</button>
+                    <button class="time-btn active" data-time="5m">Last 5 min</button>
+                    <button class="time-btn" data-time="30m">Last 30 min</button>
+                    <button class="time-btn" data-time="1h">Last 1 hour</button>
+                    <button class="time-btn" data-time="24h">Last 24 hours</button>
+                    <button class="time-btn" data-time="7d">Last 7 days</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-2">
+                <div class="card stats-card">
+                    <div class="stats-value text-danger" id="errorCount">0</div>
+                    <div class="stats-label">Errors</div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card stats-card">
+                    <div class="stats-value text-info" id="requestCount">0</div>
+                    <div class="stats-label">Requests</div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card stats-card">
+                    <div class="stats-value text-purple" id="githubCount">0</div>
+                    <div class="stats-label">GitHub Events</div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card stats-card">
+                    <div class="stats-value text-success" id="deployCount">0</div>
+                    <div class="stats-label">Deployments</div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card stats-card">
+                    <div class="stats-value text-warning" id="authCount">0</div>
+                    <div class="stats-label">Auth Events</div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card stats-card">
+                    <div class="stats-value" id="lokiStatus">
+                        <i class="bi bi-circle-fill text-success"></i>
+                    </div>
+                    <div class="stats-label">Loki Status</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search & Filters -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-secondary text-muted">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input type="text" class="form-control search-input" id="searchInput"
+                                   placeholder="Search logs... (press Enter)">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex flex-wrap justify-content-end">
+                            <button class="filter-btn active" data-filter="all">All</button>
+                            <button class="filter-btn" data-filter="errors">
+                                <i class="bi bi-exclamation-triangle"></i> Errors
+                            </button>
+                            <button class="filter-btn" data-filter="github">
+                                <i class="bi bi-github"></i> GitHub
+                            </button>
+                            <button class="filter-btn" data-filter="docker">
+                                <i class="bi bi-box"></i> Docker
+                            </button>
+                            <button class="filter-btn" data-filter="nginx">
+                                <i class="bi bi-globe"></i> Nginx
+                            </button>
+                            <button class="filter-btn" data-filter="auth">
+                                <i class="bi bi-shield-lock"></i> Auth
+                            </button>
+                            <button class="filter-btn" data-filter="database">
+                                <i class="bi bi-database"></i> Database
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Main Log Feed -->
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-list-ul me-2"></i>Live Log Stream</span>
+                        <span class="badge bg-secondary" id="logCount">0 entries</span>
+                    </div>
+                    <div class="card-body p-0 log-container" id="logContainer">
+                        <div class="text-center py-5 text-muted">
+                            <i class="bi bi-hourglass-split fs-1"></i>
+                            <p class="mt-3">Loading logs...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activity Timeline -->
+            <div class="col-lg-4">
+                <!-- Team Members Card -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="bi bi-people me-2"></i>Team Members
+                    </div>
+                    <div class="card-body" id="teamMembersCard">
+                        <div class="text-center py-2 text-muted small">Loading...</div>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="bi bi-clock-history me-2"></i>Recent Activity
+                    </div>
+                    <div class="card-body p-0" style="max-height: 400px; overflow-y: auto;" id="activityTimeline">
+                        <div class="text-center py-4 text-muted">Loading...</div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card">
+                    <div class="card-header">
+                        <i class="bi bi-lightning me-2"></i>Quick Queries
+                    </div>
+                    <div class="card-body">
+                        <button class="btn btn-outline-danger btn-sm w-100 mb-2" onclick="queryErrors()">
+                            <i class="bi bi-bug"></i> Recent Errors
+                        </button>
+                        <button class="btn btn-outline-info btn-sm w-100 mb-2" onclick="queryDeployments()">
+                            <i class="bi bi-rocket"></i> Deployments
+                        </button>
+                        <button class="btn btn-outline-warning btn-sm w-100 mb-2" onclick="queryAuth()">
+                            <i class="bi bi-person-badge"></i> Auth Events
+                        </button>
+                        <button class="btn btn-outline-success btn-sm w-100 mb-2" onclick="queryGithub()">
+                            <i class="bi bi-github"></i> GitHub Activity
+                        </button>
+                        <button class="btn btn-outline-primary btn-sm w-100" onclick="queryDatabase()">
+                            <i class="bi bi-database"></i> Database Operations
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const API_BASE = '/logs';
+        let currentFilter = 'all';
+        let currentTimeRange = '5m';
+        let allLogs = [];
+        let refreshInterval;
+        let teamMembers = {};
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            refreshAll();
+            setupEventListeners();
+            startAutoRefresh();
+            loadTeamMembers();
+        });
+
+        function setupEventListeners() {
+            // Filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentFilter = btn.dataset.filter;
+                    renderLogs();
+                });
+            });
+
+            // Time range buttons
+            document.querySelectorAll('.time-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentTimeRange = btn.dataset.time;
+                    refreshAll();
+                });
+            });
+
+            // Search input
+            document.getElementById('searchInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    searchLogs(e.target.value);
+                }
+            });
+        }
+
+        function startAutoRefresh() {
+            refreshInterval = setInterval(refreshAll, 10000); // Every 10 seconds
+        }
+
+        async function loadTeamMembers() {
+            try {
+                const res = await fetch(`${API_BASE}/api/team-members`);
+                teamMembers = await res.json();
+                renderTeamMembers();
+            } catch (e) {
+                console.error('Failed to load team members:', e);
+            }
+        }
+
+        function renderTeamMembers() {
+            const container = document.getElementById('teamMembersCard');
+            const html = Object.entries(teamMembers)
+                .filter(([_, info]) => info.role) // Only show main team members with roles
+                .map(([username, info]) => `
+                    <div class="mb-2 d-flex align-items-center gap-2">
+                        <span class="team-member-badge" style="border-color: ${info.color}; color: ${info.color};">
+                            <i class="bi bi-person-circle"></i> ${info.name}
+                        </span>
+                        <span class="small text-muted">${info.role}</span>
+                    </div>
+                `).join('');
+            container.innerHTML = html || '<div class="text-muted small">No team members</div>';
+        }
+
+        async function refreshAll() {
+            await Promise.all([
+                fetchStats(),
+                fetchLogs(),
+                checkHealth()
+            ]);
+            document.getElementById('lastUpdate').textContent =
+                `Last update: ${new Date().toLocaleTimeString()}`;
+        }
+
+        async function fetchStats() {
+            try {
+                const res = await fetch(`${API_BASE}/api/stats`);
+                const data = await res.json();
+                document.getElementById('errorCount').textContent = formatNumber(data.total_errors_24h);
+                document.getElementById('requestCount').textContent = formatNumber(data.total_requests_24h);
+                document.getElementById('githubCount').textContent = formatNumber(data.github_events_24h);
+                document.getElementById('deployCount').textContent = formatNumber(data.deployments_24h);
+                document.getElementById('authCount').textContent = formatNumber(data.auth_events_24h);
+            } catch (e) {
+                console.error('Failed to fetch stats:', e);
+            }
+        }
+
+        async function fetchLogs() {
+            try {
+                const res = await fetch(`${API_BASE}/api/logs/recent?time_range=${currentTimeRange}`);
+                const data = await res.json();
+
+                allLogs = [];
+                Object.entries(data).forEach(([source, results]) => {
+                    if (Array.isArray(results)) {
+                        results.forEach(result => {
+                            const valuesEnriched = result.values_enriched || [];
+                            const labels = result.stream || {};
+
+                            valuesEnriched.forEach(item => {
+                                allLogs.push({
+                                    timestamp: parseInt(item.timestamp) / 1000000,
+                                    message: item.message,
+                                    source,
+                                    labels,
+                                    teamMember: item.team_member
+                                });
+                            });
+                        });
+                    }
+                });
+
+                // Sort by timestamp descending
+                allLogs.sort((a, b) => b.timestamp - a.timestamp);
+                renderLogs();
+                renderTimeline();
+            } catch (e) {
+                console.error('Failed to fetch logs:', e);
+            }
+        }
+
+        function renderLogs() {
+            const container = document.getElementById('logContainer');
+            let filteredLogs = allLogs;
+
+            if (currentFilter !== 'all') {
+                filteredLogs = allLogs.filter(log => {
+                    if (currentFilter === 'errors') {
+                        return /error|fail|critical|exception/i.test(log.message);
+                    }
+                    return log.source.includes(currentFilter);
+                });
+            }
+
+            if (filteredLogs.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-5 text-muted">
+                        <i class="bi bi-inbox fs-1"></i>
+                        <p class="mt-3">No logs found for ${currentTimeRange}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const html = filteredLogs.slice(0, 200).map(log => {
+                const time = new Date(log.timestamp).toLocaleString();
+                const level = detectLevel(log.message);
+                const isError = /error|fail|critical/i.test(level);
+
+                let teamMemberBadge = '';
+                if (log.teamMember) {
+                    const color = log.teamMember.color || '#8b949e';
+                    teamMemberBadge = `<span class="team-member-badge" style="border-color: ${color}; color: ${color};">
+                        <i class="bi bi-person-circle"></i> ${log.teamMember.name}
+                    </span>`;
+                }
+
+                return `
+                    <div class="log-entry d-flex gap-3 align-items-start ${isError ? 'error-highlight' : ''}">
+                        <span class="log-timestamp">${time}</span>
+                        <span class="log-source">${log.source}</span>
+                        <span class="log-level log-level-${level.toLowerCase()}">${level}</span>
+                        ${teamMemberBadge}
+                        <span class="log-message">${escapeHtml(log.message.substring(0, 500))}</span>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = html;
+            document.getElementById('logCount').textContent = `${filteredLogs.length} entries`;
+        }
+
+        function renderTimeline() {
+            const container = document.getElementById('activityTimeline');
+
+            // Get important events
+            const importantLogs = allLogs.filter(log => {
+                return /push|pull_request|deploy|error|fail|login|logout|truncate|delete|drop/i.test(log.message) ||
+                       log.source === 'github' || log.source === 'cicd' || log.source === 'auth' || log.source === 'database';
+            }).slice(0, 20);
+
+            if (importantLogs.length === 0) {
+                container.innerHTML = '<div class="text-center py-4 text-muted">No activity yet</div>';
+                return;
+            }
+
+            const html = importantLogs.map(log => {
+                const time = new Date(log.timestamp).toLocaleTimeString();
+                const isError = /error|fail/i.test(log.message);
+                const isSuccess = /success|complete|ok/i.test(log.message);
+                const isCritical = /truncate|drop|delete/i.test(log.message);
+
+                let teamMemberInfo = '';
+                if (log.teamMember) {
+                    teamMemberInfo = `<span class="small" style="color: ${log.teamMember.color};">by ${log.teamMember.name}</span>`;
+                }
+
+                return `
+                    <div class="timeline-event ${isError || isCritical ? 'error' : ''} ${isSuccess ? 'success' : ''}">
+                        <div class="d-flex justify-content-between">
+                            <span class="small text-muted">${time}</span>
+                            <span class="badge badge-job bg-secondary">${log.source}</span>
+                        </div>
+                        <div class="mt-1 small">${escapeHtml(log.message.substring(0, 100))}</div>
+                        ${teamMemberInfo ? `<div class="mt-1">${teamMemberInfo}</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = html;
+        }
+
+        async function checkHealth() {
+            try {
+                const res = await fetch(`${API_BASE}/api/health`);
+                const data = await res.json();
+                const icon = data.loki_connected
+                    ? '<i class="bi bi-circle-fill text-success"></i>'
+                    : '<i class="bi bi-circle-fill text-danger"></i>';
+                document.getElementById('lokiStatus').innerHTML = icon;
+            } catch (e) {
+                document.getElementById('lokiStatus').innerHTML =
+                    '<i class="bi bi-circle-fill text-danger"></i>';
+            }
+        }
+
+        async function searchLogs(term) {
+            if (!term) {
+                fetchLogs();
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/api/logs/search?q=${encodeURIComponent(term)}`);
+                const data = await res.json();
+
+                allLogs = [];
+                if (data.status === 'success' && data.data && data.data.result) {
+                    data.data.result.forEach(result => {
+                        const values = result.values || [];
+                        const labels = result.stream || {};
+                        values.forEach(([timestamp, message]) => {
+                            allLogs.push({
+                                timestamp: parseInt(timestamp) / 1000000,
+                                message,
+                                source: labels.job || 'unknown',
+                                labels,
+                                teamMember: null  // Search doesn't have team member enrichment yet
+                            });
+                        });
+                    });
+                }
+                allLogs.sort((a, b) => b.timestamp - a.timestamp);
+                renderLogs();
+            } catch (e) {
+                console.error('Search failed:', e);
+            }
+        }
+
+        async function queryErrors() {
+            await searchLogs('error|fail|critical|exception');
+        }
+
+        async function queryDeployments() {
+            currentFilter = 'cicd';
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            renderLogs();
+        }
+
+        async function queryAuth() {
+            currentFilter = 'auth';
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            renderLogs();
+        }
+
+        async function queryGithub() {
+            currentFilter = 'github';
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            renderLogs();
+        }
+
+        async function queryDatabase() {
+            currentFilter = 'database';
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            renderLogs();
+        }
+
+        function detectLevel(message) {
+            const lower = message.toLowerCase();
+            if (/critical|fatal|truncate|drop/i.test(lower)) return 'CRITICAL';
+            if (/error|exception|fail/.test(lower)) return 'ERROR';
+            if (/warn/.test(lower)) return 'WARN';
+            if (/success|ok|complete/.test(lower)) return 'OK';
+            return 'INFO';
+        }
+
+        function formatNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num.toString();
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>

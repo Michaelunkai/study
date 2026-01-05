@@ -170,9 +170,9 @@ main() {
         # Check compose stacks (this will start any stopped services)
         check_compose_stacks
 
-        # Check individual containers
+        # Check individual containers (|| true to prevent set -e exit on missing containers)
         for container in $(get_expected_containers); do
-            check_container "$container"
+            check_container "$container" || true
         done
 
         # Cleanup old logs periodically

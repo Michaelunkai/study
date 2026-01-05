@@ -1,0 +1,15 @@
+# Reduce Docker build context
+.git
+.gitignore
+*.log
+*.tmp
+*.bak
+node_modules
+__pycache__
+*.pyc
+.env
+.venv
+venv
+*.exe
+*.dll
+*.pdb

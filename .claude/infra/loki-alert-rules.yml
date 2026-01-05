@@ -1,0 +1,155 @@
+groups:
+  - name: database_critical_operations
+    interval: 30s
+    rules:
+      # Alert on DELETE operations
+      - alert: DatabaseDeleteOperation
+        expr: |
+          count_over_time({job="database"} |~ "(?i)DELETE FROM" [5m]) > 0
+        labels:
+          severity: warning
+          category: database
+        annotations:
+          summary: "DELETE operation detected in database"
+          description: "A DELETE operation was executed. Check logs for user and details."
+
+      # Alert on TRUNCATE operations (CRITICAL!)
+      - alert: DatabaseTruncateOperation
+        expr: |
+          count_over_time({job="database"} |~ "(?i)TRUNCATE" [5m]) > 0
+        labels:
+          severity: critical
+          category: database
+        annotations:
+          summary: "TRUNCATE operation detected in database!"
+          description: "⚠️ CRITICAL: TRUNCATE command executed. This deletes all data from a table!"
+
+      # Alert on DROP operations (CRITICAL!)
+      - alert: DatabaseDropOperation
+        expr: |
+          count_over_time({job="database"} |~ "(?i)DROP TABLE|DROP DATABASE" [5m]) > 0
+        labels:
+          severity: critical
+          category: database
+        annotations:
+          summary: "DROP operation detected in database!"
+          description: "🚨 CRITICAL: DROP command executed. This permanently removes database objects!"
+
+      # Alert on ALTER operations
+      - alert: DatabaseAlterOperation
+        expr: |
+          count_over_time({job="database"} |~ "(?i)ALTER TABLE" [5m]) > 0
+        labels:
+          severity: warning
+          category: database
+        annotations:
+          summary: "ALTER TABLE operation detected"
+          description: "Database schema is being modified. Verify this is intentional."
+
+      # Alert on mass DELETE (>100 rows)
+      - alert: MassDeleteDetected
+        expr: |
+          count_over_time({job="database"} |~ "(?i)DELETE FROM.*WHERE" [5m]) > 100
+        labels:
+          severity: critical
+          category: database
+        annotations:
+          summary: "Mass DELETE operation detected!"
+          description: "More than 100 DELETE operations in 5 minutes. Possible data wipe attack!"
+
+      # Alert on failed database connections
+      - alert: DatabaseConnectionFailures
+        expr: |
+          count_over_time({job="database"} |~ "(?i)connection.*failed|authentication.*failed" [5m]) > 10
+        labels:
+          severity: warning
+          category: security
+        annotations:
+          summary: "Multiple database connection failures"
+          description: "More than 10 connection failures in 5 minutes. Possible brute force attack."
+
+      # Alert on slow queries (>5 seconds)
+      - alert: SlowDatabaseQueries
+        expr: |
+          count_over_time({job="database"} |~ "(?i)duration:.*[5-9][0-9]{3,}ms" [10m]) > 5
+        labels:
+          severity: warning
+          category: performance
+        annotations:
+          summary: "Slow database queries detected"
+          description: "Multiple queries taking >5 seconds detected in last 10 minutes."
+
+  - name: application_errors
+    interval: 30s
+    rules:
+      # Alert on backend errors
+      - alert: BackendErrors
+        expr: |
+          count_over_time({job="backend"} |~ "(?i)error|exception|traceback" [5m]) > 10
+        labels:
+          severity: warning
+          category: application
+        annotations:
+          summary: "High error rate in backend application"
+          description: "More than 10 errors in 5 minutes. Check application logs."
+
+      # Alert on 500 errors from Nginx
+      - alert: HTTP500Errors
+        expr: |
+          count_over_time({job="nginx",status="500"} [5m]) > 10
+        labels:
+          severity: critical
+          category: application
+        annotations:
+          summary: "High rate of HTTP 500 errors"
+          description: "More than 10 HTTP 500 errors in 5 minutes."
+
+  - name: security_alerts
+    interval: 30s
+    rules:
+      # Alert on SSH brute force attempts
+      - alert: SSHBruteForce
+        expr: |
+          count_over_time({job="auth"} |~ "(?i)Failed password" [5m]) > 5
+        labels:
+          severity: warning
+          category: security
+        annotations:
+          summary: "Possible SSH brute force attack"
+          description: "More than 5 failed SSH login attempts in 5 minutes."
+
+      # Alert on unauthorized access attempts
+      - alert: UnauthorizedAccess
+        expr: |
+          count_over_time({job="nginx"} |~ "401|403" [5m]) > 20
+        labels:
+          severity: warning
+          category: security
+        annotations:
+          summary: "High rate of unauthorized access attempts"
+          description: "More than 20 401/403 errors in 5 minutes."
+
+  - name: infrastructure_health
+    interval: 1m
+    rules:
+      # Alert if Loki stops receiving logs
+      - alert: NoLogsReceived
+        expr: |
+          absent_over_time({job=~".+"} [10m])
+        labels:
+          severity: critical
+          category: infrastructure
+        annotations:
+          summary: "No logs received by Loki"
+          description: "Loki hasn't received any logs in 10 minutes. Logging pipeline may be down."
+
+      # Alert on Docker container restarts
+      - alert: ContainerRestarting
+        expr: |
+          count_over_time({job="docker"} |~ "(?i)restart|restarting" [10m]) > 3
+        labels:
+          severity: warning
+          category: infrastructure
+        annotations:
+          summary: "Container restarting frequently"
+          description: "A container has restarted more than 3 times in 10 minutes."

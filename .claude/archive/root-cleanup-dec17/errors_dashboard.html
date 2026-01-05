@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TovPlay - Error Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --border-color: #30363d;
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: var(--bg-secondary) !important;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+        }
+
+        .card-header {
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+        }
+
+        .error-entry {
+            font-family: 'SF Mono', 'Consolas', monospace;
+            font-size: 12px;
+            padding: 12px;
+            border-left: 4px solid;
+            margin-bottom: 8px;
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .error-entry:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .error-entry.severity-5 {
+            border-left-color: #dc3545;
+            background: rgba(220, 53, 69, 0.1);
+        }
+
+        .error-entry.severity-4 {
+            border-left-color: #fd7e14;
+            background: rgba(253, 126, 20, 0.1);
+        }
+
+        .error-entry.severity-3 {
+            border-left-color: #ffc107;
+            background: rgba(255, 193, 7, 0.1);
+        }
+
+        .error-entry.severity-2 {
+            border-left-color: #17a2b8;
+            background: rgba(23, 162, 184, 0.1);
+        }
+
+        .error-entry.severity-1 {
+            border-left-color: #58a6ff;
+            background: rgba(88, 166, 255, 0.1);
+        }
+
+        .severity-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .severity-5 .severity-badge { background: #dc3545; color: white; }
+        .severity-4 .severity-badge { background: #fd7e14; color: white; }
+        .severity-3 .severity-badge { background: #ffc107; color: black; }
+        .severity-2 .severity-badge { background: #17a2b8; color: white; }
+        .severity-1 .severity-badge { background: #58a6ff; color: white; }
+
+        .team-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .error-timestamp {
+            color: var(--text-secondary);
+            font-size: 11px;
+            margin-right: 12px;
+        }
+
+        .error-message {
+            margin-top: 8px;
+            line-height: 1.6;
+            word-break: break-word;
+        }
+
+        .time-btn {
+            margin-right: 8px;
+            margin-bottom: 8px;
+            border-radius: 20px;
+            padding: 6px 16px;
+            font-size: 12px;
+            font-weight: 500;
+            border: 1px solid var(--border-color);
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        .time-btn:hover {
+            background: var(--bg-primary);
+            border-color: #58a6ff;
+            color: #58a6ff;
+        }
+
+        .time-btn.active {
+            background: #58a6ff;
+            border-color: #58a6ff;
+            color: white;
+        }
+
+        .stats-card {
+            background: var(--bg-tertiary);
+            padding: 16px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+        }
+
+        .stats-number {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .stats-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-connected {
+            background: rgba(63, 185, 80, 0.2);
+            color: #3fb950;
+        }
+
+        .status-disconnected {
+            background: rgba(248, 81, 73, 0.2);
+            color: #f85149;
+        }
+
+        #loadingSpinner {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .filter-section {
+            margin-bottom: 20px;
+        }
+
+        .no-errors {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+
+        .no-errors i {
+            font-size: 64px;
+            margin-bottom: 16px;
+            color: #3fb950;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">
+                <i class="bi bi-bug-fill"></i> TovPlay Error Dashboard
+            </span>
+            <div>
+                <span id="statusBadge" class="status-badge status-disconnected">Connecting...</span>
+                <span class="text-muted ms-3" style="font-size: 12px;" id="lastUpdate">Loading...</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <!-- Sidebar Stats -->
+            <div class="col-md-3">
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <i class="bi bi-graph-up"></i> Error Statistics
+                    </div>
+                    <div class="card-body">
+                        <div class="stats-card" style="border-left: 4px solid #dc3545;">
+                            <div class="stats-number" id="criticalCount">0</div>
+                            <div class="stats-label">Critical (5)</div>
+                        </div>
+                        <div class="stats-card" style="border-left: 4px solid #fd7e14;">
+                            <div class="stats-number" id="urgentCount">0</div>
+                            <div class="stats-label">Urgent (4)</div>
+                        </div>
+                        <div class="stats-card" style="border-left: 4px solid #ffc107;">
+                            <div class="stats-number" id="highCount">0</div>
+                            <div class="stats-label">High (3)</div>
+                        </div>
+                        <div class="stats-card" style="border-left: 4px solid #17a2b8;">
+                            <div class="stats-number" id="mediumCount">0</div>
+                            <div class="stats-label">Medium (2)</div>
+                        </div>
+                        <div class="stats-card" style="border-left: 4px solid #58a6ff;">
+                            <div class="stats-number" id="lowCount">0</div>
+                            <div class="stats-label">Low (1)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <i class="bi bi-people-fill"></i> Team Members
+                    </div>
+                    <div class="card-body" id="teamMembersCard">
+                        <p class="text-muted small">Loading team data...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Error List -->
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="bi bi-exclamation-triangle-fill"></i> Error Logs
+                        <span class="badge bg-danger ms-2" id="errorCount">0</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="filter-section">
+                            <div class="btn-group" role="group">
+                                <button class="time-btn active" data-range="1m">Last 1 min</button>
+                                <button class="time-btn" data-range="5m">Last 5 min</button>
+                                <button class="time-btn" data-range="30m">Last 30 min</button>
+                                <button class="time-btn" data-range="1h">Last 1 hour</button>
+                                <button class="time-btn" data-range="24h">Last 24 hours</button>
+                                <button class="time-btn" data-range="7d">Last 7 days</button>
+                            </div>
+                        </div>
+
+                        <div id="loadingSpinner">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-3">Loading error logs...</p>
+                        </div>
+
+                        <div id="errorsList" style="display: none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTimeRange = '1m';
+        let refreshInterval;
+
+        // Time button handlers
+        document.querySelectorAll('.time-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentTimeRange = btn.dataset.range;
+                loadErrors();
+            });
+        });
+
+        async function loadErrors() {
+            try {
+                const response = await fetch(`/api/errors?time_range=${currentTimeRange}`);
+                const data = await response.json();
+
+                displayErrors(data.errors || []);
+                updateStats(data.errors || []);
+                updateStatus(true);
+
+            } catch (error) {
+                console.error('Failed to load errors:', error);
+                updateStatus(false);
+            }
+        }
+
+        function displayErrors(errors) {
+            const container = document.getElementById('errorsList');
+            const spinner = document.getElementById('loadingSpinner');
+            const errorCount = document.getElementById('errorCount');
+
+            spinner.style.display = 'none';
+            container.style.display = 'block';
+
+            errorCount.textContent = errors.length;
+
+            if (errors.length === 0) {
+                container.innerHTML = `
+                    <div class="no-errors">
+                        <i class="bi bi-check-circle-fill"></i>
+                        <h4>No Errors Found</h4>
+                        <p>All systems operating normally in the selected time range.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = errors.map(error => {
+                const timestamp = new Date(parseInt(error.timestamp) / 1000000).toLocaleString();
+                const severityClass = `severity-${error.severity.level}`;
+
+                let teamBadge = '';
+                if (error.team_member) {
+                    teamBadge = `<span class="team-badge" style="background: ${error.team_member.color}; color: white;">
+                        ${error.team_member.name} (${error.team_member.role})
+                    </span>`;
+                }
+
+                return `
+                    <div class="error-entry ${severityClass}">
+                        <div>
+                            <span class="severity-badge">${error.severity.label}</span>
+                            ${teamBadge}
+                            <span class="error-timestamp">${timestamp}</span>
+                        </div>
+                        <div class="error-message">${escapeHtml(error.message)}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateStats(errors) {
+            const stats = {5: 0, 4: 0, 3: 0, 2: 0, 1: 0};
+
+            errors.forEach(error => {
+                stats[error.severity.level]++;
+            });
+
+            document.getElementById('criticalCount').textContent = stats[5];
+            document.getElementById('urgentCount').textContent = stats[4];
+            document.getElementById('highCount').textContent = stats[3];
+            document.getElementById('mediumCount').textContent = stats[2];
+            document.getElementById('lowCount').textContent = stats[1];
+        }
+
+        async function loadTeamMembers() {
+            try {
+                const response = await fetch('/api/team-members');
+                const members = await response.json();
+                const container = document.getElementById('teamMembersCard');
+
+                const uniqueMembers = Object.values(members).reduce((acc, member) => {
+                    if (!acc.find(m => m.name === member.name)) {
+                        acc.push(member);
+                    }
+                    return acc;
+                }, []);
+
+                container.innerHTML = uniqueMembers.map(member => `
+                    <div style="margin-bottom: 8px;">
+                        <span class="team-badge" style="background: ${member.color}; color: white;">
+                            ${member.name}
+                        </span>
+                        <small class="text-muted">${member.role}</small>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error('Failed to load team members:', error);
+            }
+        }
+
+        function updateStatus(connected) {
+            const badge = document.getElementById('statusBadge');
+            if (connected) {
+                badge.className = 'status-badge status-connected';
+                badge.textContent = 'Connected';
+            } else {
+                badge.className = 'status-badge status-disconnected';
+                badge.textContent = 'Disconnected';
+            }
+
+            document.getElementById('lastUpdate').textContent =
+                `Last update: ${new Date().toLocaleTimeString()}`;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Initial load
+        loadErrors();
+        loadTeamMembers();
+
+        // Auto-refresh every 10 seconds
+        refreshInterval = setInterval(loadErrors, 10000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,203 @@
+# TovPlay Staging - Full Production-Mirrored Stack
+# Last Updated: December 18, 2025
+# Mirrors production stack with PgBouncer + full monitoring
+
+services:
+  # ============================================
+  # BACKEND APPLICATION
+  # ============================================
+  backend-staging:
+    image: tovtech/tovplaybackend:staging
+    container_name: tovplay-backend-staging
+    restart: unless-stopped
+    env_file:
+      - .env.staging
+    environment:
+      FLASK_ENV: staging
+      PYTHONPATH: /app/src
+      LOG_LEVEL: DEBUG
+      IS_STAGING: "true"
+      # Override DATABASE_URL to use PgBouncer
+      DATABASE_URL: postgresql://raz%40tovtech.org:CaptainForgotCreatureBreak@pgbouncer-staging:6432/database
+    ports:
+      - "8001:5001"
+    # Uses docker-entrypoint.sh which starts gunicorn on port 5001
+    mem_limit: 512m
+    memswap_limit: 512m
+    networks:
+      - tovplay-staging-network
+    depends_on:
+      - pgbouncer-staging
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # ============================================
+  # PGBOUNCER - Connection Pooling
+  # ============================================
+  pgbouncer-staging:
+    image: edoburu/pgbouncer:latest
+    container_name: tovplay-pgbouncer-staging
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgres://raz@tovtech.org:CaptainForgotCreatureBreak@45.148.28.196:5432/database
+      POOL_MODE: transaction
+      MAX_CLIENT_CONN: 500
+      DEFAULT_POOL_SIZE: 15
+      MIN_POOL_SIZE: 3
+      RESERVE_POOL_SIZE: 3
+      MAX_DB_CONNECTIONS: 30
+      SERVER_IDLE_TIMEOUT: 600
+      SERVER_LIFETIME: 3600
+    ports:
+      - "6432:6432"
+    networks:
+      - tovplay-staging-network
+    healthcheck:
+      test: ["CMD", "pg_isready", "-h", "localhost", "-p", "6432"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # ============================================
+  # FRONTEND DEPLOYMENT (one-time copy)
+  # ============================================
+  frontend-staging:
+    image: tovtech/tovplayfrontend:staging
+    container_name: tovplay-frontend-staging
+    restart: "no"
+    volumes:
+      - /var/www/tovplay-staging:/target
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        cp -r /usr/share/nginx/html/* /target/
+        chown -R 33:33 /target/
+        chmod -R 755 /target/
+        echo "Frontend files deployed"
+    networks:
+      - tovplay-staging-network
+
+  # ============================================
+  # MONITORING STACK
+  # ============================================
+  prometheus-staging:
+    image: prom/prometheus:latest
+    container_name: tovplay-prometheus-staging
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prometheus-staging-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=72h'
+      - '--web.enable-lifecycle'
+    networks:
+      - tovplay-staging-network
+
+  grafana-staging:
+    image: grafana/grafana:latest
+    container_name: tovplay-grafana-staging
+    restart: unless-stopped
+    ports:
+      - "3002:3000"
+    volumes:
+      - grafana-staging-data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=tovplay-staging-2024!
+      - GF_SERVER_ROOT_URL=https://staging.tovplay.org/grafana/
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true
+    networks:
+      - tovplay-staging-network
+
+  node-exporter-staging:
+    image: prom/node-exporter:latest
+    container_name: tovplay-node-exporter-staging
+    restart: unless-stopped
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    networks:
+      - tovplay-staging-network
+
+  cadvisor-staging:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: tovplay-cadvisor-staging
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    privileged: true
+    networks:
+      - tovplay-staging-network
+
+  postgres-exporter-staging:
+    image: quay.io/prometheuscommunity/postgres-exporter:latest
+    container_name: tovplay-postgres-exporter-staging
+    restart: unless-stopped
+    ports:
+      - "9187:9187"
+    environment:
+      - DATA_SOURCE_NAME=postgresql://raz%40tovtech.org:CaptainForgotCreatureBreak@45.148.28.196:5432/database?sslmode=disable
+    networks:
+      - tovplay-staging-network
+
+  # ============================================
+  # LOGGING STACK
+  # ============================================
+  loki-staging:
+    image: grafana/loki:2.9.3
+    container_name: tovplay-loki-staging
+    restart: unless-stopped
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./loki-config.yml:/etc/loki/loki-config.yml
+      - loki-staging-data:/loki
+    command: -config.file=/etc/loki/loki-config.yml
+    networks:
+      - tovplay-staging-network
+
+  promtail-staging:
+    image: grafana/promtail:2.9.3
+    container_name: tovplay-promtail-staging
+    restart: unless-stopped
+    volumes:
+      - ./promtail-config.yml:/etc/promtail/promtail-config.yml:ro
+      - /var/log:/var/log:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    command: -config.file=/etc/promtail/promtail-config.yml
+    networks:
+      - tovplay-staging-network
+    depends_on:
+      - loki-staging
+
+networks:
+  tovplay-staging-network:
+    driver: bridge
+    name: tovplay-staging-network
+
+volumes:
+  prometheus-staging-data:
+  grafana-staging-data:
+  loki-staging-data:

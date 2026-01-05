@@ -1,0 +1,296 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://tovplay-loki:3100/loki/api/v1/push
+
+scrape_configs:
+  # ===========================================
+  # DOCKER CONTAINER LOGS (ALL CONTAINERS)
+  # ===========================================
+  - job_name: docker
+    docker_sd_configs:
+      - host: unix:///var/run/docker.sock
+        refresh_interval: 5s
+    relabel_configs:
+      - source_labels: ['__meta_docker_container_name']
+        regex: '/(.*)'
+        target_label: 'container'
+      - source_labels: ['__meta_docker_container_id']
+        target_label: 'container_id'
+      - source_labels: ['__meta_docker_container_image']
+        target_label: 'image'
+    pipeline_stages:
+      - json:
+          expressions:
+            level: level
+            message: message
+            timestamp: timestamp
+      - labels:
+          level:
+
+  # ===========================================
+  # SYSTEM LOGS
+  # ===========================================
+  - job_name: syslog
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: syslog
+          type: system
+          __path__: /var/log/syslog
+    pipeline_stages:
+      - regex:
+          expression: '^(?P<timestamp>\w+\s+\d+\s+\d+:\d+:\d+)\s+(?P<host>\S+)\s+(?P<service>\S+?)(\[(?P<pid>\d+)\])?:\s+(?P<message>.*)$'
+      - labels:
+          host:
+          service:
+      - output:
+          source: message
+
+  # ===========================================
+  # AUTH/SECURITY LOGS (WHO LOGGED IN)
+  # ===========================================
+  - job_name: auth
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: auth
+          type: security
+          __path__: /var/log/auth.log
+    pipeline_stages:
+      - regex:
+          expression: '^(?P<timestamp>\w+\s+\d+\s+\d+:\d+:\d+)\s+(?P<host>\S+)\s+(?P<service>\S+?)(\[(?P<pid>\d+)\])?:\s+(?P<message>.*)$'
+      - labels:
+          host:
+          service:
+
+  # ===========================================
+  # NGINX ACCESS LOGS (ALL HTTP REQUESTS)
+  # ===========================================
+  - job_name: nginx-access
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: nginx
+          type: access
+          __path__: /var/log/nginx/access.log
+    pipeline_stages:
+      - regex:
+          expression: '^(?P<remote_addr>[\d\.]+)\s+-\s+(?P<remote_user>\S+)\s+\[(?P<time_local>[^\]]+)\]\s+"(?P<method>\w+)\s+(?P<request_uri>[^\s]+)\s+(?P<protocol>[^"]+)"\s+(?P<status>\d+)\s+(?P<body_bytes_sent>\d+)'
+      - labels:
+          method:
+          status:
+
+  # ===========================================
+  # NGINX ERROR LOGS
+  # ===========================================
+  - job_name: nginx-error
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: nginx
+          type: error
+          __path__: /var/log/nginx/error.log
+    pipeline_stages:
+      - regex:
+          expression: '^\d{4}/\d{2}/\d{2}\s+\d{2}:\d{2}:\d{2}\s+\[(?P<level>\w+)\]'
+      - labels:
+          level:
+
+  # ===========================================
+  # BACKEND APPLICATION LOGS
+  # ===========================================
+  - job_name: backend-app
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: backend
+          type: application
+          __path__: /root/tovplay-backend/logs/*.log
+    pipeline_stages:
+      - multiline:
+          firstline: '^\d{4}-\d{2}-\d{2}'
+      - regex:
+          expression: '^(?P<timestamp>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\s+(?P<level>\w+)\s+(?P<message>.*)$'
+      - labels:
+          level:
+
+  # ===========================================
+  # DATABASE BACKUP LOGS
+  # ===========================================
+  - job_name: db-backups
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: database
+          type: backup
+          __path__: /opt/tovplay_backups/*.log
+
+  # ===========================================
+  # DPKG/APT PACKAGE CHANGES
+  # ===========================================
+  - job_name: dpkg
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: dpkg
+          type: package
+          __path__: /var/log/dpkg.log
+    pipeline_stages:
+      - regex:
+          expression: '^(?P<timestamp>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\s+(?P<action>\w+)\s+(?P<package>\S+)'
+      - labels:
+          action:
+          package:
+
+  # ===========================================
+  # KERNEL/DMESG LOGS
+  # ===========================================
+  - job_name: kernel
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: kernel
+          type: system
+          __path__: /var/log/kern.log
+
+  # ===========================================
+  # FAIL2BAN SECURITY LOGS
+  # ===========================================
+  - job_name: fail2ban
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: fail2ban
+          type: security
+          __path__: /var/log/fail2ban.log
+
+  # ===========================================
+  # UFW FIREWALL LOGS
+  # ===========================================
+  - job_name: ufw
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: ufw
+          type: firewall
+          __path__: /var/log/ufw.log
+
+  # ===========================================
+  # GIT AUDIT LOGS (WHO PUSHED WHAT)
+  # ===========================================
+  - job_name: git-audit
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: git
+          type: audit
+          __path__: /var/log/tovplay/git-audit.log
+
+  # ===========================================
+  # GITHUB WEBHOOK EVENTS
+  # ===========================================
+  - job_name: github-webhooks
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: github
+          type: webhook
+          __path__: /var/log/tovplay/github-webhooks.log
+
+  # ===========================================
+  # DATABASE QUERY/ERROR LOGS
+  # ===========================================
+  - job_name: db-queries
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: database
+          type: queries
+          __path__: /var/log/tovplay/db-queries.log
+
+  # ===========================================
+  # CI/CD DEPLOYMENT LOGS
+  # ===========================================
+  - job_name: deployments
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: cicd
+          type: deployment
+          __path__: /var/log/tovplay/deployments.log
+
+  # ===========================================
+  # API REQUEST/RESPONSE LOGS
+  # ===========================================
+  - job_name: api-audit
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: api
+          type: audit
+          __path__: /var/log/tovplay/api-audit.log
+
+  # ===========================================
+  # USER ACTIVITY LOGS
+  # ===========================================
+  - job_name: user-activity
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: user
+          type: activity
+          __path__: /var/log/tovplay/user-activity.log
+
+  # ===========================================
+  # ERROR AGGREGATION (ALL ERRORS)
+  # ===========================================
+  - job_name: all-errors
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: errors
+          type: aggregated
+          __path__: /var/log/tovplay/all-errors.log
+
+  # ===========================================
+  # POSTGRESQL DATABASE LOGS (CRITICAL\!)
+  # ===========================================
+  - job_name: database
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: database
+          type: postgresql
+          __path__: /var/log/postgresql/postgresql-*.log
+    pipeline_stages:
+      - regex:
+          expression: "^(?P<timestamp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d+).*user=(?P<user>[^,]+),db=(?P<database>[^,]+).*(?P<message>.*)$"
+      - labels:
+          user:
+          database:
+      - match:
+          selector: \{job=database}'

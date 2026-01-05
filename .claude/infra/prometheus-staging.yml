@@ -1,0 +1,38 @@
+# Prometheus Configuration for TovPlay Staging
+# Last Updated: December 18, 2025
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+alerting:
+  alertmanagers: []
+
+rule_files: []
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['tovplay-node-exporter-staging:9100']
+
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['tovplay-cadvisor-staging:8080']
+
+  - job_name: 'postgres-exporter'
+    static_configs:
+      - targets: ['tovplay-postgres-exporter-staging:9187']
+
+  - job_name: 'backend-staging'
+    static_configs:
+      - targets: ['tovplay-backend-staging:5000']
+    metrics_path: /metrics
+    scrape_timeout: 10s
+
+  - job_name: 'pgbouncer-staging'
+    static_configs:
+      - targets: ['tovplay-pgbouncer-staging:6432']
