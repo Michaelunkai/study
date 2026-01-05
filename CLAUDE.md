@@ -1,4 +1,4 @@
-# Claude Rules
+﻿# Claude Rules
 ## Rule 1
 
 always use powershell not bash unless told specifaclly otherwhise!!!
@@ -13,7 +13,7 @@ Session Start: Run `. C:\Users\micha\.claude\mcp-ondemand.ps1; mcps` to view all
 
 ## Rule 4
 
-always read all from .claude to know all needed and purge everything not neded from there to reduce used context0  When adding/connecting new MCP servers: 1) Search npm/web for the MCP package name, 2) Install globally with `npm install -g <package-name>`, 3) Find the installed path with `npm list -g <package-name>` then locate the main .js file in node_modules, 4) Create a .cmd wrapper file in `C:\Users\micha\.claude\` with format: `@echo off` [newline] `"C:\Program Files\nodejs\node.exe" "<full-path-to-index.js>" %*`, 5) Add to Claude with `claude mcp add <name> C:\Users\micha\.claude\<name>.cmd -s user`, 6) Verify connection with `claude mcp list` – if it shows “Failed to connect” immediately remove it with `claude mcp remove <name> -s user`, 7) Only after confirming “Connected” status add the server definition to `C:\Users\micha\.claude\mcp-ondemand.ps1` in the `$script:MCPServers` hashtable with format: `"<name>" = @{ wrapper = "<name>.cmd"; description = "<desc>" }`, 8) Add the server name to the appropriate category in `$script:MCPCategories` hashtable, 9) Never keep failed MCPs in config – always test first then add to settings only if wo- when working wth powershell always make sure to use powershell v5 and that eerythig you make fit v5 version! example: use `;` not `&&`
+always read all from .claude to know all needed and purge everything not neded from there to reduce used context0  When adding/connecting new MCP servers: 1) Search npm/web for the MCP package name, 2) Install globally with `npm install -g <package-name>`, 3) Find the installed path with `npm list -g <package-name>` then locate the main .js file in node_modules, 4) Create a .cmd wrapper file in `C:\Users\micha\.claude\` with format: `@echo off` [newline] `"C:\Program Files\nodejs\node.exe" "<full-path-to-index.js>" %*`, 5) Add to Claude with `claude mcp add <name> C:\Users\micha\.claude\<name>.cmd -s user`, 6) Verify connection with `claude mcp list` â€“ if it shows â€œFailed to connectâ€ immediately remove it with `claude mcp remove <name> -s user`, 7) Only after confirming â€œConnectedâ€ status add the server definition to `C:\Users\micha\.claude\mcp-ondemand.ps1` in the `$script:MCPServers` hashtable with format: `"<name>" = @{ wrapper = "<name>.cmd"; description = "<desc>" }`, 8) Add the server name to the appropriate category in `$script:MCPCategories` hashtable, 9) Never keep failed MCPs in config â€“ always test first then add to settings only if wo- when working wth powershell always make sure to use powershell v5 and that eerythig you make fit v5 version! example: use `;` not `&&`
 
 ## Rule 5
 
