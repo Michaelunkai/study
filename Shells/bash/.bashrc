@@ -4238,9 +4238,6 @@ alias dockerstart="sudo systemctl start docker && echo Docker started"
 alias dockerstop="sudo systemctl stop docker docker.socket containerd && echo Docker stopped"
 
 
-alias gaws="sudo apt update && sudo apt install unzip -y && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && unzip -o awscliv2.zip && sudo ./aws/install --update && aws configure set aws_access_key_id AKIA2PY26SP5TGMIZLJU && aws configure set aws_secret_access_key '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' && aws configure set region us-east-1 && aws sts get-caller-identity"
-alias gaws='sudo apt update && sudo apt install unzip -y && curl https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscliv2.zip && rm -rf aws && unzip awscliv2.zip && sudo ./aws/install --update && aws configure set aws_access_key_id AKIA2PY26SP5TGMIZLJU && aws configure set aws_secret_access_key '\''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'\'' && aws configure set region us-east-1 && aws sts get-caller-identity'
-alias gaws='sudo apt update && sudo apt install unzip -y && curl https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscliv2.zip && rm -rf aws && unzip awscliv2.zip && sudo ./aws/install --update && aws configure set aws_access_key_id AKIA2PY26SP5TGMIZLJU && aws configure set aws_secret_access_key '\''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'\'' && aws configure set region us-east-1 && aws sts get-caller-identity'
 alias macos="/mnt/f/study/Systems_Virtualization/virtualmachines/macos/wsl/a.sh"
 
 alias sbackup='cd /mnt/f/study/devops/backup'
