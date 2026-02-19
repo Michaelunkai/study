@@ -1,721 +1,235 @@
 #!/bin/bash
+# Docker installer for WSL2 Ubuntu Ã¢â‚¬â€ idempotent, skip-if-done, bulletproof
+set -uo pipefail
+export DEBIAN_FRONTEND=noninteractive NEEDRESTART_MODE=a NEEDRESTART_SUSPEND=1
 
-# Enhanced error handling - don't exit immediately on errors
-set +e
+DOCKER_USER="michadockermisha"
+DOCKER_PASS="Aa111111!"
 
-# Set up error trapping
-trap 'recover_from_error "Line $LINENO"' ERR
+# Ã¢â€â‚¬Ã¢â€â‚¬ COLORS Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+G='\033[0;32m' Y='\033[1;33m' R='\033[0;31m' N='\033[0m'
+ok()   { echo -e "${G}Ã¢Å“â€œ $*${N}"; }
+warn() { echo -e "${Y}Ã¢Å¡Â  $*${N}"; }
+err()  { echo -e "${R}Ã¢Å“â€” $*${N}"; }
+step() { echo -e "\n${Y}Ã¢â€â‚¬Ã¢â€â‚¬ $* Ã¢â€â‚¬Ã¢â€â‚¬${N}"; }
 
-# Set environment to avoid interactive prompts
-export DEBIAN_FRONTEND=noninteractive
-export NEEDRESTART_MODE=a
-export NEEDRESTART_SUSPEND=1
+# Ã¢â€â‚¬Ã¢â€â‚¬ MUST BE ROOT Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+[[ "$(id -u)" == "0" ]] || { err "Run as root: sudo bash $0"; exit 1; }
 
-echo "Starting comprehensive Docker purge and fresh installation process for WSL2 Ubuntu..."
-echo "This script will fully configure Docker with automatic login and complete setup"
-echo "Enhanced with bulletproof error handling and recovery mechanisms"
+REAL_USER="${SUDO_USER:-$(logname 2>/dev/null || echo '')}"
+REAL_HOME=$([ -n "$REAL_USER" ] && getent passwd "$REAL_USER" | cut -d: -f6 || echo "$HOME")
 
-# Function to fix broken packages and dpkg issues
-fix_broken_packages() {
-    echo "Checking and fixing broken packages..."
-
-    # Kill any hanging apt processes
-    pkill -f apt-get 2>/dev/null || true
-    pkill -f dpkg 2>/dev/null || true
-    pkill -f unattended-upgrade 2>/dev/null || true
-    sleep 3
-
-    # Remove any problematic lock files
-    rm -f /var/lib/dpkg/lock-frontend
-    rm -f /var/lib/dpkg/lock
-    rm -f /var/cache/apt/archives/lock
-    rm -f /var/lib/apt/lists/lock
-
-    # Clean package cache
-    apt-get clean 2>/dev/null || true
-    apt-get autoclean 2>/dev/null || true
-
-    # Fix apt-show-versions issue first
-    if [ -x /usr/bin/apt-show-versions ]; then
-        echo "Fixing apt-show-versions cache directory..."
-        mkdir -p /var/cache/apt-show-versions 2>/dev/null || true
-        chmod 755 /var/cache/apt-show-versions 2>/dev/null || true
-        apt-get remove --purge -y apt-show-versions 2>/dev/null || true
-    fi
-
-    # Aggressively handle unattended-upgrades
-    echo "Forcefully fixing unattended-upgrades package..."
-    systemctl stop unattended-upgrades 2>/dev/null || true
-    pkill -f unattended-upgrade 2>/dev/null || true
-
-    if dpkg -l | grep -q "unattended-upgrades"; then
-        echo "Removing unattended-upgrades package state..."
-        dpkg --remove --force-remove-reinstreq unattended-upgrades 2>/dev/null || true
-        dpkg --purge --force-remove-reinstreq unattended-upgrades 2>/dev/null || true
-        sed -i '/^Package: unattended-upgrades$/,/^$/d' /var/lib/dpkg/status 2>/dev/null || true
-        DEBIAN_FRONTEND=noninteractive apt-get remove --purge -y --allow-remove-essential unattended-upgrades 2>/dev/null || true
-        rm -rf /etc/apt/apt.conf.d/50unattended-upgrades 2>/dev/null || true
-        rm -rf /var/lib/unattended-upgrades 2>/dev/null || true
-        rm -rf /var/log/unattended-upgrades 2>/dev/null || true
-    fi
-
-    # Check for other broken packages and fix them
-    broken_packages=$(dpkg -l | grep "^iU\|^rI\|^Ur" | awk '{print $2}' | head -10)
-    if [ -n "$broken_packages" ]; then
-        echo "Found broken packages, force removing: $broken_packages"
-        for pkg in $broken_packages; do
-            echo "Force removing package: $pkg"
-            dpkg --remove --force-remove-reinstreq "$pkg" 2>/dev/null || true
-            dpkg --purge --force-remove-reinstreq "$pkg" 2>/dev/null || true
-            DEBIAN_FRONTEND=noninteractive apt-get remove --purge -y --allow-remove-essential "$pkg" 2>/dev/null || true
-        done
-    fi
-
-    rm -rf /var/cache/apt/archives/*.deb 2>/dev/null || true
-    apt-get clean 2>/dev/null || true
-    DEBIAN_FRONTEND=noninteractive dpkg --configure -a --force-confold 2>/dev/null || true
-    DEBIAN_FRONTEND=noninteractive apt-get -f install -y --no-install-recommends 2>/dev/null || true
-    DEBIAN_FRONTEND=noninteractive apt-get autoremove -y 2>/dev/null || true
-
-    echo "Package system cleanup completed"
+# Ã¢â€â‚¬Ã¢â€â‚¬ UNLOCK APT Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+unlock_apt() {
+  pkill -f 'apt|dpkg|unattended-upgrade' 2>/dev/null || true
+  sleep 1
+  rm -f /var/lib/dpkg/lock* /var/cache/apt/archives/lock /var/lib/apt/lists/lock
+  dpkg --configure -a --force-confold 2>/dev/null || true
 }
 
-# Enhanced error recovery function
-recover_from_error() {
-    local error_context="$1"
-    echo "⚠️ Error encountered in: $error_context"
-    echo "Attempting comprehensive recovery..."
-
-    pkill -f apt 2>/dev/null || true
-    pkill -f dpkg 2>/dev/null || true
-    sleep 3
-
-    rm -f /var/lib/dpkg/lock*
-    rm -f /var/cache/apt/archives/lock
-    rm -f /var/lib/apt/lists/lock
-
-    fix_broken_packages
-    fix_dns
-
-    echo "Recovery attempt completed, continuing..."
-}
-
-# Function to detect Ubuntu version
-detect_ubuntu_version() {
-    if [ -f /etc/os-release ]; then
-        . /etc/os-release
-        echo "$VERSION_CODENAME"
-    else
-        echo "jammy"
-    fi
-}
-
-# Function to fix DNS issues
+# Ã¢â€â‚¬Ã¢â€â‚¬ FIX DNS Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 fix_dns() {
-    echo "Checking and fixing DNS configuration..."
-    cp /etc/resolv.conf /etc/resolv.conf.backup 2>/dev/null || true
-
-    cat > /etc/resolv.conf <<EOF
-nameserver 8.8.8.8
-nameserver 8.8.4.4
-nameserver 1.1.1.1
-nameserver 1.0.0.1
-EOF
-
-    if nslookup google.com >/dev/null 2>&1; then
-        echo "DNS resolution working"
-        return 0
-    else
-        echo "DNS still not working, trying alternative approach..."
-        systemctl restart systemd-resolved 2>/dev/null || true
-        sleep 2
-        if nslookup google.com >/dev/null 2>&1; then
-            echo "DNS resolution fixed"
-            return 0
-        else
-            echo "Warning: DNS issues persist, continuing anyway..."
-            return 1
-        fi
-    fi
+  if nslookup google.com >/dev/null 2>&1; then return 0; fi
+  warn "DNS broken Ã¢â‚¬â€ fixing..."
+  # /etc/resolv.conf is a WSL-managed symlink Ã¢â‚¬â€ must unlink first
+  rm -f /etc/resolv.conf 2>/dev/null || true
+  printf 'nameserver 8.8.8.8\nnameserver 1.1.1.1\n' > /etc/resolv.conf 2>/dev/null || true
+  # Tell WSL not to overwrite it
+  if ! grep -q "generateResolvConf" /etc/wsl.conf 2>/dev/null; then
+    printf '\n[network]\ngenerateResolvConf = false\n' >> /etc/wsl.conf
+  fi
+  nslookup google.com >/dev/null 2>&1 && ok "DNS fixed" || warn "DNS still failing Ã¢â‚¬â€ continuing anyway"
 }
 
-# Function to test network connectivity
-test_connectivity() {
-    echo "Testing network connectivity..."
-    if ping -c 1 -W 5 8.8.8.8 >/dev/null 2>&1; then
-        echo "✓ Basic network connectivity OK"
-    else
-        echo "✗ No network connectivity"
-        return 1
-    fi
-
-    if nslookup archive.ubuntu.com >/dev/null 2>&1; then
-        echo "✓ DNS resolution OK"
-    else
-        echo "✗ DNS resolution failed"
-        return 1
-    fi
-
-    return 0
+# Ã¢â€â‚¬Ã¢â€â‚¬ APT UPDATE (once, cached) Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+APT_UPDATED=0
+apt_update() {
+  if [[ $APT_UPDATED -eq 0 ]]; then
+    unlock_apt
+    apt-get update -qq --fix-missing 2>/dev/null && APT_UPDATED=1 || warn "apt update had errors, continuing"
+  fi
 }
 
-# Function to check if command exists
-command_exists() {
-    command -v "$@" > /dev/null 2>&1
+# Ã¢â€â‚¬Ã¢â€â‚¬ INSTALL PACKAGE (skip if present) Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+pkg() {
+  local p="$1"
+  dpkg -s "$p" &>/dev/null && { ok "$p already installed"; return 0; }
+  apt_update
+  DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends "$p" \
+    && ok "$p installed" || warn "$p failed (continuing)"
 }
 
-# Function to check if running as root
-check_root() {
-    if [ "$(id -u)" != "0" ]; then
-        echo "This script must be run as root" 1>&2
-        exit 1
-    fi
+# Ã¢â€â‚¬Ã¢â€â‚¬ REMOVE PACKAGE SAFELY Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+purge() {
+  dpkg -s "$1" &>/dev/null || return 0
+  DEBIAN_FRONTEND=noninteractive apt-get remove --purge -y -qq "$1" 2>/dev/null || \
+    dpkg --remove --force-remove-reinstreq "$1" 2>/dev/null || true
 }
 
-# Comprehensive pre-flight system check
-preflight_check() {
-    echo "=== PREFLIGHT SYSTEM CHECK ==="
-    check_root
+echo "Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â"
+echo "   Docker WSL2 Setup Ã¢â‚¬â€ idempotent edition  "
+echo "Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â"
+grep -qi microsoft /proc/version && ok "WSL2 detected" || warn "Not WSL2 Ã¢â‚¬â€ continuing anyway"
 
-    available_space=$(df / | tail -1 | awk '{print $4}')
-    if [ "$available_space" -lt 2000000 ]; then
-        echo "⚠️ Warning: Low disk space detected. Cleaning up..."
-        apt-get clean 2>/dev/null || true
-        apt-get autoclean 2>/dev/null || true
-        docker system prune -af 2>/dev/null || true
-    fi
-
-    if grep -qi "microsoft" /proc/version 2>/dev/null; then
-        echo "✓ WSL2 environment detected"
-    else
-        echo "⚠️ Warning: This script is optimized for WSL2"
-    fi
-
-    echo "Performing aggressive system cleanup..."
-    pkill -f "apt" 2>/dev/null || true
-    pkill -f "dpkg" 2>/dev/null || true
-    pkill -f "unattended-upgrade" 2>/dev/null || true
-    sleep 3
-
-    if dpkg -l | grep -q apt-show-versions; then
-        echo "Removing apt-show-versions..."
-        dpkg --remove --force-remove-reinstreq apt-show-versions 2>/dev/null || true
-        apt-get remove --purge -y apt-show-versions 2>/dev/null || true
-    fi
-
-    if dpkg -l | grep -q unattended-upgrades; then
-        echo "Force removing unattended-upgrades..."
-        systemctl stop unattended-upgrades 2>/dev/null || true
-        systemctl disable unattended-upgrades 2>/dev/null || true
-        dpkg --remove --force-remove-reinstreq unattended-upgrades 2>/dev/null || true
-        apt-get remove --purge -y --allow-remove-essential unattended-upgrades 2>/dev/null || true
-        rm -rf /var/lib/unattended-upgrades 2>/dev/null || true
-        rm -rf /etc/apt/apt.conf.d/50unattended-upgrades 2>/dev/null || true
-    fi
-
-    rm -f /etc/apt/apt.conf.d/*apt-show-versions* 2>/dev/null || true
-    rm -f /etc/apt/apt.conf.d/*unattended-upgrades* 2>/dev/null || true
-
-    fix_broken_packages
-
-    echo "✓ Preflight check completed"
-    echo "=========================="
-}
-
-preflight_check
-
-UBUNTU_CODENAME=$(detect_ubuntu_version)
-echo "Detected Ubuntu version: $UBUNTU_CODENAME"
-
-echo "Step 0: Fixing system and package management issues..."
-fix_broken_packages
+# Ã¢â€â‚¬Ã¢â€â‚¬ STEP 1: PREREQUISITES Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+step "1/7  Prerequisites"
 fix_dns
-if ! test_connectivity; then
-    echo "Network connectivity issues detected. Attempting to fix..."
-    systemctl restart systemd-networkd 2>/dev/null || true
-    systemctl restart systemd-resolved 2>/dev/null || true
-    sleep 3
-    fix_dns
-fi
+unlock_apt
 
-echo "Step 1: Installing required system utilities..."
-fix_broken_packages
-
-echo "Updating package lists..."
-rm -f /etc/apt/apt.conf.d/*apt-show-versions* 2>/dev/null || true
-rm -f /etc/apt/apt.conf.d/*unattended-upgrades* 2>/dev/null || true
-
-cat > /tmp/apt.conf <<EOF
-APT::Update::Post-Invoke-Success "";
-APT::Update::Post-Invoke "";
-DPkg::Pre-Install-Pkgs "";
-DPkg::Post-Invoke "";
-EOF
-
-for i in {1..3}; do
-    echo "Update attempt $i/3..."
-    apt-get clean 2>/dev/null || true
-    if apt-get -c /tmp/apt.conf update --fix-missing -o APT::Update::Error-Mode=any; then
-        echo "Package lists updated successfully"
-        break
-    else
-        echo "Attempt $i failed"
-        if [ $i -eq 3 ]; then
-            echo "Warning: Using existing package cache, continuing..."
-        else
-            sleep 2
-        fi
-    fi
+# Remove known blockers silently
+for blocker in apt-show-versions unattended-upgrades; do
+  purge "$blocker"
 done
+rm -f /etc/apt/apt.conf.d/50unattended-upgrades 2>/dev/null || true
 
-rm -f /tmp/apt.conf
+for p in curl ca-certificates gnupg lsb-release; do pkg "$p"; done
 
-install_package_safe() {
-    local package="$1"
-    local description="$2"
-    echo "Installing $package ($description)..."
-
-    if dpkg -l | grep -q "^ii.*$package "; then
-        echo "✓ $package already installed"
-        return 0
-    fi
-
-    case "$package" in
-        "curl") if command -v curl >/dev/null 2>&1; then echo "✓ curl working"; return 0; fi ;;
-        "wget") if command -v wget >/dev/null 2>&1; then echo "✓ wget working"; return 0; fi ;;
-        "gnupg") if command -v gpg >/dev/null 2>&1; then echo "✓ gnupg working"; return 0; fi ;;
-    esac
-
-    for attempt in {1..2}; do
-        if DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends "$package" 2>/dev/null; then
-            echo "✓ $package installed"
-            return 0
-        else
-            if [ $attempt -eq 1 ]; then
-                DEBIAN_FRONTEND=noninteractive apt-get -f install -y --no-install-recommends 2>/dev/null || true
-                apt-get update --fix-missing -o APT::Update::Error-Mode=any 2>/dev/null || true
-            fi
-        fi
-    done
-
-    echo "⚠️ Could not install $package, continuing..."
-    return 1
-}
-
-trap '' ERR
-
-install_package_safe "curl" "HTTP client"
-install_package_safe "wget" "File downloader"
-install_package_safe "ca-certificates" "SSL certificates"
-install_package_safe "gnupg" "GPG tools"
-install_package_safe "lsb-release" "Linux Standard Base"
-install_package_safe "iproute2" "Network utilities"
-install_package_safe "net-tools" "Network tools"
-install_package_safe "iptables" "Firewall tools"
-install_package_safe "dnsutils" "DNS utilities"
-install_package_safe "software-properties-common" "Repository management"
-install_package_safe "apt-transport-https" "HTTPS transport"
-install_package_safe "jq" "JSON processor"
-install_package_safe "pass" "Password manager"
-
-trap 'recover_from_error "Line $LINENO"' ERR
-
-echo "Step 2: Stopping all Docker services..."
-if command_exists docker; then
-    RUNNING_CONTAINERS=$(docker ps -q 2>/dev/null || true)
-    if [ -n "$RUNNING_CONTAINERS" ]; then
-        docker kill $RUNNING_CONTAINERS 2>/dev/null || true
-    fi
-
-    systemctl stop docker.service 2>/dev/null || true
-    systemctl stop docker.socket 2>/dev/null || true
-    systemctl stop containerd.service 2>/dev/null || true
-    sleep 3
-fi
-
-echo "Step 3: Removing ALL Docker-related packages..."
-docker_packages=(
-    "docker.io" "docker-doc" "docker-compose" "docker-compose-v2"
-    "docker-ce" "docker-ce-cli" "docker-ce-rootless-extras"
-    "docker-engine" "docker-registry" "docker-scan-plugin"
-    "containerd" "docker-buildx" "runc" "podman-docker"
-    "moby-engine" "moby-cli" "moby-buildx" "moby-compose"
-    "moby-containerd" "moby-runc" "nvidia-docker2"
-    "nvidia-container-runtime" "containerd.io"
-)
-
-for pkg in "${docker_packages[@]}"; do
-    systemctl stop "$pkg" 2>/dev/null || true
-    systemctl disable "$pkg" 2>/dev/null || true
-    apt-get remove -y "$pkg" 2>/dev/null || true
-    apt-get purge -y "$pkg" 2>/dev/null || true
-    dpkg --configure -a 2>/dev/null || true
-done
-
-fix_broken_packages
-
-echo "Step 4: Purging ALL Docker data..."
-for attempt in {1..3}; do
-    if apt-get autoremove -y && apt-get autoclean -y; then
-        break
-    else
-        fix_broken_packages
-    fi
-done
-
-directories=(
-    "/var/lib/docker" "/var/lib/containerd" "/etc/docker" "/etc/containerd"
-    "/var/run/docker" "/var/run/containerd" "/usr/local/bin/docker*"
-    "/usr/local/bin/containerd*" "/usr/bin/docker*" "/usr/bin/containerd*"
-    "/opt/containerd" "/home/*/.docker" "/root/.docker"
-    "/var/log/docker" "/var/log/containerd" "/etc/apparmor.d/docker"
-    "/etc/apt/sources.list.d/docker*.list" "/etc/apt/sources.list.d/nvidia-docker*.list"
-    "/etc/systemd/system/docker*" "/etc/systemd/system/containerd*"
-    "/etc/init.d/docker" "/etc/default/docker" "/usr/share/docker*"
-    "/usr/share/containerd*" "/usr/libexec/docker"
-    "/var/cache/apt/archives/docker*" "/var/cache/apt/archives/containerd*"
-)
-
-for dir in "${directories[@]}"; do
-    rm -rf $dir 2>/dev/null || true
-done
-
-groupdel docker 2>/dev/null || true
-
-ip link show | grep -i docker | awk -F': ' '{print $2}' | xargs -r -l ip link delete 2>/dev/null || true
-ip link show | grep -i br- | awk -F': ' '{print $2}' | xargs -r -l ip link delete 2>/dev/null || true
-
-systemctl daemon-reload
-systemctl reset-failed
-
-echo "Step 5: Removing Docker GPG keys..."
-rm -f /usr/share/keyrings/docker-archive-keyring.gpg
-rm -f /usr/share/keyrings/docker.gpg
-rm -f /etc/apt/keyrings/docker.gpg
-apt-key del "9DC8 5822 9FC7 DD38 854A E2D8 8D81 803C 0EBF CD88" 2>/dev/null || true
-
-echo "Step 6: Setting up fresh Docker installation..."
-fix_broken_packages
-
-prerequisites=(
-    "apt-transport-https" "ca-certificates" "curl" "gnupg"
-    "gnupg-agent" "software-properties-common" "lsb-release"
-)
-
-for i in {1..3}; do
-    if apt-get update --fix-missing; then
-        break
-    else
-        fix_broken_packages
-    fi
-done
-
-for pkg in "${prerequisites[@]}"; do
-    install_package_safe "$pkg" "Docker prerequisite"
-done
-
-install -m 0755 -d /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-chmod a+r /etc/apt/keyrings/docker.gpg
-
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-  ${UBUNTU_CODENAME} stable" | \
-  tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-echo "Step 7: Installing Docker Engine..."
-for i in {1..5}; do
-    if apt-get update; then
-        break
-    else
-        fix_broken_packages
-        fix_dns
-        sleep 3
-    fi
-done
-
-docker_install_packages=(
-    "containerd.io"
-    "docker-ce-cli"
-    "docker-ce"
-    "docker-buildx-plugin"
-    "docker-compose-plugin"
-    "docker-ce-rootless-extras"
-)
-
-for pkg in "${docker_install_packages[@]}"; do
-    echo "Installing $pkg..."
-    for attempt in {1..3}; do
-        if apt-get install -y "$pkg"; then
-            echo "✓ $pkg installed"
-            break
-        else
-            if [ $attempt -lt 3 ]; then
-                fix_broken_packages
-                apt-get update --fix-missing 2>/dev/null || true
-                sleep 2
-            fi
-        fi
-    done
-done
-
-fix_broken_packages
-
-echo "Step 8: Configuring Docker daemon..."
-mkdir -p /etc/docker
-cat > /etc/docker/daemon.json <<EOF
-{
-    "log-driver": "json-file",
-    "log-opts": {
-        "max-size": "10m",
-        "max-file": "3"
-    },
-    "storage-driver": "overlay2",
-    "dns": ["8.8.8.8", "8.8.4.4"],
-    "max-concurrent-downloads": 10,
-    "max-concurrent-uploads": 10,
-    "experimental": true,
-    "features": {
-        "buildkit": true
-    }
-}
-EOF
-
-echo "Step 9: Setting up Docker system..."
-mkdir -p /var/lib/docker
-mkdir -p /var/run/docker
-mkdir -p /usr/share/docker
-
-groupadd --force docker
-
-if [ -n "$SUDO_USER" ]; then
-    usermod -aG docker "$SUDO_USER" || true
-fi
-
-chown root:docker /var/run/docker
-chmod 2775 /var/run/docker
-
-echo "Step 10: Starting Docker services..."
-systemctl enable containerd
-systemctl start containerd
-systemctl enable docker
-systemctl start docker
-
-echo "Step 11: Installing Docker Compose..."
-if ! command_exists jq; then
-    curl -L -o /usr/local/bin/jq https://github.com/stedolan/jq/releases/latest/download/jq-linux64
-    chmod +x /usr/local/bin/jq
-fi
-
-COMPOSE_VERSION=$(curl -s https://api.github.com/repos/docker/compose/releases/latest | jq -r .tag_name 2>/dev/null || echo "v2.24.1")
-
-mkdir -p ~/.docker/cli-plugins/
-curl -SL "https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-linux-$(uname -m)" -o ~/.docker/cli-plugins/docker-compose
-chmod +x ~/.docker/cli-plugins/docker-compose
-
-if [ -n "$SUDO_USER" ]; then
-    USER_HOME="/home/$SUDO_USER"
-    mkdir -p "$USER_HOME/.docker/cli-plugins/"
-    curl -SL "https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-linux-$(uname -m)" -o "$USER_HOME/.docker/cli-plugins/docker-compose"
-    chmod +x "$USER_HOME/.docker/cli-plugins/docker-compose"
-    chown -R "$SUDO_USER:$SUDO_USER" "$USER_HOME/.docker"
-fi
-
-curl -SL "https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-linux-$(uname -m)" -o /usr/local/bin/docker-compose
-chmod +x /usr/local/bin/docker-compose
-
-echo "Step 12: Installing Docker BuildX..."
-rm -rf ~/.docker/buildx
-
-BUILDX_VERSION=$(curl -s https://api.github.com/repos/docker/buildx/releases/latest | jq -r .tag_name 2>/dev/null || echo "v0.12.1")
-
-mkdir -p ~/.docker/cli-plugins
-curl -SL "https://github.com/docker/buildx/releases/download/${BUILDX_VERSION}/buildx-${BUILDX_VERSION}.linux-amd64" -o ~/.docker/cli-plugins/docker-buildx
-chmod +x ~/.docker/cli-plugins/docker-buildx
-
-if [ -n "$SUDO_USER" ]; then
-    USER_HOME="/home/$SUDO_USER"
-    mkdir -p "$USER_HOME/.docker/cli-plugins"
-    curl -SL "https://github.com/docker/buildx/releases/download/${BUILDX_VERSION}/buildx-${BUILDX_VERSION}.linux-amd64" -o "$USER_HOME/.docker/cli-plugins/docker-buildx"
-    chmod +x "$USER_HOME/.docker/cli-plugins/docker-buildx"
-    chown -R "$SUDO_USER:$SUDO_USER" "$USER_HOME/.docker"
-fi
-
-echo "Step 13: Initializing BuildX..."
-sleep 5
-
-for i in {1..10}; do
-    if docker info >/dev/null 2>&1; then
-        echo "✓ Docker daemon ready"
-        break
-    else
-        echo "Waiting for Docker... ($i/10)"
-        sleep 3
-        systemctl start docker 2>/dev/null || true
-    fi
-done
-
+# Ã¢â€â‚¬Ã¢â€â‚¬ STEP 2: CHECK IF DOCKER ALREADY WORKS Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+step "2/7  Check existing Docker"
 if docker info >/dev/null 2>&1; then
-    docker buildx create --name mybuilder --use --driver docker-container 2>/dev/null || true
-    docker buildx inspect mybuilder --bootstrap 2>/dev/null || true
-    docker buildx create --name multiplatform --driver docker-container --use 2>/dev/null || true
-    docker buildx inspect multiplatform --bootstrap 2>/dev/null || true
-fi
-
-echo "Step 14: Automatic Docker login..."
-CREDS_USER="michadockermisha"
-CREDS_PASS="Aa111111!"
-
-if docker info >/dev/null 2>&1; then
-    echo "Performing Docker Hub login..."
-    echo "$CREDS_PASS" | docker login -u "$CREDS_USER" --password-stdin 2>/dev/null && echo "✓ Docker login successful!" || echo "⚠️ Login may need retry"
+  ok "Docker is already running and healthy Ã¢â‚¬â€ skipping reinstall"
+  SKIP_INSTALL=1
 else
-    echo "Docker daemon not ready for login"
+  SKIP_INSTALL=0
 fi
 
-echo "Step 15: Setting up WSL2 auto-start for Docker..."
-if [ -n "$SUDO_USER" ]; then
-    USER_HOME="/home/$SUDO_USER"
-    
-    # Create WSL config
-    cat > "$USER_HOME/.wslconfig" <<EOF
-[wsl2]
-memory=8GB
-processors=4
-swap=4GB
-kernelCommandLine=systemd=true cgroup_enable=memory swapaccount=1
-[experimental]
-autoMemoryReclaim=gradual
+# Ã¢â€â‚¬Ã¢â€â‚¬ STEP 3: INSTALL DOCKER (skip if already good) Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+if [[ $SKIP_INSTALL -eq 0 ]]; then
+  step "3/7  Install Docker Engine"
+
+  # Remove old conflicting packages
+  for p in docker.io docker-doc docker-compose docker-engine containerd runc podman-docker moby-engine; do
+    purge "$p"
+  done
+
+  # Add Docker GPG key (skip if already present)
+  install -m 0755 -d /etc/apt/keyrings
+  if [[ ! -f /etc/apt/keyrings/docker.gpg ]]; then
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg \
+      | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    chmod a+r /etc/apt/keyrings/docker.gpg
+    ok "Docker GPG key added"
+  else
+    ok "Docker GPG key already present"
+  fi
+
+  # Add Docker repo (skip if already present)
+  CODENAME=$(. /etc/os-release; echo "$VERSION_CODENAME")
+  ARCH=$(dpkg --print-architecture)
+  REPO_LINE="deb [arch=${ARCH} signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu ${CODENAME} stable"
+  if ! grep -qF "download.docker.com" /etc/apt/sources.list.d/docker.list 2>/dev/null; then
+    echo "$REPO_LINE" > /etc/apt/sources.list.d/docker.list
+    APT_UPDATED=0  # force re-update with new repo
+    ok "Docker repo added"
+  else
+    ok "Docker repo already configured"
+  fi
+
+  apt_update
+  for p in containerd.io docker-ce-cli docker-ce docker-buildx-plugin docker-compose-plugin; do
+    pkg "$p"
+  done
+fi
+
+# Ã¢â€â‚¬Ã¢â€â‚¬ STEP 4: CONFIGURE DAEMON Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+step "4/7  Daemon config"
+mkdir -p /etc/docker
+if [[ ! -f /etc/docker/daemon.json ]]; then
+  cat > /etc/docker/daemon.json <<'EOF'
+{
+  "log-driver": "json-file",
+  "log-opts": { "max-size": "10m", "max-file": "3" },
+  "storage-driver": "overlay2",
+  "dns": ["8.8.8.8", "8.8.4.4"]
+}
 EOF
-    chown "$SUDO_USER:$SUDO_USER" "$USER_HOME/.wslconfig"
-
-    # Setup passwordless sudo for Docker service
-    echo "$SUDO_USER ALL=(ALL) NOPASSWD: /usr/sbin/service docker start" | tee /etc/sudoers.d/docker-service
-    chmod 440 /etc/sudoers.d/docker-service
-
-    # Add auto-start to bashrc
-    BASHRC_FILE="$USER_HOME/.bashrc"
-    
-    # Remove any existing Docker auto-start lines
-    sed -i '/# Docker auto-start/d' "$BASHRC_FILE"
-    sed -i '/sudo service docker start/d' "$BASHRC_FILE"
-    
-    # Add new auto-start configuration
-    cat >> "$BASHRC_FILE" <<'EOF'
-
-# Docker auto-start for WSL2 - Bulletproof configuration
-if ! docker info >/dev/null 2>&1; then
-    echo "Starting Docker service..."
-    sudo service docker start 2>/dev/null
-    # Wait for Docker to be ready (max 10 seconds)
-    for i in {1..10}; do
-        if docker info >/dev/null 2>&1; then
-            echo "✓ Docker is ready"
-            break
-        fi
-        sleep 1
-    done
+  ok "daemon.json created"
+else
+  ok "daemon.json already exists"
 fi
 
-# Docker convenience aliases
-alias dcup='docker compose up -d'
-alias dcdown='docker compose down'
-alias dcps='docker compose ps'
-alias dclogs='docker compose logs -f'
-alias dcbuild='docker compose build'
+# Ã¢â€â‚¬Ã¢â€â‚¬ STEP 5: START DOCKER Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+step "5/7  Start Docker"
+# In WSL2 systemd may or may not be running Ã¢â‚¬â€ handle both
+if systemctl is-active docker >/dev/null 2>&1; then
+  ok "Docker already running via systemd"
+else
+  # Try systemctl first, fall back to service
+  systemctl enable --now docker 2>/dev/null \
+  || service docker start 2>/dev/null \
+  || dockerd --host=unix:///var/run/docker.sock &>/tmp/dockerd.log &
+
+  # Wait up to 30s
+  for i in $(seq 1 15); do
+    docker info >/dev/null 2>&1 && { ok "Docker started (${i}Ãƒâ€”2s)"; break; }
+    sleep 2
+    [[ $i -eq 15 ]] && { err "Docker failed to start"; cat /tmp/dockerd.log 2>/dev/null; exit 1; }
+  done
+fi
+
+# Ã¢â€â‚¬Ã¢â€â‚¬ STEP 6: AUTO-START + ALIASES IN .bashrc Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+step "6/7  Shell config"
+
+if [[ -n "$REAL_USER" ]]; then
+  BASHRC="$REAL_HOME/.bashrc"
+
+  # Allow docker start without password
+  SUDOERS_LINE="$REAL_USER ALL=(ALL) NOPASSWD: /usr/sbin/service docker start, /usr/bin/systemctl start docker"
+  if ! grep -qF "service docker start" /etc/sudoers.d/docker-wsl 2>/dev/null; then
+    echo "$SUDOERS_LINE" > /etc/sudoers.d/docker-wsl
+    chmod 440 /etc/sudoers.d/docker-wsl
+    ok "Passwordless docker start configured"
+  else
+    ok "Passwordless sudo already configured"
+  fi
+
+  # Only write to .bashrc if our block is not already there
+  if ! grep -q "# [docker-wsl-autostart]" "$BASHRC" 2>/dev/null; then
+    cat >> "$BASHRC" <<'BASHRC_BLOCK'
+
+# [docker-wsl-autostart]
+if ! docker info >/dev/null 2>&1; then
+  sudo service docker start >/dev/null 2>&1
+  for _i in 1 2 3 4 5; do
+    docker info >/dev/null 2>&1 && break
+    sleep 1
+  done
+  docker info >/dev/null 2>&1 && echo "Ã°Å¸ÂÂ³ Docker ready" || echo "Ã¢Å¡Â  Docker failed to start"
+fi
+alias dcu='docker compose up -d'
+alias dcd='docker compose down'
+alias dcp='docker compose ps'
 alias dps='docker ps'
 alias dpsa='docker ps -a'
 alias di='docker images'
-alias drmi='docker rmi'
-alias dstop='docker stop'
-alias dstart='docker start'
-alias drestart='docker restart'
-alias dexec='docker exec -it'
-alias dbash='docker exec -it'
 alias dprune='docker system prune -af'
-alias dbuild='docker buildx build'
-alias dbuildx='docker buildx build --platform linux/amd64,linux/arm64'
-
-# Quick run function
-drun() {
-    docker run -it --rm "$@"
-}
-
-# Build and run function
-dbr() {
-    docker build -t temp-image . && docker run -it --rm temp-image
-}
-EOF
-    chown "$SUDO_USER:$SUDO_USER" "$BASHRC_FILE"
+drun() { docker run -it --rm "$@"; }
+BASHRC_BLOCK
+    chown "$REAL_USER:$REAL_USER" "$BASHRC"
+    ok ".bashrc auto-start block added"
+  else
+    ok ".bashrc already configured"
+  fi
 fi
 
-echo "Step 16: Final verification..."
-ensure_docker_running() {
-    for attempt in {1..5}; do
-        systemctl start containerd 2>/dev/null || true
-        systemctl start docker 2>/dev/null || true
-        sleep 5
+# Ã¢â€â‚¬Ã¢â€â‚¬ STEP 7: LOGIN + VERIFY Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+step "7/7  Login & verify"
+echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin \
+  && ok "Docker Hub logged in as $DOCKER_USER" \
+  || warn "Login failed Ã¢â‚¬â€ check credentials"
 
-        if docker info >/dev/null 2>&1; then
-            echo "✓ Docker is running"
-            return 0
-        else
-            if [ $attempt -lt 5 ]; then
-                systemctl stop docker 2>/dev/null || true
-                systemctl stop containerd 2>/dev/null || true
-                pkill -f docker 2>/dev/null || true
-                sleep 3
-                rm -f /var/run/docker.sock 2>/dev/null || true
-                fix_broken_packages
-            fi
-        fi
-    done
-    return 1
-}
+echo ""
+docker --version        && ok "Docker Engine OK"
+docker compose version  && ok "Docker Compose OK"
+docker buildx version   && ok "BuildX OK"
+echo ""
+timeout 20 docker run --rm alpine echo "container test OK" \
+  && ok "Container run test passed" \
+  || warn "Container test failed (network?)"
 
-ensure_docker_running
-
-echo "=== VERIFICATION ==="
-docker --version && echo "✓ Docker Engine installed"
-docker info >/dev/null 2>&1 && echo "✓ Docker Daemon running"
-docker compose version >/dev/null 2>&1 && echo "✓ Docker Compose installed"
-docker buildx version >/dev/null 2>&1 && echo "✓ Docker BuildX installed"
-
-if docker info >/dev/null 2>&1; then
-    timeout 30 docker run --rm alpine:latest echo "✓ Container test passed" 2>/dev/null || echo "⚠️ Container test needs network"
-    docker buildx ls >/dev/null 2>&1 && echo "✓ BuildX builders ready"
-fi
-
-# Final login attempt
-if docker info >/dev/null 2>&1; then
-    echo "$CREDS_PASS" | docker login -u "$CREDS_USER" --password-stdin 2>/dev/null && echo "✓ Docker Hub logged in"
-fi
-
-cat << "EOF"
-
-🎉 DOCKER INSTALLATION COMPLETE! 🎉
-===================================
-
-✅ Docker will now start AUTOMATICALLY every time you open WSL2
-✅ No password required for Docker startup
-✅ Docker Hub login configured
-✅ All tools installed and ready
-
-AUTOMATIC FEATURES:
-- Docker starts on WSL2 launch
-- Waits until Docker is ready
-- Shows status messages
-- All aliases loaded automatically
-
-If Docker doesn't start automatically:
-1. Close and reopen WSL2
-2. Run: source ~/.bashrc
-3. Manually: sudo service docker start
-
-Test commands:
-- docker run --rm hello-world
-- docker compose version
-- docker ps
-
-Happy containerizing! 🐳
-EOF
+echo ""
+echo "Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â"
+echo -e "${G}   Ã°Å¸ÂÂ³ Docker is ready to use!${N}"
+echo "   Run: docker ps"
+echo "Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â"
+exit 0

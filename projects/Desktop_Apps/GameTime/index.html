@@ -26,22 +26,27 @@ body{font-family:'Segoe UI',sans-serif;background:#0d0d18;color:#e0e0e0;overflow
 .sort-lbl{font-size:12px;color:#555;white-space:nowrap;}
 .grid-wrap{padding:22px 28px;}
 .section-lbl{font-size:12px;font-weight:700;color:#444;text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;}
 .card{background:#16162a;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.06);transition:all .22s;position:relative;}
-.card:hover{transform:translateY(-5px);border-color:rgba(233,69,96,.5);box-shadow:0 16px 36px rgba(0,0,0,.55);}
+.card:hover{transform:translateY(-4px);border-color:rgba(233,69,96,.4);box-shadow:0 14px 32px rgba(0,0,0,.5);}
+.card.live-card{border-color:rgba(74,222,128,.4);box-shadow:0 0 20px rgba(74,222,128,.15);}
 .art-wrap{width:100%;height:126px;overflow:hidden;position:relative;background:#0d0d18;}
 .art-img{width:100%;height:100%;object-fit:cover;display:none;}
 .art-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#16162a,#0f0f22);}
 .art-letter{font-size:58px;font-weight:900;text-transform:uppercase;background:linear-gradient(135deg,#e94560,#f5a623);-webkit-background-clip:text;-webkit-text-fill-color:transparent;opacity:.18;line-height:1;}
 .art-gradient{position:absolute;bottom:0;left:0;right:0;height:50px;background:linear-gradient(transparent,rgba(22,22,42,.95));}
-.save-dot{position:absolute;top:8px;right:8px;background:rgba(74,222,128,.9);color:#000;font-size:9px;font-weight:800;padding:3px 7px;border-radius:5px;text-transform:uppercase;}
+.live-badge{position:absolute;top:8px;left:8px;background:rgba(74,222,128,.95);color:#000;font-size:9px;font-weight:800;padding:3px 8px;border-radius:5px;text-transform:uppercase;animation:livepulse 1.5s infinite;}
+@keyframes livepulse{0%,100%{opacity:1;}50%{opacity:.6;}}
 .card-body{padding:11px 13px 13px;}
-.card-name{font-size:13px;font-weight:700;color:#ddd;margin-bottom:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.prog-row{display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px;}
-.prog-row .ph{color:#4ade80;font-weight:700;}
+.card-name{font-size:13px;font-weight:700;color:#ddd;margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.prog-row{display:flex;justify-content:space-between;align-items:center;font-size:11px;margin-bottom:5px;}
+.prog-row .ph{color:#4ade80;font-weight:700;cursor:pointer;border-bottom:1px dashed rgba(74,222,128,.3);transition:border-color .2s;}
+.prog-row .ph:hover{border-color:#4ade80;}
+.prog-row .ph.unplayed{color:#555;border-bottom-color:rgba(255,255,255,.1);}
+.prog-row .ph.unplayed:hover{color:#888;border-color:rgba(255,255,255,.3);}
 .prog-row .tot{color:#777;}
 .prog-bg{height:5px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden;margin-bottom:9px;}
-.prog-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#4ade80,#22c55e);}
+.prog-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#4ade80,#22c55e);transition:width .4s;}
 .prog-fill.warn{background:linear-gradient(90deg,#f5a623,#ef9013);}
 .prog-fill.danger{background:linear-gradient(90deg,#e94560,#c13554);}
 .card-foot{display:flex;justify-content:space-between;align-items:center;}
@@ -51,6 +56,22 @@ body{font-family:'Segoe UI',sans-serif;background:#0d0d18;color:#e0e0e0;overflow
 .bn{background:rgba(245,166,35,.1);color:#f5a623;}
 .remain{font-size:11px;color:#777;}
 .remain b{color:#e94560;font-size:12px;}
+/* EDIT MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:999;align-items:center;justify-content:center;}
+.modal-overlay.show{display:flex;}
+.modal{background:#1a1a2e;border:1px solid rgba(233,69,96,.3);border-radius:16px;padding:32px;width:380px;box-shadow:0 24px 60px rgba(0,0,0,.7);}
+.modal h3{font-size:18px;font-weight:800;margin-bottom:6px;color:#e94560;}
+.modal .sub{font-size:12px;color:#555;margin-bottom:22px;}
+.modal label{display:block;font-size:12px;color:#888;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;}
+.modal input[type=number]{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:12px 16px;color:#fff;font-size:22px;font-weight:700;outline:none;margin-bottom:20px;}
+.modal input[type=number]:focus{border-color:#e94560;}
+.modal-btns{display:flex;gap:10px;}
+.modal-btns button{flex:1;padding:12px;border-radius:8px;border:none;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;}
+.btn-save{background:linear-gradient(135deg,#e94560,#c0304f);color:#fff;}
+.btn-save:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(233,69,96,.4);}
+.btn-cancel{background:rgba(255,255,255,.05);color:#888;border:1px solid rgba(255,255,255,.1)!important;}
+.btn-cancel:hover{background:rgba(255,255,255,.08);}
+.tracker-info{font-size:11px;color:#3a3a5a;margin-top:12px;text-align:center;}
 ::-webkit-scrollbar{width:5px;}
 ::-webkit-scrollbar-track{background:#0d0d18;}
 ::-webkit-scrollbar-thumb{background:#2a2a40;border-radius:3px;}
@@ -64,7 +85,7 @@ body{font-family:'Segoe UI',sans-serif;background:#0d0d18;color:#e0e0e0;overflow
     <div class="logo-icon">🎮</div>
     <div>
       <div class="logo-name">GameTime</div>
-      <div class="logo-sub">Every game on your PC — tracked</div>
+      <div class="logo-sub">Click any playtime to edit • auto-tracks new sessions</div>
     </div>
   </div>
   <div class="hdr-right">
@@ -84,148 +105,203 @@ body{font-family:'Segoe UI',sans-serif;background:#0d0d18;color:#e0e0e0;overflow
   <div class="sort-wrap">
     <span class="sort-lbl">Sort:</span>
     <button class="fbtn on" id="s-alpha"   onclick="setSort('alpha',this)">A–Z</button>
-    <button class="fbtn"    id="s-longest" onclick="setSort('longest',this)">⏱ Longest</button>
+    <button class="fbtn"    id="s-played"  onclick="setSort('played',this)">⏱ Most Played</button>
+    <button class="fbtn"    id="s-longest" onclick="setSort('longest',this)">📏 Longest</button>
     <button class="fbtn"    id="s-short"   onclick="setSort('shortest',this)">⚡ Shortest</button>
   </div>
 </div>
 
 <div id="content"></div>
 
+<!-- Edit modal -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal">
+    <h3 id="modal-title">Edit Playtime</h3>
+    <div class="sub" id="modal-sub">Set hours you've played so far. App will track new sessions automatically.</div>
+    <label>Hours played</label>
+    <input type="number" id="modal-input" min="0" max="9999" step="0.5" placeholder="0">
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="saveModal()">Save</button>
+    </div>
+    <div class="tracker-info">⚙ Future play sessions will be added automatically</div>
+  </div>
+</div>
+
 <script>
-// ── All Node.js APIs available here (nodeIntegration:true) ──────────────────
+const { ipcRenderer } = require('electron');
 const fs   = require('fs');
 const path = require('path');
 const os   = require('os');
 
-// ── DB ───────────────────────────────────────────────────────────────────────
+// ── MANUAL PLAYTIME STORE ─────────────────────────────────────────────────────
+const MANUAL_FILE = path.join(__dirname, 'manual-playtime.json');
+const SESSIONS_FILE = path.join(__dirname, 'playtime-sessions.json');
+
+function loadManual() {
+  try { return JSON.parse(fs.readFileSync(MANUAL_FILE,'utf8')); } catch { return {}; }
+}
+function saveManual(data) {
+  fs.writeFileSync(MANUAL_FILE, JSON.stringify(data, null, 2));
+}
+function loadSessions() {
+  try { return JSON.parse(fs.readFileSync(SESSIONS_FILE,'utf8')); } catch { return {}; }
+}
+
+// ── DB: keys are norm() of actual folder names ────────────────────────────────
+// norm() = lowercase, strip all non-alphanumeric except spaces, collapse spaces
 const DB = [
-  ['aspacefortheunbound',                   1662200,   8,  10,  12],
-  ['a space for the unbound',               1662200,   8,  10,  12],
-  ['arcrunner',                             1852570,   5,   8,  15],
-  ['arc runner',                            1852570,   5,   8,  15],
-  ['bayonetta2',                            2134630,   9,  14,  22],
-  ['bayonetta 2',                           2134630,   9,  14,  22],
-  ['aeternanoctis',                         1517970,  20,  35,  55],
-  ['aeterna noctis',                        1517970,  20,  35,  55],
-  ['60secondsreatomized',                   1012880,   5,  10,  20],
-  ['60 seconds reatomized',                 1012880,   5,  10,  20],
-  ['asterigos',                             1765120,  20,  28,  40],
-  ['ashen',                                  649950,  15,  22,  35],
-  ['atelieryumia',                          2634740,  40,  60, 100],
-  ['atelier yumia',                         2634740,  40,  60, 100],
-  ['banishers ghosts of new eden',          1771950,  18,  25,  35],
-  ['banishers',                             1771950,  18,  25,  35],
-  ['bayonetta origins cereza',              1259790,  12,  17,  25],
-  ['bayonetta',                              460790,  10,  15,  25],
-  ['creaks',                                1227380,   8,  10,  12],
-  ['crosscode',                              368340,  23,  35,  55],
-  ['cross code',                             368340,  23,  35,  55],
-  ['curseofthedeadgods',                   1123770,  15,  30,  60],
-  ['curse of the dead gods',               1123770,  15,  30,  60],
-  ['helldivers',                             394463,  20,  50, 100],
-  ['hellpoint',                             1148760,  15,  22,  35],
-  ['highlandsong',                          1846020,   5,   7,  10],
-  ['highland song',                         1846020,   5,   7,  10],
-  ['unchartedlegacyofthievescollection',    1659420,   9,  14,  25],
-  ['uncharted legacy of thieves',           1659420,   9,  14,  25],
-  ['uncharted',                             1659420,   9,  14,  25],
-  ['the elder scrolls iv oblivion remastered', 2623190, 40,100,200],
-  ['oblivion remastered',                   2623190,  40, 100, 200],
-  ['the witcher 3 wild hunt',                292030,  51, 103, 173],
-  ['witcher 3',                              292030,  51, 103, 173],
-  ['mafia definitive edition',              1030840,  11,  15,  20],
-  ['mafia',                                 1030840,  11,  15,  20],
-  ['metal gear solid 3 snake eater master collection', 2131630,16,22,30],
-  ['metal gear solid 3',                    2131630,  16,  22,  30],
-  ['metal gear solid  master collection',   1343400,  12,  18,  25],
-  ['metal gear solid master collection',    1343400,  12,  18,  25],
-  ['metal gear rising revengeance',          235460,   6,  10,  20],
-  ['metal gear rising',                      235460,   6,  10,  20],
-  ['south of midnight',                     1643280,   9,  13,  18],
-  ['cult of the lamb',                      1313140,  12,  20,  35],
-  ['yakuza 3 remastered',                   1088710,  18,  30,  60],
-  ['yakuza 3',                              1088710,  18,  30,  60],
-  ['blooonstd6',                             960090,  20,  60, 200],
-  ['bloons td 6',                            960090,  20,  60, 200],
-  ['dragon ball sparking zero',             2305180,  12,  30,  80],
-  ['dragon ball xeno verse',                 323470,  15,  40, 100],
-  ['dragon ball xenoverse',                  323470,  15,  40, 100],
-  ['dragon quest vii reimagined',            320010, 100, 130, 180],
-  ['dragon quest vii',                       320010, 100, 130, 180],
-  ['prince of persia the forgotten sands',    33420,   8,  10,  15],
-  ['prince of persia',                        33420,   8,  12,  18],
-  ['ninjagaiden 2 black',                   1369970,   9,  14,  30],
-  ['ninja gaiden 2 black',                  1369970,   9,  14,  30],
-  ['ninja gaiden 2',                        1369970,   9,  14,  30],
-  ['sonic unleashed',                         71280,  10,  20,  40],
-  ['wolfenstein ii the new colossus',        612880,  10,  14,  20],
-  ['wolfenstein ii',                         612880,  10,  14,  20],
-  ['rise of the ronin',                     2701660,  40,  70, 120],
-  ['kenshi',                                 233860,  60, 150, 300],
-  ['indika',                                2163630,   5,   6,   8],
-  ['south park stick of truth',              213670,  12,  16,  22],
-  ['south park the stick of truth',          213670,  12,  16,  22],
-  ['elden ring nightreign',                 2626680,  20,  35,  60],
-  ['elden ring',                            1245620,  58,  95, 134],
-  ['mindseye',                              2881650,  10,  15,  20],
-  ['despelote',                             2476790,   3,   4,   5],
-  ['bopathoftheteallotus',                  1819460,   8,  12,  18],
-  ['bo path of the teal lotus',             1819460,   8,  12,  18],
-  ['blazblueentropyeffect',                 1479610,  15,  25,  40],
-  ['blazblue entropy effect',               1479610,  15,  25,  40],
-  ['ultros',                                1902960,  12,  18,  25],
-  ['spiritfall',                            1894700,  10,  20,  40],
-  ['tailsofiron',                           1624800,  12,  18,  25],
-  ['tails of iron',                         1624800,  12,  18,  25],
-  ['slave zero x',                          1447920,   6,   9,  15],
-  ['slave zero',                            1447920,   6,   9,  15],
-  ['eternights',                            1902530,  10,  12,  15],
-  ['the invincible',                        1641400,   6,   8,  10],
-  ['harold halibut',                        1892170,   8,  10,  12],
-  ['dustborn',                              2090130,  12,  15,  20],
-  ['no more heroes 3',                      1923480,  10,  15,  25],
-  ['no more heroes',                        1923480,  10,  15,  25],
-  ['severedsteel',                          1266570,   5,   8,  15],
-  ['severed steel',                         1266570,   5,   8,  15],
-  ['untilthen',                             1574970,  10,  12,  14],
-  ['until then',                            1574970,  10,  12,  14],
-  ['therogueprinceofpersia',               1899570,  12,  20,  40],
-  ['the rogue prince of persia',            1899570,  12,  20,  40],
-  ['rogue prince of persia',                1899570,  12,  20,  40],
-  ['the legend of zelda echoes of wisdom',  2966306,  25,  40,  60],
-  ['legend of zelda echoes of wisdom',      2966306,  25,  40,  60],
-  ['inmot',                                 1591930,   4,   5,   7],
-  ['in motion',                             1591930,   4,   5,   7],
+  // key (norm of folder name)                           steamId   main extra complete
+  ['aspacefortheunbound',                                1662200,   8,  10,  12],
+  ['a space for the unbound',                            1662200,   8,  10,  12],
+  ['arcrunner',                                          1852570,   5,   8,  15],
+  ['arc runner',                                         1852570,   5,   8,  15],
+  ['bayonetta2',                                         2134630,   9,  14,  22],
+  ['bayonetta 2',                                        2134630,   9,  14,  22],
+  ['aeternanoctis',                                      1517970,  20,  35,  55],
+  ['aeterna noctis',                                     1517970,  20,  35,  55],
+  ['60secondsreatomized',                                1012880,   5,  10,  20],
+  ['60 seconds reatomized',                              1012880,   5,  10,  20],
+  ['asterigos',                                          1765120,  20,  28,  40],
+  ['ashen',                                               649950,  15,  22,  35],
+  ['atelieryumia',                                       2634740,  40,  60, 100],
+  ['atelier yumia',                                      2634740,  40,  60, 100],
+  // Banishers — two folder names exist
+  ['banishers ghosts of new eden',                       1771950,  18,  25,  35],
+  ['banishers',                                          1771950,  18,  25,  35],
+  // Bayonetta Origins
+  ['bayonettaoriginscereza',                             1259790,  12,  17,  25],
+  ['bayonetta origins cereza and the lost demon',        1259790,  12,  17,  25],
+  ['bayonetta origins cereza',                           1259790,  12,  17,  25],
+  ['bayonetta',                                           460790,  10,  15,  25],
+  ['creaks',                                             1227380,   8,  10,  12],
+  ['crosscode',                                           368340,  23,  35,  55],
+  ['cross code',                                          368340,  23,  35,  55],
+  ['curseofthedeadgods',                                 1123770,  15,  30,  60],
+  ['curse of the dead gods',                             1123770,  15,  30,  60],
+  ['helldivers',                                          394463,  20,  50, 100],
+  ['hellpoint',                                          1148760,  15,  22,  35],
+  ['highlandsong',                                       1846020,   5,   7,  10],
+  ['highland song',                                      1846020,   5,   7,  10],
+  // Uncharted — actual folder: UNCHARTEDLegacyofThievesCollection
+  ['unchartedlegacyofthievescollection',                 1659420,   9,  14,  25],
+  ['uncharted legacy of thieves collection',             1659420,   9,  14,  25],
+  ['uncharted legacy of thieves',                        1659420,   9,  14,  25],
+  ['uncharted',                                          1659420,   9,  14,  25],
+  // Oblivion — actual folder: "The Elder Scrolls IV- Oblivion Remastered"
+  ['the elder scrolls iv oblivion remastered',           2623190,  40, 100, 200],
+  ['elder scrolls iv oblivion remastered',               2623190,  40, 100, 200],
+  ['oblivion remastered',                                2623190,  40, 100, 200],
+  // Witcher — actual folder: "The Witcher 3- Wild Hunt"
+  ['the witcher 3 wild hunt',                             292030,  51, 103, 173],
+  ['witcher 3 wild hunt',                                 292030,  51, 103, 173],
+  ['witcher 3',                                           292030,  51, 103, 173],
+  // Mafia — actual folder: "Mafia- Definitive Edition"
+  ['mafia definitive edition',                           1030840,  11,  15,  20],
+  ['mafia',                                              1030840,  11,  15,  20],
+  // MGS3 — actual folder: "METAL GEAR SOLID 3- Snake Eater  Master Collection"
+  ['metal gear solid 3 snake eater master collection',   2131630,  16,  22,  30],
+  ['metal gear solid 3',                                 2131630,  16,  22,  30],
+  // MGS Master Collection — actual folder: "METAL GEAR SOLID  Master Collection"
+  ['metal gear solid master collection',                 1343400,  12,  18,  25],
+  ['metal gear solid  master collection',                1343400,  12,  18,  25],
+  // Metal Gear Rising — actual folder: "Metal Gear Rising- Revengeance"
+  ['metal gear rising revengeance',                       235460,   6,  10,  20],
+  ['metal gear rising',                                   235460,   6,  10,  20],
+  ['south of midnight',                                  1643280,   9,  13,  18],
+  ['cult of the lamb',                                   1313140,  12,  20,  35],
+  ['yakuza 3 remastered',                                1088710,  18,  30,  60],
+  ['yakuza 3',                                           1088710,  18,  30,  60],
+  ['bloonstd6',                                           960090,  20,  60, 200],
+  ['bloons td 6',                                         960090,  20,  60, 200],
+  // Dragon Ball — actual folder: "dragon-ball-sparking-zero"
+  ['dragon ball sparking zero',                          2305180,  12,  30,  80],
+  ['dragon ball xenoverse',                               323470,  15,  40, 100],
+  // Dragon Quest — actual folder: "dragon-quest-vii-reimagined"
+  ['dragon quest vii reimagined',                         320010, 100, 130, 180],
+  ['dragon quest vii',                                    320010, 100, 130, 180],
+  // Prince of Persia — actual folder: "Prince of Persia- The Forgotten Sands"
+  ['prince of persia the forgotten sands',                 33420,   8,  10,  15],
+  ['prince of persia',                                     33420,   8,  12,  18],
+  // Ninja Gaiden — actual folder: "NINJA GAIDEN 2 Black"
+  ['ninja gaiden 2 black',                               1369970,   9,  14,  30],
+  ['ninja gaiden 2',                                     1369970,   9,  14,  30],
+  ['sonic unleashed',                                      71280,  10,  20,  40],
+  // Wolfenstein — actual folder: "Wolfenstein II- The New Colossus"
+  ['wolfenstein ii the new colossus',                     612880,  10,  14,  20],
+  ['wolfenstein ii',                                      612880,  10,  14,  20],
+  // Rise of the Ronin — actual folder: "Rise of the Ronin"
+  ['rise of the ronin',                                  2701660,  40,  70, 120],
+  ['kenshi',                                              233860,  60, 150, 300],
+  ['indika',                                             2163630,   5,   6,   8],
+  // South Park — actual folder: "South Park- The Stick of Truth"
+  ['south park the stick of truth',                       213670,  12,  16,  22],
+  ['south park stick of truth',                           213670,  12,  16,  22],
+  ['elden ring nightreign',                              2626680,  20,  35,  60],
+  ['elden ring',                                         1245620,  58,  95, 134],
+  ['mindseye',                                           2881650,  10,  15,  20],
+  ['despelote',                                          2476790,   3,   4,   5],
+  // Bo — actual folder: "bopathoftheteallotus"
+  ['bopathoftheteallotus',                               1819460,   8,  12,  18],
+  ['bo path of the teal lotus',                          1819460,   8,  12,  18],
+  // BlazBlue — actual folder: "blazblueentropyeffect"
+  ['blazblueentropyeffect',                              1479610,  15,  25,  40],
+  ['blazblue entropy effect',                            1479610,  15,  25,  40],
+  ['ultros',                                             1902960,  12,  18,  25],
+  ['spiritfall',                                         1894700,  10,  20,  40],
+  // Tails of Iron — actual folder: "tailsofiron"
+  ['tailsofiron',                                        1624800,  12,  18,  25],
+  ['tails of iron',                                      1624800,  12,  18,  25],
+  // Slave Zero — actual folder: "slave-zero-x"
+  ['slave zero x',                                       1447920,   6,   9,  15],
+  ['slave zero',                                         1447920,   6,   9,  15],
+  ['eternights',                                         1902530,  10,  12,  15],
+  // The Invincible — actual folder: "the-invincible"
+  ['the invincible',                                     1641400,   6,   8,  10],
+  ['invincible',                                         1641400,   6,   8,  10],
+  // Harold Halibut — actual folder: "harold-halibut"
+  ['harold halibut',                                     1892170,   8,  10,  12],
+  ['dustborn',                                           2090130,  12,  15,  20],
+  // No More Heroes — actual folder: "no-more-heroes-3"
+  ['no more heroes 3',                                   1923480,  10,  15,  25],
+  ['no more heroes',                                     1923480,  10,  15,  25],
+  // Severed Steel — actual folder: "severedsteel"
+  ['severedsteel',                                       1266570,   5,   8,  15],
+  ['severed steel',                                      1266570,   5,   8,  15],
+  // Until Then — actual folder: "untilthen"
+  ['untilthen',                                          1574970,  10,  12,  14],
+  ['until then',                                         1574970,  10,  12,  14],
+  // Rogue Prince — actual folder: "therogueprinceofpersia"
+  ['therogueprinceofpersia',                             1899570,  12,  20,  40],
+  ['the rogue prince of persia',                         1899570,  12,  20,  40],
+  ['rogue prince of persia',                             1899570,  12,  20,  40],
+  // Zelda — actual folder: "the-legend-of-zelda-echoes-of-wisdom"
+  ['the legend of zelda echoes of wisdom',               2966306,  25,  40,  60],
+  ['legend of zelda echoes of wisdom',                   2966306,  25,  40,  60],
+  ['inmot',                                              1591930,   4,   5,   7],
+  ['in mot',                                             1591930,   4,   5,   7],
 ];
 
-const KNOWN_PLAYTIMES = {
-  'witcher 3': 38, 'the witcher 3 wild hunt': 38,
-  'bayonetta 2': 2, 'bayonetta2': 2,
-  'mafia definitive edition': 1,
-  'ninjagaiden 2 black': 1, 'ninja gaiden 2 black': 1,
-  'indika': 1, 'tailsofiron': 0.5, 'tails of iron': 0.5,
-};
+const SKIP = new Set(['redistributables','steamworks','directx','vcredist','_commonredist','steamworks shared']);
+const GAME_DIRS = ['F:\\Games','E:\\Games','C:\\Program Files (x86)\\Steam\\steamapps\\common'];
 
-const KNOWN_SAVES = [
-  { game:'witcher 3',    p: path.join(os.homedir(),'Documents','The Witcher 3','gamesaves') },
-  { game:'ninja gaiden', p: path.join(os.homedir(),'AppData','Local','NINJAGAIDEN2BLACK') },
-  { game:'indika',       p: path.join(os.homedir(),'AppData','Local','Indika') },
-  { game:'tailsofiron',  p: path.join(os.homedir(),'AppData','Local','ThankYouVeryCool') },
-];
-
-const SKIP = new Set(['redistributables','steamworks','directx','vcredist','_commonredist']);
-const GAME_DIRS = ['E:\\Games','F:\\Games','C:\\Program Files (x86)\\Steam\\steamapps\\common'];
-
-// ── UTILS ────────────────────────────────────────────────────────────────────
+// ── UTILS ──────────────────────────────────────────────────────────────────────
 function splitName(r){
-  let s=r.replace(/[-_]/g,' ');
-  s=s.replace(/([a-z])([A-Z])/g,'$1 $2');
+  // Replace dashes/underscores with space
+  let s=r.replace(/[-_]+/g,' ');
+  // Insert space before digit sequences (e.g. "Witcher3" → "Witcher 3")
   s=s.replace(/([a-zA-Z])(\d)/g,'$1 $2');
   s=s.replace(/(\d)([a-zA-Z])/g,'$1 $2');
+  // CamelCase: only split lowercase→uppercase (not ALL-CAPS words)
+  s=s.replace(/([a-z])([A-Z][a-z])/g,'$1 $2');
   return s.replace(/\s+/g,' ').trim();
 }
 function norm(s){
-  return splitName(s).toLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
+  // Lowercase, strip ALL non-alphanum except spaces, collapse spaces
+  return s.toLowerCase()
+    .replace(/[-_]+/g,' ')
+    .replace(/[^a-z0-9 ]/g,' ')
+    .replace(/\s+/g,' ').trim();
 }
 function fh(h){
   if(h===null||h===undefined)return'?';
@@ -237,47 +313,31 @@ function pct(p,t){return(!p||!t)?0:Math.min(100,p/t*100);}
 
 function lookupDB(raw){
   const n=norm(raw);
+  // Sort by key length descending (longest match wins)
   const sorted=[...DB].sort((a,b)=>b[0].length-a[0].length);
+  // Pass 1: exact match
   for(const[key,steamId,main,extra,complete] of sorted){
-    if(n===key||n.includes(key)||key.includes(n))
+    if(n===key) return{steamId,main,extra,complete};
+  }
+  // Pass 2: folder name contains DB key or DB key contains folder name
+  for(const[key,steamId,main,extra,complete] of sorted){
+    if(n.includes(key)||key.includes(n)) return{steamId,main,extra,complete};
+  }
+  // Pass 3: all DB key words appear in folder name (word-set subset match)
+  for(const[key,steamId,main,extra,complete] of sorted){
+    const kWords=key.split(' ').filter(w=>w.length>2);
+    if(kWords.length>0 && kWords.every(w=>n.includes(w)))
       return{steamId,main,extra,complete};
   }
   return null;
 }
 
-function getSaveDate(raw){
-  const n=norm(raw);
-  for(const e of KNOWN_SAVES){
-    if(n.includes(norm(e.game))||norm(e.game).includes(n)){
-      try{
-        if(fs.existsSync(e.p)){
-          const files=fs.readdirSync(e.p);
-          const ext=['.sav','.save','.sl2','.ess'];
-          const times=files
-            .filter(f=>ext.includes(path.extname(f).toLowerCase()))
-            .map(f=>{try{return fs.statSync(path.join(e.p,f)).mtime.getTime();}catch(er){return 0;}})
-            .filter(t=>t>0).sort((a,b)=>a-b);
-          if(times.length)return new Date(times[times.length-1]);
-        }
-      }catch(er){}
-    }
-  }
-  return null;
-}
-
-function getPlaytime(raw){
-  const n=norm(raw);
-  for(const[k,v] of Object.entries(KNOWN_PLAYTIMES))
-    if(n===norm(k)||n.includes(norm(k))||norm(k).includes(n))return v;
-  return null;
-}
-
-// ── SCAN (synchronous, runs directly in renderer — nodeIntegration:true) ─────
-function scanGames(){
+// ── SCAN ───────────────────────────────────────────────────────────────────────
+function scanGames(manual, sessions){
   const games=[], seen=new Set();
   for(const gd of GAME_DIRS){
     let entries;
-    try{entries=fs.readdirSync(gd,{withFileTypes:true});}catch(e){continue;}
+    try{entries=fs.readdirSync(gd,{withFileTypes:true});}catch{continue;}
     for(const e of entries){
       if(!e.isDirectory())continue;
       const raw=e.name, lo=raw.toLowerCase();
@@ -285,72 +345,129 @@ function scanGames(){
       if([...SKIP].some(s=>lo.includes(s)))continue;
       seen.add(lo);
       const db=lookupDB(raw);
-      const saveDate=getSaveDate(raw);
-      const played=getPlaytime(raw);
+      const steamId=db?String(db.steamId):null;
+      const key=steamId||raw.toLowerCase().replace(/[^a-z0-9]/g,'');
+
+      // Playtime = manual entry + auto-tracked sessions
+      const manualHrs=manual[key]||0;
+      const sessionHrs=sessions[key]||0;
+      const played=manualHrs+sessionHrs > 0 ? manualHrs+sessionHrs : null;
+
       const main=db?db.main:null;
       const remaining=(played!==null&&main!==null)?Math.max(0,main-played):main;
       games.push({
         name:raw, display:splitName(raw),
-        steamId:db?db.steamId:null,
-        saveDate:saveDate?saveDate.toISOString():null,
-        played, main, extra:db?db.extra:null, remaining, inDB:!!db
+        steamId, key,
+        played, main, extra:db?db.extra:null, remaining,
+        inDB:!!db
       });
     }
   }
-  games.sort((a,b)=>{
-    if(a.saveDate&&!b.saveDate)return-1;
-    if(!a.saveDate&&b.saveDate)return 1;
-    return a.display.localeCompare(b.display);
-  });
   return games;
 }
 
-// ── STATE ────────────────────────────────────────────────────────────────────
+// ── STATE ──────────────────────────────────────────────────────────────────────
 let all=[], filter='all', sortMode='alpha';
+let activeSteamIds=new Set();
 const artCache={};
-
-// ── ART ──────────────────────────────────────────────────────────────────────
-const LS_KEY='gt-art-v3';
+const LS_KEY='gt-art-v4';
 let artPersist={};
-try{artPersist=JSON.parse(localStorage.getItem(LS_KEY)||'{}');}catch(e){}
-function saveArt(){try{localStorage.setItem(LS_KEY,JSON.stringify(artPersist));}catch(e){}}
+try{artPersist=JSON.parse(localStorage.getItem(LS_KEY)||'{}');}catch{}
+function saveArt(){try{localStorage.setItem(LS_KEY,JSON.stringify(artPersist));}catch{}}
 
 function steamUrls(id){return[
   `https://cdn.akamai.steamstatic.com/steam/apps/${id}/header.jpg`,
   `https://cdn.cloudflare.steamstatic.com/steam/apps/${id}/header.jpg`,
   `https://cdn.akamai.steamstatic.com/steam/apps/${id}/capsule_616x353.jpg`,
 ];}
-
 function loadArt(g,imgEl,phEl){
   const k=g.name;
   if(artPersist[k]&&artPersist[k]!=='none'){showArt(artPersist[k],imgEl,phEl);return;}
   if(artCache[k]==='loading'||artCache[k]==='none')return;
   artCache[k]='loading';
   (async()=>{
-    const tryId=async(id)=>{
-      for(const url of steamUrls(id)){
+    if(g.steamId){
+      for(const url of steamUrls(g.steamId)){
         const ok=await new Promise(r=>{const i=new Image();i.onload=()=>r(true);i.onerror=()=>r(false);i.src=url;});
-        if(ok){artCache[k]=url;artPersist[k]=url;saveArt();showArt(url,imgEl,phEl);return true;}
+        if(ok){artCache[k]=url;artPersist[k]=url;saveArt();showArt(url,imgEl,phEl);return;}
       }
-      return false;
-    };
-    if(g.steamId&&await tryId(g.steamId))return;
+    }
     artCache[k]='none';
   })();
 }
 function showArt(url,imgEl,phEl){imgEl.src=url;imgEl.style.display='block';if(phEl)phEl.style.display='none';}
 
-// ── RENDER ───────────────────────────────────────────────────────────────────
+async function refreshActive(){
+  try{
+    const active=await ipcRenderer.invoke('get-active-sessions');
+    activeSteamIds=new Set(Object.keys(active));
+  }catch{}
+}
+
+// ── MODAL ──────────────────────────────────────────────────────────────────────
+let editingKey=null;
+function openEdit(key, displayName, currentHrs){
+  editingKey=key;
+  document.getElementById('modal-title').textContent=displayName;
+  document.getElementById('modal-sub').textContent=
+    currentHrs>0
+      ? `Currently set to ${fh(currentHrs)}. Update with your total hours played.`
+      : `How many hours have you played so far? App will track future sessions automatically.`;
+  document.getElementById('modal-input').value=currentHrs||'';
+  document.getElementById('modal').classList.add('show');
+  setTimeout(()=>document.getElementById('modal-input').focus(),50);
+}
+function closeModal(e){
+  if(e&&e.target!==document.getElementById('modal'))return;
+  document.getElementById('modal').classList.remove('show');
+  editingKey=null;
+}
+function saveModal(){
+  const hrs=parseFloat(document.getElementById('modal-input').value)||0;
+  if(editingKey!==null){
+    const manual=loadManual();
+    manual[editingKey]=hrs;
+    saveManual(manual);
+    // Update in-memory
+    const g=all.find(x=>x.key===editingKey);
+    if(g){
+      const sessions=loadSessions();
+      const sessionHrs=sessions[editingKey]||0;
+      g.played=hrs+sessionHrs;
+      if(g.main)g.remaining=Math.max(0,g.main-g.played);
+    }
+    render();
+  }
+  document.getElementById('modal').classList.remove('show');
+  editingKey=null;
+}
+
+// Enter key in modal
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&editingKey!==null)saveModal();
+  if(e.key==='Escape')document.getElementById('modal').classList.remove('show');
+});
+
+// ── RENDER ─────────────────────────────────────────────────────────────────────
 function cardBody(g){
-  const hp=g.played>0, ht=g.main!==null;
+  const hp=g.played&&g.played>0, ht=g.main!==null;
   const p=pct(g.played,g.main);
   const fc=p>=90?'danger':p>=65?'warn':'';
+  const isLive=g.steamId&&activeSteamIds.has(g.steamId);
+
+  const ptLabel=hp ? fh(g.played)+' played' : 'Tap to set hours';
+  const ptClass=hp ? 'ph' : 'ph unplayed';
+
   return`<div class="card-name" title="${g.name}">${g.display}</div>
-${ht?`<div class="prog-row"><span class="ph">${hp?fh(g.played)+' played':'Not started'}</span><span class="tot">${fh(g.main)} main</span></div>
-<div class="prog-bg"><div class="prog-fill ${fc}" style="width:${p}%"></div></div>`:''}
+${ht?`<div class="prog-row">
+  <span class="${ptClass}" onclick="openEdit('${g.key}','${g.display.replace(/'/g,"\\'")}',${g.played||0})">${ptLabel}</span>
+  <span class="tot">${fh(g.main)} main</span>
+</div>
+<div class="prog-bg"><div class="prog-fill ${fc}" style="width:${p}%"></div></div>`
+:`<div class="prog-row"><span class="ph unplayed" onclick="openEdit('${g.key}','${g.display.replace(/'/g,"\\'")}',${g.played||0})">Tap to set hours</span></div><div style="height:14px"></div>`}
 <div class="card-foot">
   <span class="badge ${hp?'bp':ht?'bu':'bn'}">${hp?'▶ Played':ht?'⏸ Unplayed':'⏱ Unknown'}</span>
-  <span class="remain">${ht&&g.remaining!==null?'<b>'+fh(g.remaining)+'</b> left':''}</span>
+  <span class="remain">${ht&&g.remaining!==null&&hp?'<b>'+fh(g.remaining)+'</b> left':''}</span>
 </div>`;
 }
 
@@ -361,21 +478,26 @@ function render(){
   if(filter==='played')   list=list.filter(g=>g.played&&g.played>0);
   if(filter==='unplayed') list=list.filter(g=>!g.played||g.played===0);
   if(filter==='time')     list=list.filter(g=>g.main!==null);
-  if(sortMode==='alpha')    list.sort((a,b)=>a.display.localeCompare(b.display));
-  if(sortMode==='longest')  list.sort((a,b)=>(b.main??-1)-(a.main??-1));
-  if(sortMode==='shortest') list.sort((a,b)=>(a.main??99999)-(b.main??99999));
+  if(sortMode==='alpha')   list.sort((a,b)=>a.display.localeCompare(b.display));
+  if(sortMode==='played')  list.sort((a,b)=>(b.played||0)-(a.played||0));
+  if(sortMode==='longest') list.sort((a,b)=>(b.main??-1)-(a.main??-1));
+  if(sortMode==='short')   list.sort((a,b)=>(a.main??99999)-(b.main??99999));
 
   const pl=all.filter(g=>g.played&&g.played>0);
   document.getElementById('cnt-total').textContent=all.length;
   document.getElementById('cnt-played').textContent=pl.length;
   document.getElementById('cnt-hrs').textContent=Math.round(pl.reduce((s,g)=>s+(g.played||0),0))+'h';
 
-  if(!list.length){document.getElementById('content').innerHTML='<div style="text-align:center;padding:70px;color:#333"><h3>No games found</h3></div>';return;}
+  if(!list.length){
+    document.getElementById('content').innerHTML='<div style="text-align:center;padding:80px;color:#333"><h3>No games found</h3></div>';
+    return;
+  }
 
   const cards=list.map(g=>{
-    const id=g.name.replace(/[^a-z0-9]/gi,'');
-    return`<div class="card">
-${g.saveDate?'<div class="save-dot">SAVE</div>':''}
+    const id=g.name.replace(/[^a-z0-9]/gi,'_');
+    const isLive=g.steamId&&activeSteamIds.has(g.steamId);
+    return`<div class="card${isLive?' live-card':''}">
+${isLive?'<div class="live-badge">▶ PLAYING</div>':''}
 <div class="art-wrap">
   <img class="art-img" id="img-${id}" style="display:none" alt="">
   <div class="art-ph" id="ph-${id}"><div class="art-letter">${g.name[0].toUpperCase()}</div></div>
@@ -385,10 +507,11 @@ ${g.saveDate?'<div class="save-dot">SAVE</div>':''}
 </div>`;
   }).join('');
 
-  document.getElementById('content').innerHTML=`<div class="grid-wrap"><div class="section-lbl">${list.length} game${list.length!==1?'s':''}</div><div class="grid">${cards}</div></div>`;
+  document.getElementById('content').innerHTML=
+    `<div class="grid-wrap"><div class="section-lbl">${list.length} game${list.length!==1?'s':''} — click any playtime to edit</div><div class="grid">${cards}</div></div>`;
 
   list.forEach((g,i)=>{
-    const id=g.name.replace(/[^a-z0-9]/gi,'');
+    const id=g.name.replace(/[^a-z0-9]/gi,'_');
     const imgEl=document.getElementById('img-'+id);
     const phEl=document.getElementById('ph-'+id);
     if(imgEl&&phEl)setTimeout(()=>loadArt(g,imgEl,phEl),i*40);
@@ -398,10 +521,26 @@ ${g.saveDate?'<div class="save-dot">SAVE</div>':''}
 function setF(f,btn){filter=f;document.querySelectorAll('.fbtn:not([id^="s-"])').forEach(b=>b.classList.remove('on'));btn.classList.add('on');render();}
 function setSort(m,btn){sortMode=m;document.querySelectorAll('[id^="s-"]').forEach(b=>b.classList.remove('on'));btn.classList.add('on');render();}
 
-// ── INIT (synchronous scan right here, no IPC needed) ────────────────────────
-function init(){
-  all=scanGames();
+// ── LIVE UPDATE ────────────────────────────────────────────────────────────────
+ipcRenderer.on('playtime-updated',(_,{appId,hours})=>{
+  const g=all.find(x=>x.key===appId||x.steamId===appId);
+  if(g){
+    const manual=loadManual();
+    g.played=(manual[g.key]||0)+hours;
+    if(g.main)g.remaining=Math.max(0,g.main-g.played);
+    render();
+  }
+});
+
+// ── INIT ───────────────────────────────────────────────────────────────────────
+async function init(){
+  const manual=loadManual();
+  const sessions=loadSessions();
+  all=scanGames(manual,sessions);
+  try{ await ipcRenderer.invoke('start-tracker',all); }catch{}
+  await refreshActive();
   render();
+  setInterval(async()=>{ await refreshActive(); render(); },15000);
 }
 init();
 </script>
