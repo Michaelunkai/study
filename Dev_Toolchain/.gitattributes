@@ -1,0 +1,10 @@
+*.exe filter=lfs diff=lfs merge=lfs -text
+programming/.NET/projects/C\#/StartupMaster/dist/StartupMaster_v1.1/StartupMaster.exe filter=lfs diff=lfs merge=lfs -text
+programming/.NET/projects/C\#/StartupMaster/dist/StartupMaster_v1.2/StartupMaster.exe filter=lfs diff=lfs merge=lfs -text
+programming/.NET/projects/C\#/StartupMaster/dist/StartupMaster_v1.3/StartupMaster.exe filter=lfs diff=lfs merge=lfs -text
+programming/.NET/projects/C\#/StartupMaster/dist/StartupMaster_v1.4/StartupMaster.exe filter=lfs diff=lfs merge=lfs -text
+programming/.NET/projects/C\#/StartupMaster/dist/StartupMaster_v1.5/StartupMaster.exe filter=lfs diff=lfs merge=lfs -text
+programming/.NET/projects/C\#/StartupMaster/dist/StartupMaster_v1.6/StartupMaster.exe filter=lfs diff=lfs merge=lfs -text
+programming/.NET/projects/C\#/StartupMaster/dist/StartupMaster_v1.7_ZeroDelay/StartupMaster.exe filter=lfs diff=lfs merge=lfs -text
+programming/.NET/projects/C\#/OpenClawRunner/dist/OpenClawRunner.exe filter=lfs diff=lfs merge=lfs -text
+programming/.NET/projects/C\#/StartupManagerClean/StartupManager/published/StartupManager.exe filter=lfs diff=lfs merge=lfs -text

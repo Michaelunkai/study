@@ -1,0 +1,301 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "StartupMaster/1.0.0": {
+        "dependencies": {
+          "Microsoft.Win32.TaskScheduler": "2.10.1.0",
+          "ModernWpf": "0.9.6.0",
+          "System.Management": "9.0.0.0",
+          "System.ServiceProcess.ServiceController": "9.0.0.0"
+        },
+        "runtime": {
+          "StartupMaster.dll": {}
+        }
+      },
+      "Microsoft.Win32.TaskScheduler/2.10.1.0": {
+        "runtime": {
+          "Microsoft.Win32.TaskScheduler.dll": {
+            "assemblyVersion": "2.10.1.0",
+            "fileVersion": "2.10.1.0"
+          }
+        },
+        "resources": {
+          "de/Microsoft.Win32.TaskScheduler.resources.dll": {
+            "locale": "de"
+          },
+          "es/Microsoft.Win32.TaskScheduler.resources.dll": {
+            "locale": "es"
+          },
+          "fr/Microsoft.Win32.TaskScheduler.resources.dll": {
+            "locale": "fr"
+          },
+          "it/Microsoft.Win32.TaskScheduler.resources.dll": {
+            "locale": "it"
+          },
+          "pl/Microsoft.Win32.TaskScheduler.resources.dll": {
+            "locale": "pl"
+          },
+          "ru/Microsoft.Win32.TaskScheduler.resources.dll": {
+            "locale": "ru"
+          },
+          "zh-CN/Microsoft.Win32.TaskScheduler.resources.dll": {
+            "locale": "zh-CN"
+          },
+          "zh-Hant/Microsoft.Win32.TaskScheduler.resources.dll": {
+            "locale": "zh-Hant"
+          }
+        }
+      },
+      "ModernWpf/0.9.6.0": {
+        "runtime": {
+          "ModernWpf.dll": {
+            "assemblyVersion": "0.9.6.0",
+            "fileVersion": "0.9.6.0"
+          }
+        },
+        "resources": {
+          "af-ZA/ModernWpf.resources.dll": {
+            "locale": "af-ZA"
+          },
+          "am-ET/ModernWpf.resources.dll": {
+            "locale": "am-ET"
+          },
+          "ar-SA/ModernWpf.resources.dll": {
+            "locale": "ar-SA"
+          },
+          "az-Latn-AZ/ModernWpf.resources.dll": {
+            "locale": "az-Latn-AZ"
+          },
+          "be-BY/ModernWpf.resources.dll": {
+            "locale": "be-BY"
+          },
+          "bg-BG/ModernWpf.resources.dll": {
+            "locale": "bg-BG"
+          },
+          "bn-BD/ModernWpf.resources.dll": {
+            "locale": "bn-BD"
+          },
+          "bs-Latn-BA/ModernWpf.resources.dll": {
+            "locale": "bs-Latn-BA"
+          },
+          "ca-ES/ModernWpf.resources.dll": {
+            "locale": "ca-ES"
+          },
+          "cs-CZ/ModernWpf.resources.dll": {
+            "locale": "cs-CZ"
+          },
+          "da-DK/ModernWpf.resources.dll": {
+            "locale": "da-DK"
+          },
+          "de-DE/ModernWpf.resources.dll": {
+            "locale": "de-DE"
+          },
+          "el-GR/ModernWpf.resources.dll": {
+            "locale": "el-GR"
+          },
+          "en-GB/ModernWpf.resources.dll": {
+            "locale": "en-GB"
+          },
+          "es-ES/ModernWpf.resources.dll": {
+            "locale": "es-ES"
+          },
+          "es-MX/ModernWpf.resources.dll": {
+            "locale": "es-MX"
+          },
+          "et-EE/ModernWpf.resources.dll": {
+            "locale": "et-EE"
+          },
+          "eu-ES/ModernWpf.resources.dll": {
+            "locale": "eu-ES"
+          },
+          "fa-IR/ModernWpf.resources.dll": {
+            "locale": "fa-IR"
+          },
+          "fi-FI/ModernWpf.resources.dll": {
+            "locale": "fi-FI"
+          },
+          "fil-PH/ModernWpf.resources.dll": {
+            "locale": "fil-PH"
+          },
+          "fr-CA/ModernWpf.resources.dll": {
+            "locale": "fr-CA"
+          },
+          "fr-FR/ModernWpf.resources.dll": {
+            "locale": "fr-FR"
+          },
+          "gl-ES/ModernWpf.resources.dll": {
+            "locale": "gl-ES"
+          },
+          "he-IL/ModernWpf.resources.dll": {
+            "locale": "he-IL"
+          },
+          "hi-IN/ModernWpf.resources.dll": {
+            "locale": "hi-IN"
+          },
+          "hr-HR/ModernWpf.resources.dll": {
+            "locale": "hr-HR"
+          },
+          "hu-HU/ModernWpf.resources.dll": {
+            "locale": "hu-HU"
+          },
+          "id-ID/ModernWpf.resources.dll": {
+            "locale": "id-ID"
+          },
+          "is-IS/ModernWpf.resources.dll": {
+            "locale": "is-IS"
+          },
+          "it-IT/ModernWpf.resources.dll": {
+            "locale": "it-IT"
+          },
+          "ja-JP/ModernWpf.resources.dll": {
+            "locale": "ja-JP"
+          },
+          "ka-GE/ModernWpf.resources.dll": {
+            "locale": "ka-GE"
+          },
+          "kk-KZ/ModernWpf.resources.dll": {
+            "locale": "kk-KZ"
+          },
+          "km-KH/ModernWpf.resources.dll": {
+            "locale": "km-KH"
+          },
+          "kn-IN/ModernWpf.resources.dll": {
+            "locale": "kn-IN"
+          },
+          "ko-KR/ModernWpf.resources.dll": {
+            "locale": "ko-KR"
+          },
+          "lo-LA/ModernWpf.resources.dll": {
+            "locale": "lo-LA"
+          },
+          "lt-LT/ModernWpf.resources.dll": {
+            "locale": "lt-LT"
+          },
+          "lv-LV/ModernWpf.resources.dll": {
+            "locale": "lv-LV"
+          },
+          "mk-MK/ModernWpf.resources.dll": {
+            "locale": "mk-MK"
+          },
+          "ml-IN/ModernWpf.resources.dll": {
+            "locale": "ml-IN"
+          },
+          "ms-MY/ModernWpf.resources.dll": {
+            "locale": "ms-MY"
+          },
+          "nb-NO/ModernWpf.resources.dll": {
+            "locale": "nb-NO"
+          },
+          "nl-NL/ModernWpf.resources.dll": {
+            "locale": "nl-NL"
+          },
+          "nn-NO/ModernWpf.resources.dll": {
+            "locale": "nn-NO"
+          },
+          "pl-PL/ModernWpf.resources.dll": {
+            "locale": "pl-PL"
+          },
+          "pt-BR/ModernWpf.resources.dll": {
+            "locale": "pt-BR"
+          },
+          "pt-PT/ModernWpf.resources.dll": {
+            "locale": "pt-PT"
+          },
+          "ro-RO/ModernWpf.resources.dll": {
+            "locale": "ro-RO"
+          },
+          "ru-RU/ModernWpf.resources.dll": {
+            "locale": "ru-RU"
+          },
+          "sk-SK/ModernWpf.resources.dll": {
+            "locale": "sk-SK"
+          },
+          "sl-SI/ModernWpf.resources.dll": {
+            "locale": "sl-SI"
+          },
+          "sq-AL/ModernWpf.resources.dll": {
+            "locale": "sq-AL"
+          },
+          "sr-Latn-RS/ModernWpf.resources.dll": {
+            "locale": "sr-Latn-RS"
+          },
+          "sv-SE/ModernWpf.resources.dll": {
+            "locale": "sv-SE"
+          },
+          "sw-KE/ModernWpf.resources.dll": {
+            "locale": "sw-KE"
+          },
+          "ta-IN/ModernWpf.resources.dll": {
+            "locale": "ta-IN"
+          },
+          "te-IN/ModernWpf.resources.dll": {
+            "locale": "te-IN"
+          },
+          "th-TH/ModernWpf.resources.dll": {
+            "locale": "th-TH"
+          },
+          "tr-TR/ModernWpf.resources.dll": {
+            "locale": "tr-TR"
+          },
+          "uk-UA/ModernWpf.resources.dll": {
+            "locale": "uk-UA"
+          },
+          "uz-Latn-UZ/ModernWpf.resources.dll": {
+            "locale": "uz-Latn-UZ"
+          },
+          "vi-VN/ModernWpf.resources.dll": {
+            "locale": "vi-VN"
+          }
+        }
+      },
+      "System.Management/9.0.0.0": {
+        "runtime": {
+          "System.Management.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.24.52809"
+          }
+        }
+      },
+      "System.ServiceProcess.ServiceController/9.0.0.0": {
+        "runtime": {
+          "System.ServiceProcess.ServiceController.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.24.52809"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "StartupMaster/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.Win32.TaskScheduler/2.10.1.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "ModernWpf/0.9.6.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "System.Management/9.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "System.ServiceProcess.ServiceController/9.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

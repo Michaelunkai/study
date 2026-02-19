@@ -1,0 +1,9 @@
+﻿Thumbs.db
+.DS_Store
+**/nul
+**/.git
+**/mem-agent-mcp/
+
+# Files >=100MB excluded by gitit (GitHub limit)
+AI_and_Machine_Learning/Artificial_Intelligence/cli/claudecode/wrappers/ClawdBot/B/ClawdBotManager.exe
+AI_and_Machine_Learning/Artificial_Intelligence/cli/claudecode/wrappers/ClawdBot/B/BULLETPROOF/ClawdBotManager.exe

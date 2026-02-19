@@ -1,0 +1,38 @@
+name: Deploy to Render
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Trigger Render Deploy
+        if: env.RENDER_DEPLOY_HOOK != ''
+        env:
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+        run: |
+          curl -s -X POST "$RENDER_DEPLOY_HOOK" | jq .
+
+      - name: Build frontend (verify)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: |
+          cd frontend
+          npm ci
+          npm run build
+          echo "✅ Frontend build successful"
+
+      - name: Verify backend deps
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: |
+          cd backend
+          pip install -r requirements.txt
+          python -c "import fastapi, uvicorn, sqlalchemy; print('✅ Backend deps OK')"

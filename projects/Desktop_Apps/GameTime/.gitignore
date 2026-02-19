@@ -1,0 +1,4 @@
+
+# Files >=100MB excluded by gitit (GitHub limit)
+node_modules/electron/dist/electron.exe
+dist/win-unpacked/GameTime.exe

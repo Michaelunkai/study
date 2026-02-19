@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>GameTime</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',sans-serif;background:#0d0d18;color:#e0e0e0;overflow-x:hidden;}
+.header{background:linear-gradient(135deg,#12122a,#1a1a3a 60%,#0f2040);padding:18px 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid #e94560;position:sticky;top:0;z-index:100;box-shadow:0 4px 24px rgba(233,69,96,.25);}
+.logo{display:flex;align-items:center;gap:14px;}
+.logo-icon{width:46px;height:46px;background:linear-gradient(135deg,#e94560,#f5a623);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 4px 12px rgba(233,69,96,.4);}
+.logo-name{font-size:30px;font-weight:900;letter-spacing:-1px;background:linear-gradient(135deg,#e94560,#f5a623);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.logo-sub{font-size:12px;color:#666;margin-top:-3px;}
+.hdr-right{display:flex;align-items:center;gap:14px;}
+.stat{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:20px;padding:6px 15px;font-size:13px;color:#999;}
+.stat b{color:#e94560;}
+#scan-btn{background:linear-gradient(135deg,#e94560,#c0304f);border:none;color:#fff;padding:10px 22px;border-radius:9px;cursor:pointer;font-size:14px;font-weight:700;transition:all .2s;display:flex;align-items:center;gap:7px;}
+#scan-btn:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(233,69,96,.45);}
+.filters{padding:14px 28px;background:#111120;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid rgba(255,255,255,.05);}
+.search{flex:1;min-width:180px;max-width:340px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:9px 16px;color:#fff;font-size:14px;outline:none;}
+.search:focus{border-color:#e94560;}
+.search::placeholder{color:#444;}
+.fbtn{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#888;padding:8px 15px;border-radius:8px;cursor:pointer;font-size:13px;transition:all .2s;}
+.fbtn:hover,.fbtn.on{background:rgba(233,69,96,.14);border-color:#e94560;color:#e94560;}
+.sort-wrap{margin-left:auto;display:flex;align-items:center;gap:8px;}
+.sort-lbl{font-size:12px;color:#555;white-space:nowrap;}
+.grid-wrap{padding:22px 28px;}
+.section-lbl{font-size:12px;font-weight:700;color:#444;text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px;}
+.card{background:#16162a;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.06);transition:all .22s;position:relative;}
+.card:hover{transform:translateY(-5px);border-color:rgba(233,69,96,.5);box-shadow:0 16px 36px rgba(0,0,0,.55);}
+.art-wrap{width:100%;height:126px;overflow:hidden;position:relative;background:#0d0d18;}
+.art-img{width:100%;height:100%;object-fit:cover;display:none;}
+.art-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#16162a,#0f0f22);}
+.art-letter{font-size:58px;font-weight:900;text-transform:uppercase;background:linear-gradient(135deg,#e94560,#f5a623);-webkit-background-clip:text;-webkit-text-fill-color:transparent;opacity:.18;line-height:1;}
+.art-gradient{position:absolute;bottom:0;left:0;right:0;height:50px;background:linear-gradient(transparent,rgba(22,22,42,.95));}
+.save-dot{position:absolute;top:8px;right:8px;background:rgba(74,222,128,.9);color:#000;font-size:9px;font-weight:800;padding:3px 7px;border-radius:5px;text-transform:uppercase;}
+.card-body{padding:11px 13px 13px;}
+.card-name{font-size:13px;font-weight:700;color:#ddd;margin-bottom:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.prog-row{display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px;}
+.prog-row .ph{color:#4ade80;font-weight:700;}
+.prog-row .tot{color:#777;}
+.prog-bg{height:5px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden;margin-bottom:9px;}
+.prog-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#4ade80,#22c55e);}
+.prog-fill.warn{background:linear-gradient(90deg,#f5a623,#ef9013);}
+.prog-fill.danger{background:linear-gradient(90deg,#e94560,#c13554);}
+.card-foot{display:flex;justify-content:space-between;align-items:center;}
+.badge{font-size:10px;padding:3px 8px;border-radius:5px;font-weight:700;text-transform:uppercase;}
+.bp{background:rgba(74,222,128,.12);color:#4ade80;}
+.bu{background:rgba(255,255,255,.05);color:#555;}
+.bn{background:rgba(245,166,35,.1);color:#f5a623;}
+.remain{font-size:11px;color:#777;}
+.remain b{color:#e94560;font-size:12px;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:#0d0d18;}
+::-webkit-scrollbar-thumb{background:#2a2a40;border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:#e94560;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <div class="logo-icon">🎮</div>
+    <div>
+      <div class="logo-name">GameTime</div>
+      <div class="logo-sub">Every game on your PC — tracked</div>
+    </div>
+  </div>
+  <div class="hdr-right">
+    <div class="stat">Games <b id="cnt-total">–</b></div>
+    <div class="stat">Played <b id="cnt-played">–</b></div>
+    <div class="stat">Total hrs <b id="cnt-hrs">–</b></div>
+    <button id="scan-btn" onclick="init()">🔄 Rescan</button>
+  </div>
+</div>
+
+<div class="filters">
+  <input class="search" id="search" type="text" placeholder="🔍  Search games…" oninput="render()">
+  <button class="fbtn on" onclick="setF('all',this)">All</button>
+  <button class="fbtn" onclick="setF('played',this)">▶ Played</button>
+  <button class="fbtn" onclick="setF('unplayed',this)">⏸ Not Started</button>
+  <button class="fbtn" onclick="setF('time',this)">⏱ Time Known</button>
+  <div class="sort-wrap">
+    <span class="sort-lbl">Sort:</span>
+    <button class="fbtn on" id="s-alpha"   onclick="setSort('alpha',this)">A–Z</button>
+    <button class="fbtn"    id="s-longest" onclick="setSort('longest',this)">⏱ Longest</button>
+    <button class="fbtn"    id="s-short"   onclick="setSort('shortest',this)">⚡ Shortest</button>
+  </div>
+</div>
+
+<div id="content"></div>
+
+<script>
+// ── All Node.js APIs available here (nodeIntegration:true) ──────────────────
+const fs   = require('fs');
+const path = require('path');
+const os   = require('os');
+
+// ── DB ───────────────────────────────────────────────────────────────────────
+const DB = [
+  ['aspacefortheunbound',                   1662200,   8,  10,  12],
+  ['a space for the unbound',               1662200,   8,  10,  12],
+  ['arcrunner',                             1852570,   5,   8,  15],
+  ['arc runner',                            1852570,   5,   8,  15],
+  ['bayonetta2',                            2134630,   9,  14,  22],
+  ['bayonetta 2',                           2134630,   9,  14,  22],
+  ['aeternanoctis',                         1517970,  20,  35,  55],
+  ['aeterna noctis',                        1517970,  20,  35,  55],
+  ['60secondsreatomized',                   1012880,   5,  10,  20],
+  ['60 seconds reatomized',                 1012880,   5,  10,  20],
+  ['asterigos',                             1765120,  20,  28,  40],
+  ['ashen',                                  649950,  15,  22,  35],
+  ['atelieryumia',                          2634740,  40,  60, 100],
+  ['atelier yumia',                         2634740,  40,  60, 100],
+  ['banishers ghosts of new eden',          1771950,  18,  25,  35],
+  ['banishers',                             1771950,  18,  25,  35],
+  ['bayonetta origins cereza',              1259790,  12,  17,  25],
+  ['bayonetta',                              460790,  10,  15,  25],
+  ['creaks',                                1227380,   8,  10,  12],
+  ['crosscode',                              368340,  23,  35,  55],
+  ['cross code',                             368340,  23,  35,  55],
+  ['curseofthedeadgods',                   1123770,  15,  30,  60],
+  ['curse of the dead gods',               1123770,  15,  30,  60],
+  ['helldivers',                             394463,  20,  50, 100],
+  ['hellpoint',                             1148760,  15,  22,  35],
+  ['highlandsong',                          1846020,   5,   7,  10],
+  ['highland song',                         1846020,   5,   7,  10],
+  ['unchartedlegacyofthievescollection',    1659420,   9,  14,  25],
+  ['uncharted legacy of thieves',           1659420,   9,  14,  25],
+  ['uncharted',                             1659420,   9,  14,  25],
+  ['the elder scrolls iv oblivion remastered', 2623190, 40,100,200],
+  ['oblivion remastered',                   2623190,  40, 100, 200],
+  ['the witcher 3 wild hunt',                292030,  51, 103, 173],
+  ['witcher 3',                              292030,  51, 103, 173],
+  ['mafia definitive edition',              1030840,  11,  15,  20],
+  ['mafia',                                 1030840,  11,  15,  20],
+  ['metal gear solid 3 snake eater master collection', 2131630,16,22,30],
+  ['metal gear solid 3',                    2131630,  16,  22,  30],
+  ['metal gear solid  master collection',   1343400,  12,  18,  25],
+  ['metal gear solid master collection',    1343400,  12,  18,  25],
+  ['metal gear rising revengeance',          235460,   6,  10,  20],
+  ['metal gear rising',                      235460,   6,  10,  20],
+  ['south of midnight',                     1643280,   9,  13,  18],
+  ['cult of the lamb',                      1313140,  12,  20,  35],
+  ['yakuza 3 remastered',                   1088710,  18,  30,  60],
+  ['yakuza 3',                              1088710,  18,  30,  60],
+  ['blooonstd6',                             960090,  20,  60, 200],
+  ['bloons td 6',                            960090,  20,  60, 200],
+  ['dragon ball sparking zero',             2305180,  12,  30,  80],
+  ['dragon ball xeno verse',                 323470,  15,  40, 100],
+  ['dragon ball xenoverse',                  323470,  15,  40, 100],
+  ['dragon quest vii reimagined',            320010, 100, 130, 180],
+  ['dragon quest vii',                       320010, 100, 130, 180],
+  ['prince of persia the forgotten sands',    33420,   8,  10,  15],
+  ['prince of persia',                        33420,   8,  12,  18],
+  ['ninjagaiden 2 black',                   1369970,   9,  14,  30],
+  ['ninja gaiden 2 black',                  1369970,   9,  14,  30],
+  ['ninja gaiden 2',                        1369970,   9,  14,  30],
+  ['sonic unleashed',                         71280,  10,  20,  40],
+  ['wolfenstein ii the new colossus',        612880,  10,  14,  20],
+  ['wolfenstein ii',                         612880,  10,  14,  20],
+  ['rise of the ronin',                     2701660,  40,  70, 120],
+  ['kenshi',                                 233860,  60, 150, 300],
+  ['indika',                                2163630,   5,   6,   8],
+  ['south park stick of truth',              213670,  12,  16,  22],
+  ['south park the stick of truth',          213670,  12,  16,  22],
+  ['elden ring nightreign',                 2626680,  20,  35,  60],
+  ['elden ring',                            1245620,  58,  95, 134],
+  ['mindseye',                              2881650,  10,  15,  20],
+  ['despelote',                             2476790,   3,   4,   5],
+  ['bopathoftheteallotus',                  1819460,   8,  12,  18],
+  ['bo path of the teal lotus',             1819460,   8,  12,  18],
+  ['blazblueentropyeffect',                 1479610,  15,  25,  40],
+  ['blazblue entropy effect',               1479610,  15,  25,  40],
+  ['ultros',                                1902960,  12,  18,  25],
+  ['spiritfall',                            1894700,  10,  20,  40],
+  ['tailsofiron',                           1624800,  12,  18,  25],
+  ['tails of iron',                         1624800,  12,  18,  25],
+  ['slave zero x',                          1447920,   6,   9,  15],
+  ['slave zero',                            1447920,   6,   9,  15],
+  ['eternights',                            1902530,  10,  12,  15],
+  ['the invincible',                        1641400,   6,   8,  10],
+  ['harold halibut',                        1892170,   8,  10,  12],
+  ['dustborn',                              2090130,  12,  15,  20],
+  ['no more heroes 3',                      1923480,  10,  15,  25],
+  ['no more heroes',                        1923480,  10,  15,  25],
+  ['severedsteel',                          1266570,   5,   8,  15],
+  ['severed steel',                         1266570,   5,   8,  15],
+  ['untilthen',                             1574970,  10,  12,  14],
+  ['until then',                            1574970,  10,  12,  14],
+  ['therogueprinceofpersia',               1899570,  12,  20,  40],
+  ['the rogue prince of persia',            1899570,  12,  20,  40],
+  ['rogue prince of persia',                1899570,  12,  20,  40],
+  ['the legend of zelda echoes of wisdom',  2966306,  25,  40,  60],
+  ['legend of zelda echoes of wisdom',      2966306,  25,  40,  60],
+  ['inmot',                                 1591930,   4,   5,   7],
+  ['in motion',                             1591930,   4,   5,   7],
+];
+
+const KNOWN_PLAYTIMES = {
+  'witcher 3': 38, 'the witcher 3 wild hunt': 38,
+  'bayonetta 2': 2, 'bayonetta2': 2,
+  'mafia definitive edition': 1,
+  'ninjagaiden 2 black': 1, 'ninja gaiden 2 black': 1,
+  'indika': 1, 'tailsofiron': 0.5, 'tails of iron': 0.5,
+};
+
+const KNOWN_SAVES = [
+  { game:'witcher 3',    p: path.join(os.homedir(),'Documents','The Witcher 3','gamesaves') },
+  { game:'ninja gaiden', p: path.join(os.homedir(),'AppData','Local','NINJAGAIDEN2BLACK') },
+  { game:'indika',       p: path.join(os.homedir(),'AppData','Local','Indika') },
+  { game:'tailsofiron',  p: path.join(os.homedir(),'AppData','Local','ThankYouVeryCool') },
+];
+
+const SKIP = new Set(['redistributables','steamworks','directx','vcredist','_commonredist']);
+const GAME_DIRS = ['E:\\Games','F:\\Games','C:\\Program Files (x86)\\Steam\\steamapps\\common'];
+
+// ── UTILS ────────────────────────────────────────────────────────────────────
+function splitName(r){
+  let s=r.replace(/[-_]/g,' ');
+  s=s.replace(/([a-z])([A-Z])/g,'$1 $2');
+  s=s.replace(/([a-zA-Z])(\d)/g,'$1 $2');
+  s=s.replace(/(\d)([a-zA-Z])/g,'$1 $2');
+  return s.replace(/\s+/g,' ').trim();
+}
+function norm(s){
+  return splitName(s).toLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
+}
+function fh(h){
+  if(h===null||h===undefined)return'?';
+  if(h===0)return'<1h';
+  if(h<1)return Math.round(h*60)+'m';
+  return Math.round(h*10)/10+'h';
+}
+function pct(p,t){return(!p||!t)?0:Math.min(100,p/t*100);}
+
+function lookupDB(raw){
+  const n=norm(raw);
+  const sorted=[...DB].sort((a,b)=>b[0].length-a[0].length);
+  for(const[key,steamId,main,extra,complete] of sorted){
+    if(n===key||n.includes(key)||key.includes(n))
+      return{steamId,main,extra,complete};
+  }
+  return null;
+}
+
+function getSaveDate(raw){
+  const n=norm(raw);
+  for(const e of KNOWN_SAVES){
+    if(n.includes(norm(e.game))||norm(e.game).includes(n)){
+      try{
+        if(fs.existsSync(e.p)){
+          const files=fs.readdirSync(e.p);
+          const ext=['.sav','.save','.sl2','.ess'];
+          const times=files
+            .filter(f=>ext.includes(path.extname(f).toLowerCase()))
+            .map(f=>{try{return fs.statSync(path.join(e.p,f)).mtime.getTime();}catch(er){return 0;}})
+            .filter(t=>t>0).sort((a,b)=>a-b);
+          if(times.length)return new Date(times[times.length-1]);
+        }
+      }catch(er){}
+    }
+  }
+  return null;
+}
+
+function getPlaytime(raw){
+  const n=norm(raw);
+  for(const[k,v] of Object.entries(KNOWN_PLAYTIMES))
+    if(n===norm(k)||n.includes(norm(k))||norm(k).includes(n))return v;
+  return null;
+}
+
+// ── SCAN (synchronous, runs directly in renderer — nodeIntegration:true) ─────
+function scanGames(){
+  const games=[], seen=new Set();
+  for(const gd of GAME_DIRS){
+    let entries;
+    try{entries=fs.readdirSync(gd,{withFileTypes:true});}catch(e){continue;}
+    for(const e of entries){
+      if(!e.isDirectory())continue;
+      const raw=e.name, lo=raw.toLowerCase();
+      if(seen.has(lo))continue;
+      if([...SKIP].some(s=>lo.includes(s)))continue;
+      seen.add(lo);
+      const db=lookupDB(raw);
+      const saveDate=getSaveDate(raw);
+      const played=getPlaytime(raw);
+      const main=db?db.main:null;
+      const remaining=(played!==null&&main!==null)?Math.max(0,main-played):main;
+      games.push({
+        name:raw, display:splitName(raw),
+        steamId:db?db.steamId:null,
+        saveDate:saveDate?saveDate.toISOString():null,
+        played, main, extra:db?db.extra:null, remaining, inDB:!!db
+      });
+    }
+  }
+  games.sort((a,b)=>{
+    if(a.saveDate&&!b.saveDate)return-1;
+    if(!a.saveDate&&b.saveDate)return 1;
+    return a.display.localeCompare(b.display);
+  });
+  return games;
+}
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+let all=[], filter='all', sortMode='alpha';
+const artCache={};
+
+// ── ART ──────────────────────────────────────────────────────────────────────
+const LS_KEY='gt-art-v3';
+let artPersist={};
+try{artPersist=JSON.parse(localStorage.getItem(LS_KEY)||'{}');}catch(e){}
+function saveArt(){try{localStorage.setItem(LS_KEY,JSON.stringify(artPersist));}catch(e){}}
+
+function steamUrls(id){return[
+  `https://cdn.akamai.steamstatic.com/steam/apps/${id}/header.jpg`,
+  `https://cdn.cloudflare.steamstatic.com/steam/apps/${id}/header.jpg`,
+  `https://cdn.akamai.steamstatic.com/steam/apps/${id}/capsule_616x353.jpg`,
+];}
+
+function loadArt(g,imgEl,phEl){
+  const k=g.name;
+  if(artPersist[k]&&artPersist[k]!=='none'){showArt(artPersist[k],imgEl,phEl);return;}
+  if(artCache[k]==='loading'||artCache[k]==='none')return;
+  artCache[k]='loading';
+  (async()=>{
+    const tryId=async(id)=>{
+      for(const url of steamUrls(id)){
+        const ok=await new Promise(r=>{const i=new Image();i.onload=()=>r(true);i.onerror=()=>r(false);i.src=url;});
+        if(ok){artCache[k]=url;artPersist[k]=url;saveArt();showArt(url,imgEl,phEl);return true;}
+      }
+      return false;
+    };
+    if(g.steamId&&await tryId(g.steamId))return;
+    artCache[k]='none';
+  })();
+}
+function showArt(url,imgEl,phEl){imgEl.src=url;imgEl.style.display='block';if(phEl)phEl.style.display='none';}
+
+// ── RENDER ───────────────────────────────────────────────────────────────────
+function cardBody(g){
+  const hp=g.played>0, ht=g.main!==null;
+  const p=pct(g.played,g.main);
+  const fc=p>=90?'danger':p>=65?'warn':'';
+  return`<div class="card-name" title="${g.name}">${g.display}</div>
+${ht?`<div class="prog-row"><span class="ph">${hp?fh(g.played)+' played':'Not started'}</span><span class="tot">${fh(g.main)} main</span></div>
+<div class="prog-bg"><div class="prog-fill ${fc}" style="width:${p}%"></div></div>`:''}
+<div class="card-foot">
+  <span class="badge ${hp?'bp':ht?'bu':'bn'}">${hp?'▶ Played':ht?'⏸ Unplayed':'⏱ Unknown'}</span>
+  <span class="remain">${ht&&g.remaining!==null?'<b>'+fh(g.remaining)+'</b> left':''}</span>
+</div>`;
+}
+
+function render(){
+  const q=document.getElementById('search').value.toLowerCase();
+  let list=[...all];
+  if(q)list=list.filter(g=>g.display.toLowerCase().includes(q));
+  if(filter==='played')   list=list.filter(g=>g.played&&g.played>0);
+  if(filter==='unplayed') list=list.filter(g=>!g.played||g.played===0);
+  if(filter==='time')     list=list.filter(g=>g.main!==null);
+  if(sortMode==='alpha')    list.sort((a,b)=>a.display.localeCompare(b.display));
+  if(sortMode==='longest')  list.sort((a,b)=>(b.main??-1)-(a.main??-1));
+  if(sortMode==='shortest') list.sort((a,b)=>(a.main??99999)-(b.main??99999));
+
+  const pl=all.filter(g=>g.played&&g.played>0);
+  document.getElementById('cnt-total').textContent=all.length;
+  document.getElementById('cnt-played').textContent=pl.length;
+  document.getElementById('cnt-hrs').textContent=Math.round(pl.reduce((s,g)=>s+(g.played||0),0))+'h';
+
+  if(!list.length){document.getElementById('content').innerHTML='<div style="text-align:center;padding:70px;color:#333"><h3>No games found</h3></div>';return;}
+
+  const cards=list.map(g=>{
+    const id=g.name.replace(/[^a-z0-9]/gi,'');
+    return`<div class="card">
+${g.saveDate?'<div class="save-dot">SAVE</div>':''}
+<div class="art-wrap">
+  <img class="art-img" id="img-${id}" style="display:none" alt="">
+  <div class="art-ph" id="ph-${id}"><div class="art-letter">${g.name[0].toUpperCase()}</div></div>
+  <div class="art-gradient"></div>
+</div>
+<div class="card-body">${cardBody(g)}</div>
+</div>`;
+  }).join('');
+
+  document.getElementById('content').innerHTML=`<div class="grid-wrap"><div class="section-lbl">${list.length} game${list.length!==1?'s':''}</div><div class="grid">${cards}</div></div>`;
+
+  list.forEach((g,i)=>{
+    const id=g.name.replace(/[^a-z0-9]/gi,'');
+    const imgEl=document.getElementById('img-'+id);
+    const phEl=document.getElementById('ph-'+id);
+    if(imgEl&&phEl)setTimeout(()=>loadArt(g,imgEl,phEl),i*40);
+  });
+}
+
+function setF(f,btn){filter=f;document.querySelectorAll('.fbtn:not([id^="s-"])').forEach(b=>b.classList.remove('on'));btn.classList.add('on');render();}
+function setSort(m,btn){sortMode=m;document.querySelectorAll('[id^="s-"]').forEach(b=>b.classList.remove('on'));btn.classList.add('on');render();}
+
+// ── INIT (synchronous scan right here, no IPC needed) ────────────────────────
+function init(){
+  all=scanGames();
+  render();
+}
+init();
+</script>
+</body>
+</html>

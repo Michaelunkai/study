@@ -1,0 +1,83 @@
+===============================================================================
+GLOBAL RULE: MCP ON-DEMAND LOADING FOR CLAUDE CODE
+===============================================================================
+
+WHENEVER THE USER ASKS TO ADD AN MCP SERVER TO CLAUDE CODE:
+
+1. ADD THE SERVER USING STANDARD COMMAND:
+   claude mcp add --scope user <server-name> -- <command>
+
+2. IMMEDIATELY ADD KEYWORDS TO THE DISPATCHER MAPPING FILE:
+   File: F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\MCP\claudecode\mcp_mapping.json
+
+   Add entry:
+   {
+     "mappings": {
+       "<server-name>": [
+         "keyword1",
+         "keyword2",
+         "phrase that indicates this server",
+         "common use cases"
+       ]
+     }
+   }
+
+3. VERIFY THE SERVER IS REGISTERED:
+   Run: python F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\MCP\claudecode\mcp_dispatcher_universal.py --status
+
+   Check that total_discovered count increased
+
+4. EXPLAIN TO USER:
+   "Server added! It will load ON-DEMAND only when needed, saving RAM.
+   Keywords registered: [list keywords]
+   No restart needed - works on next query!"
+
+===============================================================================
+WHY THIS MATTERS:
+===============================================================================
+
+- Servers added normally = ALWAYS loaded (wastes RAM)
+- Servers with dispatcher keywords = ON-DEMAND only (70-80% RAM savings)
+- User wants on-demand loading for ALL servers
+- This method ensures new servers use the optimized loading system
+
+===============================================================================
+EXAMPLE WORKFLOW:
+===============================================================================
+
+User says: "Add the Slack MCP server"
+
+You do:
+1. claude mcp add --scope user slack -- npx -y slack-mcp-server
+2. Edit mcp_mapping.json:
+   {
+     "mappings": {
+       "slack": ["slack", "message", "channel", "team chat", "send message"]
+     }
+   }
+3. Verify: python mcp_dispatcher_universal.py --status
+4. Confirm: "Slack MCP added! Loads on-demand when you mention slack/messages."
+
+===============================================================================
+IMPORTANT NOTES:
+===============================================================================
+
+- NEVER skip adding to mcp_mapping.json
+- ALWAYS use the universal dispatcher system
+- Keywords should cover common use cases
+- Server names should match exactly
+- Test with --status after adding
+- No restart required for new keywords
+
+===============================================================================
+DISPATCHER LOCATION:
+===============================================================================
+
+All files in: F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\MCP\claudecode\
+
+Key files:
+- mcp_mapping.json (ADD KEYWORDS HERE)
+- mcp_dispatcher_universal.py (Test with --status)
+- setup_dispatcher_universal.ps1 (Initial setup only)
+
+===============================================================================

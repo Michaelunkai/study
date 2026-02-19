@@ -1,0 +1,38 @@
+
+
+# gitit: auto-excluded large files (>100MB)
+AI_ML/AI_and_Machine_Learning/Artificial_Intelligence/cli/claudecode/wrappers/agent-cowork/node_modules/electron/dist/electron.exe
+Dev_Toolchain/programming/.NET/projects/C#/StartupMaster/dist/StartupMaster_v1.1/StartupMaster.exe
+Dev_Toolchain/programming/.NET/projects/C#/StartupMaster/dist/StartupMaster_v1.2/StartupMaster.exe
+Dev_Toolchain/programming/.NET/projects/C#/StartupMaster/dist/StartupMaster_v1.3/StartupMaster.exe
+Dev_Toolchain/programming/.NET/projects/C#/StartupMaster/dist/StartupMaster_v1.4/StartupMaster.exe
+Dev_Toolchain/programming/.NET/projects/C#/StartupMaster/dist/StartupMaster_v1.5/StartupMaster.exe
+Dev_Toolchain/programming/.NET/projects/C#/StartupMaster/dist/StartupMaster_v1.6/StartupMaster.exe
+# gitmax: auto-excluded large files (>100MB)
+AI_ML/AI_and_Machine_Learning/Artificial_Intelligence/cli/claudecode/wrappers/agent-cowork/node_modules/electron/dist/electron.exe
+Dev_Toolchain/programming/.NET/projects/C#/StartupMaster/dist/StartupMaster_v1.1/StartupMaster.exe
+Dev_Toolchain/programming/.NET/projects/C#/StartupMaster/dist/StartupMaster_v1.2/StartupMaster.exe
+Dev_Toolchain/programming/.NET/projects/C#/StartupMaster/dist/StartupMaster_v1.3/StartupMaster.exe
+Dev_Toolchain/programming/.NET/projects/C#/StartupMaster/dist/StartupMaster_v1.4/StartupMaster.exe
+Dev_Toolchain/programming/.NET/projects/C#/StartupMaster/dist/StartupMaster_v1.5/StartupMaster.exe
+Dev_Toolchain/programming/.NET/projects/C#/StartupMaster/dist/StartupMaster_v1.6/StartupMaster.exe
+nul
+Version_control/git/gitit/claude.md
+
+# Files >=100MB excluded by gitit (GitHub limit)
+AI_ML/AI_and_Machine_Learning/Artificial_Intelligence/cli/claudecode/wrappers/ClawdBot/B/ClawdBotManager.exe
+AI_ML/AI_and_Machine_Learning/Artificial_Intelligence/cli/claudecode/wrappers/ClawdBot/B/BULLETPROOF/ClawdBotManager.exe
+Dev_Toolchain/programming/.NET/projects/C#/StartupMaster/dist/StartupMaster_v1.7_ZeroDelay/StartupMaster.exe
+Dev_Toolchain/programming/.NET/projects/C#/StartupMaster/dist/StartupMaster_v1.7/StartupMaster.exe
+Dev_Toolchain/programming/.NET/projects/C#/StartupMaster/dist/StartupMaster_v1.8_BulletproofFix/StartupMaster.exe
+Dev_Toolchain/programming/.NET/projects/C#/StartupMaster/dist/StartupMaster_v1.9_Final/StartupMaster.exe
+Dev_Toolchain/programming/.NET/projects/C#/StartupMaster/dist/StartupMaster_v2.0_WithIcons/StartupMaster.exe
+Dev_Toolchain/programming/.NET/projects/C#/OpenClawRunner/dist/OpenClawRunner.exe
+Dev_Toolchain/programming/.NET/projects/C#/StartupManagerClean/StartupManager/published/StartupManager.exe
+
+# Files >=100MB excluded by gitit (GitHub limit)
+AI_ML/AI_and_Machine_Learning/Artificial_Intelligence/cli/claudecode/wrappers/ClawdBot/B/publish/ClawdBotManager.exe
+
+# Files >=100MB excluded by gitit (GitHub limit)
+projects/Desktop_Apps/GameTime/node_modules/electron/dist/electron.exe
+projects/Desktop_Apps/GameTime/dist/win-unpacked/GameTime.exe

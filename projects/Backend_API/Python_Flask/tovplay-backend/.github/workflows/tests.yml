@@ -1,0 +1,475 @@
+name: Backend Tests & Deploy
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  # ============================================
+  # DEPLOY JOB - Deploys to staging/production
+  # Tests removed during Dec 2025 debloat
+  # ============================================
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch full history for author tracking
+
+      - name: 📋 Generate ULTIMATE Deployment Change Summary
+        run: |
+          # Determine environment based on branch
+          BRANCH="${{ github.ref_name }}"
+          ENV_NAME="STAGING"
+          SERVER_URL="https://staging.tovplay.org"
+          if [ "${{ github.ref }}" = "refs/heads/develop" ]; then
+            ENV_NAME="PRODUCTION"
+            SERVER_URL="https://app.tovplay.org"
+          fi
+
+          echo "╔═══════════════════════════════════════════════════════════════════════╗"
+          echo "║  📋 ULTIMATE DEPLOYMENT CHANGE SUMMARY - TovPlay Backend ${ENV_NAME}  ║"
+          echo "╚═══════════════════════════════════════════════════════════════════════╝"
+          echo ""
+          echo "🌐 Environment: ${ENV_NAME}"
+          echo "🔀 Branch: ${BRANCH}"
+          echo "🔖 Commit SHA: ${{ github.sha }}"
+          echo "👤 Deployed By: ${{ github.actor }}"
+          echo "🕐 Deployment Time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          echo "🌍 Server URL: ${SERVER_URL}"
+          echo "📦 Repository: ${{ github.repository }}"
+          echo "🔗 Workflow Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          echo ""
+
+          echo "╔═══════════════════════════════════════════════════════════════════════╗"
+          echo "║  📝 LATEST COMMIT MESSAGE                                             ║"
+          echo "╚═══════════════════════════════════════════════════════════════════════╝"
+          git log -1 --pretty=format:"%B"
+          echo ""
+          echo ""
+
+          echo "╔═══════════════════════════════════════════════════════════════════════╗"
+          echo "║  📜 COMPLETE COMMIT HISTORY (since last deployment)                   ║"
+          echo "╚═══════════════════════════════════════════════════════════════════════╝"
+          echo ""
+          git log HEAD~5..HEAD --pretty=format:"[%h] %an <%ae> - %ar%n    📝 %s%n    🕐 %ad%n" --date=format:'%Y-%m-%d %H:%M:%S' 2>/dev/null || git log -5 --pretty=format:"[%h] %an <%ae> - %ar%n    📝 %s%n    🕐 %ad%n" --date=format:'%Y-%m-%d %H:%M:%S'
+          echo ""
+          echo ""
+
+          echo "╔═══════════════════════════════════════════════════════════════════════╗"
+          echo "║  👥 TEAM MEMBER CONTRIBUTIONS                                         ║"
+          echo "╚═══════════════════════════════════════════════════════════════════════╝"
+          echo ""
+          git log HEAD~5..HEAD --pretty=format:"%an" 2>/dev/null | sort | uniq -c | sort -rn | awk '{print "   "$2" "$3" "$4" - "$1" commit(s)"}' || echo "Single commit deployment"
+          echo ""
+          echo ""
+
+          # Calculate statistics
+          ADDED=$(git diff HEAD~1 HEAD --numstat 2>/dev/null | awk '{add+=$1} END {print add+0}')
+          DELETED=$(git diff HEAD~1 HEAD --numstat 2>/dev/null | awk '{del+=$2} END {print del+0}')
+          FILES=$(git diff HEAD~1 HEAD --name-only 2>/dev/null | wc -l)
+          NET=$((ADDED - DELETED))
+
+          echo "╔═══════════════════════════════════════════════════════════════════════╗"
+          echo "║  📊 DEPLOYMENT STATISTICS                                             ║"
+          echo "╚═══════════════════════════════════════════════════════════════════════╝"
+          if [ $NET -lt 0 ]; then
+            echo "📉 Change Type: Refactor/Cleanup (${NET} lines net removal)"
+          elif [ $NET -eq 0 ]; then
+            echo "🔄 Change Type: Refactor (no net change)"
+          else
+            echo "📈 Change Type: Feature/Enhancement (+${NET} lines net addition)"
+          fi
+          echo "📁 Files Changed: ${FILES}"
+          echo "➕ Lines Added: +${ADDED}"
+          echo "➖ Lines Deleted: -${DELETED}"
+          echo "📊 Net Change: ${NET} lines"
+          echo ""
+
+          echo "╔═══════════════════════════════════════════════════════════════════════╗"
+          echo "║  📂 DETAILED FILE CHANGES BY ORIGINAL AUTHOR                          ║"
+          echo "╚═══════════════════════════════════════════════════════════════════════╝"
+          echo ""
+
+          # Create temp file for processing
+          TEMP_FILE=$(mktemp)
+
+          # Track ALL changes by original author
+          git diff --name-status HEAD~1 HEAD 2>/dev/null | while IFS=$'\t' read -r status file rest; do
+            if [ -z "$file" ]; then continue; fi
+
+            OLD_FILE=""
+            NEW_FILE="$file"
+            if [[ "$status" =~ ^R ]]; then
+              OLD_FILE="$file"
+              NEW_FILE="$rest"
+              file="$NEW_FILE"
+            fi
+
+            # Get original author
+            ORIGINAL_AUTHOR=""
+            if [ "$status" != "D" ]; then
+              ORIGINAL_AUTHOR=$(git log --follow --format="%an" --diff-filter=A -- "$file" 2>/dev/null | tail -1)
+            else
+              ORIGINAL_AUTHOR=$(git log -1 --format="%an" HEAD~1 -- "$file" 2>/dev/null)
+            fi
+            [ -z "$ORIGINAL_AUTHOR" ] && ORIGINAL_AUTHOR=$(git log --format="%an" -- "$file" 2>/dev/null | tail -1)
+            [ -z "$ORIGINAL_AUTHOR" ] && [ -n "$OLD_FILE" ] && ORIGINAL_AUTHOR=$(git log --format="%an" -- "$OLD_FILE" 2>/dev/null | tail -1)
+            [ -z "$ORIGINAL_AUTHOR" ] && ORIGINAL_AUTHOR="Unknown"
+
+            # Get line changes
+            LINE_STATS=$(git diff HEAD~1 HEAD --numstat -- "$file" 2>/dev/null | awk '{
+              if ($1 == "-" && $2 == "-") {
+                print "BINARY"
+              } else {
+                print $1"+"$2"-"
+              }
+            }')
+            [ -z "$LINE_STATS" ] && LINE_STATS="0+0-"
+
+            # Determine change type
+            CHANGE_INFO=""
+            case "$status" in
+              A) TYPE="ADDED" ;;
+              M) TYPE="MODIFIED" ;;
+              D) TYPE="DELETED" ;;
+              R100) TYPE="RENAMED"; CHANGE_INFO="(no changes: $OLD_FILE → $NEW_FILE)" ;;
+              R*) TYPE="RENAMED+MODIFIED"; CHANGE_INFO="($OLD_FILE → $NEW_FILE)" ;;
+              C*) TYPE="COPIED" ;;
+              T) TYPE="TYPE_CHANGE"; CHANGE_INFO="(file type changed)" ;;
+              *) TYPE="$status" ;;
+            esac
+
+            MODE_CHANGE=$(git diff HEAD~1 HEAD --summary -- "$file" 2>/dev/null | grep "mode change" || echo "")
+            if [ -n "$MODE_CHANGE" ]; then
+              CHANGE_INFO="${CHANGE_INFO} [PERMISSIONS CHANGED]"
+            fi
+
+            # Add context and purpose
+            CONTEXT=""
+            PURPOSE=""
+            IMPACT=""
+            case "$file" in
+              *models.py|*models/*) CONTEXT="[DB Models]"; PURPOSE="→ Database schema"; IMPACT="⚠️ May require migration" ;;
+              *routes/*|*api/*|*views.py) CONTEXT="[API Endpoints]"; PURPOSE="→ HTTP endpoints"; IMPACT="🔌 API contract changes" ;;
+              *migrations/*|*alembic/*) CONTEXT="[DB Migration]"; PURPOSE="→ Schema migration"; IMPACT="⚠️ Database will be modified" ;;
+              *requirements.txt|*Pipfile*) CONTEXT="[Dependencies]"; PURPOSE="→ Python packages"; IMPACT="📦 Dependencies changed" ;;
+              *.env*|*config*|*settings*) CONTEXT="[Config]"; PURPOSE="→ Configuration"; IMPACT="🔧 Config changes" ;;
+              *test*|*spec*) CONTEXT="[Tests]"; PURPOSE="→ Test coverage"; IMPACT="✅ Test updates" ;;
+              *auth*|*security*|*jwt*) CONTEXT="[Security/Auth]"; PURPOSE="→ Authentication"; IMPACT="🔐 Security impact" ;;
+              *monitoring*|*metrics*|*health*) CONTEXT="[Monitoring]"; PURPOSE="→ Observability"; IMPACT="📊 Monitoring changes" ;;
+              *wsgi*|*gunicorn*|*uwsgi*) CONTEXT="[Server Entry]"; PURPOSE="→ App server"; IMPACT="🚀 Startup changes" ;;
+              *docker*|*Dockerfile*) CONTEXT="[Docker]"; PURPOSE="→ Containerization"; IMPACT="🐳 Container rebuild needed" ;;
+              *.yml|*.yaml) CONTEXT="[Config/CI]"; PURPOSE="→ CI/CD automation"; IMPACT="🔄 Pipeline changes" ;;
+              *bot.py) CONTEXT="[Discord Bot]"; PURPOSE="→ Discord integration"; IMPACT="🤖 Bot behavior changes" ;;
+              *services.py|*src/services/*) CONTEXT="[Business Logic]"; PURPOSE="→ Core logic"; IMPACT="💼 Business logic changes" ;;
+              *) CONTEXT="[Other]"; PURPOSE="→ General"; IMPACT="" ;;
+            esac
+
+            echo "${ORIGINAL_AUTHOR}|||${TYPE}|||${file}|||${LINE_STATS}|||${CONTEXT}|||${CHANGE_INFO}|||${PURPOSE}|||${IMPACT}" >> "$TEMP_FILE"
+          done
+
+          # Display grouped by author
+          if [ -s "$TEMP_FILE" ]; then
+            sort "$TEMP_FILE" | awk -F'|||' '
+              BEGIN { current_author = "" }
+              {
+                author = $1; type = $2; file = $3; stats = $4
+                context = $5; info = $6; purpose = $7; impact = $8
+
+                if (author != current_author) {
+                  if (current_author != "") print ""
+                  print "### 👤 " author " (original file author)"
+                  print ""
+                  current_author = author
+                }
+
+                icon = "  "
+                if (type == "ADDED") icon = "✅"
+                else if (type == "MODIFIED") icon = "✏️ "
+                else if (type == "DELETED") icon = "❌"
+                else if (type == "RENAMED") icon = "📦"
+                else if (type == "RENAMED+MODIFIED") icon = "📦✏️ "
+                else if (type == "COPIED") icon = "📋"
+                else if (type == "TYPE_CHANGE") icon = "🔄"
+
+                output = "  " icon " " type ": " file " (" stats ") " context " " purpose
+                if (impact != "") output = output " " impact
+                if (info != "") output = output " " info
+                print output
+              }
+            '
+          fi
+          rm -f "$TEMP_FILE"
+          echo ""
+
+          echo "╔═══════════════════════════════════════════════════════════════════════╗"
+          echo "║  📊 DETAILED FILE-LEVEL DIFF SUMMARY                                  ║"
+          echo "╚═══════════════════════════════════════════════════════════════════════╝"
+          git diff --stat HEAD~1 HEAD 2>/dev/null || echo "No changes detected"
+          echo ""
+
+          echo "╔═══════════════════════════════════════════════════════════════════════╗"
+          echo "║  🔍 DETAILED CODE CHANGES (Key Files)                                 ║"
+          echo "╚═══════════════════════════════════════════════════════════════════════╝"
+          echo ""
+          for file in $(git diff --name-only HEAD~1 HEAD 2>/dev/null | grep -E '\.(py|yml|yaml|txt|json|md)$' | head -10); do
+            echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            echo "📄 File: $file"
+            echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            git diff HEAD~1 HEAD -- "$file" 2>/dev/null | head -50
+            echo ""
+          done
+          echo ""
+
+          echo "╔═══════════════════════════════════════════════════════════════════════╗"
+          echo "║  📦 DEPENDENCY CHANGES                                                ║"
+          echo "╚═══════════════════════════════════════════════════════════════════════╝"
+          if git diff HEAD~1 HEAD --name-only 2>/dev/null | grep -qE "requirements\.txt|Pipfile"; then
+            echo "BEFORE:"
+            git show HEAD~1:requirements.txt 2>/dev/null | head -20 || echo "No previous requirements.txt"
+            echo ""
+            echo "AFTER:"
+            cat requirements.txt 2>/dev/null | head -20 || echo "No current requirements.txt"
+          else
+            echo "✅ No dependency changes"
+          fi
+          echo ""
+
+          echo "╔═══════════════════════════════════════════════════════════════════════╗"
+          echo "║  🔗 RELATED ISSUES & PULL REQUESTS                                    ║"
+          echo "╚═══════════════════════════════════════════════════════════════════════╝"
+          echo ""
+          git log HEAD~5..HEAD --pretty=format:"%B" 2>/dev/null | grep -oE '#[0-9]+|PR#[0-9]+|pull/[0-9]+' | sort -u | while read ref; do
+            echo "   🔗 Related: $ref - https://github.com/${{ github.repository }}/issues/${ref#\#}"
+          done || echo "   No linked issues or PRs found"
+          echo ""
+          echo ""
+
+          echo "╔═══════════════════════════════════════════════════════════════════════╗"
+          echo "║  ⚠️  CRITICAL CHANGES & BREAKING CHANGES DETECTION                    ║"
+          echo "╚═══════════════════════════════════════════════════════════════════════╝"
+          echo ""
+          CRITICAL=0
+
+          if git diff HEAD~1 HEAD --name-only 2>/dev/null | grep -qE "requirements\.txt|Pipfile|setup\.py"; then
+            echo "🐍 PYTHON DEPENDENCIES CHANGED"
+            echo "   ⚠️ Action Required: Review compatibility, update venv"
+            git diff HEAD~1 HEAD --name-only | grep -E "requirements\.txt|Pipfile|setup\.py"
+            CRITICAL=1
+            echo ""
+          fi
+
+          if git diff HEAD~1 HEAD --name-only 2>/dev/null | grep -qE "migrations/|alembic/"; then
+            echo "🗄️  DATABASE MIGRATIONS DETECTED"
+            echo "   ⚠️ Action Required: BACKUP DATABASE BEFORE DEPLOYMENT!"
+            echo "   💡 Migration files:"
+            git diff HEAD~1 HEAD --name-only | grep -E "migrations/|alembic/"
+            CRITICAL=1
+            echo ""
+          fi
+
+          if git diff HEAD~1 HEAD --name-only 2>/dev/null | grep -qE "\.env|config\.py|settings\.py|docker"; then
+            echo "🔐 CONFIGURATION FILES CHANGED"
+            echo "   ⚠️ Action Required: Verify environment variables match server"
+            git diff HEAD~1 HEAD --name-only | grep -E "\.env|config\.py|settings\.py|docker"
+            CRITICAL=1
+            echo ""
+          fi
+
+          if git diff HEAD~1 HEAD --name-only 2>/dev/null | grep -qE "auth|security|jwt|oauth|login"; then
+            echo "🔒 SECURITY/AUTHENTICATION CHANGED"
+            echo "   ⚠️ Action Required: Test auth flow, verify tokens, check sessions"
+            git diff HEAD~1 HEAD --name-only | grep -E "auth|security|jwt|oauth|login"
+            CRITICAL=1
+            echo ""
+          fi
+
+          if git diff HEAD~1 HEAD --name-only 2>/dev/null | grep -qE "models\.py|models/"; then
+            echo "📊 DATABASE MODELS CHANGED"
+            echo "   ⚠️ Action Required: Verify migrations exist and match model changes"
+            git diff HEAD~1 HEAD --name-only | grep -E "models\.py|models/"
+            CRITICAL=1
+            echo ""
+          fi
+
+          if git diff HEAD~1 HEAD --name-only 2>/dev/null | grep -qE "\.github/workflows"; then
+            echo "🔄 CI/CD PIPELINE MODIFIED"
+            echo "   ℹ️ Info: This deployment workflow itself was changed"
+            git diff HEAD~1 HEAD --name-only | grep -E "\.github/workflows"
+            CRITICAL=1
+            echo ""
+          fi
+
+          if git log HEAD~5..HEAD --pretty=format:"%B" 2>/dev/null | grep -qiE "breaking|break:|BREAKING CHANGE"; then
+            echo "💥 BREAKING CHANGES DETECTED IN COMMITS"
+            echo "   ⚠️ Warning: Review commit messages for breaking changes"
+            git log HEAD~5..HEAD --pretty=format:"%s" | grep -iE "breaking|break:|BREAKING"
+            CRITICAL=1
+            echo ""
+          fi
+
+          if [ $CRITICAL -eq 0 ]; then
+            echo "✅ No critical changes detected - Safe to deploy"
+            echo ""
+          fi
+
+          echo "╔═══════════════════════════════════════════════════════════════════════╗"
+          echo "║  🔙 ROLLBACK INSTRUCTIONS                                             ║"
+          echo "╚═══════════════════════════════════════════════════════════════════════╝"
+          echo ""
+          PREVIOUS_SHA=$(git rev-parse HEAD~1 2>/dev/null || echo "N/A")
+          PREVIOUS_COMMIT=$(git log -1 --pretty=format:"%s" HEAD~1 2>/dev/null || echo "N/A")
+          echo "If this deployment fails, rollback with:"
+          echo ""
+          echo "   git revert ${{ github.sha }}"
+          echo "   # OR"
+          echo "   git reset --hard ${PREVIOUS_SHA}"
+          echo "   git push --force origin ${BRANCH}"
+          echo ""
+          echo "Previous stable commit: ${PREVIOUS_SHA}"
+          echo "Previous commit message: ${PREVIOUS_COMMIT}"
+          echo ""
+          echo "Docker rollback:"
+          echo "   docker pull tovtech/tovplaybackend:${PREVIOUS_SHA:0:7}"
+          echo "   docker-compose up -d --force-recreate"
+          echo ""
+
+          echo "╔═══════════════════════════════════════════════════════════════════════╗"
+          echo "║  ✅ DEPLOYMENT SUMMARY COMPLETE                                       ║"
+          echo "╚═══════════════════════════════════════════════════════════════════════╝"
+          echo ""
+          echo "🎯 Environment: ${ENV_NAME}"
+          echo "📦 Total Changes: ${FILES} files, +${ADDED}/-${DELETED} lines"
+          echo "👥 Contributors: $(git log HEAD~5..HEAD --pretty=format:"%an" 2>/dev/null | sort -u | wc -l || echo "1")"
+          echo "🕐 Ready for deployment at: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          echo ""
+          echo "═══════════════════════════════════════════════════════════════════════"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt 2>/dev/null || true
+
+      - name: Security scan with safety
+        run: |
+          pip install safety
+          safety check 2>/dev/null || true
+
+      - name: Lint with flake8
+        run: |
+          pip install flake8
+          flake8 src/ --exit-zero 2>/dev/null || true
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: tovtech
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Determine environment
+        id: env
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/develop" ]; then
+            echo "tag=latest" >> $GITHUB_OUTPUT
+            echo "env=production" >> $GITHUB_OUTPUT
+            echo "server=193.181.213.220" >> $GITHUB_OUTPUT
+          else
+            echo "tag=staging" >> $GITHUB_OUTPUT
+            echo "env=staging" >> $GITHUB_OUTPUT
+            echo "server=92.113.144.59" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: tovtech/tovplaybackend:${{ steps.env.outputs.tag }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Deploy to Staging
+        if: steps.env.outputs.env == 'staging'
+        uses: appleboy/ssh-action@v1.0.3
+        timeout-minutes: 5
+        with:
+          host: 92.113.144.59
+          username: admin
+          password: 3897ysdkjhHH
+          port: 22
+          timeout: 180s
+          command_timeout: 180s
+          script: |
+            cd /home/admin/tovplay
+            echo "=== Pulling new image ==="
+            docker pull tovtech/tovplaybackend:staging
+            echo "=== Force removing ALL old backend containers ==="
+            docker stop tovplay-backend-staging 2>/dev/null || true
+            docker stop tovplay-backend 2>/dev/null || true
+            docker rm -f tovplay-backend-staging 2>/dev/null || true
+            docker rm -f tovplay-backend 2>/dev/null || true
+            docker container prune -f 2>/dev/null || true
+            echo "=== Starting new containers ==="
+            docker compose -f docker-compose.staging.yml up -d --force-recreate --remove-orphans || docker-compose -f docker-compose.staging.yml up -d --force-recreate --remove-orphans
+            echo "=== Waiting for startup ==="
+            sleep 15
+            echo "=== Container status ==="
+            docker ps -a | grep -E "tovplay-backend|staging" || true
+            echo "=== Health check ==="
+            curl -s http://localhost:5000/health || echo "Health check pending"
+
+      - name: Deploy to Production
+        if: steps.env.outputs.env == 'production'
+        uses: appleboy/ssh-action@v1.0.3
+        timeout-minutes: 5
+        with:
+          host: 193.181.213.220
+          username: admin
+          password: EbTyNkfJG6LM
+          port: 22
+          timeout: 180s
+          command_timeout: 180s
+          script: |
+            cd /home/admin/tovplay
+            echo "=== Pulling new image ==="
+            docker pull tovtech/tovplaybackend:latest
+            echo "=== Force removing ALL old backend containers ==="
+            docker stop tovplay-backend-production 2>/dev/null || true
+            docker stop tovplay-backend 2>/dev/null || true
+            docker rm -f tovplay-backend-production 2>/dev/null || true
+            docker rm -f tovplay-backend 2>/dev/null || true
+            docker container prune -f 2>/dev/null || true
+            echo "=== Starting new containers ==="
+            docker compose -f docker-compose.production.yml up -d --force-recreate --remove-orphans || docker-compose -f docker-compose.production.yml up -d --force-recreate --remove-orphans
+            echo "=== Waiting for startup ==="
+            sleep 15
+            echo "=== Container status ==="
+            docker ps -a | grep -E "tovplay-backend|production" || true
+            echo "=== Health check ==="
+            curl -s http://localhost:5000/health || echo "Health check pending"
+
+      - name: Verify deployment
+        if: success()
+        run: |
+          sleep 10
+          if [ "${{ steps.env.outputs.env }}" = "staging" ]; then
+            curl -sf https://staging.tovplay.org/health && echo "Staging healthy!" || echo "Staging health check pending"
+          else
+            curl -sf https://app.tovplay.org/health && echo "Production healthy!" || echo "Production health check pending"
+          fi

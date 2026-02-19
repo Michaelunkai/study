@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "mjC0wZc+31U=",
+  "success": true,
+  "projectFilePath": "F:\\study\\Dev_Toolchain\\programming\\.NET\\projects\\C#\\StartupMaster\\StartupMaster.csproj",
+  "expectedPackageFiles": [
+    "F:\\DevKit\\sdk\\dotnet\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x64\\8.0.23\\microsoft.netcore.app.runtime.win-x64.8.0.23.nupkg.sha512",
+    "F:\\DevKit\\sdk\\dotnet\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x64\\8.0.23\\microsoft.windowsdesktop.app.runtime.win-x64.8.0.23.nupkg.sha512",
+    "F:\\DevKit\\sdk\\dotnet\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x64\\8.0.23\\microsoft.aspnetcore.app.runtime.win-x64.8.0.23.nupkg.sha512"
+  ],
+  "logs": []
+}
