@@ -1,0 +1,41 @@
+2026-03-09 20:02:57,608 - INFO - 🔍 Validating configuration...
+2026-03-09 20:02:57,608 - INFO - ✅ Configuration valid. Resume: Michael_Fedorovsky_Resume_devops.pdf
+2026-03-09 20:02:57,608 - INFO - ✅ Ready to apply to 7 companies
+2026-03-09 20:02:57,608 - INFO - 
+======================================================================
+2026-03-09 20:02:57,608 - INFO - 🚀 AUTOMATED JOB APPLICATION SYSTEM STARTED
+2026-03-09 20:02:57,608 - INFO - ======================================================================
+2026-03-09 20:02:57,608 - INFO - Applicant: Michael Fedorovsky
+2026-03-09 20:02:57,608 - INFO - Email: michaelovsky5@gmail.com
+2026-03-09 20:02:57,608 - INFO - Resume: Michael_Fedorovsky_Resume_devops.pdf
+2026-03-09 20:02:57,608 - INFO - Target Companies: 7
+2026-03-09 20:02:57,608 - INFO - Log File: F:\study\Dev_Toolchain\programming\python\apps\automation\job-auto-applicator\logs\applications_20260309_200257.log
+2026-03-09 20:02:57,608 - INFO - ======================================================================
+
+2026-03-09 20:02:57,608 - INFO - 
+📊 Progress: 1/7
+2026-03-09 20:02:57,608 - INFO - 
+📧 Preparing application for Imubit...
+2026-03-09 20:02:57,608 - INFO -    Position: Junior DevOps Engineer
+2026-03-09 20:02:57,608 - INFO -    Email: careers@imubit.com
+2026-03-09 20:02:59,122 - ERROR - ❌ Gmail authentication failed. Check your app password.
+2026-03-09 20:02:59,122 - INFO - ⏳ Waiting 10 seconds before next application...
+2026-03-09 20:03:09,128 - INFO - 
+📊 Progress: 2/7
+2026-03-09 20:03:09,132 - INFO - 
+📧 Preparing application for Oligo Security...
+2026-03-09 20:03:09,132 - INFO -    Position: DevOps Engineer
+2026-03-09 20:03:09,135 - INFO -    Email: jobs@oligosecurity.com
+2026-03-09 20:03:11,174 - ERROR - ❌ Gmail authentication failed. Check your app password.
+2026-03-09 20:03:11,177 - INFO - ⏳ Waiting 10 seconds before next application...
+2026-03-09 20:03:21,183 - INFO - 
+📊 Progress: 3/7
+2026-03-09 20:03:21,187 - INFO - 
+📧 Preparing application for FireArc...
+2026-03-09 20:03:21,187 - INFO -    Position: DevOps Engineer
+2026-03-09 20:03:21,187 - INFO -    Email: careers@firearc.com
+2026-03-09 20:03:22,683 - ERROR - ❌ Gmail authentication failed. Check your app password.
+2026-03-09 20:03:22,683 - INFO - ⏳ Waiting 10 seconds before next application...
+2026-03-09 20:03:29,909 - WARNING - 
+
+⚠️ Application interrupted by user. Exiting...

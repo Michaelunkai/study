@@ -1,0 +1,10 @@
+2026-03-12 13:53:14,402 [INFO] =======================================================
+2026-03-12 13:53:14,402 [INFO] JOB APPLICATION AUTOMATION STARTED
+2026-03-12 13:53:14,402 [INFO] =======================================================
+2026-03-12 13:53:14,402 [INFO]   Target: 1 applications
+2026-03-12 13:53:14,402 [INFO]   Time limit: 5 minutes
+2026-03-12 13:53:14,402 [INFO]   Profile: Michael Fedorovsky
+2026-03-12 13:53:14,402 [INFO]   Resume: F:\study\resume\Michael_Fedorovsky_Resume_devops.pdf
+2026-03-12 13:53:14,402 [INFO]   Previously applied: 0 companies
+2026-03-12 13:53:15,925 [INFO] Launching Chrome with CDP...
+2026-03-12 13:53:56,155 [ERROR] Chrome failed to start

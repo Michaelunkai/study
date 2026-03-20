@@ -1,0 +1,10 @@
+2026-03-12 14:22:02,798 [INFO] ============================================================
+2026-03-12 14:22:02,798 [INFO] JOB APPLICATION AUTOMATION v3
+2026-03-12 14:22:02,798 [INFO] ============================================================
+2026-03-12 14:22:02,798 [INFO]   Target: 5
+2026-03-12 14:22:02,798 [INFO]   Profile: Michael Fedorovsky
+2026-03-12 14:22:02,798 [INFO]   Already applied: 0 companies
+2026-03-12 14:22:02,802 [INFO] ✓ Connected to existing Chrome on port 9222
+2026-03-12 14:22:07,335 [INFO] 🔐 Logging into LinkedIn...
+2026-03-12 14:22:24,797 [ERROR] ❌ LinkedIn login failed
+2026-03-12 14:22:24,797 [ERROR] ❌ LinkedIn login required - cannot proceed

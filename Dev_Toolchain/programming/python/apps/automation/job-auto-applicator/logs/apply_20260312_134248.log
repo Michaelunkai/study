@@ -1,0 +1,101 @@
+2026-03-12 13:42:48,500 [INFO] 🚀 JOB APPLICATION AUTOMATION STARTED
+2026-03-12 13:42:48,500 [INFO]    Target: 1 applications
+2026-03-12 13:42:48,500 [INFO]    Time limit: 4 minutes
+2026-03-12 13:42:48,500 [INFO]    Profile: Michael Fedorovsky
+2026-03-12 13:42:48,500 [INFO]    Resume: F:\study\resume\Michael_Fedorovsky_Resume_devops.pdf
+2026-03-12 13:42:48,500 [INFO]    Previously applied: 0 companies
+2026-03-12 13:42:49,040 [INFO] 📱 Launching browser with your Chrome profile...
+2026-03-12 13:43:10,740 [ERROR] ❌ Cannot launch Chrome with profile: BrowserType.launch_persistent_context: Target page, context or browser has been closed
+Browser logs:
+
+<launching> C:\Program Files\Google\Chrome\Application\chrome.exe --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,BoundaryEventDispatchTracksNodeRemoval,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,Translate,AutoDeElevate,RenderDocument,OptimizationHints --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --enable-automation --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --no-sandbox --profile-directory=Default --disable-blink-features=AutomationControlled --no-first-run --no-default-browser-check --user-data-dir=C:\Users\micha\AppData\Local\Google\Chrome\User Data --remote-debugging-pipe about:blank
+<launched> pid=13560
+[pid=13560][err] 
+[pid=13560][err] DevTools remote debugging requires a non-default data directory. Specify this using --user-data-dir.
+[pid=13560][err] [13560:9376:0312/134249.501:ERROR:components\signin\public\webdata\token_service_table.cc:235] Failed to decrypt token for service AccountId-109308463368404416274
+[pid=13560][err] [13560:9748:0312/134252.550:ERROR:google_apis\gcm\engine\registration_request.cc:290] Registration response error message: DEPRECATED_ENDPOINT
+[pid=13560] <process did exit: exitCode=0, signal=null>
+[pid=13560] starting temporary directories cleanup
+Call log:
+  - <launching> C:\Program Files\Google\Chrome\Application\chrome.exe --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,BoundaryEventDispatchTracksNodeRemoval,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,Translate,AutoDeElevate,RenderDocument,OptimizationHints --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --enable-automation --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --no-sandbox --profile-directory=Default --disable-blink-features=AutomationControlled --no-first-run --no-default-browser-check --user-data-dir=C:\Users\micha\AppData\Local\Google\Chrome\User Data --remote-debugging-pipe about:blank
+  - <launched> pid=13560
+  - [pid=13560][err]
+  - [pid=13560][err] DevTools remote debugging requires a non-default data directory. Specify this using --user-data-dir.
+  - [pid=13560][err] [13560:9376:0312/134249.501:ERROR:components\signin\public\webdata\token_service_table.cc:235] Failed to decrypt token for service AccountId-109308463368404416274
+  - [pid=13560][err] [13560:9748:0312/134252.550:ERROR:google_apis\gcm\engine\registration_request.cc:290] Registration response error message: DEPRECATED_ENDPOINT
+  - [pid=13560] <process did exit: exitCode=0, signal=null>
+  - [pid=13560] starting temporary directories cleanup
+  - [pid=13560] <gracefully close start>
+  - [pid=13560] <kill>
+  - [pid=13560] <skipped force kill spawnedProcess.killed=false processClosed=true>
+  - [pid=13560] finished temporary directories cleanup
+  - [pid=13560] <gracefully close end>
+
+2026-03-12 13:43:10,744 [INFO] 💡 Trying without Chrome profile (you may need to log in)...
+2026-03-12 13:43:11,316 [INFO] 
+🔍 Search 1/4: 'junior devops engineer israel'
+2026-03-12 13:43:15,244 [INFO]    Found 4 job listings
+2026-03-12 13:43:45,277 [ERROR]    ❌ Error processing job 0: ElementHandle.click: Timeout 30000ms exceeded.
+Call log:
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <div aria-hidden="false" class="modal__overlay flex items-center bg-color-background-scrim justify-center fixed bottom-0 left-0 right-0 top-0 opacity-0 invisible pointer-events-none z-[1000] transition-[opacity] ease-[cubic-bezier(0.25,0.1,0.25,1.0)] duration-[0.17s] py-4 modal__overlay--visible">…</div> from <div class="top-level-modal-container">…</div> subtree intercepts pointer events
+    - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <div aria-hidden="false" class="modal__overlay flex items-center bg-color-background-scrim justify-center fixed bottom-0 left-0 right-0 top-0 opacity-0 invisible pointer-events-none z-[1000] transition-[opacity] ease-[cubic-bezier(0.25,0.1,0.25,1.0)] duration-[0.17s] py-4 modal__overlay--visible">…</div> from <div class="top-level-modal-container">…</div> subtree intercepts pointer events
+    - retrying click action
+      - waiting 100ms
+    58 × waiting for element to be visible, enabled and stable
+       - element is visible, enabled and stable
+       - scrolling into view if needed
+       - done scrolling
+       - <div aria-hidden="false" class="modal__overlay flex items-center bg-color-background-scrim justify-center fixed bottom-0 left-0 right-0 top-0 opacity-0 invisible pointer-events-none z-[1000] transition-[opacity] ease-[cubic-bezier(0.25,0.1,0.25,1.0)] duration-[0.17s] py-4 modal__overlay--visible">…</div> from <div class="top-level-modal-container">…</div> subtree intercepts pointer events
+     - retrying click action
+       - waiting 500ms
+
+2026-03-12 13:44:03,807 [ERROR]    ❌ Error processing job 1: Page.query_selector: Target page, context or browser has been closed
+2026-03-12 13:44:03,807 [ERROR]    ❌ Error processing job 2: ElementHandle.click: Target page, context or browser has been closed
+2026-03-12 13:44:03,812 [ERROR]    ❌ Error processing job 3: ElementHandle.click: Target page, context or browser has been closed
+2026-03-12 13:44:03,812 [INFO] 
+🔍 Search 2/4: 'devops engineer israel entry level'
+2026-03-12 13:44:03,812 [ERROR] ❌ Failed to load LinkedIn search: Page.goto: Target page, context or browser has been closed
+2026-03-12 13:44:03,812 [INFO] 
+🔍 Search 3/4: 'cloud engineer israel junior'
+2026-03-12 13:44:03,812 [ERROR] ❌ Failed to load LinkedIn search: Page.goto: Target page, context or browser has been closed
+2026-03-12 13:44:03,812 [INFO] 
+🔍 Search 4/4: 'infrastructure engineer israel'
+2026-03-12 13:44:03,812 [ERROR] ❌ Failed to load LinkedIn search: Page.goto: Target page, context or browser has been closed
+2026-03-12 13:44:03,812 [WARNING] 
+🚨 EMERGENCY PROTOCOL: No applications via LinkedIn. Trying direct email...
+2026-03-12 13:44:05,065 [ERROR] ❌ Email failed to jobs@wix.com: (535, b'5.7.8 Username and Password not accepted. For more information, go to\n5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-439fe20bb90sm8125082f8f.19 - gsmtp')
+2026-03-12 13:44:06,143 [ERROR] ❌ Email failed to jobs@monday.com: (535, b'5.7.8 Username and Password not accepted. For more information, go to\n5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-48541ab9f9esm233352505e9.4 - gsmtp')
+2026-03-12 13:44:07,227 [ERROR] ❌ Email failed to careers@jfrog.com: (535, b'5.7.8 Username and Password not accepted. For more information, go to\n5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-439fe23afc5sm8504959f8f.39 - gsmtp')
+2026-03-12 13:44:08,295 [ERROR] ❌ Email failed to careers@checkpoint.com: (535, b'5.7.8 Username and Password not accepted. For more information, go to\n5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-439fe1abf84sm7622402f8f.14 - gsmtp')
+2026-03-12 13:44:09,322 [ERROR] ❌ Email failed to careers@cyberark.com: (535, b'5.7.8 Username and Password not accepted. For more information, go to\n5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-439fe20b4dasm7655954f8f.18 - gsmtp')
+2026-03-12 13:44:09,374 [INFO] 
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ JOB APPLICATION SESSION COMPLETE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📅 Date: 2026-03-12 13:44
+⏱️ Duration: 1.3 minutes
+🎯 Target: 1
+✅ Submitted: 0/1
+
+📊 Stats:
+   Jobs evaluated: 4
+   Skipped (senior/exp): 0
+   Skipped (duplicate): 0
+   Skipped (skills): 0
+
+📄 Log: F:\study\Dev_Toolchain\programming\python\apps\automation\job-auto-applicator\logs\apply_20260312_134248.log
+💾 State: F:\study\Dev_Toolchain\programming\python\apps\automation\job-auto-applicator\applied_companies.json
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+

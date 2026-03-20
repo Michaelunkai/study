@@ -1,0 +1,462 @@
+2025-12-29 14:35:28,044 - INFO - Applying network optimizations...
+2025-12-29 14:35:28,261 - INFO - Network optimizations applied
+2025-12-29 14:35:28,286 - INFO - WiFi adapter settings optimized
+2025-12-29 14:35:28,299 - INFO - DNS cache flushed
+2025-12-29 14:35:28,336 - ERROR - Failed to install startup task: 
+2025-12-29 14:36:18,253 - INFO - Applying network optimizations...
+2025-12-29 14:36:18,476 - INFO - Network optimizations applied
+2025-12-29 14:36:18,500 - INFO - WiFi adapter settings optimized
+2025-12-29 14:36:18,513 - INFO - DNS cache flushed
+2025-12-29 14:36:18,549 - ERROR - Failed to install startup task: 
+2025-12-29 14:36:18,549 - INFO - ============================================================
+2025-12-29 14:36:18,549 - INFO - WiFi Mega Optimizer Started
+2025-12-29 14:36:18,550 - INFO - Minimum speed target: 200 Mbps
+2025-12-29 14:36:18,550 - INFO - Check interval: 30 seconds
+2025-12-29 14:36:18,550 - INFO - ============================================================
+2025-12-29 14:36:18,558 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:36:18,582 - INFO - DNS cache flushed
+2025-12-29 14:36:20,608 - INFO - IP released and renewed
+2025-12-29 14:36:25,626 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:36:25,643 - INFO - DNS cache flushed
+2025-12-29 14:36:27,661 - INFO - IP released and renewed
+2025-12-29 14:37:02,689 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:37:02,709 - INFO - DNS cache flushed
+2025-12-29 14:37:04,727 - INFO - IP released and renewed
+2025-12-29 14:37:39,756 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:37:39,772 - INFO - DNS cache flushed
+2025-12-29 14:37:41,790 - INFO - IP released and renewed
+2025-12-29 14:38:16,822 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:38:16,842 - INFO - DNS cache flushed
+2025-12-29 14:38:18,864 - INFO - IP released and renewed
+2025-12-29 14:38:52,949 - INFO - Applying network optimizations...
+2025-12-29 14:38:53,325 - INFO - Network optimizations applied
+2025-12-29 14:38:53,358 - INFO - WiFi adapter settings optimized
+2025-12-29 14:38:53,372 - INFO - DNS cache flushed
+2025-12-29 14:38:53,421 - ERROR - Failed to install startup task: 
+2025-12-29 14:38:53,421 - INFO - ============================================================
+2025-12-29 14:38:53,422 - INFO - WiFi Mega Optimizer Started
+2025-12-29 14:38:53,422 - INFO - Minimum speed target: 200 Mbps
+2025-12-29 14:38:53,422 - INFO - Check interval: 30 seconds
+2025-12-29 14:38:53,422 - INFO - ============================================================
+2025-12-29 14:38:53,435 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:38:53,461 - INFO - DNS cache flushed
+2025-12-29 14:38:53,911 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:38:53,954 - INFO - DNS cache flushed
+2025-12-29 14:38:55,493 - INFO - IP released and renewed
+2025-12-29 14:38:55,976 - INFO - IP released and renewed
+2025-12-29 14:39:00,514 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:39:00,536 - INFO - DNS cache flushed
+2025-12-29 14:39:02,558 - INFO - IP released and renewed
+2025-12-29 14:39:31,005 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:39:31,028 - INFO - DNS cache flushed
+2025-12-29 14:39:33,050 - INFO - IP released and renewed
+2025-12-29 14:39:37,605 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:39:37,629 - INFO - DNS cache flushed
+2025-12-29 14:39:39,651 - INFO - IP released and renewed
+2025-12-29 14:40:08,080 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:40:08,103 - INFO - DNS cache flushed
+2025-12-29 14:40:10,172 - INFO - IP released and renewed
+2025-12-29 14:40:14,685 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:40:14,709 - INFO - DNS cache flushed
+2025-12-29 14:40:16,739 - INFO - IP released and renewed
+2025-12-29 14:40:45,289 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:40:45,315 - INFO - DNS cache flushed
+2025-12-29 14:40:47,340 - INFO - IP released and renewed
+2025-12-29 14:40:51,821 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:40:51,930 - INFO - DNS cache flushed
+2025-12-29 14:40:54,021 - INFO - IP released and renewed
+2025-12-29 14:41:22,277 - INFO - Applying network optimizations...
+2025-12-29 14:41:22,383 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:41:22,412 - INFO - DNS cache flushed
+2025-12-29 14:41:22,603 - INFO - Network optimizations applied
+2025-12-29 14:41:22,639 - INFO - WiFi adapter settings optimized
+2025-12-29 14:41:22,656 - INFO - DNS cache flushed
+2025-12-29 14:41:22,713 - ERROR - Failed to install startup task: 
+2025-12-29 14:41:22,713 - INFO - ============================================================
+2025-12-29 14:41:22,713 - INFO - WiFi Mega Optimizer Started
+2025-12-29 14:41:22,713 - INFO - Minimum speed target: 200 Mbps
+2025-12-29 14:41:22,713 - INFO - Check interval: 30 seconds
+2025-12-29 14:41:22,713 - INFO - ============================================================
+2025-12-29 14:41:22,727 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:41:22,760 - INFO - DNS cache flushed
+2025-12-29 14:41:24,443 - INFO - IP released and renewed
+2025-12-29 14:41:24,798 - INFO - IP released and renewed
+2025-12-29 14:41:29,065 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:41:29,086 - INFO - DNS cache flushed
+2025-12-29 14:41:29,818 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:41:29,843 - INFO - DNS cache flushed
+2025-12-29 14:41:31,109 - INFO - IP released and renewed
+2025-12-29 14:41:31,866 - INFO - IP released and renewed
+2025-12-29 14:41:59,479 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:41:59,479 - WARNING - Max reconnection attempts reached, resetting adapter...
+2025-12-29 14:41:59,491 - INFO - Resetting WiFi adapter: Wi-Fi
+2025-12-29 14:42:06,146 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:42:06,205 - INFO - DNS cache flushed
+2025-12-29 14:42:06,910 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:42:06,982 - INFO - DNS cache flushed
+2025-12-29 14:42:08,269 - INFO - IP released and renewed
+2025-12-29 14:42:09,010 - INFO - IP released and renewed
+2025-12-29 14:42:17,580 - INFO - DNS cache flushed
+2025-12-29 14:42:19,606 - INFO - IP released and renewed
+2025-12-29 14:42:43,335 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:42:43,356 - INFO - DNS cache flushed
+2025-12-29 14:42:44,053 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:42:44,076 - INFO - DNS cache flushed
+2025-12-29 14:42:45,376 - INFO - IP released and renewed
+2025-12-29 14:42:46,117 - INFO - IP released and renewed
+2025-12-29 14:42:54,642 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:42:54,662 - INFO - DNS cache flushed
+2025-12-29 14:42:56,688 - INFO - IP released and renewed
+2025-12-29 14:43:20,406 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:43:20,426 - INFO - DNS cache flushed
+2025-12-29 14:43:21,146 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:43:21,165 - INFO - DNS cache flushed
+2025-12-29 14:43:22,445 - INFO - IP released and renewed
+2025-12-29 14:43:23,187 - INFO - IP released and renewed
+2025-12-29 14:43:31,719 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:43:31,742 - INFO - DNS cache flushed
+2025-12-29 14:43:33,766 - INFO - IP released and renewed
+2025-12-29 14:43:57,478 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:43:57,499 - INFO - DNS cache flushed
+2025-12-29 14:43:58,220 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:43:58,247 - INFO - DNS cache flushed
+2025-12-29 14:43:59,520 - INFO - IP released and renewed
+2025-12-29 14:44:00,270 - INFO - IP released and renewed
+2025-12-29 14:44:08,804 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:44:08,825 - INFO - DNS cache flushed
+2025-12-29 14:44:10,849 - INFO - IP released and renewed
+2025-12-29 14:44:34,556 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:44:34,556 - WARNING - Max reconnection attempts reached, resetting adapter...
+2025-12-29 14:44:34,568 - INFO - Resetting WiFi adapter: Wi-Fi
+2025-12-29 14:44:35,306 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:44:35,329 - INFO - DNS cache flushed
+2025-12-29 14:44:37,359 - INFO - IP released and renewed
+2025-12-29 14:44:45,885 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:44:45,949 - INFO - DNS cache flushed
+2025-12-29 14:44:47,974 - INFO - IP released and renewed
+2025-12-29 14:44:52,631 - INFO - DNS cache flushed
+2025-12-29 14:44:54,654 - INFO - IP released and renewed
+2025-12-29 14:45:09,338 - INFO - Running speed test...
+2025-12-29 14:45:12,393 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:45:12,414 - INFO - DNS cache flushed
+2025-12-29 14:45:14,436 - INFO - IP released and renewed
+2025-12-29 14:45:22,503 - INFO - Download speed: 0.94 Mbps
+2025-12-29 14:45:23,010 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:45:23,058 - INFO - DNS cache flushed
+2025-12-29 14:45:25,128 - INFO - IP released and renewed
+2025-12-29 14:45:29,743 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:45:29,770 - INFO - DNS cache flushed
+2025-12-29 14:45:31,796 - INFO - IP released and renewed
+2025-12-29 14:45:32,976 - INFO - Applying network optimizations...
+2025-12-29 14:45:34,069 - INFO - Network optimizations applied
+2025-12-29 14:45:34,303 - INFO - WiFi adapter settings optimized
+2025-12-29 14:45:34,330 - INFO - DNS cache flushed
+2025-12-29 14:45:34,410 - ERROR - Failed to install startup task: 
+2025-12-29 14:45:34,410 - INFO - ============================================================
+2025-12-29 14:45:34,410 - INFO - WiFi Mega Optimizer Started
+2025-12-29 14:45:34,410 - INFO - Minimum speed target: 200 Mbps
+2025-12-29 14:45:34,410 - INFO - Check interval: 30 seconds
+2025-12-29 14:45:34,410 - INFO - ============================================================
+2025-12-29 14:45:34,630 - INFO - Currently connected to: None
+2025-12-29 14:45:35,154 - INFO - Running speed test...
+2025-12-29 14:45:49,469 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:45:49,497 - INFO - DNS cache flushed
+2025-12-29 14:45:51,523 - INFO - IP released and renewed
+2025-12-29 14:45:57,480 - INFO - Download speed: 2.17 Mbps
+2025-12-29 14:45:57,480 - WARNING - Speed below threshold: 2.17 Mbps (need 200 Mbps)
+2025-12-29 14:46:00,201 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:46:00,219 - INFO - DNS cache flushed
+2025-12-29 14:46:02,241 - INFO - IP released and renewed
+2025-12-29 14:46:06,830 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:46:06,848 - INFO - DNS cache flushed
+2025-12-29 14:46:08,867 - INFO - IP released and renewed
+2025-12-29 14:46:26,556 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:46:26,580 - INFO - DNS cache flushed
+2025-12-29 14:46:28,599 - INFO - IP released and renewed
+2025-12-29 14:46:37,273 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:46:37,297 - INFO - DNS cache flushed
+2025-12-29 14:46:39,320 - INFO - IP released and renewed
+2025-12-29 14:46:43,898 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:46:43,920 - INFO - DNS cache flushed
+2025-12-29 14:46:45,941 - INFO - IP released and renewed
+2025-12-29 14:47:03,631 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:47:03,631 - WARNING - Max reconnection attempts reached, resetting adapter...
+2025-12-29 14:47:03,644 - INFO - Resetting WiFi adapter: Wi-Fi
+2025-12-29 14:47:14,350 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:47:14,373 - INFO - DNS cache flushed
+2025-12-29 14:47:16,394 - INFO - IP released and renewed
+2025-12-29 14:47:20,847 - INFO - Running speed test...
+2025-12-29 14:47:20,981 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:47:21,000 - INFO - DNS cache flushed
+2025-12-29 14:47:21,694 - INFO - DNS cache flushed
+2025-12-29 14:47:23,020 - INFO - IP released and renewed
+2025-12-29 14:47:23,715 - INFO - IP released and renewed
+2025-12-29 14:47:32,253 - INFO - Download speed: 3.86 Mbps
+2025-12-29 14:47:51,457 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:47:51,476 - INFO - DNS cache flushed
+2025-12-29 14:47:53,505 - INFO - IP released and renewed
+2025-12-29 14:47:58,056 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:47:58,078 - INFO - DNS cache flushed
+2025-12-29 14:47:58,750 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:47:58,773 - INFO - DNS cache flushed
+2025-12-29 14:48:00,098 - INFO - IP released and renewed
+2025-12-29 14:48:00,800 - INFO - IP released and renewed
+2025-12-29 14:48:07,064 - INFO - Applying network optimizations...
+2025-12-29 14:48:07,916 - INFO - Network optimizations applied
+2025-12-29 14:48:08,115 - INFO - WiFi adapter settings optimized
+2025-12-29 14:48:08,137 - INFO - DNS cache flushed
+2025-12-29 14:48:08,209 - INFO - Startup task 'WiFiMegaOptimizer' installed successfully
+2025-12-29 14:48:08,209 - INFO - ============================================================
+2025-12-29 14:48:08,209 - INFO - WiFi Mega Optimizer Started
+2025-12-29 14:48:08,209 - INFO - Minimum speed target: 200 Mbps
+2025-12-29 14:48:08,209 - INFO - Check interval: 30 seconds
+2025-12-29 14:48:08,209 - INFO - ============================================================
+2025-12-29 14:48:08,439 - INFO - Currently connected to: None
+2025-12-29 14:48:09,122 - INFO - Running speed test...
+2025-12-29 14:48:28,587 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:48:28,606 - INFO - DNS cache flushed
+2025-12-29 14:48:30,625 - INFO - IP released and renewed
+2025-12-29 14:48:35,131 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:48:35,149 - INFO - DNS cache flushed
+2025-12-29 14:48:35,854 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:48:35,905 - INFO - DNS cache flushed
+2025-12-29 14:48:37,171 - INFO - IP released and renewed
+2025-12-29 14:48:37,927 - INFO - IP released and renewed
+2025-12-29 14:48:45,266 - INFO - Download speed: 0.34 Mbps
+2025-12-29 14:48:45,266 - WARNING - Speed below threshold: 0.34 Mbps (need 200 Mbps)
+2025-12-29 14:49:05,658 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:49:05,659 - WARNING - Max reconnection attempts reached, resetting adapter...
+2025-12-29 14:49:05,668 - INFO - Resetting WiFi adapter: Wi-Fi
+2025-12-29 14:49:12,201 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:49:12,228 - INFO - DNS cache flushed
+2025-12-29 14:49:12,958 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:49:12,983 - INFO - DNS cache flushed
+2025-12-29 14:49:14,252 - INFO - IP released and renewed
+2025-12-29 14:49:15,004 - INFO - IP released and renewed
+2025-12-29 14:49:23,721 - INFO - DNS cache flushed
+2025-12-29 14:49:25,741 - INFO - IP released and renewed
+2025-12-29 14:49:49,282 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:49:49,300 - INFO - DNS cache flushed
+2025-12-29 14:49:50,065 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:49:50,118 - INFO - DNS cache flushed
+2025-12-29 14:49:51,320 - INFO - IP released and renewed
+2025-12-29 14:49:52,139 - INFO - IP released and renewed
+2025-12-29 14:50:00,792 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:50:00,846 - INFO - DNS cache flushed
+2025-12-29 14:50:02,895 - INFO - IP released and renewed
+2025-12-29 14:50:26,401 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:50:26,455 - INFO - DNS cache flushed
+2025-12-29 14:50:27,224 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:50:27,244 - INFO - DNS cache flushed
+2025-12-29 14:50:28,510 - INFO - IP released and renewed
+2025-12-29 14:50:29,265 - INFO - IP released and renewed
+2025-12-29 14:50:37,939 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:50:37,962 - INFO - DNS cache flushed
+2025-12-29 14:50:39,982 - INFO - IP released and renewed
+2025-12-29 14:51:03,276 - INFO - Running speed test...
+2025-12-29 14:51:03,277 - ERROR - Speed test failed: <urlopen error [Errno 11001] getaddrinfo failed>
+2025-12-29 14:51:03,540 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:51:03,558 - INFO - DNS cache flushed
+2025-12-29 14:51:04,295 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:51:04,313 - INFO - DNS cache flushed
+2025-12-29 14:51:05,578 - INFO - IP released and renewed
+2025-12-29 14:51:06,333 - INFO - IP released and renewed
+2025-12-29 14:51:15,012 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:51:15,031 - INFO - DNS cache flushed
+2025-12-29 14:51:17,053 - INFO - IP released and renewed
+2025-12-29 14:51:40,612 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:51:40,613 - WARNING - Max reconnection attempts reached, resetting adapter...
+2025-12-29 14:51:40,624 - INFO - Resetting WiFi adapter: Wi-Fi
+2025-12-29 14:51:41,365 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:51:41,390 - INFO - DNS cache flushed
+2025-12-29 14:51:43,427 - INFO - IP released and renewed
+2025-12-29 14:51:47,707 - WARNING - Internet not accessible, reconnecting...
+2025-12-29 14:51:51,825 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:51:51,931 - INFO - Trying to connect to saved network: Stella_5
+2025-12-29 14:51:52,087 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:51:52,115 - INFO - DNS cache flushed
+2025-12-29 14:51:54,137 - INFO - IP released and renewed
+2025-12-29 14:51:57,024 - INFO - Successfully connected to: Stella_5
+2025-12-29 14:51:58,675 - INFO - DNS cache flushed
+2025-12-29 14:52:00,696 - INFO - IP released and renewed
+2025-12-29 14:52:18,475 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:52:18,497 - INFO - DNS cache flushed
+2025-12-29 14:52:20,518 - INFO - IP released and renewed
+2025-12-29 14:52:20,862 - WARNING - Internet not accessible, reconnecting...
+2025-12-29 14:52:24,983 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:52:25,076 - INFO - Trying to connect to saved network: Stella_5
+2025-12-29 14:52:27,352 - WARNING - Internet not accessible, reconnecting...
+2025-12-29 14:52:29,170 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:52:29,201 - INFO - DNS cache flushed
+2025-12-29 14:52:30,177 - INFO - Successfully connected to: Stella_5
+2025-12-29 14:52:31,223 - INFO - IP released and renewed
+2025-12-29 14:52:31,444 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:52:31,538 - INFO - Trying to connect to saved network: Stella_5
+2025-12-29 14:52:35,054 - INFO - Applying network optimizations...
+2025-12-29 14:52:35,731 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:52:35,759 - INFO - DNS cache flushed
+2025-12-29 14:52:36,331 - INFO - Network optimizations applied
+2025-12-29 14:52:36,614 - INFO - WiFi adapter settings optimized
+2025-12-29 14:52:36,645 - INFO - DNS cache flushed
+2025-12-29 14:52:36,672 - INFO - Successfully connected to: Stella_5
+2025-12-29 14:52:36,761 - INFO - Startup task 'WiFiMegaOptimizer' installed successfully
+2025-12-29 14:52:37,784 - INFO - IP released and renewed
+2025-12-29 14:52:38,874 - INFO - ============================================================
+2025-12-29 14:52:38,878 - INFO - WiFi Mega Optimizer Started
+2025-12-29 14:52:38,878 - INFO - Minimum speed target: 200 Mbps
+2025-12-29 14:52:38,879 - INFO - Check interval: 30 seconds
+2025-12-29 14:52:38,879 - INFO - ============================================================
+2025-12-29 14:52:39,079 - INFO - Currently connected to: None
+2025-12-29 14:52:39,349 - WARNING - Internet not accessible, reconnecting...
+2025-12-29 14:52:43,461 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:52:43,566 - INFO - Trying to connect to saved network: Stella_5
+2025-12-29 14:52:49,867 - INFO - Successfully connected to: Stella_5
+2025-12-29 14:52:55,552 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:52:55,574 - INFO - DNS cache flushed
+2025-12-29 14:52:57,595 - INFO - IP released and renewed
+2025-12-29 14:53:00,505 - WARNING - Internet not accessible, reconnecting...
+2025-12-29 14:53:04,598 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:53:04,675 - INFO - Trying to connect to saved network: Stella_5
+2025-12-29 14:53:06,258 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:53:06,278 - INFO - DNS cache flushed
+2025-12-29 14:53:07,012 - WARNING - Internet not accessible, reconnecting...
+2025-12-29 14:53:08,298 - INFO - IP released and renewed
+2025-12-29 14:53:09,765 - INFO - Successfully connected to: Stella_5
+2025-12-29 14:53:11,115 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:53:11,195 - INFO - Trying to connect to saved network: Stella_5
+2025-12-29 14:53:12,816 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:53:12,833 - INFO - DNS cache flushed
+2025-12-29 14:53:14,853 - INFO - IP released and renewed
+2025-12-29 14:53:16,311 - INFO - Successfully connected to: Stella_5
+2025-12-29 14:53:20,245 - WARNING - Internet not accessible, reconnecting...
+2025-12-29 14:53:31,163 - INFO - Applying network optimizations...
+2025-12-29 14:53:31,953 - INFO - Network optimizations applied
+2025-12-29 14:53:32,121 - INFO - WiFi adapter settings optimized
+2025-12-29 14:53:32,142 - INFO - DNS cache flushed
+2025-12-29 14:53:32,207 - INFO - Startup task 'WiFiMegaOptimizer' installed successfully
+2025-12-29 14:53:32,207 - INFO - ============================================================
+2025-12-29 14:53:32,207 - INFO - WiFi Mega Optimizer Started
+2025-12-29 14:53:32,207 - INFO - Minimum speed target: 200 Mbps
+2025-12-29 14:53:32,208 - INFO - Check interval: 30 seconds
+2025-12-29 14:53:32,208 - INFO - ============================================================
+2025-12-29 14:53:32,347 - INFO - Currently connected to: None
+2025-12-29 14:53:32,517 - WARNING - Internet not accessible, reconnecting...
+2025-12-29 14:53:32,623 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:53:32,641 - INFO - DNS cache flushed
+2025-12-29 14:53:34,662 - INFO - IP released and renewed
+2025-12-29 14:53:36,607 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:53:36,697 - INFO - Trying to connect to saved network: Stella_5
+2025-12-29 14:53:40,104 - WARNING - Internet not accessible, reconnecting...
+2025-12-29 14:53:41,781 - INFO - Successfully connected to: Stella_5
+2025-12-29 14:53:43,333 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:53:43,355 - INFO - DNS cache flushed
+2025-12-29 14:53:44,196 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:53:44,289 - INFO - Trying to connect to saved network: Stella_5
+2025-12-29 14:53:45,377 - INFO - IP released and renewed
+2025-12-29 14:53:46,764 - WARNING - Internet not accessible, reconnecting...
+2025-12-29 14:53:49,395 - INFO - Successfully connected to: Stella_5
+2025-12-29 14:53:49,890 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:53:49,909 - INFO - DNS cache flushed
+2025-12-29 14:53:50,855 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:53:50,957 - INFO - Trying to connect to saved network: Stella_5
+2025-12-29 14:53:51,929 - INFO - IP released and renewed
+2025-12-29 14:53:56,110 - INFO - Successfully connected to: Stella_5
+2025-12-29 14:54:09,697 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:54:09,698 - WARNING - Max reconnection attempts reached, resetting adapter...
+2025-12-29 14:54:09,714 - INFO - Resetting WiFi adapter: Wi-Fi
+2025-12-29 14:54:12,246 - WARNING - Internet not accessible, reconnecting...
+2025-12-29 14:54:16,358 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:54:16,450 - INFO - Trying to connect to saved network: Stella_5
+2025-12-29 14:54:18,666 - INFO - Interrupted by user
+2025-12-29 14:54:19,736 - WARNING - Internet not accessible, reconnecting...
+2025-12-29 14:54:20,410 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:54:20,428 - INFO - DNS cache flushed
+2025-12-29 14:54:22,451 - INFO - IP released and renewed
+2025-12-29 14:54:23,830 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:54:23,934 - INFO - Trying to connect to saved network: Stella_5
+2025-12-29 14:54:26,676 - WARNING - Internet not accessible, reconnecting...
+2025-12-29 14:54:26,963 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:54:26,985 - INFO - DNS cache flushed
+2025-12-29 14:54:27,768 - INFO - DNS cache flushed
+2025-12-29 14:54:29,014 - INFO - IP released and renewed
+2025-12-29 14:54:29,070 - INFO - Successfully connected to: Stella_5
+2025-12-29 14:54:29,794 - INFO - IP released and renewed
+2025-12-29 14:54:30,780 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:54:30,986 - INFO - Trying to connect to saved network: Stella_5
+2025-12-29 14:54:36,133 - INFO - Successfully connected to: Stella_5
+2025-12-29 14:55:00,612 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:55:00,641 - INFO - DNS cache flushed
+2025-12-29 14:55:00,879 - WARNING - Internet not accessible, reconnecting...
+2025-12-29 14:55:02,665 - ERROR - Command failed: ipconfig /renew - [WinError -1058406399] No applicable app licenses found
+2025-12-29 14:55:02,667 - INFO - IP released and renewed
+2025-12-29 14:55:04,039 - ERROR - Command failed: netsh interface show interface - [WinError -1058406399] No applicable app licenses found
+2025-12-29 14:55:04,041 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:55:04,041 - ERROR - Command failed: netsh wlan show profiles - [WinError -1058406399] No applicable app licenses found
+2025-12-29 14:55:04,043 - ERROR - Command failed: ipconfig /flushdns - [WinError -1058406399] No applicable app licenses found
+2025-12-29 14:55:04,044 - INFO - DNS cache flushed
+2025-12-29 14:55:04,045 - ERROR - Command failed: ipconfig /release - [WinError -1058406399] No applicable app licenses found
+2025-12-29 14:55:04,818 - ERROR - Command failed: netsh interface show interface - [WinError -1058406399] No applicable app licenses found
+2025-12-29 14:55:04,820 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:55:04,820 - ERROR - Command failed: netsh wlan show profiles - [WinError -1058406399] No applicable app licenses found
+2025-12-29 14:55:04,822 - ERROR - Command failed: ipconfig /flushdns - [WinError -1058406399] No applicable app licenses found
+2025-12-29 14:55:04,823 - INFO - DNS cache flushed
+2025-12-29 14:55:04,824 - ERROR - Command failed: ipconfig /release - [WinError -1058406399] No applicable app licenses found
+2025-12-29 14:55:04,982 - WARNING - WiFi disconnected! Attempting to reconnect...
+2025-12-29 14:55:04,983 - ERROR - Command failed: netsh wlan show profiles - [WinError -1058406399] No applicable app licenses found
+2025-12-29 14:55:04,985 - ERROR - Command failed: ipconfig /flushdns - [WinError -1058406399] No applicable app licenses found
+2025-12-29 14:55:04,986 - INFO - DNS cache flushed
+2025-12-29 14:55:04,987 - ERROR - Command failed: ipconfig /release - [WinError -1058406399] No applicable app licenses found
+2025-12-29 14:56:04,551 - INFO - Applying network optimizations...
+2025-12-29 14:56:05,375 - INFO - Network optimizations applied
+2025-12-29 14:56:05,551 - INFO - WiFi adapter settings optimized
+2025-12-29 14:56:05,582 - INFO - DNS cache flushed
+2025-12-29 14:56:05,662 - INFO - Startup task 'WiFiMegaOptimizer' installed successfully
+2025-12-29 14:56:05,662 - INFO - ============================================================
+2025-12-29 14:56:05,662 - INFO - WiFi Mega Optimizer Started
+2025-12-29 14:56:05,662 - INFO - Minimum speed target: 200 Mbps
+2025-12-29 14:56:05,662 - INFO - Check interval: 30 seconds
+2025-12-29 14:56:05,662 - INFO - ============================================================
+2025-12-29 14:56:05,821 - INFO - Currently connected to: None
+2025-12-29 14:56:10,380 - INFO - Applying network optimizations...
+2025-12-29 14:56:11,412 - INFO - Network optimizations applied
+2025-12-29 14:56:11,661 - INFO - WiFi adapter settings optimized
+2025-12-29 14:56:11,689 - INFO - DNS cache flushed
+2025-12-29 14:56:11,767 - INFO - Startup task 'WiFiMegaOptimizer' installed successfully
+2025-12-29 14:56:11,767 - INFO - ============================================================
+2025-12-29 14:56:11,767 - INFO - WiFi Mega Optimizer Started
+2025-12-29 14:56:11,767 - INFO - Minimum speed target: 200 Mbps
+2025-12-29 14:56:11,767 - INFO - Check interval: 30 seconds
+2025-12-29 14:56:11,767 - INFO - ============================================================
+2025-12-29 14:56:11,977 - INFO - Currently connected to: None
+2025-12-29 14:56:12,586 - INFO - Running speed test...
+2025-12-29 14:56:24,301 - INFO - Download speed: 95.53 Mbps
+2025-12-29 14:56:24,301 - WARNING - Speed below threshold: 95.53 Mbps (need 200 Mbps)
+2025-12-29 14:57:41,885 - INFO - Interrupted by user
+2025-12-29 16:12:05,547 - INFO - Applying network optimizations...
+2025-12-29 16:12:06,295 - INFO - Network optimizations applied
+2025-12-29 16:12:06,439 - INFO - WiFi adapter settings optimized
+2025-12-29 16:12:06,461 - INFO - DNS cache flushed
+2025-12-29 16:12:06,531 - INFO - Startup task 'WiFiMegaOptimizer' installed successfully
+2025-12-29 16:12:06,531 - INFO - ============================================================
+2025-12-29 16:12:06,531 - INFO - WiFi Mega Optimizer Started
+2025-12-29 16:12:06,531 - INFO - Minimum speed target: 200 Mbps
+2025-12-29 16:12:06,532 - INFO - Check interval: 30 seconds
+2025-12-29 16:12:06,532 - INFO - ============================================================
+2025-12-29 16:12:06,674 - INFO - Currently connected to: None
+2025-12-29 16:12:07,087 - INFO - Running speed test...
+2025-12-29 16:12:17,565 - INFO - Interrupted by user
+2025-12-30 15:48:28,264 - INFO - Applying network optimizations...
+2025-12-30 15:48:29,061 - INFO - Network optimizations applied
+2025-12-30 15:48:29,257 - INFO - WiFi adapter settings optimized
+2025-12-30 15:48:29,284 - INFO - DNS cache flushed
+2025-12-30 15:48:29,351 - INFO - Startup task 'WiFiMegaOptimizer' installed successfully
+2025-12-30 15:48:29,352 - INFO - ============================================================
+2025-12-30 15:48:29,352 - INFO - WiFi Mega Optimizer Started
+2025-12-30 15:48:29,352 - INFO - Minimum speed target: 200 Mbps
+2025-12-30 15:48:29,352 - INFO - Check interval: 30 seconds
+2025-12-30 15:48:29,352 - INFO - ============================================================
+2025-12-30 15:48:29,516 - INFO - Currently connected to: None
+2025-12-30 15:48:29,973 - INFO - Running speed test...
+2025-12-30 15:48:43,293 - INFO - Download speed: 5.92 Mbps
+2025-12-30 15:48:43,293 - WARNING - Speed below threshold: 5.92 Mbps (need 200 Mbps)
+2025-12-30 15:49:51,763 - INFO - Interrupted by user

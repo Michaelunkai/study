@@ -1,0 +1,19 @@
+2026-03-09 20:16:09,525 - INFO - 🔍 Validating configuration...
+2026-03-09 20:16:09,525 - INFO - ✅ Resume: Michael_Fedorovsky_Resume_devops.pdf
+2026-03-09 20:16:09,525 - INFO - ✅ Ready to apply to 7 companies
+2026-03-09 20:16:09,525 - INFO - 
+======================================================================
+2026-03-09 20:16:09,525 - INFO - 🚀 AUTOMATED JOB APPLICATION SYSTEM
+2026-03-09 20:16:09,525 - INFO - ======================================================================
+2026-03-09 20:16:09,525 - INFO - Applicant: Michael Fedorovsky
+2026-03-09 20:16:09,525 - INFO - Resume: Michael_Fedorovsky_Resume_devops.pdf
+2026-03-09 20:16:09,525 - INFO - Companies: 7
+2026-03-09 20:16:09,525 - INFO - ======================================================================
+
+2026-03-09 20:16:09,525 - INFO - 🌐 Starting Chrome browser...
+2026-03-09 20:16:10,951 - INFO - ✅ Browser started successfully
+2026-03-09 20:16:10,951 - INFO - 📧 Opening Gmail...
+2026-03-09 20:16:12,777 - INFO - ⏳ Please log in to Gmail in the browser window...
+2026-03-09 20:16:12,777 - INFO -    (Waiting up to 60 seconds)
+2026-03-09 20:17:13,011 - ERROR - ❌ Login timeout. Please try again.
+2026-03-09 20:17:13,015 - ERROR - ❌ Failed to log in. Exiting.

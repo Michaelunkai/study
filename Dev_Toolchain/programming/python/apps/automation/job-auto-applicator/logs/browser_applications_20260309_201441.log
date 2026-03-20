@@ -1,0 +1,39 @@
+2026-03-09 20:14:41,311 - INFO - 🔍 Validating configuration...
+2026-03-09 20:14:41,311 - INFO - ✅ Resume: Michael_Fedorovsky_Resume_devops.pdf
+2026-03-09 20:14:41,311 - INFO - ✅ Ready to apply to 7 companies
+2026-03-09 20:14:41,311 - INFO - 
+======================================================================
+2026-03-09 20:14:41,311 - INFO - 🚀 AUTOMATED JOB APPLICATION SYSTEM (BROWSER MODE)
+2026-03-09 20:14:41,311 - INFO - ======================================================================
+2026-03-09 20:14:41,311 - INFO - Applicant: Michael Fedorovsky
+2026-03-09 20:14:41,311 - INFO - Email: michaelovsky5@gmail.com
+2026-03-09 20:14:41,311 - INFO - Resume: Michael_Fedorovsky_Resume_devops.pdf
+2026-03-09 20:14:41,311 - INFO - Target Companies: 7
+2026-03-09 20:14:41,311 - INFO - Log File: F:\study\Dev_Toolchain\programming\python\apps\automation\job-auto-applicator\logs\browser_applications_20260309_201441.log
+2026-03-09 20:14:41,311 - INFO - ======================================================================
+
+2026-03-09 20:14:41,311 - INFO - 🌐 Starting Chrome browser...
+2026-03-09 20:15:17,621 - ERROR - ❌ Failed to start browser: Message: session not created: Chrome instance exited. Examine ChromeDriver verbose log to determine the cause.; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#sessionnotcreatedexception
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	0x7ff671e0aa55
+	0x7ff671b68630
+	0x7ff6718fd75d
+	0x7ff67193e182
+	0x7ff6719395d9
+	0x7ff67198fc51
+	0x7ff67198f4b6
+	0x7ff671949098
+	0x7ff671949f83
+	0x7ff671e37810
+	0x7ff671e31afd
+	0x7ff671e52c1a
+	0x7ff671b83345
+	0x7ff671b8b81c
+	0x7ff671b71924
+	0x7ff671b71ad6
+	0x7ff671b57e47
+	0x7ffc7d41e8d7
+	0x7ffc7e50c48c
+
+2026-03-09 20:15:17,624 - INFO - 💡 Make sure Chrome is installed and close all Chrome windows before running

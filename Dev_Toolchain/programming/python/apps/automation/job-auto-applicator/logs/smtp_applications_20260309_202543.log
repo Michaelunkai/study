@@ -1,0 +1,155 @@
+2026-03-09 20:25:43,424 - INFO - 🔍 Validating configuration...
+2026-03-09 20:25:43,424 - INFO - ✅ Resume: Michael_Fedorovsky_Resume_devops.pdf
+2026-03-09 20:25:43,424 - INFO - ✅ Email: michaelovsky5@gmail.com
+2026-03-09 20:25:43,424 - INFO - ✅ Portfolio: https://portfolio-website-psi-jade-83.vercel.app/
+2026-03-09 20:25:43,424 - INFO - ✅ Companies: 7
+2026-03-09 20:25:43,424 - INFO - ✅ Sent history: 0 companies
+2026-03-09 20:25:43,424 - INFO - 
+======================================================================
+2026-03-09 20:25:43,424 - INFO - 🚀 SMTP JOB APPLICATION SYSTEM (NO BROWSER)
+2026-03-09 20:25:43,424 - INFO - ======================================================================
+2026-03-09 20:25:43,424 - INFO - Applicant: Michael Fedorovsky
+2026-03-09 20:25:43,424 - INFO - Email: michaelovsky5@gmail.com
+2026-03-09 20:25:43,427 - INFO - Phone: 054-763-2418
+2026-03-09 20:25:43,427 - INFO - Portfolio: https://portfolio-website-psi-jade-83.vercel.app/
+2026-03-09 20:25:43,427 - INFO - Resume: Michael_Fedorovsky_Resume_devops.pdf
+2026-03-09 20:25:43,427 - INFO - Companies: 7
+2026-03-09 20:25:43,427 - INFO - ======================================================================
+
+2026-03-09 20:25:43,427 - INFO - 
+📊 Progress: 1/7
+
+2026-03-09 20:25:43,427 - INFO - 
+======================================================================
+2026-03-09 20:25:43,427 - INFO - 📧 Imubit
+2026-03-09 20:25:43,427 - INFO -    Position: Junior DevOps Engineer
+2026-03-09 20:25:43,427 - INFO -    Location: Central Israel
+2026-03-09 20:25:43,427 - INFO -    Email: careers@imubit.com
+2026-03-09 20:25:43,427 - INFO - ✅ Validation passed
+2026-03-09 20:25:43,427 - INFO - ======================================================================
+2026-03-09 20:25:43,427 - INFO - 📧 Connecting to Gmail SMTP...
+2026-03-09 20:25:43,427 - INFO - 📎 Attaching: Michael_Fedorovsky_Resume_devops.pdf
+2026-03-09 20:25:43,438 - INFO - 🔐 Authenticating...
+2026-03-09 20:25:44,588 - ERROR - ❌ Authentication failed: (535, b'5.7.8 Username and Password not accepted. For more information, go to\n5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-48541b6f6b7sm8621285e9.9 - gsmtp')
+2026-03-09 20:25:44,588 - ERROR - 💡 Check Gmail app password in config.py
+2026-03-09 20:25:44,588 - INFO - 
+📊 Progress: 2/7
+
+2026-03-09 20:25:44,588 - INFO - 
+======================================================================
+2026-03-09 20:25:44,588 - INFO - 📧 Oligo Security
+2026-03-09 20:25:44,588 - INFO -    Position: DevOps Engineer
+2026-03-09 20:25:44,588 - INFO -    Location: Tel Aviv/Ramat Gan
+2026-03-09 20:25:44,588 - INFO -    Email: jobs@oligosecurity.com
+2026-03-09 20:25:44,588 - INFO - ✅ Validation passed
+2026-03-09 20:25:44,588 - INFO - ======================================================================
+2026-03-09 20:25:44,588 - INFO - 📧 Connecting to Gmail SMTP...
+2026-03-09 20:25:44,588 - INFO - 📎 Attaching: Michael_Fedorovsky_Resume_devops.pdf
+2026-03-09 20:25:44,600 - INFO - 🔐 Authenticating...
+2026-03-09 20:25:46,490 - ERROR - ❌ Authentication failed: (535, b'5.7.8 Username and Password not accepted. For more information, go to\n5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-48529f019a4sm84115505e9.12 - gsmtp')
+2026-03-09 20:25:46,494 - ERROR - 💡 Check Gmail app password in config.py
+2026-03-09 20:25:46,494 - INFO - 
+📊 Progress: 3/7
+
+2026-03-09 20:25:46,494 - INFO - 
+======================================================================
+2026-03-09 20:25:46,494 - INFO - 📧 FireArc
+2026-03-09 20:25:46,494 - INFO -    Position: DevOps Engineer
+2026-03-09 20:25:46,494 - INFO -    Location: Herzliya
+2026-03-09 20:25:46,494 - INFO -    Email: careers@firearc.com
+2026-03-09 20:25:46,494 - INFO - ✅ Validation passed
+2026-03-09 20:25:46,494 - INFO - ======================================================================
+2026-03-09 20:25:46,494 - INFO - 📧 Connecting to Gmail SMTP...
+2026-03-09 20:25:46,497 - INFO - 📎 Attaching: Michael_Fedorovsky_Resume_devops.pdf
+2026-03-09 20:25:46,505 - INFO - 🔐 Authenticating...
+2026-03-09 20:25:47,604 - ERROR - ❌ Authentication failed: (535, b'5.7.8 Username and Password not accepted. For more information, go to\n5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-439dada9116sm25836339f8f.14 - gsmtp')
+2026-03-09 20:25:47,608 - ERROR - 💡 Check Gmail app password in config.py
+2026-03-09 20:25:47,608 - INFO - 
+📊 Progress: 4/7
+
+2026-03-09 20:25:47,608 - INFO - 
+======================================================================
+2026-03-09 20:25:47,608 - INFO - 📧 Prologic
+2026-03-09 20:25:47,608 - INFO -    Position: DevOps Engineer
+2026-03-09 20:25:47,608 - INFO -    Location: Ra'anana
+2026-03-09 20:25:47,608 - INFO -    Email: hr@prologic.co.il
+2026-03-09 20:25:47,608 - INFO - ✅ Validation passed
+2026-03-09 20:25:47,608 - INFO - ======================================================================
+2026-03-09 20:25:47,608 - INFO - 📧 Connecting to Gmail SMTP...
+2026-03-09 20:25:47,608 - INFO - 📎 Attaching: Michael_Fedorovsky_Resume_devops.pdf
+2026-03-09 20:25:47,617 - INFO - 🔐 Authenticating...
+2026-03-09 20:25:48,632 - ERROR - ❌ Authentication failed: (535, b'5.7.8 Username and Password not accepted. For more information, go to\n5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-48541aba60esm9712825e9.5 - gsmtp')
+2026-03-09 20:25:48,636 - ERROR - 💡 Check Gmail app password in config.py
+2026-03-09 20:25:48,636 - INFO - 
+📊 Progress: 5/7
+
+2026-03-09 20:25:48,636 - INFO - 
+======================================================================
+2026-03-09 20:25:48,636 - INFO - 📧 SuperCom
+2026-03-09 20:25:48,636 - INFO -    Position: Junior DevOps/QA
+2026-03-09 20:25:48,636 - INFO -    Location: Tel Aviv
+2026-03-09 20:25:48,636 - INFO -    Email: jobs@supercom.com
+2026-03-09 20:25:48,636 - INFO - ✅ Validation passed
+2026-03-09 20:25:48,636 - INFO - ======================================================================
+2026-03-09 20:25:48,636 - INFO - 📧 Connecting to Gmail SMTP...
+2026-03-09 20:25:48,636 - INFO - 📎 Attaching: Michael_Fedorovsky_Resume_devops.pdf
+2026-03-09 20:25:48,644 - INFO - 🔐 Authenticating...
+2026-03-09 20:25:49,796 - ERROR - ❌ Authentication failed: (535, b'5.7.8 Username and Password not accepted. For more information, go to\n5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-48541b6f708sm11513155e9.11 - gsmtp')
+2026-03-09 20:25:49,796 - ERROR - 💡 Check Gmail app password in config.py
+2026-03-09 20:25:49,796 - INFO - 
+📊 Progress: 6/7
+
+2026-03-09 20:25:49,796 - INFO - 
+======================================================================
+2026-03-09 20:25:49,796 - INFO - 📧 Consist Group
+2026-03-09 20:25:49,800 - INFO -    Position: DevOps Engineer
+2026-03-09 20:25:49,800 - INFO -    Location: Petah Tikva
+2026-03-09 20:25:49,800 - INFO -    Email: jobs@consistgroup.com
+2026-03-09 20:25:49,800 - INFO - ✅ Validation passed
+2026-03-09 20:25:49,800 - INFO - ======================================================================
+2026-03-09 20:25:49,800 - INFO - 📧 Connecting to Gmail SMTP...
+2026-03-09 20:25:49,800 - INFO - 📎 Attaching: Michael_Fedorovsky_Resume_devops.pdf
+2026-03-09 20:25:49,808 - INFO - 🔐 Authenticating...
+2026-03-09 20:25:50,985 - ERROR - ❌ Authentication failed: (535, b'5.7.8 Username and Password not accepted. For more information, go to\n5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-48541b6f6e6sm19352185e9.10 - gsmtp')
+2026-03-09 20:25:50,989 - ERROR - 💡 Check Gmail app password in config.py
+2026-03-09 20:25:50,989 - INFO - 
+📊 Progress: 7/7
+
+2026-03-09 20:25:50,989 - INFO - 
+======================================================================
+2026-03-09 20:25:50,989 - INFO - 📧 Amazon Israel
+2026-03-09 20:25:50,989 - INFO -    Position: DevOps Intern 2026
+2026-03-09 20:25:50,989 - INFO -    Location: Tel Aviv
+2026-03-09 20:25:50,989 - INFO -    Email: israel-jobs@amazon.com
+2026-03-09 20:25:50,989 - INFO - ✅ Validation passed
+2026-03-09 20:25:50,989 - INFO - ======================================================================
+2026-03-09 20:25:50,989 - INFO - 📧 Connecting to Gmail SMTP...
+2026-03-09 20:25:50,989 - INFO - 📎 Attaching: Michael_Fedorovsky_Resume_devops.pdf
+2026-03-09 20:25:51,001 - INFO - 🔐 Authenticating...
+2026-03-09 20:25:52,083 - ERROR - ❌ Authentication failed: (535, b'5.7.8 Username and Password not accepted. For more information, go to\n5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-439dad8d95dsm31030946f8f.7 - gsmtp')
+2026-03-09 20:25:52,083 - ERROR - 💡 Check Gmail app password in config.py
+2026-03-09 20:25:52,083 - INFO - 
+
+======================================================================
+2026-03-09 20:25:52,083 - INFO - 📊 FINAL SUMMARY
+2026-03-09 20:25:52,083 - INFO - ======================================================================
+2026-03-09 20:25:52,083 - INFO - ✅ Sent: 0
+2026-03-09 20:25:52,083 - INFO - ⏭️ Skipped: 0
+2026-03-09 20:25:52,083 - INFO - ❌ Failed: 7
+2026-03-09 20:25:52,083 - INFO - 📦 Total: 7
+2026-03-09 20:25:52,083 - INFO - ⏱️ Time: 8s
+2026-03-09 20:25:52,083 - INFO - 
+❌ FAILED:
+2026-03-09 20:25:52,083 - INFO -    • Imubit
+2026-03-09 20:25:52,083 - INFO -    • Oligo Security
+2026-03-09 20:25:52,083 - INFO -    • FireArc
+2026-03-09 20:25:52,083 - INFO -    • Prologic
+2026-03-09 20:25:52,083 - INFO -    • SuperCom
+2026-03-09 20:25:52,083 - INFO -    • Consist Group
+2026-03-09 20:25:52,083 - INFO -    • Amazon Israel
+2026-03-09 20:25:52,083 - INFO - 
+======================================================================
+2026-03-09 20:25:52,083 - INFO - 📄 Log: F:\study\Dev_Toolchain\programming\python\apps\automation\job-auto-applicator\logs\smtp_applications_20260309_202543.log
+2026-03-09 20:25:52,083 - INFO - 📊 History: F:\study\Dev_Toolchain\programming\python\apps\automation\job-auto-applicator\sent_applications.json
+2026-03-09 20:25:52,083 - INFO - ======================================================================
+

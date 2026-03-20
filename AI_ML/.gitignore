@@ -1,0 +1,20 @@
+﻿Thumbs.db
+.DS_Store
+**/nul
+**/.git
+**/mem-agent-mcp/
+
+# Files >=100MB excluded by gitit (GitHub limit)
+AI_and_Machine_Learning/Artificial_Intelligence/cli/claudecode/wrappers/ClawdBot/B/ClawdBotManager.exe
+AI_and_Machine_Learning/Artificial_Intelligence/cli/claudecode/wrappers/ClawdBot/B/BULLETPROOF/ClawdBotManager.exe
+
+# Auto-excluded large files (>49MB)
+AI_and_Machine_Learning/Artificial_Intelligence/cli/claudecode/wrappers/ClawdBot/B/publish/ClawdBotManager.exe
+
+# Auto-excluded files with secrets
+AI_and_Machine_Learning/Artificial_Intelligence/MCP/claudecode/GLOBAL_RULE_MCP_ONDEMAND.txt
+AI_and_Machine_Learning/Artificial_Intelligence/MCP/claudecode/b.backup..ps1
+AI_and_Machine_Learning/Artificial_Intelligence/MCP/claudecode/b.backup.2025-12-02.ps1
+
+# Auto-excluded large files (caught during push)
+Nvidia/Cuda/liner_to_Install_CUDA,_create_virtual_environment,_install_packages,_initialize_and_configure_graphrag

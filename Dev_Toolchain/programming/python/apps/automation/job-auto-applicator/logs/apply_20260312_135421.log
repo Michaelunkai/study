@@ -1,0 +1,57 @@
+2026-03-12 13:54:21,807 [INFO] =======================================================
+2026-03-12 13:54:21,807 [INFO] JOB APPLICATION AUTOMATION STARTED
+2026-03-12 13:54:21,807 [INFO] =======================================================
+2026-03-12 13:54:21,807 [INFO]   Target: 1 applications
+2026-03-12 13:54:21,807 [INFO]   Time limit: 5 minutes
+2026-03-12 13:54:21,807 [INFO]   Profile: Michael Fedorovsky
+2026-03-12 13:54:21,807 [INFO]   Resume: F:\study\resume\Michael_Fedorovsky_Resume_devops.pdf
+2026-03-12 13:54:21,807 [INFO]   Previously applied: 0 companies
+2026-03-12 13:54:21,811 [INFO] Chrome CDP already running on port 9222
+2026-03-12 13:54:24,415 [INFO] Connecting to Chrome CDP port 9222...
+2026-03-12 13:54:24,526 [INFO] Connected to Chrome!
+2026-03-12 13:54:24,645 [INFO] 
+Search 1/5: DevOps+Engineer&location=Israel
+2026-03-12 13:54:30,769 [INFO]   Found 60 job listings
+2026-03-12 13:54:30,809 [INFO] 
+[1] Senior Devops Engineer @ Remedio (formerly GYTPOL) (Tel Aviv-Yafo, Tel Aviv District, Israel)
+2026-03-12 13:54:30,809 [INFO]   SKIP: title disqualified (senior/lead/non-DevOps)
+2026-03-12 13:54:30,833 [INFO] 
+[2] DevOps Engineer @ Vi (Tel Aviv-Yafo, Tel Aviv District, Israel)
+2026-03-12 13:54:34,961 [INFO]   SKIP: requires 5+ years
+2026-03-12 13:54:34,970 [ERROR]   Error on card 2: ElementHandle.query_selector: Protocol error (DOM.describeNode): Cannot find context with specified id
+2026-03-12 13:54:39,158 [ERROR]   Error on card 3: ElementHandle.query_selector: Protocol error (DOM.describeNode): Cannot find context with specified id
+2026-03-12 13:54:43,335 [ERROR]   Error on card 4: ElementHandle.query_selector: Protocol error (DOM.describeNode): Cannot find context with specified id
+2026-03-12 13:54:47,519 [ERROR]   Error on card 5: ElementHandle.query_selector: Protocol error (DOM.describeNode): Cannot find context with specified id
+2026-03-12 13:54:51,108 [ERROR]   Error on card 6: ElementHandle.query_selector: Protocol error (DOM.describeNode): Cannot find context with specified id
+2026-03-12 13:54:55,345 [ERROR]   Error on card 7: ElementHandle.query_selector: Protocol error (DOM.describeNode): Cannot find context with specified id
+2026-03-12 13:54:59,526 [ERROR]   Error on card 8: ElementHandle.query_selector: Protocol error (DOM.describeNode): Cannot find context with specified id
+2026-03-12 13:55:03,096 [ERROR]   Error on card 9: ElementHandle.query_selector: Protocol error (DOM.describeNode): Cannot find context with specified id
+2026-03-12 13:55:07,365 [ERROR]   Error on card 10: ElementHandle.query_selector: Protocol error (DOM.describeNode): Cannot find context with specified id
+2026-03-12 13:55:11,603 [ERROR]   Error on card 11: ElementHandle.query_selector: Protocol error (DOM.describeNode): Cannot find context with specified id
+2026-03-12 13:55:15,187 [ERROR]   Error on card 12: ElementHandle.query_selector: Protocol error (DOM.describeNode): Cannot find context with specified id
+2026-03-12 13:55:19,392 [ERROR]   Error on card 13: ElementHandle.query_selector: Protocol error (DOM.describeNode): Cannot find context with specified id
+2026-03-12 13:55:23,528 [ERROR]   Error on card 14: ElementHandle.query_selector: Protocol error (DOM.describeNode): Cannot find context with specified id
+2026-03-12 13:55:27,095 [ERROR]   Error on card 15: ElementHandle.query_selector: Protocol error (DOM.describeNode): Cannot find context with specified id
+2026-03-12 13:55:31,365 [ERROR]   Error on card 16: ElementHandle.query_selector: Protocol error (DOM.describeNode): Cannot find context with specified id
+2026-03-12 13:55:35,544 [ERROR]   Error on card 17: ElementHandle.query_selector: Protocol error (DOM.describeNode): Cannot find context with specified id
+2026-03-12 13:55:39,137 [ERROR]   Error on card 18: ElementHandle.query_selector: Protocol error (DOM.describeNode): Cannot find context with specified id
+2026-03-12 13:55:43,394 [ERROR]   Error on card 19: ElementHandle.query_selector: Protocol error (DOM.describeNode): Cannot find context with specified id
+2026-03-12 13:55:47,616 [ERROR]   Error on card 20: ElementHandle.query_selector: Protocol error (DOM.describeNode): Cannot find context with specified id
+2026-03-12 13:55:51,190 [ERROR]   Error on card 21: ElementHandle.query_selector: Protocol error (DOM.describeNode): Cannot find context with specified id
+2026-03-12 13:55:55,388 [ERROR]   Error on card 22: ElementHandle.query_selector: Protocol error (DOM.describeNode): Cannot find context with specified id
+2026-03-12 13:55:59,497 [ERROR]   Error on card 23: ElementHandle.query_selector: Protocol error (DOM.describeNode): Cannot find context with specified id
+2026-03-12 13:56:02,983 [ERROR]   Error on card 24: ElementHandle.query_selector: Protocol error (DOM.describeNode): Cannot find context with specified id
+2026-03-12 13:56:07,216 [INFO] 
+Search 2/5: Junior+DevOps+Engineer&location=Israel
+2026-03-12 13:56:08,170 [ERROR]   Search failed: Page.goto: Navigation to "https://www.linkedin.com/jobs/search?keywords=Junior+DevOps+Engineer&location=Israel" is interrupted by another navigation to "https://www.linkedin.com/login?emailAddress=&fromSignIn=&fromSignIn=true&session_redirect=https%3A%2F%2Fwww.linkedin.com%2Fjobs%2Fsearch%3Fkeywords%3DDevOps%2BEngineer%26location%3DIsrael&trk=public_jobs_nav-header-signin"
+Call log:
+  - navigating to "https://www.linkedin.com/jobs/search?keywords=Junior+DevOps+Engineer&location=Israel", waiting until "domcontentloaded"
+
+2026-03-12 13:56:08,170 [INFO] 
+Search 3/5: Cloud+Engineer&location=Israel
+2026-03-12 13:56:19,670 [ERROR]   Search failed: Page.goto: net::ERR_ABORTED at https://www.linkedin.com/jobs/search?keywords=Cloud+Engineer&location=Israel
+Call log:
+  - navigating to "https://www.linkedin.com/jobs/search?keywords=Cloud+Engineer&location=Israel", waiting until "domcontentloaded"
+
+2026-03-12 13:56:19,670 [INFO] 
+Search 4/5: DevOps+Engineer&location=Tel+Aviv

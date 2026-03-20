@@ -1,0 +1,294 @@
+2026-03-12 14:17:26,782 [INFO] ============================================================
+2026-03-12 14:17:26,786 [INFO] JOB APPLICATION AUTOMATION v2
+2026-03-12 14:17:26,786 [INFO] ============================================================
+2026-03-12 14:17:26,786 [INFO]   Target: 5
+2026-03-12 14:17:26,786 [INFO]   Profile: Michael Fedorovsky
+2026-03-12 14:17:26,786 [INFO]   Already applied: 0 companies
+2026-03-12 14:17:26,786 [INFO] ✓ Connected to existing Chrome on port 9222
+2026-03-12 14:17:29,721 [INFO] 
+=== PHASE 1: COLLECTING JOBS ===
+2026-03-12 14:17:37,405 [INFO]   DevOps+Engineer&location=Israel: found 59 jobs
+2026-03-12 14:17:49,481 [INFO]   Junior+DevOps+Engineer&location=Israel: found 60 jobs
+2026-03-12 14:17:59,799 [INFO]   Cloud+Engineer&location=Israel: found 60 jobs
+2026-03-12 14:18:01,885 [INFO] 
+Total unique jobs: 104
+2026-03-12 14:18:01,888 [INFO] 
+=== PHASE 2: EVALUATING JOBS ===
+2026-03-12 14:18:01,888 [INFO] 
+[1] DevOps Engineer @ Vi
+2026-03-12 14:18:06,912 [INFO]   SKIP: 5+ years required
+2026-03-12 14:18:06,919 [INFO] 
+[2] DevOps Engineer @ Spines
+2026-03-12 14:18:10,936 [INFO]   QUALIFIED! Skills: Docker, Kubernetes, Azure, Ci/Cd, Python
+2026-03-12 14:18:10,936 [INFO]   Email: jobs@spines.com
+2026-03-12 14:18:13,994 [INFO] 
+[3] Senior Devops Engineer @ Remedio (formerly GYTPOL)
+2026-03-12 14:18:13,999 [INFO]   SKIP: title
+2026-03-12 14:18:13,999 [INFO] 
+[4] DevOps Engineer @ ZEST Security
+2026-03-12 14:18:19,959 [INFO]   QUALIFIED! Skills: Docker, Kubernetes, Aws, Terraform, Jenkins
+2026-03-12 14:18:19,963 [INFO]   Email: jobs@zestsecurity.com
+2026-03-12 14:18:23,954 [INFO] 
+[5] DevOps Engineer @ Echo
+2026-03-12 14:18:28,558 [INFO]   SKIP: 5+ years required
+2026-03-12 14:18:28,562 [INFO] 
+[6] DevOps Engineer @ ISI - ImageSat International
+2026-03-12 14:18:33,688 [INFO]   QUALIFIED! Skills: Docker, Kubernetes, Aws, Azure, Terraform
+2026-03-12 14:18:33,688 [INFO]   Email: jobs@isiimagesatinternational.com
+2026-03-12 14:18:36,942 [INFO] 
+[7] DevOps Engineer @ eyesAtop
+2026-03-12 14:18:37,715 [ERROR]   SKIP: navigation failed - Page.goto: Navigation to "https://il.linkedin.com/jobs/view/devops-engineer-at-eyesatop-4372846890?position=7&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=kJCXW0ZaarCWKTTXYxfo2g%3D%3D" is interrupted by another navigation to "https://il.linkedin.com/jobs/view/devops-engineer-at-isi-imagesat-international-4368658164?position=6&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=LDFzjoWJaz6de5hkeGeOvw%3D%3D"
+Call log:
+  - navigating to "https://il.linkedin.com/jobs/view/devops-engineer-at-eyesatop-4372846890?position=7&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=kJCXW0ZaarCWKTTXYxfo2g%3D%3D", waiting until "domcontentloaded"
+
+2026-03-12 14:18:37,715 [INFO] 
+[8] DevOps Engineer @ Regulus
+2026-03-12 14:18:38,378 [ERROR]   SKIP: navigation failed - Page.goto: Navigation to "https://il.linkedin.com/jobs/view/devops-engineer-at-regulus-4362641403?position=8&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=L0DeGyDWO8sQhwtgiKxtBg%3D%3D" is interrupted by another navigation to "https://il.linkedin.com/jobs/view/devops-engineer-at-eyesatop-4372846890?position=7&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=kJCXW0ZaarCWKTTXYxfo2g%3D%3D"
+Call log:
+  - navigating to "https://il.linkedin.com/jobs/view/devops-engineer-at-regulus-4362641403?position=8&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=L0DeGyDWO8sQhwtgiKxtBg%3D%3D", waiting until "domcontentloaded"
+
+2026-03-12 14:18:38,378 [INFO] 
+[9] Senior DevOps Engineer @ Sensi.AI
+2026-03-12 14:18:38,378 [INFO]   SKIP: title
+2026-03-12 14:18:38,378 [INFO] 
+[10] Devops Engineer @ Pentera
+2026-03-12 14:18:38,781 [ERROR]   SKIP: navigation failed - Page.goto: Navigation to "https://il.linkedin.com/jobs/view/devops-engineer-at-pentera-4283539611?position=10&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=QuMOZDxiBLysAhCjY7C84g%3D%3D" is interrupted by another navigation to "https://il.linkedin.com/jobs/view/devops-engineer-at-regulus-4362641403?position=8&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=L0DeGyDWO8sQhwtgiKxtBg%3D%3D"
+Call log:
+  - navigating to "https://il.linkedin.com/jobs/view/devops-engineer-at-pentera-4283539611?position=10&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=QuMOZDxiBLysAhCjY7C84g%3D%3D", waiting until "domcontentloaded"
+
+2026-03-12 14:18:38,781 [INFO] 
+[11] DevOps Engineer @ Upstream Security
+2026-03-12 14:18:39,203 [ERROR]   SKIP: navigation failed - Page.goto: Navigation to "https://il.linkedin.com/jobs/view/devops-engineer-at-upstream-security-4342150029?position=11&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=Y2snwbQZFVLU7aVjj8okyA%3D%3D" is interrupted by another navigation to "https://il.linkedin.com/jobs/view/devops-engineer-at-pentera-4283539611?position=10&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=QuMOZDxiBLysAhCjY7C84g%3D%3D"
+Call log:
+  - navigating to "https://il.linkedin.com/jobs/view/devops-engineer-at-upstream-security-4342150029?position=11&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=Y2snwbQZFVLU7aVjj8okyA%3D%3D", waiting until "domcontentloaded"
+
+2026-03-12 14:18:39,203 [INFO] 
+[12] Senior DevOps Engineer @ Blockaid
+2026-03-12 14:18:39,203 [INFO]   SKIP: title
+2026-03-12 14:18:39,203 [INFO] 
+[13] DevOps Engineer @ Connecteam
+2026-03-12 14:18:39,345 [ERROR]   SKIP: navigation failed - Page.goto: Navigation to "https://il.linkedin.com/jobs/view/devops-engineer-at-connecteam-4290904319?position=13&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=yNvGCYseauZqHCP0yxRrpA%3D%3D" is interrupted by another navigation to "https://il.linkedin.com/jobs/view/devops-engineer-at-upstream-security-4342150029?position=11&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=Y2snwbQZFVLU7aVjj8okyA%3D%3D"
+Call log:
+  - navigating to "https://il.linkedin.com/jobs/view/devops-engineer-at-connecteam-4290904319?position=13&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=yNvGCYseauZqHCP0yxRrpA%3D%3D", waiting until "domcontentloaded"
+
+2026-03-12 14:18:39,345 [INFO] 
+[14] DevOps Engineer @ Bagira
+2026-03-12 14:18:39,738 [ERROR]   SKIP: navigation failed - Page.goto: Navigation to "https://il.linkedin.com/jobs/view/devops-engineer-at-bagira-4282947507?position=14&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=gCxIKKuEH6jPJoBuqxrUUA%3D%3D" is interrupted by another navigation to "https://il.linkedin.com/jobs/view/devops-engineer-at-connecteam-4290904319?position=13&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=yNvGCYseauZqHCP0yxRrpA%3D%3D"
+Call log:
+  - navigating to "https://il.linkedin.com/jobs/view/devops-engineer-at-bagira-4282947507?position=14&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=gCxIKKuEH6jPJoBuqxrUUA%3D%3D", waiting until "domcontentloaded"
+
+2026-03-12 14:18:39,743 [INFO] 
+[15] DevOps Engineer @ CodeValue
+2026-03-12 14:18:40,128 [ERROR]   SKIP: navigation failed - Page.goto: Navigation to "https://il.linkedin.com/jobs/view/devops-engineer-at-codevalue-4381450011?position=15&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=xJqf0pPCb3Tm4g3PSRWX0A%3D%3D" is interrupted by another navigation to "https://il.linkedin.com/jobs/view/devops-engineer-at-bagira-4282947507?position=14&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=gCxIKKuEH6jPJoBuqxrUUA%3D%3D"
+Call log:
+  - navigating to "https://il.linkedin.com/jobs/view/devops-engineer-at-codevalue-4381450011?position=15&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=xJqf0pPCb3Tm4g3PSRWX0A%3D%3D", waiting until "domcontentloaded"
+
+2026-03-12 14:18:40,128 [INFO] 
+[16] 21412 - DevOps Engineer (SRE) @ Qualitest acq
+2026-03-12 14:18:40,516 [ERROR]   SKIP: navigation failed - Page.goto: Navigation to "https://il.linkedin.com/jobs/view/21412-devops-engineer-sre-at-qualitest-acq-4382384117?position=16&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=HyPcbKdKmh4dcN5ZFV%2Bvjg%3D%3D" is interrupted by another navigation to "https://il.linkedin.com/jobs/view/devops-engineer-at-codevalue-4381450011?position=15&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=xJqf0pPCb3Tm4g3PSRWX0A%3D%3D"
+Call log:
+  - navigating to "https://il.linkedin.com/jobs/view/21412-devops-engineer-sre-at-qualitest-acq-4382384117?position=16&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=HyPcbKdKmh4dcN5ZFV%2Bvjg%3D%3D", waiting until "domcontentloaded"
+
+2026-03-12 14:18:40,516 [INFO] 
+[17] DevOps Engineer @ Commit
+2026-03-12 14:18:40,913 [ERROR]   SKIP: navigation failed - Page.goto: Navigation to "https://il.linkedin.com/jobs/view/devops-engineer-at-commit-4342831973?position=17&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=enFgXxfFoXXeph8hkkobEQ%3D%3D" is interrupted by another navigation to "https://il.linkedin.com/jobs/view/21412-devops-engineer-sre-at-qualitest-acq-4382384117?position=16&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=HyPcbKdKmh4dcN5ZFV%2Bvjg%3D%3D"
+Call log:
+  - navigating to "https://il.linkedin.com/jobs/view/devops-engineer-at-commit-4342831973?position=17&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=enFgXxfFoXXeph8hkkobEQ%3D%3D", waiting until "domcontentloaded"
+
+2026-03-12 14:18:40,913 [INFO] 
+[18] DevOps Engineer @ ControlUp
+2026-03-12 14:18:41,292 [ERROR]   SKIP: navigation failed - Page.goto: Navigation to "https://il.linkedin.com/jobs/view/devops-engineer-at-controlup-4329446331?position=19&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=eiREmuKl65%2FC6Wpp09aHUA%3D%3D" is interrupted by another navigation to "https://il.linkedin.com/jobs/view/devops-engineer-at-commit-4342831973?position=17&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=enFgXxfFoXXeph8hkkobEQ%3D%3D"
+Call log:
+  - navigating to "https://il.linkedin.com/jobs/view/devops-engineer-at-controlup-4329446331?position=19&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=eiREmuKl65%2FC6Wpp09aHUA%3D%3D", waiting until "domcontentloaded"
+
+2026-03-12 14:18:41,292 [INFO] 
+[19] DevOps Engineer - Israel @ Classiq
+2026-03-12 14:18:41,712 [ERROR]   SKIP: navigation failed - Page.goto: Navigation to "https://il.linkedin.com/jobs/view/devops-engineer-israel-at-classiq-4358348652?position=20&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=JjHlSXUiw5wjkkc56BDhaw%3D%3D" is interrupted by another navigation to "https://il.linkedin.com/jobs/view/devops-engineer-at-controlup-4329446331?position=19&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=eiREmuKl65%2FC6Wpp09aHUA%3D%3D"
+Call log:
+  - navigating to "https://il.linkedin.com/jobs/view/devops-engineer-israel-at-classiq-4358348652?position=20&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=JjHlSXUiw5wjkkc56BDhaw%3D%3D", waiting until "domcontentloaded"
+
+2026-03-12 14:18:41,712 [INFO] 
+[20] DevOps Engineer - 237687 @ Experis Israel
+2026-03-12 14:18:42,109 [ERROR]   SKIP: navigation failed - Page.goto: Navigation to "https://il.linkedin.com/jobs/view/devops-engineer-237687-at-experis-israel-4378930838?position=21&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=UnKQlgai9qsNAa093li7TA%3D%3D" is interrupted by another navigation to "https://il.linkedin.com/jobs/view/devops-engineer-israel-at-classiq-4358348652?position=20&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=JjHlSXUiw5wjkkc56BDhaw%3D%3D"
+Call log:
+  - navigating to "https://il.linkedin.com/jobs/view/devops-engineer-237687-at-experis-israel-4378930838?position=21&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=UnKQlgai9qsNAa093li7TA%3D%3D", waiting until "domcontentloaded"
+
+2026-03-12 14:18:42,109 [INFO] 
+[21] DevOps Engineer @ Spinomenal
+2026-03-12 14:18:42,496 [ERROR]   SKIP: navigation failed - Page.goto: Navigation to "https://il.linkedin.com/jobs/view/devops-engineer-at-spinomenal-4332990412?position=22&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=7Q5%2B0oWuNqY25MvAa5SfGA%3D%3D" is interrupted by another navigation to "https://il.linkedin.com/jobs/view/devops-engineer-237687-at-experis-israel-4378930838?position=21&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=UnKQlgai9qsNAa093li7TA%3D%3D"
+Call log:
+  - navigating to "https://il.linkedin.com/jobs/view/devops-engineer-at-spinomenal-4332990412?position=22&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=7Q5%2B0oWuNqY25MvAa5SfGA%3D%3D", waiting until "domcontentloaded"
+
+2026-03-12 14:18:42,496 [INFO] 
+[22] Senior DevOps Engineer @ Play Perfect
+2026-03-12 14:18:42,496 [INFO]   SKIP: title
+2026-03-12 14:18:42,496 [INFO] 
+[23] DevOps Engineer @ ScaleOps
+2026-03-12 14:18:42,913 [ERROR]   SKIP: navigation failed - Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://il.linkedin.com/jobs/view/devops-engineer-at-scaleops-4228975656?position=24&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=%2F6waNzMLQK00j3WaLKCbgg%3D%3D
+Call log:
+  - navigating to "https://il.linkedin.com/jobs/view/devops-engineer-at-scaleops-4228975656?position=24&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=%2F6waNzMLQK00j3WaLKCbgg%3D%3D", waiting until "domcontentloaded"
+
+2026-03-12 14:18:42,913 [INFO] 
+[24] Senior DevOps Engineer @ StarHunter
+2026-03-12 14:18:42,913 [INFO]   SKIP: title
+2026-03-12 14:18:42,913 [INFO] 
+[25] Senior DevOps Engineer @ Sola Security
+2026-03-12 14:18:42,913 [INFO]   SKIP: title
+2026-03-12 14:18:42,913 [INFO] 
+[26] DevOps Engineer @ AudioCodes
+2026-03-12 14:18:43,079 [ERROR]   SKIP: navigation failed - Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://il.linkedin.com/jobs/view/devops-engineer-at-audiocodes-4366332756?position=27&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=HqizD3R6t6nFyV8t7ExFkw%3D%3D
+Call log:
+  - navigating to "https://il.linkedin.com/jobs/view/devops-engineer-at-audiocodes-4366332756?position=27&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=HqizD3R6t6nFyV8t7ExFkw%3D%3D", waiting until "domcontentloaded"
+
+2026-03-12 14:18:43,079 [INFO] 
+[27] Senior DevOps Engineer @ Fig Security
+2026-03-12 14:18:43,079 [INFO]   SKIP: title
+2026-03-12 14:18:43,079 [INFO] 
+[28] Senior DevOps Engineer @ Hub Technologies
+2026-03-12 14:18:43,079 [INFO]   SKIP: title
+2026-03-12 14:18:43,079 [INFO] 
+[29] Senior DevOps Engineer @ Apiiro
+2026-03-12 14:18:43,079 [INFO]   SKIP: title
+2026-03-12 14:18:43,079 [INFO] 
+[30] DevOps Engineer @ Kela Technologies
+2026-03-12 14:18:43,221 [ERROR]   SKIP: navigation failed - Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://il.linkedin.com/jobs/view/devops-engineer-at-kela-technologies-4366342088?position=31&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=SZoi8h0P6mtgBFEOMESEtw%3D%3D
+Call log:
+  - navigating to "https://il.linkedin.com/jobs/view/devops-engineer-at-kela-technologies-4366342088?position=31&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=SZoi8h0P6mtgBFEOMESEtw%3D%3D", waiting until "domcontentloaded"
+
+2026-03-12 14:18:43,221 [INFO] 
+[31] DevOps Engineer @ Natural Intelligence
+2026-03-12 14:18:43,608 [ERROR]   SKIP: navigation failed - Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://il.linkedin.com/jobs/view/devops-engineer-at-natural-intelligence-4342809696?position=32&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=YBQcsnrmn7g2IEPGPiuEUA%3D%3D
+Call log:
+  - navigating to "https://il.linkedin.com/jobs/view/devops-engineer-at-natural-intelligence-4342809696?position=32&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=YBQcsnrmn7g2IEPGPiuEUA%3D%3D", waiting until "domcontentloaded"
+
+2026-03-12 14:18:43,608 [INFO] 
+[32] DevOps Engineer @ Fiverr
+2026-03-12 14:18:43,995 [ERROR]   SKIP: navigation failed - Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://il.linkedin.com/jobs/view/devops-engineer-at-fiverr-4375355917?position=33&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=vA2XjV7KbC3kvyHrQ7RRRA%3D%3D
+Call log:
+  - navigating to "https://il.linkedin.com/jobs/view/devops-engineer-at-fiverr-4375355917?position=33&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=vA2XjV7KbC3kvyHrQ7RRRA%3D%3D", waiting until "domcontentloaded"
+
+2026-03-12 14:18:43,995 [INFO] 
+[33] DevOps Engineer @ UR Tech Jobs
+2026-03-12 14:18:44,381 [ERROR]   SKIP: navigation failed - Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://il.linkedin.com/jobs/view/devops-engineer-at-ur-tech-jobs-4330056368?position=35&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=3dMnYVldSOFOUkkUI0ZtDA%3D%3D
+Call log:
+  - navigating to "https://il.linkedin.com/jobs/view/devops-engineer-at-ur-tech-jobs-4330056368?position=35&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=3dMnYVldSOFOUkkUI0ZtDA%3D%3D", waiting until "domcontentloaded"
+
+2026-03-12 14:18:44,381 [INFO] 
+[34] DevOps Engineer @ EdgeHawk
+2026-03-12 14:18:44,775 [ERROR]   SKIP: navigation failed - Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://il.linkedin.com/jobs/view/devops-engineer-at-edgehawk-4371931030?position=36&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=5GZRpvNKcTrSAjHYcUm75A%3D%3D
+Call log:
+  - navigating to "https://il.linkedin.com/jobs/view/devops-engineer-at-edgehawk-4371931030?position=36&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=5GZRpvNKcTrSAjHYcUm75A%3D%3D", waiting until "domcontentloaded"
+
+2026-03-12 14:18:44,775 [INFO] 
+[35] Senior Devops Engineer @ PAPAYA
+2026-03-12 14:18:44,775 [INFO]   SKIP: title
+2026-03-12 14:18:44,775 [INFO] 
+[36] Senior DevOps Engineer @ Airobotics
+2026-03-12 14:18:44,775 [INFO]   SKIP: title
+2026-03-12 14:18:44,775 [INFO] 
+[37] Devops Engineer @ SOFTECH-IL
+2026-03-12 14:18:44,929 [ERROR]   SKIP: navigation failed - Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://il.linkedin.com/jobs/view/devops-engineer-at-softech-il-4364508958?position=39&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=LMFqZVZrRDNo4r49GwzxTQ%3D%3D
+Call log:
+  - navigating to "https://il.linkedin.com/jobs/view/devops-engineer-at-softech-il-4364508958?position=39&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=LMFqZVZrRDNo4r49GwzxTQ%3D%3D", waiting until "domcontentloaded"
+
+2026-03-12 14:18:44,933 [INFO] 
+[38] DevOps Engineer @ Tailor Brands
+2026-03-12 14:18:45,326 [ERROR]   SKIP: navigation failed - Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://il.linkedin.com/jobs/view/devops-engineer-at-tailor-brands-4346177887?position=40&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=s4Imb3%2BsqSnV8Ylz3PIb3Q%3D%3D
+Call log:
+  - navigating to "https://il.linkedin.com/jobs/view/devops-engineer-at-tailor-brands-4346177887?position=40&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=s4Imb3%2BsqSnV8Ylz3PIb3Q%3D%3D", waiting until "domcontentloaded"
+
+2026-03-12 14:18:45,326 [INFO] 
+[39] DevOps Engineer @ Eon.io
+2026-03-12 14:18:45,468 [ERROR]   SKIP: navigation failed - Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://il.linkedin.com/jobs/view/devops-engineer-at-eon-io-4359768657?position=41&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=kZK%2F2%2F%2FL9sRJz2Bvn5N7wQ%3D%3D
+Call log:
+  - navigating to "https://il.linkedin.com/jobs/view/devops-engineer-at-eon-io-4359768657?position=41&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=kZK%2F2%2F%2FL9sRJz2Bvn5N7wQ%3D%3D", waiting until "domcontentloaded"
+
+2026-03-12 14:18:45,468 [INFO] 
+[40] Staff DevOps Engineer @ Gett
+2026-03-12 14:18:45,468 [INFO]   SKIP: title
+2026-03-12 14:18:45,468 [INFO] 
+[41] DevOps Engineer @ Nova Ltd.
+2026-03-12 14:18:45,608 [ERROR]   SKIP: navigation failed - Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://il.linkedin.com/jobs/view/devops-engineer-at-nova-ltd-4370429306?position=43&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=BBEY%2FMdW%2BaJY9zUvmAtV%2BA%3D%3D
+Call log:
+  - navigating to "https://il.linkedin.com/jobs/view/devops-engineer-at-nova-ltd-4370429306?position=43&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=BBEY%2FMdW%2BaJY9zUvmAtV%2BA%3D%3D", waiting until "domcontentloaded"
+
+2026-03-12 14:18:45,608 [INFO] 
+[42] DevOps Engineer @ Nisha Group - קבוצת נישה
+2026-03-12 14:18:46,004 [ERROR]   SKIP: navigation failed - Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://il.linkedin.com/jobs/view/devops-engineer-at-nisha-group-%D7%A7%D7%91%D7%95%D7%A6%D7%AA-%D7%A0%D7%99%D7%A9%D7%94-4375715734?position=44&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=eb65r03%2BmaZdiTwpXJygeg%3D%3D
+Call log:
+  - navigating to "https://il.linkedin.com/jobs/view/devops-engineer-at-nisha-group-%D7%A7%D7%91%D7%95%D7%A6%D7%AA-%D7%A0%D7%99%D7%A9%D7%94-4375715734?position=44&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=eb65r03%2BmaZdiTwpXJygeg%3D%3D", waiting until "domcontentloaded"
+
+2026-03-12 14:18:46,004 [INFO] 
+[43] DevOps Engineer @ eko
+2026-03-12 14:18:46,394 [ERROR]   SKIP: navigation failed - Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://il.linkedin.com/jobs/view/devops-engineer-at-eko-4377026611?position=45&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=a3cWkexkF6qUayYsB%2Fnubw%3D%3D
+Call log:
+  - navigating to "https://il.linkedin.com/jobs/view/devops-engineer-at-eko-4377026611?position=45&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=a3cWkexkF6qUayYsB%2Fnubw%3D%3D", waiting until "domcontentloaded"
+
+2026-03-12 14:18:46,394 [INFO] 
+[44] DevOps Engineer @ שני נוי - ייעוץ תעסוקתי
+2026-03-12 14:18:46,544 [ERROR]   SKIP: navigation failed - Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://il.linkedin.com/jobs/view/devops-engineer-at-%D7%A9%D7%A0%D7%99-%D7%A0%D7%95%D7%99-%D7%99%D7%99%D7%A2%D7%95%D7%A5-%D7%AA%D7%A2%D7%A1%D7%95%D7%A7%D7%AA%D7%99-4381700777?position=47&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=q4GHDuByvUt9fbUGcVkeFQ%3D%3D
+Call log:
+  - navigating to "https://il.linkedin.com/jobs/view/devops-engineer-at-%D7%A9%D7%A0%D7%99-%D7%A0%D7%95%D7%99-%D7%99%D7%99%D7%A2%D7%95%D7%A5-%D7%AA%D7%A2%D7%A1%D7%95%D7%A7%D7%AA%D7%99-4381700777?position=47&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=q4GHDuByvUt9fbUGcVkeFQ%3D%3D", waiting until "domcontentloaded"
+
+2026-03-12 14:18:46,544 [INFO] 
+[45] DevOps Engineer @ Zenity
+2026-03-12 14:18:46,694 [ERROR]   SKIP: navigation failed - Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://il.linkedin.com/jobs/view/devops-engineer-at-zenity-4374025219?position=48&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=Pq9K7sc71Bj%2F%2BGdgff5AeQ%3D%3D
+Call log:
+  - navigating to "https://il.linkedin.com/jobs/view/devops-engineer-at-zenity-4374025219?position=48&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=Pq9K7sc71Bj%2F%2BGdgff5AeQ%3D%3D", waiting until "domcontentloaded"
+
+2026-03-12 14:18:46,694 [INFO] 
+[46] DevOps Engineer @ Scytale
+2026-03-12 14:18:46,878 [ERROR]   SKIP: navigation failed - Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://il.linkedin.com/jobs/view/devops-engineer-at-scytale-4375226183?position=49&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=ZVuMmRLVCWh4n5nQ8%2BeABQ%3D%3D
+Call log:
+  - navigating to "https://il.linkedin.com/jobs/view/devops-engineer-at-scytale-4375226183?position=49&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=ZVuMmRLVCWh4n5nQ8%2BeABQ%3D%3D", waiting until "domcontentloaded"
+
+2026-03-12 14:18:46,882 [INFO] 
+[47] DevOps Software Engineer @ Trigo
+2026-03-12 14:18:47,028 [ERROR]   SKIP: navigation failed - Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://il.linkedin.com/jobs/view/devops-software-engineer-at-trigo-4344351721?position=50&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=ioWUVGk96XVTcYgrz2hNtQ%3D%3D
+Call log:
+  - navigating to "https://il.linkedin.com/jobs/view/devops-software-engineer-at-trigo-4344351721?position=50&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=ioWUVGk96XVTcYgrz2hNtQ%3D%3D", waiting until "domcontentloaded"
+
+2026-03-12 14:18:47,028 [INFO] 
+[48] DevOps Engineer @ Taboola
+2026-03-12 14:18:47,170 [ERROR]   SKIP: navigation failed - Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://il.linkedin.com/jobs/view/devops-engineer-at-taboola-4346492310?position=51&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=2x704qORhM8IV%2FL9U1p1Yg%3D%3D
+Call log:
+  - navigating to "https://il.linkedin.com/jobs/view/devops-engineer-at-taboola-4346492310?position=51&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=2x704qORhM8IV%2FL9U1p1Yg%3D%3D", waiting until "domcontentloaded"
+
+2026-03-12 14:18:47,170 [INFO] 
+[49] DevOps Engineer @ Global-e
+2026-03-12 14:18:48,066 [ERROR]   SKIP: navigation failed - Page.goto: Navigation to "https://il.linkedin.com/jobs/view/devops-engineer-at-global-e-4348738700?position=52&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=EGSf2qIX2XXFubamQkVqrA%3D%3D" is interrupted by another navigation to "chrome-error://chromewebdata/"
+Call log:
+  - navigating to "https://il.linkedin.com/jobs/view/devops-engineer-at-global-e-4348738700?position=52&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=EGSf2qIX2XXFubamQkVqrA%3D%3D", waiting until "domcontentloaded"
+
+2026-03-12 14:18:48,066 [INFO] 
+[50] DevOps Engineer – Helen Doron LTD @ Helen Doron Educational Group
+2026-03-12 14:18:48,453 [ERROR]   SKIP: navigation failed - Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://il.linkedin.com/jobs/view/devops-engineer-%E2%80%93-helen-doron-ltd-at-helen-doron-educational-group-4374207125?position=54&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=osvQOHfpY3rV2KhgjBGJSQ%3D%3D
+Call log:
+  - navigating to "https://il.linkedin.com/jobs/view/devops-engineer-%E2%80%93-helen-doron-ltd-at-helen-doron-educational-group-4374207125?position=54&pageNum=0&refId=o1xJtzIP9PknZ%2BaH3pwStg%3D%3D&trackingId=osvQOHfpY3rV2KhgjBGJSQ%3D%3D", waiting until "domcontentloaded"
+
+2026-03-12 14:18:48,453 [INFO] 
+=== PHASE 3: APPLYING (3 jobs) ===
+2026-03-12 14:18:48,453 [INFO] 
+Sending 3 applications via Gmail...
+2026-03-12 14:18:50,394 [ERROR]   Failed Spines: Page.goto: Navigation to "https://mail.google.com/mail/?view=cm&to=jobs%40spines.com&su=Application%3A%20DevOps%20Engineer%20-%20Michael%20Fedorovsky&body=Hi%20Spines%20team%2C%0A%0AI%27m%20applying%20for%20the%20DevOps%20Engineer%20position.%20I%27m%20a%20DevOps%20Engineer%20with%201%20year%20of%20production%20experience%20at%20TovTech%2C%20where%20I%3A%0A-%20Built%20CI/CD%20pipelines%20%28GitHub%20Actions%2C%20Jenkins%29%0A-%20Managed%20AWS%20and%20Azure%20infrastructure%20%20%0A-%20Deployed%20Kubernetes%20clusters%20in%20production%0A-%20Implemented%20IaC%20with%20Terraform%20and%20Ansible%0A-%20Set%20up%20monitoring%20%28Prometheus%2C%20Grafana%29%0A%0AI%27m%20particularly%20excited%20about%20Docker%2C%20Kubernetes%2C%20Azure.%20I%27m%20eager%20to%20contribute%20and%20grow.%0A%0APortfolio%3A%20https%3A//portfolio-website-psi-jade-83.vercel.app/%0AGitHub%3A%20https%3A//github.com/Michaelunkai%0A%0ABased%20in%20Bat%20Yam%2C%20Israel%2C%20available%20for%20remote/hybrid/on-site.%0A%0ABest%20regards%2C%0AMichael%20Fedorovsky%0A054-763-2418%0Amichaelovsky5%40gmail.com" is interrupted by another navigation to "chrome-error://chromewebdata/"
+Call log:
+  - navigating to "https://mail.google.com/mail/?view=cm&to=jobs%40spines.com&su=Application%3A%20DevOps%20Engineer%20-%20Michael%20Fedorovsky&body=Hi%20Spines%20team%2C%0A%0AI%27m%20applying%20for%20the%20DevOps%20Engineer%20position.%20I%27m%20a%20DevOps%20Engineer%20with%201%20year%20of%20production%20experience%20at%20TovTech%2C%20where%20I%3A%0A-%20Built%20CI/CD%20pipelines%20%28GitHub%20Actions%2C%20Jenkins%29%0A-%20Managed%20AWS%20and%20Azure%20infrastructure%20%20%0A-%20Deployed%20Kubernetes%20clusters%20in%20production%0A-%20Implemented%20IaC%20with%20Terraform%20and%20Ansible%0A-%20Set%20up%20monitoring%20%28Prometheus%2C%20Grafana%29%0A%0AI%27m%20particularly%20excited%20about%20Docker%2C%20Kubernetes%2C%20Azure.%20I%27m%20eager%20to%20contribute%20and%20grow.%0A%0APortfolio%3A%20https%3A//portfolio-website-psi-jade-83.vercel.app/%0AGitHub%3A%20https%3A//github.com/Michaelunkai%0A%0ABased%20in%20Bat%20Yam%2C%20Israel%2C%20available%20for%20remote/hybrid/on-site.%0A%0ABest%20regards%2C%0AMichael%20Fedorovsky%0A054-763-2418%0Amichaelovsky5%40gmail.com", waiting until "domcontentloaded"
+
+2026-03-12 14:18:51,414 [ERROR]   Failed ZEST Security: Page.goto: Navigation to "https://mail.google.com/mail/?view=cm&to=jobs%40zestsecurity.com&su=Application%3A%20DevOps%20Engineer%20-%20Michael%20Fedorovsky&body=Hi%20ZEST%20Security%20team%2C%0A%0AI%27m%20applying%20for%20the%20DevOps%20Engineer%20position.%20I%27m%20a%20DevOps%20Engineer%20with%201%20year%20of%20production%20experience%20at%20TovTech%2C%20where%20I%3A%0A-%20Built%20CI/CD%20pipelines%20%28GitHub%20Actions%2C%20Jenkins%29%0A-%20Managed%20AWS%20and%20Azure%20infrastructure%20%20%0A-%20Deployed%20Kubernetes%20clusters%20in%20production%0A-%20Implemented%20IaC%20with%20Terraform%20and%20Ansible%0A-%20Set%20up%20monitoring%20%28Prometheus%2C%20Grafana%29%0A%0AI%27m%20particularly%20excited%20about%20Docker%2C%20Kubernetes%2C%20Aws.%20I%27m%20eager%20to%20contribute%20and%20grow.%0A%0APortfolio%3A%20https%3A//portfolio-website-psi-jade-83.vercel.app/%0AGitHub%3A%20https%3A//github.com/Michaelunkai%0A%0ABased%20in%20Bat%20Yam%2C%20Israel%2C%20available%20for%20remote/hybrid/on-site.%0A%0ABest%20regards%2C%0AMichael%20Fedorovsky%0A054-763-2418%0Amichaelovsky5%40gmail.com" is interrupted by another navigation to "https://mail.google.com/mail/u/0/?to=jobs@spines.com&su=Application:+DevOps+Engineer+-+Michael+Fedorovsky&body=Hi+Spines+team,%0A%0AI%27m+applying+for+the+DevOps+Engineer+position.+I%27m+a+DevOps+Engineer+with+1+year+of+production+experience+at+TovTech,+where+I:%0A-+Built+CI/CD+pipelines+(GitHub+Actions,+Jenkins)%0A-+Managed+AWS+and+Azure+infrastructure++%0A-+Deployed+Kubernetes+clusters+in+production%0A-+Implemented+IaC+with+Terraform+and+Ansible%0A-+Set+up+monitoring+(Prometheus,+Grafana)%0A%0AI%27m+particularly+excited+about+Docker,+Kubernetes,+Azure.+I%27m+eager+to+contribute+and+grow.%0A%0APortfolio:+https://portfolio-website-psi-jade-83.vercel.app/%0AGitHub:+https://github.com/Michaelunkai%0A%0ABased+in+Bat+Yam,+Israel,+available+for+remote/hybrid/on-site.%0A%0ABest+regards,%0AMichael+Fedorovsky%0A054-763-2418%0Amichaelovsky5@gmail.com&fs=1&tf=cm"
+Call log:
+  - navigating to "https://mail.google.com/mail/?view=cm&to=jobs%40zestsecurity.com&su=Application%3A%20DevOps%20Engineer%20-%20Michael%20Fedorovsky&body=Hi%20ZEST%20Security%20team%2C%0A%0AI%27m%20applying%20for%20the%20DevOps%20Engineer%20position.%20I%27m%20a%20DevOps%20Engineer%20with%201%20year%20of%20production%20experience%20at%20TovTech%2C%20where%20I%3A%0A-%20Built%20CI/CD%20pipelines%20%28GitHub%20Actions%2C%20Jenkins%29%0A-%20Managed%20AWS%20and%20Azure%20infrastructure%20%20%0A-%20Deployed%20Kubernetes%20clusters%20in%20production%0A-%20Implemented%20IaC%20with%20Terraform%20and%20Ansible%0A-%20Set%20up%20monitoring%20%28Prometheus%2C%20Grafana%29%0A%0AI%27m%20particularly%20excited%20about%20Docker%2C%20Kubernetes%2C%20Aws.%20I%27m%20eager%20to%20contribute%20and%20grow.%0A%0APortfolio%3A%20https%3A//portfolio-website-psi-jade-83.vercel.app/%0AGitHub%3A%20https%3A//github.com/Michaelunkai%0A%0ABased%20in%20Bat%20Yam%2C%20Israel%2C%20available%20for%20remote/hybrid/on-site.%0A%0ABest%20regards%2C%0AMichael%20Fedorovsky%0A054-763-2418%0Amichaelovsky5%40gmail.com", waiting until "domcontentloaded"
+
+2026-03-12 14:18:52,471 [ERROR]   Failed ISI - ImageSat International: Page.goto: Navigation to "https://mail.google.com/mail/?view=cm&to=jobs%40isiimagesatinternational.com&su=Application%3A%20DevOps%20Engineer%20-%20Michael%20Fedorovsky&body=Hi%20ISI%20-%20ImageSat%20International%20team%2C%0A%0AI%27m%20applying%20for%20the%20DevOps%20Engineer%20position.%20I%27m%20a%20DevOps%20Engineer%20with%201%20year%20of%20production%20experience%20at%20TovTech%2C%20where%20I%3A%0A-%20Built%20CI/CD%20pipelines%20%28GitHub%20Actions%2C%20Jenkins%29%0A-%20Managed%20AWS%20and%20Azure%20infrastructure%20%20%0A-%20Deployed%20Kubernetes%20clusters%20in%20production%0A-%20Implemented%20IaC%20with%20Terraform%20and%20Ansible%0A-%20Set%20up%20monitoring%20%28Prometheus%2C%20Grafana%29%0A%0AI%27m%20particularly%20excited%20about%20Docker%2C%20Kubernetes%2C%20Aws.%20I%27m%20eager%20to%20contribute%20and%20grow.%0A%0APortfolio%3A%20https%3A//portfolio-website-psi-jade-83.vercel.app/%0AGitHub%3A%20https%3A//github.com/Michaelunkai%0A%0ABased%20in%20Bat%20Yam%2C%20Israel%2C%20available%20for%20remote/hybrid/on-site.%0A%0ABest%20regards%2C%0AMichael%20Fedorovsky%0A054-763-2418%0Amichaelovsky5%40gmail.com" is interrupted by another navigation to "https://mail.google.com/mail/u/0/?to=jobs@zestsecurity.com&su=Application:+DevOps+Engineer+-+Michael+Fedorovsky&body=Hi+ZEST+Security+team,%0A%0AI%27m+applying+for+the+DevOps+Engineer+position.+I%27m+a+DevOps+Engineer+with+1+year+of+production+experience+at+TovTech,+where+I:%0A-+Built+CI/CD+pipelines+(GitHub+Actions,+Jenkins)%0A-+Managed+AWS+and+Azure+infrastructure++%0A-+Deployed+Kubernetes+clusters+in+production%0A-+Implemented+IaC+with+Terraform+and+Ansible%0A-+Set+up+monitoring+(Prometheus,+Grafana)%0A%0AI%27m+particularly+excited+about+Docker,+Kubernetes,+Aws.+I%27m+eager+to+contribute+and+grow.%0A%0APortfolio:+https://portfolio-website-psi-jade-83.vercel.app/%0AGitHub:+https://github.com/Michaelunkai%0A%0ABased+in+Bat+Yam,+Israel,+available+for+remote/hybrid/on-site.%0A%0ABest+regards,%0AMichael+Fedorovsky%0A054-763-2418%0Amichaelovsky5@gmail.com&fs=1&tf=cm"
+Call log:
+  - navigating to "https://mail.google.com/mail/?view=cm&to=jobs%40isiimagesatinternational.com&su=Application%3A%20DevOps%20Engineer%20-%20Michael%20Fedorovsky&body=Hi%20ISI%20-%20ImageSat%20International%20team%2C%0A%0AI%27m%20applying%20for%20the%20DevOps%20Engineer%20position.%20I%27m%20a%20DevOps%20Engineer%20with%201%20year%20of%20production%20experience%20at%20TovTech%2C%20where%20I%3A%0A-%20Built%20CI/CD%20pipelines%20%28GitHub%20Actions%2C%20Jenkins%29%0A-%20Managed%20AWS%20and%20Azure%20infrastructure%20%20%0A-%20Deployed%20Kubernetes%20clusters%20in%20production%0A-%20Implemented%20IaC%20with%20Terraform%20and%20Ansible%0A-%20Set%20up%20monitoring%20%28Prometheus%2C%20Grafana%29%0A%0AI%27m%20particularly%20excited%20about%20Docker%2C%20Kubernetes%2C%20Aws.%20I%27m%20eager%20to%20contribute%20and%20grow.%0A%0APortfolio%3A%20https%3A//portfolio-website-psi-jade-83.vercel.app/%0AGitHub%3A%20https%3A//github.com/Michaelunkai%0A%0ABased%20in%20Bat%20Yam%2C%20Israel%2C%20available%20for%20remote/hybrid/on-site.%0A%0ABest%20regards%2C%0AMichael%20Fedorovsky%0A054-763-2418%0Amichaelovsky5%40gmail.com", waiting until "domcontentloaded"
+
+2026-03-12 14:18:52,763 [INFO] 
+2026-03-12 14:18:52,763 [INFO] ============================================================
+2026-03-12 14:18:52,763 [INFO] SESSION COMPLETE
+2026-03-12 14:18:52,763 [INFO] ============================================================
+2026-03-12 14:18:52,763 [INFO]   Duration: 1.4 min
+2026-03-12 14:18:52,763 [INFO]   Evaluated: 50
+2026-03-12 14:18:52,766 [INFO]   Qualified: 3
+2026-03-12 14:18:52,766 [INFO]   Sent: 0/5
+2026-03-12 14:18:52,766 [INFO]   Log: F:\study\Dev_Toolchain\programming\python\apps\automation\job-auto-applicator\logs\jobs_20260312_141726.log
+2026-03-12 14:18:52,766 [INFO] ============================================================

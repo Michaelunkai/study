@@ -1,0 +1,64 @@
+name: Validate API Config
+
+on:
+  push:
+    branches: [staging, production]
+  pull_request:
+    branches: [staging, production]
+
+jobs:
+  validate-api-url:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate API_BASE_URL
+        run: |
+          CONFIG_FILE="src/utils/config.js"
+
+          # Determine expected URL based on target branch
+          if [[ "${{ github.base_ref }}" == "production" ]] || [[ "${{ github.ref }}" == "refs/heads/production" ]]; then
+            EXPECTED_URL="https://api.tovtech.org"
+            BRANCH_NAME="production"
+          else
+            EXPECTED_URL="https://stagingapi.tovtech.org"
+            BRANCH_NAME="staging"
+          fi
+
+          echo "Validating for $BRANCH_NAME branch"
+          echo "Expected URL: $EXPECTED_URL"
+          echo ""
+
+          # Get the active (uncommented) export line
+          ACTIVE_URL=$(grep -E "^export const API_BASE_URL" "$CONFIG_FILE" | head -1)
+
+          if [ -z "$ACTIVE_URL" ]; then
+            echo "::error::No active API_BASE_URL export found in $CONFIG_FILE"
+            exit 1
+          fi
+
+          echo "Found active config: $ACTIVE_URL"
+
+          # Check if it contains localhost or 127.0.0.1
+          if echo "$ACTIVE_URL" | grep -qE "(localhost|127\.0\.0\.1)"; then
+            echo ""
+            echo "::error::API_BASE_URL is set to localhost!"
+            echo ""
+            echo "Current value: $ACTIVE_URL"
+            echo "Expected for $BRANCH_NAME: export const API_BASE_URL = \"$EXPECTED_URL\";"
+            exit 1
+          fi
+
+          # Check if it matches the expected URL for this branch
+          if ! echo "$ACTIVE_URL" | grep -q "$EXPECTED_URL"; then
+            echo ""
+            echo "::error::API_BASE_URL does not match expected $BRANCH_NAME URL!"
+            echo ""
+            echo "Current: $ACTIVE_URL"
+            echo "Expected: export const API_BASE_URL = \"$EXPECTED_URL\";"
+            exit 1
+          fi
+
+          echo ""
+          echo "API_BASE_URL validation passed for $BRANCH_NAME!"

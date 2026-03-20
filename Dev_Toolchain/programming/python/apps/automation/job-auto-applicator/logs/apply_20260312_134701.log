@@ -1,0 +1,56 @@
+2026-03-12 13:47:01,201 [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2026-03-12 13:47:01,201 [INFO] 🚀 JOB APPLICATION AUTOMATION STARTED
+2026-03-12 13:47:01,201 [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2026-03-12 13:47:01,201 [INFO]    Target: 1 applications
+2026-03-12 13:47:01,201 [INFO]    Time limit: 5 minutes
+2026-03-12 13:47:01,201 [INFO]    Profile: Michael Fedorovsky
+2026-03-12 13:47:01,201 [INFO]    Resume: F:\study\resume\Michael_Fedorovsky_Resume_devops.pdf
+2026-03-12 13:47:01,201 [INFO]    Previously applied: 0 companies
+2026-03-12 13:47:01,205 [INFO] ✅ Chrome already running with debugging on port 9222
+2026-03-12 13:47:04,874 [INFO] 📱 Connecting to Chrome on port 9222...
+2026-03-12 13:47:05,042 [INFO] ✅ Connected to your Chrome browser!
+2026-03-12 13:47:05,214 [INFO] 
+🔍 Search 1/5: 'junior devops engineer israel'
+2026-03-12 13:47:13,024 [WARNING]    No job cards found, trying next search query
+2026-03-12 13:47:13,028 [INFO] 
+🔍 Search 2/5: 'devops engineer israel entry level'
+2026-03-12 13:47:21,034 [WARNING]    No job cards found, trying next search query
+2026-03-12 13:47:21,034 [INFO] 
+🔍 Search 3/5: 'cloud engineer israel junior'
+2026-03-12 13:47:28,939 [WARNING]    No job cards found, trying next search query
+2026-03-12 13:47:28,939 [INFO] 
+🔍 Search 4/5: 'devops engineer tel aviv'
+2026-03-12 13:47:36,934 [WARNING]    No job cards found, trying next search query
+2026-03-12 13:47:36,938 [INFO] 
+🔍 Search 5/5: 'infrastructure engineer israel junior'
+2026-03-12 13:47:44,827 [WARNING]    No job cards found, trying next search query
+2026-03-12 13:47:44,830 [WARNING] 
+🚨 EMERGENCY: No LinkedIn apps. Sending direct emails...
+2026-03-12 13:47:45,987 [ERROR]   ❌ Email failed to jobs@wix.com: (535, b'5.7.8 Username and Password not accepted. For more information, go to\n5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-439fe19ac5fsm7838424f8f.1 - gsmtp')
+2026-03-12 13:47:47,112 [ERROR]   ❌ Email failed to jobs@monday.com: (535, b'5.7.8 Username and Password not accepted. For more information, go to\n5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-4854a18bcf4sm87065545e9.0 - gsmtp')
+2026-03-12 13:47:48,185 [ERROR]   ❌ Email failed to careers@jfrog.com: (535, b'5.7.8 Username and Password not accepted. For more information, go to\n5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-439fe2187aasm6975120f8f.30 - gsmtp')
+2026-03-12 13:47:49,229 [ERROR]   ❌ Email failed to careers@checkpoint.com: (535, b'5.7.8 Username and Password not accepted. For more information, go to\n5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-4854ad5416bsm103373005e9.1 - gsmtp')
+2026-03-12 13:47:50,318 [ERROR]   ❌ Email failed to careers@cyberark.com: (535, b'5.7.8 Username and Password not accepted. For more information, go to\n5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-439fe1abf84sm7644050f8f.14 - gsmtp')
+2026-03-12 13:47:51,333 [ERROR]   ❌ Email failed to careers@imubit.com: (535, b'5.7.8 Username and Password not accepted. For more information, go to\n5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-4854b5e9179sm123727695e9.3 - gsmtp')
+2026-03-12 13:47:52,339 [ERROR]   ❌ Email failed to jobs@oligosecurity.com: (535, b'5.7.8 Username and Password not accepted. For more information, go to\n5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-48541b7f255sm229582735e9.12 - gsmtp')
+2026-03-12 13:47:53,407 [ERROR]   ❌ Email failed to hr@taldor.co.il: (535, b'5.7.8 Username and Password not accepted. For more information, go to\n5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-4854b65fe27sm132848475e9.9 - gsmtp')
+2026-03-12 13:47:53,633 [INFO] 
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ JOB APPLICATION SESSION COMPLETE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📅 Date: 2026-03-12 13:47
+⏱️ Duration: 0.9 minutes
+🎯 Target: 1
+✅ Submitted: 0/1
+
+📊 Stats:
+   Jobs evaluated: 0
+   Skipped (senior/exp): 0
+   Skipped (duplicate): 0
+   Skipped (low skill match): 0
+
+📄 Log: F:\study\Dev_Toolchain\programming\python\apps\automation\job-auto-applicator\logs\apply_20260312_134701.log
+💾 State: F:\study\Dev_Toolchain\programming\python\apps\automation\job-auto-applicator\applied_companies.json
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
