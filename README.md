@@ -21,6 +21,10 @@ Manage AI agent fleets, dispatch tasks, track costs, and coordinate multi-agent 
 
 ---
 
+> **Live Deployment**: https://ob-autodeploy.netlify.app/
+
+---
+
 > **Alpha Software** — Mission Control is under active development. APIs, database schemas, and configuration formats may change between releases. Review the [security considerations](#security) before deploying to production.
 
 ## Contents

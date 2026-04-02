@@ -6,6 +6,7 @@ import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages } from 'next-intl/server'
 import { THEME_IDS } from '@/lib/themes'
 import { ThemeBackground } from '@/components/ui/theme-background'
+import { PWAInit } from '@/components/pwa-init'
 import './globals.css'
 
 const inter = Inter({
@@ -52,6 +53,7 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
+  manifest: '/manifest.json',
   title: 'Mission Control — AI Agent Orchestration Dashboard',
   description: 'Open-source dashboard for AI agent orchestration. Manage agent fleets, dispatch tasks, track costs, and coordinate multi-agent workflows. Self-hosted, zero dependencies, SQLite-powered.',
   metadataBase,
@@ -113,6 +115,7 @@ export default async function RootLayout({
             enableSystem={false}
             disableTransitionOnChange
           >
+            <PWAInit />
             <ThemeBackground />
             <div className="h-screen overflow-hidden bg-background text-foreground">
               {children}
