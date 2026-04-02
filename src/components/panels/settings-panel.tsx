@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { LanguageSwitcherSelect } from '@/components/ui/language-switcher'
@@ -150,6 +150,31 @@ export function SettingsPanel() {
   // Backup state
   const [mcBackupRunning, setMcBackupRunning] = useState(false)
   const [gwBackupRunning, setGwBackupRunning] = useState(false)
+
+  // Persistence / save confirmation state
+  const [lastSaved, setLastSaved] = useState<number | null>(null)
+  const [saveConfirm, setSaveConfirm] = useState(false)
+  const saveConfirmTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const [rlpBackups, setRlpBackups] = useState<Array<{ name: string; type: string; size: number; created_at: number }>>([])
+  const [showBackupList, setShowBackupList] = useState(false)
+  const [restoringBackup, setRestoringBackup] = useState<string | null>(null)
+
+  const flashSaveConfirm = () => {
+    setSaveConfirm(true)
+    if (saveConfirmTimer.current) clearTimeout(saveConfirmTimer.current)
+    saveConfirmTimer.current = setTimeout(() => setSaveConfirm(false), 2500)
+  }
+
+  const fetchBackupInfo = useCallback(async () => {
+    try {
+      const res = await fetch('/api/backup')
+      if (res.ok) {
+        const data = await res.json()
+        if (data.lastSaved) setLastSaved(data.lastSaved)
+        if (data.rlpBackups) setRlpBackups(data.rlpBackups)
+      }
+    } catch { /* best-effort */ }
+  }, [])
 
   const showFeedback = (ok: boolean, text: string) => {
     setFeedback({ ok, text })
@@ -318,7 +343,19 @@ export function SettingsPanel() {
     } catch { /* non-critical */ }
   }, [])
 
-  useEffect(() => { fetchSettings(); fetchApiKeyInfo(); fetchHermesStatus() }, [fetchSettings, fetchApiKeyInfo, fetchHermesStatus])
+  useEffect(() => { fetchSettings(); fetchApiKeyInfo(); fetchHermesStatus(); fetchBackupInfo() }, [fetchSettings, fetchApiKeyInfo, fetchHermesStatus, fetchBackupInfo])
+
+  // Auto-backup on page unload (beforeunload)
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      // Fire-and-forget beacon backup
+      try {
+        navigator.sendBeacon('/api/backup', JSON.stringify({ _autoBackup: true }))
+      } catch { /* best-effort */ }
+    }
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+  }, [])
 
   const handleEdit = (key: string, value: string) => {
     setEdits(prev => ({ ...prev, [key]: value }))
@@ -351,6 +388,8 @@ export function SettingsPanel() {
       const data = await res.json()
       if (res.ok) {
         showFeedback(true, `Saved ${data.count} setting${data.count === 1 ? '' : 's'}`)
+        flashSaveConfirm()
+        setLastSaved(Math.floor(Date.now() / 1000))
         setEdits({})
         fetchSettings()
       } else {
@@ -408,6 +447,12 @@ export function SettingsPanel() {
         <div>
           <h2 className="text-lg font-semibold text-foreground">{t('title')}</h2>
           <p className="text-xs text-muted-foreground mt-0.5">{t('description')}</p>
+          {lastSaved && (
+            <p className="text-2xs text-muted-foreground/60 mt-0.5 flex items-center gap-1">
+              {saveConfirm && <span className="text-green-400">&#10003;</span>}
+              Last saved: {new Date(lastSaved * 1000).toLocaleTimeString()} on {new Date(lastSaved * 1000).toLocaleDateString()}
+            </p>
+          )}
         </div>
         <div className="flex items-center gap-2">
           {hasChanges && (
@@ -489,7 +534,10 @@ export function SettingsPanel() {
                   const res = await fetch('/api/backup', { method: 'POST' })
                   const data = await res.json()
                   if (res.ok) {
-                    showFeedback(true, `MC backup created (${(data.backup?.size / 1024).toFixed(0)} KB)`)
+                    flashSaveConfirm()
+                    setLastSaved(Math.floor(Date.now() / 1000))
+                    if (data.rlpBackup) setRlpBackups(prev => [data.rlpBackup, ...prev].slice(0, 50))
+                    showFeedback(true, `MC backup created (${(data.backup?.size / 1024).toFixed(0)} KB)${data.rlpBackup ? ' + RLP state' : ''}`)
                   } else {
                     showFeedback(false, data.error || 'MC backup failed')
                   }
@@ -526,6 +574,78 @@ export function SettingsPanel() {
             >
               {gwBackupRunning ? t('backingUp') : t('backupGatewayState')}
             </Button>
+          </div>
+
+          {/* RLP State Backup List & Restore */}
+          <div className="p-3 bg-surface-1/50 border border-border/30 rounded-lg space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <p className="text-xs font-medium">RLP State Backups</p>
+                <p className="text-2xs text-muted-foreground">
+                  {rlpBackups.length} snapshot{rlpBackups.length !== 1 ? 's' : ''} stored — rolling 50 kept
+                  {lastSaved && (
+                    <span className="ml-2 text-green-400/70">
+                      {saveConfirm && <span className="text-green-400 font-bold">&#10003; </span>}
+                      last: {new Date(lastSaved * 1000).toLocaleTimeString()}
+                    </span>
+                  )}
+                </p>
+              </div>
+              <Button
+                variant="outline"
+                size="xs"
+                className="text-2xs"
+                onClick={() => { setShowBackupList(v => !v); if (!showBackupList) fetchBackupInfo() }}
+              >
+                {showBackupList ? 'Hide backups' : 'View backups'}
+              </Button>
+            </div>
+            {showBackupList && (
+              <div className="mt-2 space-y-1 max-h-60 overflow-y-auto">
+                {rlpBackups.length === 0 ? (
+                  <p className="text-2xs text-muted-foreground italic">No RLP backups yet. Create a backup above.</p>
+                ) : rlpBackups.map(b => (
+                  <div key={b.name} className="flex items-center justify-between gap-2 py-1 px-2 rounded bg-surface-1/30 border border-border/20">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-2xs font-mono truncate text-muted-foreground">{b.name}</p>
+                      <p className="text-2xs text-muted-foreground/50">
+                        {(b.size / 1024).toFixed(1)} KB &mdash; {new Date(b.created_at * 1000).toLocaleString()}
+                      </p>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="xs"
+                      className="text-2xs shrink-0"
+                      disabled={restoringBackup === b.name}
+                      onClick={async () => {
+                        if (!confirm(`Restore RLP state from ${b.name}? The current state will be backed up first.`)) return
+                        setRestoringBackup(b.name)
+                        try {
+                          const res = await fetch('/api/backup', {
+                            method: 'PATCH',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ name: b.name }),
+                          })
+                          const data = await res.json()
+                          if (res.ok) {
+                            showFeedback(true, `Restored from ${b.name}`)
+                            fetchBackupInfo()
+                          } else {
+                            showFeedback(false, data.error || 'Restore failed')
+                          }
+                        } catch {
+                          showFeedback(false, 'Network error during restore')
+                        } finally {
+                          setRestoringBackup(null)
+                        }
+                      }}
+                    >
+                      {restoringBackup === b.name ? 'Restoring...' : 'Restore'}
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Replay Onboarding */}
@@ -641,12 +761,13 @@ export function SettingsPanel() {
         </div>
       )}
 
-      {/* Feedback */}
-      {feedback && (
-        <div className={`rounded-lg p-3 text-xs font-medium ${
-          feedback.ok ? 'bg-green-500/10 text-green-400' : 'bg-destructive/10 text-destructive'
+      {/* Feedback / Save Confirmation */}
+      {(feedback || saveConfirm) && (
+        <div className={`rounded-lg p-3 text-xs font-medium flex items-center gap-2 ${
+          feedback ? (feedback.ok ? 'bg-green-500/10 text-green-400' : 'bg-destructive/10 text-destructive') : 'bg-green-500/10 text-green-400'
         }`}>
-          {feedback.text}
+          {(saveConfirm || feedback?.ok) && <span className="text-lg leading-none">&#10003;</span>}
+          {feedback ? feedback.text : 'Changes saved successfully'}
         </div>
       )}
 

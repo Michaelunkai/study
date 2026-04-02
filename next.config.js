@@ -9,6 +9,22 @@ const nextConfig = {
   turbopack: {},
   // Transpile ESM-only packages so they resolve correctly in all environments
   transpilePackages: ['react-markdown', 'remark-gfm'],
+  // Compress responses
+  compress: true,
+  // Optimize images
+  images: {
+    formats: ['image/avif', 'image/webp'],
+  },
+  // Experimental optimizations
+  experimental: {
+    optimizePackageImports: ['recharts', 'react-markdown', '@radix-ui/react-slot'],
+  },
+  // Fix webpack EISDIR readlink error on Windows (cache snapshotting issue)
+  webpack: (config) => {
+    config.resolve.symlinks = false;
+    config.cache = false;
+    return config;
+  },
   
   // Security headers
   // Content-Security-Policy is set in src/proxy.ts with a per-request nonce.

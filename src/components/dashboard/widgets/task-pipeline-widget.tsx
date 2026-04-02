@@ -45,36 +45,56 @@ export function TaskPipelineWidget({ data }: { data: DashboardData }) {
   return (
     <div className="panel">
       <div className="panel-header">
-        <h3 className="text-sm font-semibold">Task Pipeline</h3>
-        <span className="text-2xs text-muted-foreground font-mono-tight">{total} total</span>
+        <h3 className="text-sm font-semibold tracking-tight">Task Pipeline</h3>
+        <span className="text-[10px] text-muted-foreground/50 font-mono-tight tabular-nums">{total} total</span>
       </div>
       <div
-        className="panel-body cursor-pointer hover:bg-secondary/20 transition-smooth rounded-b-lg"
+        className="panel-body cursor-pointer hover:bg-secondary/15 transition-all duration-150 rounded-b-xl"
         onClick={() => navigateToPanel('tasks')}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigateToPanel('tasks') } }}
+        aria-label="Go to task board"
       >
+        {/* Progress bar */}
+        <div className="flex h-1.5 rounded-full overflow-hidden bg-secondary/40 mb-3.5 gap-px">
+          {stages.map((stage) => {
+            const pct = total > 0 ? (stage.count / total) * 100 : 0
+            if (pct === 0) return null
+            return (
+              <div
+                key={stage.label}
+                className={`h-full ${stage.bgColor} transition-all duration-700`}
+                style={{ width: `${pct}%`, opacity: stage.label === 'Done' ? 0.8 : 1 }}
+                title={`${stage.label}: ${stage.count}`}
+              />
+            )
+          })}
+        </div>
+
         {/* Stage pills */}
         <div className="flex items-center gap-1.5 flex-wrap">
           {stages.map((stage, i) => {
             const hasItems = stage.count > 0
             return (
               <div key={stage.label} className="flex items-center gap-1.5">
-                <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-md border transition-colors ${
+                <div className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border transition-all duration-150 ${
                   hasItems
-                    ? `${stage.bgColor}/10 border-current/15 ${stage.color}`
-                    : 'bg-secondary/30 border-border/20 text-muted-foreground/30'
+                    ? `${stage.bgColor}/8 border-current/12 ${stage.color}`
+                    : 'bg-secondary/20 border-border/15 text-muted-foreground/25'
                 }`}>
                   {hasItems && (
-                    <span className={`w-1.5 h-1.5 rounded-full ${stage.dotColor} ${
-                      stage.label === 'Running' ? 'animate-pulse' : ''
+                    <span className={`w-1.5 h-1.5 rounded-full ${stage.dotColor} shrink-0 ${
+                      stage.label === 'Running' ? 'animate-pulse shadow-[0_0_4px_currentColor]' : ''
                     }`} />
                   )}
-                  <span className="text-2xs font-medium">{stage.label}</span>
-                  <span className={`text-2xs font-mono-tight ${hasItems ? 'opacity-80' : 'opacity-40'}`}>
+                  <span className="text-[11px] font-semibold">{stage.label}</span>
+                  <span className={`text-[11px] font-mono-tight font-bold ${hasItems ? 'opacity-90' : 'opacity-30'}`}>
                     {stage.count}
                   </span>
                 </div>
                 {i < stages.length - 1 && (
-                  <svg className="w-3 h-3 text-muted-foreground/20 shrink-0" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                  <svg className="w-2.5 h-2.5 text-muted-foreground/15 shrink-0" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
                     <path d="M4 2l4 4-4 4" />
                   </svg>
                 )}
@@ -85,8 +105,8 @@ export function TaskPipelineWidget({ data }: { data: DashboardData }) {
 
         {/* Bottleneck warning */}
         {hasBottleneck && (
-          <p className="text-2xs text-amber-400/80 mt-2.5 flex items-center gap-1">
-            <svg className="w-3 h-3" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+          <p className="text-[11px] text-amber-400/70 mt-3 flex items-center gap-1.5 font-medium">
+            <svg className="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
               <path d="M8 2l6.5 11H1.5z" />
               <path d="M8 7v2.5M8 11.5v0" />
             </svg>

@@ -72,10 +72,12 @@ module.exports = {
         },
       },
       borderRadius: {
-        lg: '8px',
-        md: '6px',
-        sm: '4px',
-        xs: '2px',
+        '2xl': '16px',
+        xl: '12px',
+        lg: '10px',
+        md: '8px',
+        sm: '6px',
+        xs: '4px',
       },
       fontSize: {
         '2xs': ['0.625rem', { lineHeight: '0.875rem' }],

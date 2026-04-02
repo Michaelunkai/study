@@ -48,8 +48,10 @@ const metadataBase = resolveMetadataBase()
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
+  // Allow user scaling for accessibility (maximumScale omitted so users can pinch-zoom)
   viewportFit: 'cover',
+  // Android Chrome: prevent layout resizing when virtual keyboard appears
+  interactiveWidget: 'resizes-content',
 }
 
 export const metadata: Metadata = {
@@ -117,7 +119,7 @@ export default async function RootLayout({
           >
             <PWAInit />
             <ThemeBackground />
-            <div className="h-screen overflow-hidden bg-background text-foreground">
+            <div className="h-screen h-screen-dvh overflow-hidden bg-background text-foreground no-overflow-x">
               {children}
             </div>
           </ThemeProvider>

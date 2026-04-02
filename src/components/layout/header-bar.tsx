@@ -12,6 +12,7 @@ import { ThemeSelector } from '@/components/ui/theme-selector'
 import { LanguageSwitcher } from '@/components/ui/language-switcher'
 import { DigitalClock } from '@/components/ui/digital-clock'
 import { getNavigationMetrics, navigationMetricEventName } from '@/lib/navigation-metrics'
+import { useRlpSync } from '@/lib/use-rlp-sync'
 
 interface SearchResult {
   type: string
@@ -48,6 +49,7 @@ export function HeaderBar() {
   const navigateToPanel = useNavigateToPanel()
   const prefetchPanel = usePrefetchPanel()
   const th = useTranslations('header')
+  const rlpSync = useRlpSync()
 
   const activeSessions = sessions.filter(s => s.active).length
 
@@ -295,7 +297,7 @@ export function HeaderBar() {
   }
 
   return (
-    <header role="banner" aria-label="Application header" className="relative z-50 h-14 bg-card/80 backdrop-blur-sm border-b border-border px-3 md:px-4 shrink-0">
+    <header role="banner" aria-label="Application header" className="relative z-50 h-14 bg-card/90 backdrop-blur-md border-b border-border/60 px-3 md:px-4 shrink-0" style={{ boxShadow: '0 1px 0 0 hsl(var(--border) / 0.3)' }}>
       <div className="h-full flex items-center gap-2 md:gap-3">
         {/* Left: Page title + context */}
         <div className="flex min-w-0 items-center gap-2.5 shrink-0">
@@ -330,15 +332,16 @@ export function HeaderBar() {
             variant="outline"
             size="sm"
             onClick={openCommandPalette}
-            className="h-10 w-full justify-between bg-secondary/35 hover:border-primary/40 hover:bg-secondary/50 px-3"
+            className="h-9 w-full justify-between bg-secondary/25 hover:border-primary/30 hover:bg-secondary/40 px-3 transition-all duration-150"
+            aria-label="Open command search (Ctrl+K or /)"
           >
             <span className="flex items-center gap-2 min-w-0">
               <SearchIcon />
-              <span className="truncate text-sm text-muted-foreground">{th('jumpToSearch')}</span>
+              <span className="truncate text-sm text-muted-foreground/60">{th('jumpToSearch')}</span>
             </span>
             <span className="hidden xl:flex items-center gap-1 ml-2 shrink-0">
-              <kbd className="text-2xs px-1.5 py-0.5 rounded bg-muted border border-border font-mono">&#8984;K</kbd>
-              <kbd className="text-2xs px-1.5 py-0.5 rounded bg-muted border border-border font-mono">/</kbd>
+              <kbd className="text-[10px] px-1.5 py-0.5 rounded-md bg-muted/60 border border-border/60 font-mono text-muted-foreground/50">&#8984;K</kbd>
+              <kbd className="text-[10px] px-1.5 py-0.5 rounded-md bg-muted/60 border border-border/60 font-mono text-muted-foreground/50">/</kbd>
             </span>
           </Button>
         </div>
@@ -349,6 +352,11 @@ export function HeaderBar() {
             <Stat label={th('sessions')} value={`${activeSessions}/${sessions.length}`} />
             <NavigationLatencyStat />
             <SseBadge connected={connection.sseConnected ?? false} />
+            <RlpSyncBadge
+              lastSyncedAt={rlpSync.lastSyncedAt}
+              syncing={rlpSync.syncing}
+              onSync={rlpSync.triggerSync}
+            />
             <DigitalClock />
           </div>
 
@@ -384,6 +392,28 @@ export function HeaderBar() {
         </div>
       </div>
 
+      {/* RLP Sync toast (portal to body) */}
+      {rlpSync.toastMessage && isMounted && createPortal(
+        <div className="fixed bottom-4 right-4 z-[9998] animate-in slide-in-from-bottom-2 fade-in duration-200">
+          <div className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border shadow-lg text-sm font-medium backdrop-blur-sm ${
+            rlpSync.lastError
+              ? 'bg-red-500/15 border-red-500/30 text-red-400'
+              : 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400'
+          }`}>
+            <span className="w-1.5 h-1.5 rounded-full bg-current shrink-0" />
+            <span>{rlpSync.toastMessage}</span>
+            <button
+              onClick={rlpSync.dismissToast}
+              className="ml-1 opacity-60 hover:opacity-100 transition-opacity text-current"
+              aria-label="Dismiss"
+            >
+              x
+            </button>
+          </div>
+        </div>,
+        document.body
+      )}
+
       {/* Search overlay (portal to body to avoid clipping/stacking context bugs) */}
       {searchOpen && isMounted && createPortal(
         <div
@@ -393,27 +423,31 @@ export function HeaderBar() {
           aria-modal="true"
           aria-label="Command search"
         >
-          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/30 to-black/30" onClick={() => setSearchOpen(false)} />
-          <div className="absolute inset-0 flex items-center justify-center p-4">
-            <div className="command-palette-in w-full max-w-[44rem] max-h-[min(78vh,40rem)] bg-card border border-border rounded-lg shadow-2xl overflow-hidden">
-              <div className="p-2 border-b border-border">
-                <input
-                  ref={searchInputRef}
-                  type="text"
-                  value={searchQuery}
-                  onChange={e => handleSearchInput(e.target.value)}
-                  placeholder={th('searchPlaceholder')}
-                  className="w-full h-9 px-3 rounded-md bg-secondary border-0 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
-                  autoFocus
-                  role="combobox"
-                  aria-expanded={searchOpen}
-                  aria-controls="mc-command-results"
-                  aria-activedescendant={searchResults[selectedIndex] ? `mc-command-result-${selectedIndex}` : undefined}
-                />
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setSearchOpen(false)} />
+          <div className="absolute inset-0 flex items-start justify-center pt-[10vh] px-4">
+            <div className="command-palette-in w-full max-w-[44rem] max-h-[min(72vh,38rem)] bg-card/95 backdrop-blur-xl border border-border/80 rounded-2xl shadow-2xl overflow-hidden" style={{ boxShadow: '0 25px 60px rgba(0,0,0,0.5), 0 0 0 1px hsl(var(--border) / 0.5)' }}>
+              <div className="p-2.5 border-b border-border/50">
+                <div className="relative flex items-center gap-2 px-3 rounded-xl bg-secondary/50 h-11">
+                  <SearchIcon />
+                  <input
+                    ref={searchInputRef}
+                    type="text"
+                    value={searchQuery}
+                    onChange={e => handleSearchInput(e.target.value)}
+                    placeholder={th('searchPlaceholder')}
+                    className="flex-1 h-full bg-transparent border-0 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none font-medium"
+                    autoFocus
+                    role="combobox"
+                    aria-expanded={searchOpen}
+                    aria-controls="mc-command-results"
+                    aria-activedescendant={searchResults[selectedIndex] ? `mc-command-result-${selectedIndex}` : undefined}
+                  />
+                  <kbd className="text-[10px] px-1.5 py-0.5 rounded-md bg-muted/60 border border-border/60 font-mono text-muted-foreground/40 shrink-0">Esc</kbd>
+                </div>
               </div>
-              <div id="mc-command-results" role="listbox" className="bg-card max-h-[calc(min(78vh,40rem)-3.25rem)] overflow-y-auto">
+              <div id="mc-command-results" role="listbox" className="bg-transparent max-h-[calc(min(72vh,38rem)-4rem)] overflow-y-auto">
                 {searchLoading ? (
-                  <div className="p-4 text-center text-xs text-muted-foreground">{th('searching')}</div>
+                  <div className="p-6 text-center text-xs text-muted-foreground/50">{th('searching')}</div>
                 ) : searchResults.length > 0 ? (
                   searchResults.map((r, i) => (
                     <Button
@@ -426,24 +460,24 @@ export function HeaderBar() {
                       role="option"
                       aria-selected={i === selectedIndex}
                       tabIndex={i === selectedIndex ? 0 : -1}
-                      className={`w-full text-left px-3 py-2 h-auto rounded-none justify-start items-start gap-2.5 hover:bg-secondary/80 ${
-                        i === selectedIndex ? 'bg-secondary' : 'bg-card'
+                      className={`w-full text-left px-4 py-2.5 h-auto rounded-none justify-start items-center gap-3 transition-colors duration-100 ${
+                        i === selectedIndex ? 'bg-secondary/80 text-foreground' : 'text-foreground/70 hover:bg-secondary/40'
                       }`}
                     >
-                      <span className={`text-2xs font-medium w-5 h-5 rounded flex items-center justify-center shrink-0 mt-0.5 ${typeColors[r.type] || 'bg-muted text-muted-foreground'}`}>
+                      <span className={`text-[10px] font-bold w-6 h-6 rounded-lg flex items-center justify-center shrink-0 ${typeColors[r.type] || 'bg-muted text-muted-foreground'}`}>
                         {typeIcons[r.type] || '?'}
                       </span>
                       <div className="flex-1 min-w-0">
-                        <div className="text-xs font-medium text-foreground truncate">{r.title}</div>
-                        {r.subtitle && <div className="text-2xs text-muted-foreground truncate">{r.subtitle}</div>}
-                        {r.excerpt && <div className="text-2xs text-muted-foreground/70 truncate mt-0.5">{r.excerpt}</div>}
+                        <div className="text-sm font-medium text-foreground truncate">{r.title}</div>
+                        {r.subtitle && <div className="text-[11px] text-muted-foreground/60 truncate font-mono">{r.subtitle}</div>}
+                        {r.excerpt && <div className="text-[11px] text-muted-foreground/40 truncate mt-0.5">{r.excerpt}</div>}
                       </div>
                     </Button>
                   ))
                 ) : searchQuery.length >= 2 ? (
-                  <div className="p-4 text-center text-xs text-muted-foreground">{th('noResults')}</div>
+                  <div className="py-12 text-center text-sm text-muted-foreground/40">{th('noResults')}</div>
                 ) : (
-                  <div className="p-4 text-center text-xs text-muted-foreground">{th('typeToSearch')}</div>
+                  <div className="py-12 text-center text-sm text-muted-foreground/40">{th('typeToSearch')}</div>
                 )}
               </div>
             </div>
@@ -616,6 +650,63 @@ function SseBadge({ connected }: { connected: boolean }) {
       <span className={`font-medium font-mono-tight ${connected ? 'text-blue-400' : 'text-muted-foreground'}`}>
         {connected ? th('live') : th('off')}
       </span>
+    </div>
+  )
+}
+
+function RlpSyncBadge({
+  lastSyncedAt,
+  syncing,
+  onSync,
+}: {
+  lastSyncedAt: number | null
+  syncing: boolean
+  onSync: () => void
+}) {
+  const [showTooltip, setShowTooltip] = useState(false)
+
+  const label = syncing
+    ? 'Syncing...'
+    : lastSyncedAt
+      ? new Date(lastSyncedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      : 'Never'
+
+  return (
+    <div
+      className="relative flex items-center gap-1.5 text-xs cursor-pointer"
+      onMouseEnter={() => setShowTooltip(true)}
+      onMouseLeave={() => setShowTooltip(false)}
+      onClick={onSync}
+      title="RLP state sync — click to sync now"
+    >
+      <span className="text-muted-foreground">Sync</span>
+      <span className={`w-1.5 h-1.5 rounded-full ${syncing ? 'bg-amber-400 animate-pulse' : lastSyncedAt ? 'bg-emerald-500' : 'bg-muted-foreground/30'}`} />
+      <span className={`font-medium font-mono-tight ${syncing ? 'text-amber-400' : lastSyncedAt ? 'text-emerald-400' : 'text-muted-foreground'}`}>
+        {label}
+      </span>
+
+      {showTooltip && (
+        <div className="absolute top-full right-0 mt-1.5 z-50 w-52 rounded-lg border border-border bg-card/95 backdrop-blur-md p-3 shadow-xl text-xs">
+          <div className="font-medium text-foreground mb-1.5">RLP State Sync</div>
+          <div className="space-y-1 text-muted-foreground">
+            <div className="flex justify-between">
+              <span>Last synced</span>
+              <span className="text-foreground/80 font-mono">
+                {lastSyncedAt ? new Date(lastSyncedAt).toLocaleTimeString() : 'Never'}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span>Status</span>
+              <span className={syncing ? 'text-amber-400' : 'text-emerald-400'}>
+                {syncing ? 'Syncing...' : 'Idle'}
+              </span>
+            </div>
+          </div>
+          <div className="mt-2 pt-2 border-t border-border/40 text-muted-foreground/60 text-[10px]">
+            Click to sync now. Auto-syncs on reconnect.
+          </div>
+        </div>
+      )}
     </div>
   )
 }

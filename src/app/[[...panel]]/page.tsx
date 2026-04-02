@@ -1,43 +1,45 @@
 'use client'
 
-import { createElement, useEffect, useMemo, useState } from 'react'
+import { createElement, lazy, Suspense, useEffect, useMemo, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { NavRail } from '@/components/layout/nav-rail'
 import { HeaderBar } from '@/components/layout/header-bar'
 import { LiveFeed } from '@/components/layout/live-feed'
 import { Dashboard } from '@/components/dashboard/dashboard'
-import { LogViewerPanel } from '@/components/panels/log-viewer-panel'
-import { CronManagementPanel } from '@/components/panels/cron-management-panel'
-import { MemoryBrowserPanel } from '@/components/panels/memory-browser-panel'
-import { CostTrackerPanel } from '@/components/panels/cost-tracker-panel'
-import { TaskBoardPanel } from '@/components/panels/task-board-panel'
-import { ActivityFeedPanel } from '@/components/panels/activity-feed-panel'
-import { AgentSquadPanelPhase3 } from '@/components/panels/agent-squad-panel-phase3'
-import { AgentCommsPanel } from '@/components/panels/agent-comms-panel'
-import { StandupPanel } from '@/components/panels/standup-panel'
-import { OrchestrationBar } from '@/components/panels/orchestration-bar'
-import { NotificationsPanel } from '@/components/panels/notifications-panel'
-import { UserManagementPanel } from '@/components/panels/user-management-panel'
-import { AuditTrailPanel } from '@/components/panels/audit-trail-panel'
-import { WebhookPanel } from '@/components/panels/webhook-panel'
-import { SettingsPanel } from '@/components/panels/settings-panel'
-import { GatewayConfigPanel } from '@/components/panels/gateway-config-panel'
-import { IntegrationsPanel } from '@/components/panels/integrations-panel'
-import { AlertRulesPanel } from '@/components/panels/alert-rules-panel'
-import { MultiGatewayPanel } from '@/components/panels/multi-gateway-panel'
-import { SuperAdminPanel } from '@/components/panels/super-admin-panel'
-import { OfficePanel } from '@/components/panels/office-panel'
-import { GitHubSyncPanel } from '@/components/panels/github-sync-panel'
-import { SkillsPanel } from '@/components/panels/skills-panel'
-import { LocalAgentsDocPanel } from '@/components/panels/local-agents-doc-panel'
-import { ChannelsPanel } from '@/components/panels/channels-panel'
-import { DebugPanel } from '@/components/panels/debug-panel'
-import { SecurityAuditPanel } from '@/components/panels/security-audit-panel'
-import { NodesPanel } from '@/components/panels/nodes-panel'
-import { ExecApprovalPanel } from '@/components/panels/exec-approval-panel'
-import { SystemMonitorPanel } from '@/components/panels/system-monitor-panel'
-import { ChatPagePanel } from '@/components/panels/chat-page-panel'
 import { ChatPanel } from '@/components/chat/chat-panel'
+
+// Lazily load all panels — they are large and rarely all needed at once
+const LogViewerPanel = lazy(() => import('@/components/panels/log-viewer-panel').then(m => ({ default: m.LogViewerPanel })))
+const CronManagementPanel = lazy(() => import('@/components/panels/cron-management-panel').then(m => ({ default: m.CronManagementPanel })))
+const MemoryBrowserPanel = lazy(() => import('@/components/panels/memory-browser-panel').then(m => ({ default: m.MemoryBrowserPanel })))
+const CostTrackerPanel = lazy(() => import('@/components/panels/cost-tracker-panel').then(m => ({ default: m.CostTrackerPanel })))
+const TaskBoardPanel = lazy(() => import('@/components/panels/task-board-panel').then(m => ({ default: m.TaskBoardPanel })))
+const ActivityFeedPanel = lazy(() => import('@/components/panels/activity-feed-panel').then(m => ({ default: m.ActivityFeedPanel })))
+const AgentSquadPanelPhase3 = lazy(() => import('@/components/panels/agent-squad-panel-phase3').then(m => ({ default: m.AgentSquadPanelPhase3 })))
+const AgentCommsPanel = lazy(() => import('@/components/panels/agent-comms-panel').then(m => ({ default: m.AgentCommsPanel })))
+const StandupPanel = lazy(() => import('@/components/panels/standup-panel').then(m => ({ default: m.StandupPanel })))
+const OrchestrationBar = lazy(() => import('@/components/panels/orchestration-bar').then(m => ({ default: m.OrchestrationBar })))
+const NotificationsPanel = lazy(() => import('@/components/panels/notifications-panel').then(m => ({ default: m.NotificationsPanel })))
+const UserManagementPanel = lazy(() => import('@/components/panels/user-management-panel').then(m => ({ default: m.UserManagementPanel })))
+const AuditTrailPanel = lazy(() => import('@/components/panels/audit-trail-panel').then(m => ({ default: m.AuditTrailPanel })))
+const WebhookPanel = lazy(() => import('@/components/panels/webhook-panel').then(m => ({ default: m.WebhookPanel })))
+const SettingsPanel = lazy(() => import('@/components/panels/settings-panel').then(m => ({ default: m.SettingsPanel })))
+const GatewayConfigPanel = lazy(() => import('@/components/panels/gateway-config-panel').then(m => ({ default: m.GatewayConfigPanel })))
+const IntegrationsPanel = lazy(() => import('@/components/panels/integrations-panel').then(m => ({ default: m.IntegrationsPanel })))
+const AlertRulesPanel = lazy(() => import('@/components/panels/alert-rules-panel').then(m => ({ default: m.AlertRulesPanel })))
+const MultiGatewayPanel = lazy(() => import('@/components/panels/multi-gateway-panel').then(m => ({ default: m.MultiGatewayPanel })))
+const SuperAdminPanel = lazy(() => import('@/components/panels/super-admin-panel').then(m => ({ default: m.SuperAdminPanel })))
+const OfficePanel = lazy(() => import('@/components/panels/office-panel').then(m => ({ default: m.OfficePanel })))
+const GitHubSyncPanel = lazy(() => import('@/components/panels/github-sync-panel').then(m => ({ default: m.GitHubSyncPanel })))
+const SkillsPanel = lazy(() => import('@/components/panels/skills-panel').then(m => ({ default: m.SkillsPanel })))
+const LocalAgentsDocPanel = lazy(() => import('@/components/panels/local-agents-doc-panel').then(m => ({ default: m.LocalAgentsDocPanel })))
+const ChannelsPanel = lazy(() => import('@/components/panels/channels-panel').then(m => ({ default: m.ChannelsPanel })))
+const DebugPanel = lazy(() => import('@/components/panels/debug-panel').then(m => ({ default: m.DebugPanel })))
+const SecurityAuditPanel = lazy(() => import('@/components/panels/security-audit-panel').then(m => ({ default: m.SecurityAuditPanel })))
+const NodesPanel = lazy(() => import('@/components/panels/nodes-panel').then(m => ({ default: m.NodesPanel })))
+const ExecApprovalPanel = lazy(() => import('@/components/panels/exec-approval-panel').then(m => ({ default: m.ExecApprovalPanel })))
+const SystemMonitorPanel = lazy(() => import('@/components/panels/system-monitor-panel').then(m => ({ default: m.SystemMonitorPanel })))
+const ChatPagePanel = lazy(() => import('@/components/panels/chat-page-panel').then(m => ({ default: m.ChatPagePanel })))
 import { getPluginPanel } from '@/lib/plugins'
 import { shouldRedirectDashboardToHttps } from '@/lib/browser-security'
 import { useTranslations } from 'next-intl'
@@ -378,7 +380,7 @@ export default function Home() {
   }
 
   return (
-    <div className="flex h-screen bg-background overflow-hidden">
+    <div className="flex h-screen h-screen-dvh bg-background overflow-hidden no-overflow-x">
       <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:top-2 focus:left-2 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:text-sm focus:font-medium">
         {tc('skipToMainContent')}
       </a>
@@ -492,9 +494,12 @@ function ContentRouter({ tab }: { tab: string }) {
     )
   }
 
+  const panelFallback = <div className="flex items-center justify-center py-24"><div className="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin" /></div>
+
+  let content: React.ReactNode
   switch (tab) {
     case 'overview':
-      return (
+      content = (
         <>
           <Dashboard />
           {!isLocal && (
@@ -504,82 +509,108 @@ function ContentRouter({ tab }: { tab: string }) {
           )}
         </>
       )
+      break
     case 'tasks':
-      return <TaskBoardPanel />
+      content = <TaskBoardPanel />
+      break
     case 'agents':
-      return (
+      content = (
         <>
           <OrchestrationBar />
           {isLocal && <LocalAgentsDocPanel />}
           <AgentSquadPanelPhase3 />
         </>
       )
+      break
     case 'notifications':
-      return <NotificationsPanel />
+      content = <NotificationsPanel />
+      break
     case 'standup':
-      return <StandupPanel />
+      content = <StandupPanel />
+      break
     case 'sessions':
-      return <ChatPagePanel />
+      content = <ChatPagePanel />
+      break
     case 'logs':
-      return <LogViewerPanel />
+      content = <LogViewerPanel />
+      break
     case 'cron':
-      return <CronManagementPanel />
+      content = <CronManagementPanel />
+      break
     case 'memory':
-      return <MemoryBrowserPanel />
+      content = <MemoryBrowserPanel />
+      break
     case 'cost-tracker':
     case 'tokens':
     case 'agent-costs':
-      return <CostTrackerPanel />
+      content = <CostTrackerPanel />
+      break
     case 'users':
-      return <UserManagementPanel />
+      content = <UserManagementPanel />
+      break
     case 'history':
     case 'activity':
-      return <ActivityFeedPanel />
+      content = <ActivityFeedPanel />
+      break
     case 'audit':
-      return <AuditTrailPanel />
+      content = <AuditTrailPanel />
+      break
     case 'webhooks':
-      return <WebhookPanel />
+      content = <WebhookPanel />
+      break
     case 'alerts':
-      return <AlertRulesPanel />
+      content = <AlertRulesPanel />
+      break
     case 'gateways':
-      if (isLocal) return <LocalModeUnavailable panel={tab} />
-      return <MultiGatewayPanel />
+      content = isLocal ? <LocalModeUnavailable panel={tab} /> : <MultiGatewayPanel />
+      break
     case 'gateway-config':
-      if (isLocal) return <LocalModeUnavailable panel={tab} />
-      return <GatewayConfigPanel />
+      content = isLocal ? <LocalModeUnavailable panel={tab} /> : <GatewayConfigPanel />
+      break
     case 'integrations':
-      return <IntegrationsPanel />
+      content = <IntegrationsPanel />
+      break
     case 'settings':
-      return <SettingsPanel />
+      content = <SettingsPanel />
+      break
     case 'super-admin':
-      return <SuperAdminPanel />
+      content = <SuperAdminPanel />
+      break
     case 'github':
-      return <GitHubSyncPanel />
+      content = <GitHubSyncPanel />
+      break
     case 'office':
-      return <OfficePanel />
+      content = <OfficePanel />
+      break
     case 'monitor':
-      return <SystemMonitorPanel />
+      content = <SystemMonitorPanel />
+      break
     case 'skills':
-      return <SkillsPanel />
+      content = <SkillsPanel />
+      break
     case 'channels':
-      if (isLocal) return <LocalModeUnavailable panel={tab} />
-      return <ChannelsPanel />
+      content = isLocal ? <LocalModeUnavailable panel={tab} /> : <ChannelsPanel />
+      break
     case 'nodes':
-      if (isLocal) return <LocalModeUnavailable panel={tab} />
-      return <NodesPanel />
+      content = isLocal ? <LocalModeUnavailable panel={tab} /> : <NodesPanel />
+      break
     case 'security':
-      return <SecurityAuditPanel />
+      content = <SecurityAuditPanel />
+      break
     case 'debug':
-      return <DebugPanel />
+      content = <DebugPanel />
+      break
     case 'exec-approvals':
-      if (isLocal) return <LocalModeUnavailable panel={tab} />
-      return <ExecApprovalPanel />
+      content = isLocal ? <LocalModeUnavailable panel={tab} /> : <ExecApprovalPanel />
+      break
     case 'chat':
-      return <ChatPagePanel />
-    default: {
-      return renderPluginPanel(tab)
-    }
+      content = <ChatPagePanel />
+      break
+    default:
+      content = renderPluginPanel(tab)
   }
+
+  return <Suspense fallback={panelFallback}>{content}</Suspense>
 }
 
 function LocalModeUnavailable({ panel }: { panel: string }) {

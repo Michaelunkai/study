@@ -97,23 +97,43 @@ export function MetricCard({ label, value, total, subtitle, icon, color }: {
   color: 'blue' | 'green' | 'purple' | 'red'
 }) {
   const colorMap = {
-    blue: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-    green: 'bg-green-500/10 text-green-400 border-green-500/20',
-    purple: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
-    red: 'bg-red-500/10 text-red-400 border-red-500/20',
+    blue: {
+      container: 'bg-blue-500/8 text-blue-400 border-blue-500/18',
+      iconBg: 'bg-blue-500/15 text-blue-300',
+      bar: 'bg-blue-500/40',
+    },
+    green: {
+      container: 'bg-green-500/8 text-green-400 border-green-500/18',
+      iconBg: 'bg-green-500/15 text-green-300',
+      bar: 'bg-green-500/40',
+    },
+    purple: {
+      container: 'bg-purple-500/8 text-purple-400 border-purple-500/18',
+      iconBg: 'bg-purple-500/15 text-purple-300',
+      bar: 'bg-purple-500/40',
+    },
+    red: {
+      container: 'bg-red-500/8 text-red-400 border-red-500/18',
+      iconBg: 'bg-red-500/15 text-red-300',
+      bar: 'bg-red-500/40',
+    },
   }
 
+  const c = colorMap[color]
+
   return (
-    <div className={`rounded-lg border p-3.5 ${colorMap[color]}`}>
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-xs font-medium opacity-80">{label}</span>
-        <div className="w-5 h-5 opacity-60">{icon}</div>
+    <div className={`rounded-xl border p-4 transition-all duration-200 ${c.container}`} style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.04)' }}>
+      <div className="flex items-start justify-between mb-3">
+        <span className="text-xs font-semibold uppercase tracking-wider opacity-60">{label}</span>
+        <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${c.iconBg}`}>
+          <div className="w-4 h-4">{icon}</div>
+        </div>
       </div>
-      <div className="flex items-baseline gap-1">
-        <span className="text-2xl font-bold font-mono-tight">{value}</span>
-        {total != null && <span className="text-xs opacity-50 font-mono-tight">/ {total}</span>}
+      <div className="flex items-baseline gap-1.5">
+        <span className="text-[1.75rem] font-bold font-mono-tight leading-none tracking-tight">{value}</span>
+        {total != null && <span className="text-sm opacity-40 font-mono-tight">/ {total}</span>}
       </div>
-      {subtitle && <div className="text-2xs opacity-50 font-mono-tight mt-0.5">{subtitle}</div>}
+      {subtitle && <div className="text-[11px] opacity-45 font-mono-tight mt-1.5 truncate">{subtitle}</div>}
     </div>
   )
 }
@@ -124,14 +144,23 @@ export function SignalPill({ label, value, tone }: {
   tone: 'success' | 'warning' | 'info'
 }) {
   const toneClass = tone === 'success'
-    ? 'bg-green-500/15 border-green-500/30 text-green-300'
+    ? 'bg-green-500/12 border-green-500/25 text-green-300'
     : tone === 'warning'
-      ? 'bg-amber-500/15 border-amber-500/30 text-amber-300'
-      : 'bg-blue-500/15 border-blue-500/30 text-blue-300'
+      ? 'bg-amber-500/12 border-amber-500/25 text-amber-300'
+      : 'bg-blue-500/12 border-blue-500/25 text-blue-300'
+
+  const dotClass = tone === 'success'
+    ? 'bg-green-400'
+    : tone === 'warning'
+      ? 'bg-amber-400'
+      : 'bg-blue-400'
 
   return (
-    <div className={`rounded-lg border px-2.5 py-2 ${toneClass}`}>
-      <div className="text-2xs uppercase tracking-wide opacity-70">{label}</div>
+    <div className={`rounded-xl border px-3 py-2.5 transition-all duration-150 hover:brightness-110 ${toneClass}`} style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.04)' }}>
+      <div className="flex items-center gap-1.5 mb-0.5">
+        <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${dotClass}`} />
+        <div className="text-[10px] uppercase tracking-wider font-semibold opacity-55">{label}</div>
+      </div>
       <div className="text-xs font-semibold font-mono-tight truncate">{value}</div>
     </div>
   )
@@ -143,18 +172,26 @@ export function HealthRow({ label, value, status, bar }: {
   status: 'good' | 'warn' | 'bad'
   bar?: number
 }) {
-  const statusColor = status === 'good' ? 'text-green-400' : status === 'warn' ? 'text-amber-400' : 'text-red-400'
+  const statusConfig = {
+    good: { text: 'text-green-400', dot: 'bg-green-400', bar: 'bg-green-400' },
+    warn: { text: 'text-amber-400', dot: 'bg-amber-400', bar: 'bg-amber-400' },
+    bad: { text: 'text-red-400', dot: 'bg-red-400', bar: 'bg-red-400' },
+  }
+  const sc = statusConfig[status]
 
   return (
-    <div className="space-y-1">
-      <div className="flex items-center justify-between">
-        <span className="text-xs text-muted-foreground">{label}</span>
-        <span className={`text-xs font-medium font-mono-tight ${statusColor}`}>{value}</span>
+    <div className="space-y-1.5">
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-1.5 min-w-0">
+          <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${sc.dot}`} />
+          <span className="text-xs text-muted-foreground/70 truncate">{label}</span>
+        </div>
+        <span className={`text-xs font-semibold font-mono-tight ${sc.text} shrink-0`}>{value}</span>
       </div>
       {bar != null && (
-        <div className="h-1 rounded-full bg-secondary overflow-hidden">
+        <div className="h-1 rounded-full bg-secondary/60 overflow-hidden">
           <div
-            className={`h-full rounded-full transition-all duration-500 ${bar > 90 ? 'bg-red-500' : bar > 70 ? 'bg-amber-500' : 'bg-green-500'}`}
+            className={`h-full rounded-full transition-all duration-700 ${bar > 90 ? 'bg-red-400' : bar > 70 ? 'bg-amber-400' : 'bg-green-400'}`}
             style={{ width: `${Math.min(bar, 100)}%` }}
           />
         </div>
@@ -175,21 +212,24 @@ export function StatRow({ label, value, alert }: { label: string; value: number 
 }
 
 export function LogRow({ log }: { log: LogLike }) {
+  const levelConfig = {
+    error: { dot: 'bg-red-400', bg: 'hover:bg-red-500/5', label: 'text-red-400/60' },
+    warn: { dot: 'bg-amber-400', bg: 'hover:bg-amber-500/5', label: 'text-amber-400/60' },
+    debug: { dot: 'bg-gray-400/50', bg: 'hover:bg-secondary/20', label: 'text-muted-foreground/40' },
+    info: { dot: 'bg-blue-400/60', bg: 'hover:bg-secondary/20', label: 'text-blue-400/40' },
+  }
+  const config = levelConfig[log.level] ?? levelConfig.info
+
   return (
-    <div className="px-4 py-2 hover:bg-secondary/30 transition-smooth">
-      <div className="flex items-start gap-2">
-        <div className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${
-          log.level === 'error' ? 'bg-red-500' :
-          log.level === 'warn' ? 'bg-amber-500' :
-          log.level === 'debug' ? 'bg-gray-500' :
-          'bg-blue-500/50'
-        }`} />
+    <div className={`px-4 py-2.5 transition-all duration-100 ${config.bg}`}>
+      <div className="flex items-start gap-2.5">
+        <div className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${config.dot} ${log.level === 'error' ? 'shadow-[0_0_4px_currentColor]' : ''}`} />
         <div className="flex-1 min-w-0">
-          <p className="text-xs text-foreground/80 break-words">{log.message.length > 100 ? log.message.slice(0, 100) + '...' : log.message}</p>
+          <p className="text-xs text-foreground/75 break-words leading-relaxed">{log.message.length > 100 ? log.message.slice(0, 100) + '...' : log.message}</p>
           <div className="flex items-center gap-1.5 mt-0.5">
-            <span className="text-2xs text-muted-foreground font-mono-tight">{log.source}</span>
-            <span className="text-2xs text-muted-foreground/40">·</span>
-            <span className="text-2xs text-muted-foreground">{new Date(log.timestamp).toLocaleTimeString()}</span>
+            <span className={`text-[10px] font-mono-tight font-semibold uppercase tracking-wider ${config.label}`}>{log.source}</span>
+            <span className="text-[10px] text-muted-foreground/25">·</span>
+            <span className="text-[10px] text-muted-foreground/40 font-mono-tight">{new Date(log.timestamp).toLocaleTimeString()}</span>
           </div>
         </div>
       </div>
@@ -208,14 +248,14 @@ export function QuickAction({ label, desc, tab, icon, onNavigate }: {
     <Button
       variant="outline"
       onClick={() => onNavigate(tab)}
-      className="flex items-center gap-3 p-3 h-auto rounded-lg hover:border-primary/30 hover:bg-primary/5 text-left group justify-start"
+      className="flex items-center gap-3 p-3.5 h-auto rounded-xl hover:border-primary/25 hover:bg-primary/5 text-left group justify-start transition-all duration-150"
     >
-      <div className="w-8 h-8 rounded-md bg-secondary flex items-center justify-center shrink-0 group-hover:bg-primary/10 transition-smooth">
-        <div className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-smooth">{icon}</div>
+      <div className="w-9 h-9 rounded-xl bg-secondary/60 flex items-center justify-center shrink-0 group-hover:bg-primary/12 transition-all duration-150">
+        <div className="w-4 h-4 text-muted-foreground/60 group-hover:text-primary transition-all duration-150">{icon}</div>
       </div>
       <div>
-        <div className="text-xs font-medium text-foreground">{label}</div>
-        <div className="text-2xs text-muted-foreground">{desc}</div>
+        <div className="text-xs font-semibold text-foreground">{label}</div>
+        <div className="text-[11px] text-muted-foreground/55 mt-0.5">{desc}</div>
       </div>
     </Button>
   )

@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useTranslations } from 'next-intl'
 import { useMissionControl } from '@/store'
 import { useNavigateToPanel, usePrefetchPanel } from '@/lib/navigation'
@@ -621,9 +621,13 @@ function MobileBottomSheet({ open, onClose, activeTab, navigateToPanel, groups }
 }) {
   // Track mount state for animation
   const [visible, setVisible] = useState(false)
+  // Swipe-to-close state
+  const [dragY, setDragY] = useState(0)
+  const touchStartYRef = useRef<number>(0)
 
   useEffect(() => {
     if (open) {
+      setDragY(0)
       // Mount first, then animate in on next frame
       requestAnimationFrame(() => {
         requestAnimationFrame(() => setVisible(true))
@@ -636,7 +640,25 @@ function MobileBottomSheet({ open, onClose, activeTab, navigateToPanel, groups }
   // Handle close with animation
   function handleClose() {
     setVisible(false)
+    setDragY(0)
     setTimeout(onClose, 200) // match transition duration
+  }
+
+  function handleTouchStart(e: React.TouchEvent) {
+    touchStartYRef.current = e.touches[0].clientY
+  }
+
+  function handleTouchMove(e: React.TouchEvent) {
+    const delta = e.touches[0].clientY - touchStartYRef.current
+    if (delta > 0) setDragY(delta)
+  }
+
+  function handleTouchEnd() {
+    if (dragY > 80) {
+      handleClose()
+    } else {
+      setDragY(0)
+    }
   }
 
   if (!open) return null
@@ -651,13 +673,15 @@ function MobileBottomSheet({ open, onClose, activeTab, navigateToPanel, groups }
         onClick={handleClose}
       />
 
-      {/* Sheet */}
+      {/* Sheet — supports swipe-down-to-close gesture on Android */}
       <div
-        className={`absolute bottom-0 left-0 right-0 bg-card rounded-t-lg max-h-[70vh] overflow-y-auto safe-area-bottom transition-transform duration-200 ease-out ${
-          visible ? 'translate-y-0' : 'translate-y-full'
-        }`}
+        style={{ transform: visible ? `translateY(${dragY}px)` : 'translateY(100%)' }}
+        className="absolute bottom-0 left-0 right-0 bg-card rounded-t-lg max-h-[70vh] overflow-y-auto safe-area-bottom transition-transform duration-200 ease-out"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
-        {/* Drag handle */}
+        {/* Drag handle — visual affordance for swipe gesture */}
         <div className="flex justify-center pt-3 pb-2">
           <div className="w-10 h-1 rounded-full bg-muted-foreground/30" />
         </div>

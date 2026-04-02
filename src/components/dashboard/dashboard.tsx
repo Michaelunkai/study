@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { useMissionControl } from '@/store'
 import { useNavigateToPanel } from '@/lib/navigation'
 import { useSmartPoll } from '@/lib/use-smart-poll'
@@ -120,33 +120,33 @@ export function Dashboard() {
 
   useSmartPoll(loadDashboard, isLocal ? 15000 : 60000, { pauseWhenConnected: true })
 
-  // Computed values
+  // Computed values — memoized to avoid re-filtering on every render
   const isSystemLoading = loading.system && !systemStats
   const isSessionsLoading = loading.sessions && sessions.length === 0
   const isClaudeLoading = isLocal && loading.claude && !claudeStats
   const isGithubLoading = isLocal && loading.github && !githubStats
 
-  const memPct = systemStats?.memory?.total
+  const memPct = useMemo(() => systemStats?.memory?.total
     ? Math.round((systemStats.memory.used / systemStats.memory.total) * 100)
-    : null
+    : null, [systemStats])
 
-  const diskPct = parseInt(systemStats?.disk?.usage || '', 10)
-  const systemLoad = Math.max(memPct ?? 0, Number.isFinite(diskPct) ? diskPct : 0)
+  const diskPct = useMemo(() => parseInt(systemStats?.disk?.usage || '', 10), [systemStats])
+  const systemLoad = useMemo(() => Math.max(memPct ?? 0, Number.isFinite(diskPct) ? diskPct : 0), [memPct, diskPct])
 
-  const activeSessions = sessions.filter((s) => s.active).length
-  const errorCount = logs.filter((l) => l.level === 'error').length
-  const onlineAgents = dbStats
+  const activeSessions = useMemo(() => sessions.filter((s) => s.active).length, [sessions])
+  const errorCount = useMemo(() => logs.filter((l) => l.level === 'error').length, [logs])
+  const onlineAgents = useMemo(() => dbStats
     ? dbStats.agents.total - (dbStats.agents.byStatus?.offline ?? 0)
-    : agents.filter((a) => a.status !== 'offline').length
+    : agents.filter((a) => a.status !== 'offline').length, [dbStats, agents])
 
-  const claudeLocalSessions = sessions.filter((s) => s.kind === 'claude-code')
-  const codexLocalSessions = sessions.filter((s) => s.kind === 'codex-cli')
-  const hermesLocalSessions = sessions.filter((s) => s.kind === 'hermes')
-  const claudeActive = claudeLocalSessions.filter((s) => s.active).length
-  const codexActive = codexLocalSessions.filter((s) => s.active).length
-  const hermesActive = hermesLocalSessions.filter((s) => s.active).length
+  const claudeLocalSessions = useMemo(() => sessions.filter((s) => s.kind === 'claude-code'), [sessions])
+  const codexLocalSessions = useMemo(() => sessions.filter((s) => s.kind === 'codex-cli'), [sessions])
+  const hermesLocalSessions = useMemo(() => sessions.filter((s) => s.kind === 'hermes'), [sessions])
+  const claudeActive = useMemo(() => claudeLocalSessions.filter((s) => s.active).length, [claudeLocalSessions])
+  const codexActive = useMemo(() => codexLocalSessions.filter((s) => s.active).length, [codexLocalSessions])
+  const hermesActive = useMemo(() => hermesLocalSessions.filter((s) => s.active).length, [hermesLocalSessions])
 
-  const runningTasks = dbStats?.tasks.byStatus?.in_progress ?? tasks.filter((t) => t.status === 'in_progress').length
+  const runningTasks = useMemo(() => dbStats?.tasks.byStatus?.in_progress ?? tasks.filter((t) => t.status === 'in_progress').length, [dbStats, tasks])
   const inboxCount = dbStats?.tasks.byStatus?.inbox ?? 0
   const assignedCount = dbStats?.tasks.byStatus?.assigned ?? 0
   const reviewCount = (dbStats?.tasks.byStatus?.review ?? 0) + (dbStats?.tasks.byStatus?.quality_review ?? 0)
@@ -173,7 +173,7 @@ export function Dashboard() {
     ? { value: 'Loading...', status: 'warn' as const }
     : getMcHealth(systemStats, dbStats, errorCount)
 
-  const localSessionLogs: LogLike[] = isLocal
+  const localSessionLogs = useMemo<LogLike[]>(() => isLocal
     ? sessions.reduce<LogLike[]>((acc, session) => {
         const ts = session.lastActivity || session.startTime || 0
         if (!ts) return acc
@@ -193,14 +193,14 @@ export function Dashboard() {
         })
         return acc
       }, [])
-    : []
+    : [], [isLocal, sessions])
 
-  const mergedRecentLogs: LogLike[] = (isLocal ? [...logs, ...localSessionLogs] : logs)
+  const mergedRecentLogs = useMemo<LogLike[]>(() => (isLocal ? [...logs, ...localSessionLogs] : logs)
     .sort((a, b) => b.timestamp - a.timestamp)
     .filter((entry, index, arr) => arr.findIndex((x) => x.id === entry.id) === index)
-    .slice(0, 10)
+    .slice(0, 10), [isLocal, logs, localSessionLogs])
 
-  const recentErrorLogs = mergedRecentLogs.filter((log) => log.level === 'error').length
+  const recentErrorLogs = useMemo(() => mergedRecentLogs.filter((log) => log.level === 'error').length, [mergedRecentLogs])
   const gatewayHealthStatus = connection.isConnected ? 'good' as const : 'bad' as const
 
   const openSession = useCallback((session: any) => {

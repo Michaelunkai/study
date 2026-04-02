@@ -158,7 +158,7 @@ export function SystemMonitorPanel() {
     }
   }, [])
 
-  useSmartPoll(fetchData, 2000)
+  useSmartPoll(fetchData, 5000)
 
   if (!latest) {
     return (

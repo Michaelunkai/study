@@ -84,13 +84,14 @@ export function NavRail() {
     <>
       {/* Desktop: Grouped sidebar */}
       <nav
-        className={`hidden md:flex flex-col bg-card border-r border-border shrink-0 transition-all duration-200 ease-in-out ${
+        className={`hidden md:flex flex-col bg-card/95 border-r border-border/70 shrink-0 transition-all duration-250 ease-in-out backdrop-blur-sm ${
           sidebarExpanded ? 'w-[220px]' : 'w-14'
         }`}
+        style={{ boxShadow: '1px 0 0 0 hsl(var(--border) / 0.4)' }}
       >
         {/* Header: Logo + toggle */}
-        <div className={`flex items-center shrink-0 ${sidebarExpanded ? 'px-3 py-3 gap-2.5' : 'flex-col py-3 gap-2'}`}>
-          <div className="w-9 h-9 rounded-lg overflow-hidden bg-background border border-border/50 flex items-center justify-center shrink-0">
+        <div className={`flex items-center shrink-0 border-b border-border/50 ${sidebarExpanded ? 'px-3 py-3.5 gap-2.5' : 'flex-col py-3.5 gap-2'}`}>
+          <div className="w-9 h-9 rounded-xl overflow-hidden bg-background/80 border border-border/60 flex items-center justify-center shrink-0 shadow-sm">
             <Image
               src="/brand/mc-logo-128.png"
               alt="Mission Control logo"
@@ -100,14 +101,15 @@ export function NavRail() {
             />
           </div>
           {sidebarExpanded && (
-            <span className="text-sm font-semibold text-foreground truncate flex-1">Mission Control</span>
+            <span className="text-sm font-bold text-foreground tracking-tight truncate flex-1">Mission Control</span>
           )}
           <Button
             variant="ghost"
             size="icon-xs"
             onClick={toggleSidebar}
-            title={sidebarExpanded ? 'Collapse sidebar' : 'Expand sidebar'}
-            className="shrink-0"
+            title={sidebarExpanded ? 'Collapse sidebar [ ' : 'Expand sidebar [ '}
+            aria-label={sidebarExpanded ? 'Collapse sidebar' : 'Expand sidebar'}
+            className="shrink-0 opacity-50 hover:opacity-100"
           >
             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
               {sidebarExpanded ? (
@@ -133,9 +135,10 @@ export function NavRail() {
                 <Button
                   variant="ghost"
                   onClick={() => toggleGroup(group.id)}
-                  className="w-full flex items-center justify-between px-3 mt-3 mb-1 h-auto py-0 rounded-none hover:bg-transparent group/header"
+                  aria-expanded={!collapsedGroups.includes(group.id)}
+                  className="w-full flex items-center justify-between px-3 mt-4 mb-1.5 h-auto py-0 rounded-none hover:bg-transparent group/header"
                 >
-                  <span className="text-[10px] tracking-wider text-muted-foreground/60 font-semibold select-none">
+                  <span className="text-[9px] tracking-[0.12em] text-muted-foreground/40 font-bold select-none uppercase">
                     {group.label}
                   </span>
                   <svg
@@ -145,7 +148,7 @@ export function NavRail() {
                     strokeWidth="1.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className={`w-3 h-3 text-muted-foreground/40 group-hover/header:text-muted-foreground transition-transform duration-150 ${
+                    className={`w-2.5 h-2.5 text-muted-foreground/25 group-hover/header:text-muted-foreground/50 transition-all duration-200 ${
                       collapsedGroups.includes(group.id) ? '-rotate-90' : ''
                     }`}
                   >
@@ -177,15 +180,16 @@ export function NavRail() {
         </div>
 
         {/* Connection indicator */}
-        <div className={`shrink-0 py-3 flex ${sidebarExpanded ? 'px-3 items-center gap-2' : 'flex-col items-center'}`}>
+        <div className={`shrink-0 py-3 border-t border-border/50 flex ${sidebarExpanded ? 'px-3 items-center gap-2' : 'flex-col items-center'}`}>
           <div
-            className={`w-2.5 h-2.5 rounded-full shrink-0 ${
-              connection.isConnected ? 'bg-green-500 pulse-dot' : 'bg-red-500'
+            className={`w-2 h-2 rounded-full shrink-0 ${
+              connection.isConnected ? 'bg-green-400 shadow-[0_0_6px_hsl(142_71%_45%/0.5)] pulse-dot' : 'bg-red-400'
             }`}
             title={connection.isConnected ? 'Gateway connected' : 'Gateway disconnected'}
+            aria-label={connection.isConnected ? 'Gateway connected' : 'Gateway disconnected'}
           />
           {sidebarExpanded && (
-            <span className="text-xs text-muted-foreground truncate">
+            <span className={`text-xs truncate font-medium ${connection.isConnected ? 'text-green-400/70' : 'text-red-400/70'}`}>
               {connection.isConnected ? 'Connected' : 'Disconnected'}
             </span>
           )}
@@ -229,16 +233,17 @@ function NavButton({ item, active, expanded, onClick }: {
       <Button
         variant="ghost"
         onClick={onClick}
-        className={`w-full flex items-center gap-2 px-2 py-1.5 h-auto rounded-lg text-left justify-start relative ${
+        aria-current={active ? 'page' : undefined}
+        className={`w-full flex items-center gap-2.5 px-2.5 py-2 h-auto rounded-lg text-left justify-start relative transition-all duration-150 ${
           active
-            ? 'bg-primary/15 text-primary hover:bg-primary/20'
-            : ''
+            ? 'bg-primary/12 text-primary hover:bg-primary/18 font-medium'
+            : 'text-muted-foreground/80 hover:text-foreground'
         }`}
       >
         {active && (
-          <span className="absolute left-0 w-0.5 h-5 bg-primary rounded-r" />
+          <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-primary rounded-r-full shadow-[0_0_6px_hsl(var(--primary)/0.5)]" />
         )}
-        <div className="w-5 h-5 shrink-0">{item.icon}</div>
+        <div className={`w-4 h-4 shrink-0 ${active ? 'opacity-100' : 'opacity-60'}`}>{item.icon}</div>
         <span className="text-sm truncate">{item.label}</span>
       </Button>
     )
@@ -250,20 +255,22 @@ function NavButton({ item, active, expanded, onClick }: {
       size="icon-lg"
       onClick={onClick}
       title={item.label}
-      className={`rounded-lg group relative ${
+      aria-current={active ? 'page' : undefined}
+      aria-label={item.label}
+      className={`rounded-xl group relative transition-all duration-150 ${
         active
-          ? 'bg-primary/15 text-primary hover:bg-primary/20'
-          : ''
+          ? 'bg-primary/12 text-primary hover:bg-primary/18'
+          : 'text-muted-foreground/60 hover:text-foreground hover:bg-secondary/60'
       }`}
     >
-      <div className="w-5 h-5">{item.icon}</div>
+      <div className="w-4.5 h-4.5">{item.icon}</div>
       {/* Tooltip */}
-      <span className="absolute left-full ml-2 px-2 py-1 text-xs font-medium bg-popover text-popover-foreground border border-border rounded-md opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 transition-opacity">
+      <span className="absolute left-full ml-2.5 px-2.5 py-1.5 text-xs font-medium bg-popover/95 text-popover-foreground border border-border/80 rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 transition-opacity duration-150 shadow-lg">
         {item.label}
       </span>
       {/* Active indicator */}
       {active && (
-        <span className="absolute left-0 w-0.5 h-5 bg-primary rounded-r" />
+        <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-primary rounded-r-full shadow-[0_0_6px_hsl(var(--primary)/0.5)]" />
       )}
     </Button>
   )

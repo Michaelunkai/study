@@ -136,9 +136,10 @@ export function FleetStatusWidget({ data }: { data: DashboardData }) {
   return (
     <div className="panel">
       <div className="panel-header">
-        <h3 className="text-sm font-semibold">Fleet Status</h3>
+        <h3 className="text-sm font-semibold tracking-tight">Fleet Status</h3>
+        <span className="text-[10px] uppercase tracking-wider text-muted-foreground/40 font-semibold">Live</span>
       </div>
-      <div className="divide-y divide-border/30">
+      <div className="divide-y divide-border/25">
         {rows.map((row) => {
           const sparkData = getSessionSparkline(row.sessions)
           const isGateway = row.name === 'Gateway'
@@ -147,26 +148,29 @@ export function FleetStatusWidget({ data }: { data: DashboardData }) {
             <div
               key={row.name}
               onClick={row.onClick}
-              className={`px-4 py-3 flex items-center gap-4 ${
-                row.onClick ? 'cursor-pointer hover:bg-secondary/30 transition-smooth' : ''
+              role={row.onClick ? 'button' : undefined}
+              tabIndex={row.onClick ? 0 : undefined}
+              onKeyDown={row.onClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); row.onClick!() } } : undefined}
+              className={`px-4 py-3.5 flex items-center gap-4 ${
+                row.onClick ? 'cursor-pointer hover:bg-secondary/25 transition-all duration-150 focus-visible:bg-secondary/25 focus-visible:outline-none' : ''
               }`}
             >
-              {/* Name */}
-              <span className={`text-xs font-semibold w-16 shrink-0 ${row.color}`}>
+              {/* Name with color accent */}
+              <span className={`text-xs font-bold w-16 shrink-0 ${row.color}`}>
                 {row.name}
               </span>
 
               {/* Active count */}
-              <span className="text-xs text-foreground/80 w-20 shrink-0 font-mono-tight">
+              <span className="text-xs text-foreground/75 w-20 shrink-0 font-mono-tight">
                 {isGateway && isLocal ? (
-                  <span className="inline-flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                    connected
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-400 shadow-[0_0_4px_hsl(142_71%_45%/0.6)]" />
+                    <span className="text-green-400/80">connected</span>
                   </span>
                 ) : isLoading ? (
-                  '...'
+                  <span className="text-muted-foreground/40">...</span>
                 ) : (
-                  <>{row.active} active</>
+                  <><span className="text-foreground/90 font-semibold">{row.active}</span> <span className="text-muted-foreground/50">active</span></>
                 )}
               </span>
 
@@ -174,7 +178,7 @@ export function FleetStatusWidget({ data }: { data: DashboardData }) {
               <Sparkline data={sparkData} color={row.sparkColor} />
 
               {/* Total */}
-              <span className="text-2xs text-muted-foreground w-16 shrink-0 font-mono-tight">
+              <span className="text-[11px] text-muted-foreground/50 w-16 shrink-0 font-mono-tight">
                 {isGateway && isLocal ? (
                   connection.latency != null ? `${connection.latency}ms` : ''
                 ) : isLoading ? (
@@ -185,16 +189,16 @@ export function FleetStatusWidget({ data }: { data: DashboardData }) {
               </span>
 
               {/* Cost */}
-              <span className="text-2xs text-muted-foreground w-20 shrink-0 font-mono-tight text-right hidden sm:block">
+              <span className="text-[11px] text-muted-foreground/50 w-20 shrink-0 font-mono-tight text-right hidden sm:block">
                 {row.cost != null ? `$${row.cost.toFixed(2)}` : ''}
               </span>
 
-              {/* Utilization bar (sessions with activity) */}
+              {/* Utilization bar */}
               {!isGateway && !isLoading && row.total > 0 && (
-                <span className="hidden lg:inline-flex h-1.5 w-16 rounded-full bg-secondary overflow-hidden">
+                <span className="hidden lg:inline-flex h-1 w-16 rounded-full bg-secondary/60 overflow-hidden">
                   <span
-                    className={`h-full rounded-full transition-all duration-500 ${
-                      row.active / row.total > 0.8 ? 'bg-amber-500' : 'bg-green-500'
+                    className={`h-full rounded-full transition-all duration-700 ${
+                      row.active / row.total > 0.8 ? 'bg-amber-400' : 'bg-green-400'
                     }`}
                     style={{ width: `${Math.min(100, (row.active / row.total) * 100)}%` }}
                   />

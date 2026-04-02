@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { memo, useState, useRef } from 'react'
 import { useMissionControl } from '@/store'
 import { WIDGET_CATALOG, getDefaultLayout, getAvailableWidgets, getWidgetById } from '@/lib/dashboard-widgets'
 import { Button } from '@/components/ui/button'
@@ -48,7 +48,7 @@ const SIZE_CLASSES: Record<string, string> = {
   full: 'xl:col-span-12',
 }
 
-export function WidgetGrid({ data }: { data: DashboardData }) {
+export const WidgetGrid = memo(function WidgetGrid({ data }: { data: DashboardData }) {
   const { dashboardLayout, setDashboardLayout, dashboardMode } = useMissionControl()
   const mode = dashboardMode === 'local' ? 'local' : 'full'
   const [customizing, setCustomizing] = useState(false)
@@ -281,4 +281,4 @@ export function WidgetGrid({ data }: { data: DashboardData }) {
       </div>
     </div>
   )
-}
+})

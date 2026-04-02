@@ -31,9 +31,9 @@ export function BriefingBarWidget({ data }: { data: DashboardData }) {
   const agentTotal = dbStats?.agents.total ?? agents.length
 
   return (
-    <div className="rounded-xl border border-border bg-card/80 backdrop-blur-sm px-4 py-3">
+    <div className="rounded-xl border border-border/70 bg-card/85 backdrop-blur-sm px-4 py-3.5" style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.04), 0 1px 3px rgba(0,0,0,0.3)' }}>
       {/* Top row: key counts */}
-      <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5">
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
         <BriefingItem
           dot="green"
           onClick={() => navigateToPanel(isLocal ? 'sessions' : 'agents')}
@@ -72,30 +72,34 @@ export function BriefingBarWidget({ data }: { data: DashboardData }) {
         {!isLocal && (
           <BriefingItem dot={connection.isConnected ? 'green' : 'red'}>
             Gateway {connection.isConnected ? 'connected' : 'disconnected'}
-            {connection.latency != null && <span className="text-muted-foreground/60 ml-1">{connection.latency}ms</span>}
+            {connection.latency != null && <span className="text-muted-foreground/50 ml-1 font-mono">{connection.latency}ms</span>}
           </BriefingItem>
         )}
       </div>
 
+      {/* Divider */}
+      <div className="h-px bg-border/30 my-2" />
+
       {/* Bottom row: secondary metrics */}
-      <div className="flex flex-wrap items-center gap-x-5 gap-y-1 mt-1.5 text-2xs text-muted-foreground">
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-1 text-[11px] text-muted-foreground/60">
         <span>{sessions.length} session{sessions.length !== 1 ? 's' : ''} today</span>
 
         {isLocal && !isClaudeLoading && totalTokens > 0 && (
-          <span>{formatTokensShort(totalTokens)} tokens</span>
+          <span className="font-mono">{formatTokensShort(totalTokens)} tokens</span>
         )}
 
         {isLocal && !isClaudeLoading && (
-          <span>{costDisplay} spent</span>
+          <span className="font-mono">{costDisplay} spent</span>
         )}
 
         {!isSystemLoading && memPct != null && (
           <span className="inline-flex items-center gap-1.5">
-            Memory {memPct}%
-            <span className="inline-flex h-1.5 w-16 rounded-full bg-secondary overflow-hidden">
+            <span>Memory</span>
+            <span className="font-mono font-medium text-muted-foreground/80">{memPct}%</span>
+            <span className="inline-flex h-1 w-14 rounded-full bg-secondary/80 overflow-hidden">
               <span
-                className={`h-full rounded-full transition-all duration-500 ${
-                  memPct > 90 ? 'bg-red-500' : memPct > 70 ? 'bg-amber-500' : 'bg-green-500'
+                className={`h-full rounded-full transition-all duration-700 ${
+                  memPct > 90 ? 'bg-red-400' : memPct > 70 ? 'bg-amber-400' : 'bg-green-400'
                 }`}
                 style={{ width: `${Math.min(memPct, 100)}%` }}
               />
@@ -129,11 +133,11 @@ function BriefingItem({
     <Tag
       type={onClick ? 'button' : undefined}
       onClick={onClick}
-      className={`inline-flex items-center gap-1.5 text-xs text-foreground/80 ${
-        onClick ? 'hover:text-foreground cursor-pointer transition-colors' : ''
+      className={`inline-flex items-center gap-1.5 text-xs text-foreground/70 transition-all duration-150 rounded-md ${
+        onClick ? 'hover:text-foreground cursor-pointer hover:bg-secondary/40 -mx-1.5 px-1.5 py-0.5' : ''
       }`}
     >
-      <span className={`w-1.5 h-1.5 rounded-full ${dotColor} shrink-0`} />
+      <span className={`w-1.5 h-1.5 rounded-full ${dotColor} shrink-0 shadow-[0_0_4px_currentColor]`} />
       <span className="[&>b]:font-semibold [&>b]:text-foreground">{children}</span>
     </Tag>
   )
