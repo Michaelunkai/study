@@ -415,6 +415,20 @@ export function TaskBoardPanel() {
   const [gnapSyncing, setGnapSyncing] = useState(false)
   const isLocal = dashboardMode === 'local'
   const dragCounter = useRef(0)
+
+  // === ENHANCED MISSION DASHBOARD STATE ===
+  const [searchQuery, setSearchQuery] = useState('')
+  const [sortBy, setSortBy] = useState<'default' | 'priority' | 'date_asc' | 'date_desc' | 'title'>('default')
+  const [pinnedTaskIds, setPinnedTaskIds] = useState<number[]>(() => {
+    if (typeof window === 'undefined') return []
+    try { return JSON.parse(localStorage.getItem('mc-pinned-tasks') || '[]') } catch { return [] }
+  })
+  const [collapsedColumns, setCollapsedColumns] = useState<Set<string>>(() => new Set())
+  const [panelWidth, setPanelWidth] = useState<number | null>(null)
+  const panelRef = useRef<HTMLDivElement>(null)
+  const resizeRef = useRef<{ startX: number; startWidth: number } | null>(null)
+  const [showStatsBar, setShowStatsBar] = useState(true)
+  const [viewMode, setViewMode] = useState<'kanban' | 'list'>('kanban')
   const selectedTaskIdFromUrl = Number.parseInt(searchParams.get('taskId') || '', 10)
 
   const updateTaskUrl = useCallback((taskId: number | null, mode: 'push' | 'replace' = 'push') => {
@@ -551,12 +565,13 @@ export function TaskBoardPanel() {
   // Poll as SSE fallback — pauses when SSE is delivering events
   useSmartPoll(fetchData, 30000, { pauseWhenSseConnected: true })
 
-  // Group tasks by status, overriding for awaiting_owner detection
+  // Group tasks by status, overriding for awaiting_owner detection, with filter+sort
   const tasksByStatus = statusColumns.reduce((acc, column) => {
-    acc[column.key] = tasks.filter(task => {
+    const colTasks = tasks.filter(task => {
       const effectiveStatus = detectAwaitingOwner(task) ? 'awaiting_owner' : task.status
       return effectiveStatus === column.key
     })
+    acc[column.key] = sortTasks(filterTasks(colTasks))
     return acc
   }, {} as Record<string, Task[]>)
 
@@ -655,6 +670,64 @@ export function TaskBoardPanel() {
     if (minutes > 0) return `${minutes} minute${minutes > 1 ? 's' : ''} ago`
     return 'just now'
   }
+
+  // === ENHANCED MISSION DASHBOARD HELPERS ===
+
+  const togglePin = useCallback((taskId: number) => {
+    setPinnedTaskIds(prev => {
+      const next = prev.includes(taskId) ? prev.filter(id => id !== taskId) : [...prev, taskId]
+      try { localStorage.setItem('mc-pinned-tasks', JSON.stringify(next)) } catch {}
+      return next
+    })
+  }, [])
+
+  const toggleColumn = useCallback((colKey: string) => {
+    setCollapsedColumns(prev => {
+      const next = new Set(prev)
+      if (next.has(colKey)) { next.delete(colKey) } else { next.add(colKey) }
+      return next
+    })
+  }, [])
+
+  const priorityOrder: Record<string, number> = { critical: 0, urgent: 1, high: 2, medium: 3, low: 4 }
+
+  const sortTasks = useCallback((taskList: Task[]) => {
+    const pinned = taskList.filter(t => pinnedTaskIds.includes(t.id))
+    const unpinned = taskList.filter(t => !pinnedTaskIds.includes(t.id))
+    const sort = (arr: Task[]) => {
+      switch (sortBy) {
+        case 'priority': return [...arr].sort((a, b) => (priorityOrder[a.priority] ?? 5) - (priorityOrder[b.priority] ?? 5))
+        case 'date_asc': return [...arr].sort((a, b) => a.created_at - b.created_at)
+        case 'date_desc': return [...arr].sort((a, b) => b.created_at - a.created_at)
+        case 'title': return [...arr].sort((a, b) => a.title.localeCompare(b.title))
+        default: return arr
+      }
+    }
+    return [...sort(pinned), ...sort(unpinned)]
+  }, [sortBy, pinnedTaskIds])
+
+  const filterTasks = useCallback((taskList: Task[]) => {
+    if (!searchQuery.trim()) return taskList
+    const q = searchQuery.toLowerCase()
+    return taskList.filter(t =>
+      t.title.toLowerCase().includes(q) ||
+      (t.description || '').toLowerCase().includes(q) ||
+      (t.assigned_to || '').toLowerCase().includes(q) ||
+      (t.tags || []).some(tag => tag.toLowerCase().includes(q)) ||
+      (t.ticket_ref || '').toLowerCase().includes(q)
+    )
+  }, [searchQuery])
+
+  // Mission statistics
+  const missionStats = {
+    total: tasks.length,
+    done: tasks.filter(t => t.status === 'done').length,
+    active: tasks.filter(t => t.status === 'in_progress').length,
+    blocked: tasks.filter(t => detectAwaitingOwner(t) && t.status !== 'done').length,
+    critical: tasks.filter(t => t.priority === 'critical' || t.priority === 'urgent').length,
+    overdue: tasks.filter(t => t.due_date && t.due_date * 1000 < Date.now() && t.status !== 'done').length,
+  }
+  const donePct = missionStats.total > 0 ? Math.round((missionStats.done / missionStats.total) * 100) : 0
 
   const handleSpawn = async () => {
     if (!spawnFormData.task.trim() || !spawnFormData.label.trim()) return
@@ -771,11 +844,16 @@ export function TaskBoardPanel() {
   }
 
   return (
-    <div className="h-full flex flex-col">
+    <div ref={panelRef} className="h-full flex flex-col" style={panelWidth ? { width: panelWidth } : {}}>
       {/* Header */}
-      <div className="flex justify-between items-center p-4 border-b border-border flex-shrink-0">
-        <div className="flex items-center gap-3">
-          <h2 className="text-xl font-bold text-foreground">{t('title')}</h2>
+      <div className="flex justify-between items-center px-4 pt-4 pb-3 border-b border-border flex-shrink-0 gap-3 flex-wrap">
+        <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary/30 to-primary/10 border border-primary/20 flex items-center justify-center text-sm">
+              &#9881;
+            </div>
+            <h2 className="text-xl font-bold text-foreground tracking-tight">{t('title')}</h2>
+          </div>
           {gnapStatus?.enabled && (
             <button
               onClick={handleGnapSync}
@@ -794,11 +872,12 @@ export function TaskBoardPanel() {
               )}
             </button>
           )}
+          {/* Project filter */}
           <div className="relative">
             <select
               value={projectFilter}
               onChange={(e) => setProjectFilter(e.target.value)}
-              className="h-9 px-3 pr-8 bg-surface-1 text-foreground border border-border rounded-md text-sm appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/50"
+              className="h-8 px-3 pr-8 bg-surface-1 text-foreground border border-border rounded-md text-sm appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/50"
             >
               <option value="all">{t('allProjects')}</option>
               {projects.map((project) => (
@@ -812,17 +891,67 @@ export function TaskBoardPanel() {
             </svg>
           </div>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={() => setShowProjectManager(true)}>
+        <div className="flex items-center gap-2 flex-wrap">
+          {/* Search input */}
+          <div className="relative">
+            <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground pointer-events-none" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+              <circle cx="6.5" cy="6.5" r="4.5" /><path d="M10 10l3 3" />
+            </svg>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              placeholder="Search tasks..."
+              className="h-8 pl-8 pr-3 w-44 bg-surface-1 text-foreground border border-border rounded-md text-sm placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:w-56 transition-all"
+            />
+            {searchQuery && (
+              <button onClick={() => setSearchQuery('')} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground text-xs">x</button>
+            )}
+          </div>
+          {/* Sort */}
+          <div className="relative">
+            <select
+              value={sortBy}
+              onChange={e => setSortBy(e.target.value as typeof sortBy)}
+              className="h-8 pl-2 pr-7 bg-surface-1 text-foreground border border-border rounded-md text-sm appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/50"
+            >
+              <option value="default">Default order</option>
+              <option value="priority">By priority</option>
+              <option value="date_desc">Newest first</option>
+              <option value="date_asc">Oldest first</option>
+              <option value="title">By title</option>
+            </select>
+            <svg className="absolute right-1.5 top-1/2 -translate-y-1/2 w-3 h-3 text-muted-foreground pointer-events-none" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <path d="M4 6l4 4 4-4" />
+            </svg>
+          </div>
+          {/* View mode toggle */}
+          <div className="flex border border-border rounded-md overflow-hidden h-8">
+            <button
+              onClick={() => setViewMode('kanban')}
+              className={`px-2.5 flex items-center text-xs transition-colors ${viewMode === 'kanban' ? 'bg-primary text-primary-foreground' : 'bg-surface-1 text-muted-foreground hover:text-foreground hover:bg-surface-2'}`}
+              title="Kanban view"
+            >
+              <svg className="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="1" y="2" width="4" height="12" rx="1"/><rect x="6" y="2" width="4" height="8" rx="1"/><rect x="11" y="2" width="4" height="10" rx="1"/></svg>
+            </button>
+            <button
+              onClick={() => setViewMode('list')}
+              className={`px-2.5 flex items-center text-xs transition-colors border-l border-border ${viewMode === 'list' ? 'bg-primary text-primary-foreground' : 'bg-surface-1 text-muted-foreground hover:text-foreground hover:bg-surface-2'}`}
+              title="List view"
+            >
+              <svg className="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M2 4h12M2 8h12M2 12h12" strokeLinecap="round"/></svg>
+            </button>
+          </div>
+          <Button variant="outline" size="sm" onClick={() => setShowProjectManager(true)}>
             {t('projects')}
           </Button>
           {!isLocal && (
-            <Button variant="outline" onClick={() => setShowSpawnForm(!showSpawnForm)}>
+            <Button variant="outline" size="sm" onClick={() => setShowSpawnForm(!showSpawnForm)}>
               {showSpawnForm ? t('close') : t('spawnSubAgent')}
             </Button>
           )}
-          <Button onClick={() => setShowCreateModal(true)}>
-            {t('newTask')}
+          <Button size="sm" onClick={() => setShowCreateModal(true)}>
+            + {t('newTask')}
           </Button>
           <Button variant="ghost" size="icon-sm" onClick={fetchData} title={t('refresh')}>
             <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -830,8 +959,86 @@ export function TaskBoardPanel() {
               <path d="M13.5 2v3h-3M2.5 14v-3h3" />
             </svg>
           </Button>
+          <button
+            onClick={() => setShowStatsBar(v => !v)}
+            className="h-8 w-8 flex items-center justify-center rounded-md border border-border bg-surface-1 text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors text-xs"
+            title={showStatsBar ? 'Hide stats' : 'Show stats'}
+          >
+            {showStatsBar ? '▲' : '▼'}
+          </button>
         </div>
       </div>
+
+      {/* Mission Stats Bar */}
+      {showStatsBar && (
+        <div className="px-4 py-2.5 bg-surface-0 border-b border-border flex-shrink-0">
+          <div className="flex items-center gap-4 flex-wrap">
+            {/* Progress bar */}
+            <div className="flex-1 min-w-48">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-medium text-muted-foreground">Mission Progress</span>
+                <span className="text-xs font-bold text-foreground">{donePct}%</span>
+              </div>
+              <div className="h-2 bg-surface-2 rounded-full overflow-hidden">
+                <div
+                  className="h-full rounded-full transition-all duration-500"
+                  style={{
+                    width: `${donePct}%`,
+                    background: donePct >= 80 ? 'linear-gradient(90deg, #22c55e, #10b981)' :
+                               donePct >= 50 ? 'linear-gradient(90deg, #eab308, #f59e0b)' :
+                               'linear-gradient(90deg, #3b82f6, #6366f1)'
+                  }}
+                />
+              </div>
+            </div>
+            {/* Stat pills */}
+            <div className="flex items-center gap-2 flex-wrap">
+              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-1 border border-border text-xs">
+                <span className="text-muted-foreground">Total</span>
+                <span className="font-bold text-foreground">{missionStats.total}</span>
+              </div>
+              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-xs">
+                <span className="text-green-400">Done</span>
+                <span className="font-bold text-green-400">{missionStats.done}</span>
+              </div>
+              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-xs">
+                <span className="text-yellow-400">Active</span>
+                <span className="font-bold text-yellow-400">{missionStats.active}</span>
+              </div>
+              {missionStats.blocked > 0 && (
+                <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-xs">
+                  <span className="text-orange-400">Blocked</span>
+                  <span className="font-bold text-orange-400">{missionStats.blocked}</span>
+                </div>
+              )}
+              {missionStats.critical > 0 && (
+                <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-xs animate-pulse">
+                  <span className="text-red-400">Critical</span>
+                  <span className="font-bold text-red-400">{missionStats.critical}</span>
+                </div>
+              )}
+              {missionStats.overdue > 0 && (
+                <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-500/15 border border-red-500/30 text-xs">
+                  <span className="text-red-300">Overdue</span>
+                  <span className="font-bold text-red-300">{missionStats.overdue}</span>
+                </div>
+              )}
+              {pinnedTaskIds.length > 0 && (
+                <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-xs">
+                  <span className="text-amber-400">Pinned</span>
+                  <span className="font-bold text-amber-400">{pinnedTaskIds.length}</span>
+                </div>
+              )}
+            </div>
+            {/* Search result indicator */}
+            {searchQuery && (
+              <div className="text-xs text-muted-foreground ml-auto">
+                {Object.values(tasksByStatus).flat().length} results for &quot;{searchQuery}&quot;
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Spawn Form (collapsible) */}
       {showSpawnForm && (
@@ -926,30 +1133,138 @@ export function TaskBoardPanel() {
         </div>
       )}
 
+      {/* List View */}
+      {viewMode === 'list' && (
+        <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-2" role="region" aria-label="Task list">
+          {tasks.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 text-muted-foreground/30">
+              <svg className="w-12 h-12 mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 12h6M12 9v6" strokeLinecap="round"/></svg>
+              <span className="text-sm">No tasks found</span>
+            </div>
+          ) : (
+            sortTasks(filterTasks(tasks)).map(task => {
+              const isPinned = pinnedTaskIds.includes(task.id)
+              return (
+                <div
+                  key={task.id}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`${task.title}, ${task.priority} priority, ${task.status}`}
+                  onClick={() => { setSelectedTask(task); updateTaskUrl(task.id) }}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedTask(task); updateTaskUrl(task.id) } }}
+                  className={`group flex items-center gap-3 bg-card rounded-lg px-3 py-2.5 cursor-pointer border border-border/40 shadow-sm hover:shadow-md hover:border-border/80 transition-all duration-150 border-l-4 ${priorityColors[task.priority]}`}
+                >
+                  {/* Status dot */}
+                  <div className={`w-2 h-2 rounded-full shrink-0 ${
+                    task.status === 'done' ? 'bg-green-500' :
+                    task.status === 'in_progress' ? 'bg-yellow-500 animate-pulse' :
+                    task.status === 'review' || task.status === 'quality_review' ? 'bg-purple-500' :
+                    task.status === 'awaiting_owner' ? 'bg-orange-500' :
+                    task.status === 'assigned' ? 'bg-blue-500' :
+                    'bg-muted-foreground/40'
+                  }`} />
+                  {/* Title */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      {isPinned && <span className="text-amber-400 text-xs" title="Pinned">&#9733;</span>}
+                      <span className="text-sm font-medium text-foreground truncate">{task.title}</span>
+                      {task.ticket_ref && <span className="text-[10px] px-1.5 py-0.5 rounded bg-primary/15 text-primary font-mono shrink-0">{task.ticket_ref}</span>}
+                    </div>
+                    {task.description && <p className="text-xs text-muted-foreground truncate mt-0.5">{task.description.slice(0, 100)}</p>}
+                  </div>
+                  {/* Status pill */}
+                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium shrink-0 ${STATUS_COLUMN_KEYS.find(c => c.key === task.status)?.color || 'bg-secondary text-foreground'}`}>
+                    {task.status.replace('_', ' ')}
+                  </span>
+                  {/* Priority */}
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium shrink-0 ${
+                    task.priority === 'critical' ? 'bg-red-500/20 text-red-400' :
+                    task.priority === 'high' ? 'bg-orange-500/20 text-orange-400' :
+                    task.priority === 'medium' ? 'bg-yellow-500/20 text-yellow-400' :
+                    'bg-green-500/20 text-green-400'
+                  }`}>
+                    {task.priority}
+                  </span>
+                  {/* Assignee */}
+                  {task.assigned_to && <AgentAvatar name={task.assigned_to} size="xs" />}
+                  {/* Time */}
+                  <span className="text-[10px] text-muted-foreground/50 shrink-0">{formatTaskTimestamp(task.created_at)}</span>
+                  {/* Pin button */}
+                  <button
+                    onClick={e => { e.stopPropagation(); togglePin(task.id) }}
+                    className={`opacity-0 group-hover:opacity-100 w-6 h-6 flex items-center justify-center rounded transition-all ${isPinned ? 'text-amber-400 opacity-100' : 'text-muted-foreground hover:text-amber-400'}`}
+                    title={isPinned ? 'Unpin' : 'Pin to top'}
+                  >
+                    {isPinned ? '★' : '☆'}
+                  </button>
+                  {task.status !== 'done' && <DunkItButton taskId={task.id} onDunked={() => fetchData()} />}
+                </div>
+              )
+            })
+          )}
+        </div>
+      )}
+
       {/* Kanban Board */}
-      <div className="flex-1 min-h-0 flex gap-4 p-4 overflow-x-auto" role="region" aria-label={t('taskBoard')}>
-        {statusColumns.map(column => (
+      {viewMode === 'kanban' && (
+      <div className="flex-1 min-h-0 flex gap-3 p-4 overflow-x-auto" role="region" aria-label={t('taskBoard')}>
+        {statusColumns.map(column => {
+          const isCollapsed = collapsedColumns.has(column.key)
+          const colTasks = tasksByStatus[column.key] || []
+          return (
           <div
             key={column.key}
             role="region"
-            aria-label={t('columnAriaLabel', { title: column.title, count: tasksByStatus[column.key]?.length || 0 })}
-            className="flex-1 min-w-80 min-h-0 bg-surface-0 border border-border/60 rounded-xl flex flex-col transition-colors duration-200 [&.drag-over]:border-primary/40 [&.drag-over]:bg-primary/[0.02]"
-            onDragEnter={(e) => handleDragEnter(e, column.key)}
+            aria-label={t('columnAriaLabel', { title: column.title, count: colTasks.length })}
+            className={`min-h-0 bg-surface-0 border border-border/60 rounded-xl flex flex-col transition-all duration-300 [&.drag-over]:border-primary/40 [&.drag-over]:bg-primary/[0.02] ${isCollapsed ? 'w-14 flex-none' : 'flex-1 min-w-72'}`}
+            onDragEnter={(e) => !isCollapsed && handleDragEnter(e, column.key)}
             onDragLeave={handleDragLeave}
             onDragOver={handleDragOver}
-            onDrop={(e) => handleDrop(e, column.key)}
+            onDrop={(e) => !isCollapsed && handleDrop(e, column.key)}
           >
             {/* Column Header */}
-            <div className={`${column.color} px-4 py-3 rounded-t-xl flex justify-between items-center border-b border-border/30`}>
-              <h3 className="font-semibold text-sm tracking-wide">{column.title}</h3>
-              <span className="text-xs font-mono bg-white/10 px-2 py-0.5 rounded-md min-w-[1.75rem] text-center">
-                {tasksByStatus[column.key]?.length || 0}
-              </span>
+            <div className={`${column.color} px-3 py-2.5 ${isCollapsed ? 'rounded-xl' : 'rounded-t-xl'} flex ${isCollapsed ? 'flex-col items-center gap-2' : 'justify-between items-center'} border-b border-border/30`}>
+              {isCollapsed ? (
+                <>
+                  <button
+                    onClick={() => toggleColumn(column.key)}
+                    className="w-full flex items-center justify-center py-1 hover:opacity-80 transition-opacity"
+                    title={`Expand ${column.title}`}
+                  >
+                    <svg className="w-3 h-3" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 4l4 4-4 4"/></svg>
+                  </button>
+                  <span className="text-xs font-mono bg-white/10 px-1.5 py-0.5 rounded">{colTasks.length}</span>
+                  <div className="flex-1 flex items-center justify-center" style={{ writingMode: 'vertical-rl', textOrientation: 'mixed', transform: 'rotate(180deg)' }}>
+                    <span className="text-xs font-semibold tracking-wide">{column.title}</span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => toggleColumn(column.key)}
+                      className="hover:opacity-70 transition-opacity"
+                      title="Collapse column"
+                    >
+                      <svg className="w-3 h-3" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10 4L6 8l4 4"/></svg>
+                    </button>
+                    <h3 className="font-semibold text-sm tracking-wide">{column.title}</h3>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs font-mono bg-white/10 px-2 py-0.5 rounded-md min-w-[1.75rem] text-center">
+                      {colTasks.length}
+                    </span>
+                  </div>
+                </>
+              )}
             </div>
 
             {/* Column Body */}
+            {!isCollapsed && (
             <div className="flex-1 p-2.5 space-y-2.5 min-h-32 h-full overflow-y-auto">
-              {tasksByStatus[column.key]?.map(task => (
+              {colTasks.map(task => {
+                const isPinned = pinnedTaskIds.includes(task.id)
+                return (
                 <div
                   key={task.id}
                   draggable
@@ -968,7 +1283,9 @@ export function TaskBoardPanel() {
                       updateTaskUrl(task.id)
                     }
                   }}
-                  className={`group bg-card rounded-lg p-3 cursor-pointer border border-border/40 shadow-sm hover:shadow-md hover:shadow-black/10 hover:border-border/70 transition-all duration-200 ease-out border-l-4 ${priorityColors[task.priority]} ${
+                  className={`group bg-card rounded-lg p-3 cursor-pointer border shadow-sm hover:shadow-md hover:shadow-black/10 transition-all duration-200 ease-out border-l-4 ${priorityColors[task.priority]} ${
+                    isPinned ? 'border-amber-500/30 bg-amber-500/[0.03]' : 'border-border/40 hover:border-border/70'
+                  } ${
                     draggedTask?.id === task.id ? 'opacity-40 scale-[0.97] rotate-1' : ''
                   } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background`}
                 >
@@ -983,9 +1300,18 @@ export function TaskBoardPanel() {
                     <div className="flex-1 min-w-0">
                       <div className="flex justify-between items-start gap-2">
                         <h4 className="text-foreground font-medium text-sm leading-tight line-clamp-2">
+                          {isPinned && <span className="text-amber-400 mr-1 text-xs">&#9733;</span>}
                           {task.title}
                         </h4>
                         <div className="flex items-center gap-1.5 shrink-0">
+                          {/* Pin button */}
+                          <button
+                            onClick={e => { e.stopPropagation(); togglePin(task.id) }}
+                            className={`w-5 h-5 flex items-center justify-center rounded opacity-0 group-hover:opacity-100 transition-all text-xs ${isPinned ? 'text-amber-400 !opacity-100' : 'text-muted-foreground hover:text-amber-400'}`}
+                            title={isPinned ? 'Unpin' : 'Pin to top'}
+                          >
+                            {isPinned ? '★' : '☆'}
+                          </button>
                           {task.metadata?.recurrence?.enabled && (
                             <span className="text-[10px] px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-400 font-mono" title={task.metadata.recurrence.natural_text || task.metadata.recurrence.cron_expr}>
                               {t('recurring')}
@@ -1116,10 +1442,11 @@ export function TaskBoardPanel() {
                     </div>
                   )}
                 </div>
-              ))}
+              )
+              })}
 
               {/* Empty State */}
-              {tasksByStatus[column.key]?.length === 0 && (
+              {colTasks.length === 0 && (
                 <div className="flex flex-col items-center justify-center py-10 text-muted-foreground/30">
                   <svg className="w-8 h-8 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                     <rect x="3" y="3" width="18" height="18" rx="2" />
@@ -1129,9 +1456,12 @@ export function TaskBoardPanel() {
                 </div>
               )}
             </div>
+            )}
           </div>
-        ))}
+          )
+        })}
       </div>
+      )}
 
       {/* Claude Code Tasks */}
       <ClaudeCodeTasksSection />
