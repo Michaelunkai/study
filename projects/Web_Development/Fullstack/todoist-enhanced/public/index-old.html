@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow Pro - Your Ultimate Productivity Hub</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="dark-mode.css">
+    <link rel="stylesheet" href="advanced-styles.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#db4c3f">
+    <meta name="description" content="A powerful, beautiful task manager that rivals Todoist with enhanced features">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <button class="sidebar-toggle" id="sidebarToggle" title="Toggle Sidebar">☰</button>
+                <h1 class="logo">⚡ TaskFlow Pro</h1>
+            </div>
+            
+            <button class="btn-add-task" id="quickAddBtn">
+                <span class="icon">+</span> Quick Add
+                <kbd class="shortcut-hint">Ctrl+K</kbd>
+            </button>
+
+            <!-- Navigation -->
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-item active" data-view="inbox">
+                        <span class="icon">📥</span>
+                        <span class="label">Inbox</span>
+                        <span class="count" id="inboxCount">0</span>
+                    </div>
+                    <div class="nav-item" data-view="today">
+                        <span class="icon">📅</span>
+                        <span class="label">Today</span>
+                        <span class="count" id="todayCount">0</span>
+                    </div>
+                    <div class="nav-item" data-view="upcoming">
+                        <span class="icon">🗓️</span>
+                        <span class="label">Upcoming</span>
+                        <span class="count" id="upcomingCount">0</span>
+                    </div>
+                    <div class="nav-item" data-view="completed">
+                        <span class="icon">✅</span>
+                        <span class="label">Completed</span>
+                        <span class="count" id="completedCount">0</span>
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <div class="section-header collapsible" onclick="toggleSection('labelsSection')">
+                        <span>🏷️ Labels</span>
+                        <button class="btn-icon" id="addLabelBtn" onclick="event.stopPropagation(); showAddLabelModal()">+</button>
+                    </div>
+                    <div id="labelsSection" class="section-content">
+                        <div id="labelsList"></div>
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <div class="section-header collapsible" onclick="toggleSection('projectsSection')">
+                        <span>📁 My Projects</span>
+                        <button class="btn-icon" id="addProjectBtn" onclick="event.stopPropagation(); openModal('projectModal')">+</button>
+                    </div>
+                    <div id="projectsSection" class="section-content">
+                        <div id="projectsList"></div>
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-item" data-view="stats">
+                        <span class="icon">📊</span>
+                        <span class="label">Statistics</span>
+                    </div>
+                    <div class="nav-item" data-view="activity">
+                        <span class="icon">⏱️</span>
+                        <span class="label">Activity Log</span>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- User Stats -->
+            <div class="sidebar-footer">
+                <div class="karma-display">
+                    <span class="karma-label">⭐ Karma:</span>
+                    <span class="karma-value" id="karmaValue">0</span>
+                </div>
+                <div class="streak-display">
+                    <span class="streak-label">🔥 Streak:</span>
+                    <span class="streak-value" id="streakValue">0 days</span>
+                </div>
+                <div class="user-profile" onclick="openModal('settingsModal')">
+                    <div class="avatar">👤</div>
+                    <div class="user-info">
+                        <span class="user-name">Pro User</span>
+                        <span class="user-plan">Free Forever</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="content-header">
+                <div class="header-left">
+                    <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+                    <h2 id="viewTitle">Inbox</h2>
+                    <span class="view-subtitle" id="viewSubtitle"></span>
+                </div>
+                <div class="header-right">
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="Search tasks... (Ctrl+F)" />
+                        <span class="search-icon">🔍</span>
+                    </div>
+                    <div class="view-options">
+                        <button class="btn-icon active" id="listViewBtn" title="List View">☰</button>
+                        <button class="btn-icon" id="boardViewBtn" title="Board View">▦</button>
+                        <button class="btn-icon" id="calendarViewBtn" title="Calendar View">📆</button>
+                    </div>
+                    <button class="btn-icon" id="sortBtn" title="Sort Tasks" onclick="showSortMenu()">↕️</button>
+                    <button class="btn-icon" id="filterBtn" title="Filter Tasks" onclick="showFilterMenu()">🔽</button>
+                    <button class="btn-icon" id="helpBtn" title="Help" onclick="showHelpPanel()">❓</button>
+                    <button class="btn-icon" id="settingsBtn" title="Settings" onclick="openModal('settingsModal')">⚙️</button>
+                </div>
+            </header>
+
+            <!-- Task List -->
+            <div class="tasks-container" id="tasksContainer">
+                <div class="add-task-form" id="addTaskForm">
+                    <div class="task-input-wrapper">
+                        <input 
+                            type="text" 
+                            id="taskInput" 
+                            placeholder="Type a task... (@tomorrow, p1-p4, #label)"
+                            class="task-input"
+                            autocomplete="off"
+                        />
+                        <button class="expand-btn" id="expandTaskBtn" title="More options">⬇️</button>
+                    </div>
+                    <div class="task-details-row" id="taskDetailsRow" style="display: none;">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>📅 Due Date</label>
+                                <input type="date" id="dueDateInput" class="input-small" />
+                            </div>
+                            <div class="form-group">
+                                <label>⚡ Priority</label>
+                                <select id="priorityInput" class="input-small">
+                                    <option value="1">P1 - Low</option>
+                                    <option value="2">P2 - Medium</option>
+                                    <option value="3">P3 - High</option>
+                                    <option value="4">P4 - Urgent</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>📁 Project</label>
+                                <select id="projectSelect" class="input-small">
+                                    <option value="">Inbox</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label>📝 Description</label>
+                                <textarea id="taskDescription" placeholder="Add details..." rows="2"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>🔄 Recurring</label>
+                                <select id="recurringSelect" class="input-small">
+                                    <option value="">None</option>
+                                    <option value="daily">Daily</option>
+                                    <option value="weekly">Weekly</option>
+                                    <option value="monthly">Monthly</option>
+                                    <option value="yearly">Yearly</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>🏷️ Labels</label>
+                                <select id="labelInput" class="input-small" multiple>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>⏰ Reminder</label>
+                                <input type="datetime-local" id="reminderInput" class="input-small" />
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn-cancel" id="cancelTaskBtn">Cancel</button>
+                            <button class="btn-add" id="addTaskBtn">Add Task</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tasks-list" id="tasksList">
+                    <!-- Tasks will be rendered here -->
+                </div>
+            </div>
+
+            <!-- Completed View -->
+            <div class="completed-view" id="completedView" style="display: none;">
+                <div class="completed-header">
+                    <h3>✅ Completed Tasks</h3>
+                    <button class="btn-secondary" onclick="clearCompleted()">Clear All</button>
+                </div>
+                <div class="completed-list" id="completedList"></div>
+            </div>
+
+            <!-- Stats View -->
+            <div class="stats-view" id="statsView" style="display: none;">
+                <div class="stats-grid">
+                    <div class="stat-card gradient-purple">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-value" id="totalCompleted">0</div>
+                        <div class="stat-label">Tasks Completed</div>
+                    </div>
+                    <div class="stat-card gradient-orange">
+                        <div class="stat-icon">🔥</div>
+                        <div class="stat-value" id="currentStreak">0</div>
+                        <div class="stat-label">Current Streak</div>
+                    </div>
+                    <div class="stat-card gradient-blue">
+                        <div class="stat-icon">🏆</div>
+                        <div class="stat-value" id="longestStreak">0</div>
+                        <div class="stat-label">Longest Streak</div>
+                    </div>
+                    <div class="stat-card gradient-green">
+                        <div class="stat-icon">⭐</div>
+                        <div class="stat-value" id="totalKarma">0</div>
+                        <div class="stat-label">Karma Points</div>
+                    </div>
+                </div>
+                
+                <div class="stats-charts">
+                    <div class="chart-card">
+                        <h3>📈 Weekly Productivity</h3>
+                        <div id="weeklyChart" class="weekly-chart"></div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>🎯 Completion Rate</h3>
+                        <div id="completionChart" class="completion-ring"></div>
+                    </div>
+                </div>
+                
+                <div class="productivity-insights" id="productivityInsights"></div>
+            </div>
+
+            <!-- Activity Log View -->
+            <div class="activity-view" id="activityView" style="display: none;">
+                <div class="activity-header">
+                    <h3>⏱️ Activity Log</h3>
+                    <div class="activity-filters">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="task_completed">Completed</button>
+                        <button class="filter-btn" data-filter="task_created">Created</button>
+                    </div>
+                </div>
+                <div class="activity-list" id="activityList">
+                    <!-- Activity items will be rendered here -->
+                </div>
+            </div>
+
+            <!-- Calendar View -->
+            <div class="calendar-view" id="calendarView" style="display: none;">
+                <div class="calendar-header">
+                    <button class="btn-icon" onclick="changeMonth(-1)">◀</button>
+                    <h3 id="calendarMonth"></h3>
+                    <button class="btn-icon" onclick="changeMonth(1)">▶</button>
+                </div>
+                <div class="calendar-grid" id="calendarGrid"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal" id="projectModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📁 New Project</h3>
+                <button class="btn-close" onclick="closeModal('projectModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Project Name</label>
+                    <input type="text" id="projectNameInput" placeholder="Enter project name" class="input-full" />
+                </div>
+                <div class="form-group">
+                    <label>Color</label>
+                    <div class="color-picker-grid" id="colorPicker">
+                        <div class="color-option selected" data-color="#db4c3f" style="background:#db4c3f"></div>
+                        <div class="color-option" data-color="#ff9933" style="background:#ff9933"></div>
+                        <div class="color-option" data-color="#fad000" style="background:#fad000"></div>
+                        <div class="color-option" data-color="#7ecc49" style="background:#7ecc49"></div>
+                        <div class="color-option" data-color="#299438" style="background:#299438"></div>
+                        <div class="color-option" data-color="#6accbc" style="background:#6accbc"></div>
+                        <div class="color-option" data-color="#158fad" style="background:#158fad"></div>
+                        <div class="color-option" data-color="#14aaf5" style="background:#14aaf5"></div>
+                        <div class="color-option" data-color="#96c3eb" style="background:#96c3eb"></div>
+                        <div class="color-option" data-color="#4073ff" style="background:#4073ff"></div>
+                        <div class="color-option" data-color="#884dff" style="background:#884dff"></div>
+                        <div class="color-option" data-color="#af38eb" style="background:#af38eb"></div>
+                        <div class="color-option" data-color="#eb96eb" style="background:#eb96eb"></div>
+                        <div class="color-option" data-color="#e05194" style="background:#e05194"></div>
+                        <div class="color-option" data-color="#ff8d85" style="background:#ff8d85"></div>
+                        <div class="color-option" data-color="#808080" style="background:#808080"></div>
+                    </div>
+                    <input type="hidden" id="projectColorInput" value="#db4c3f" />
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="projectFavorite" />
+                        ⭐ Add to favorites
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('projectModal')">Cancel</button>
+                <button class="btn-primary" id="saveProjectBtn">Create Project</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="labelModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🏷️ New Label</h3>
+                <button class="btn-close" onclick="closeModal('labelModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Label Name</label>
+                    <input type="text" id="labelNameInput" placeholder="Enter label name" class="input-full" />
+                </div>
+                <div class="form-group">
+                    <label>Color</label>
+                    <div class="color-picker-grid" id="labelColorPicker">
+                        <div class="color-option selected" data-color="#db4c3f" style="background:#db4c3f"></div>
+                        <div class="color-option" data-color="#ff9933" style="background:#ff9933"></div>
+                        <div class="color-option" data-color="#fad000" style="background:#fad000"></div>
+                        <div class="color-option" data-color="#7ecc49" style="background:#7ecc49"></div>
+                        <div class="color-option" data-color="#158fad" style="background:#158fad"></div>
+                        <div class="color-option" data-color="#14aaf5" style="background:#14aaf5"></div>
+                        <div class="color-option" data-color="#884dff" style="background:#884dff"></div>
+                        <div class="color-option" data-color="#af38eb" style="background:#af38eb"></div>
+                    </div>
+                    <input type="hidden" id="labelColorInput" value="#db4c3f" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('labelModal')">Cancel</button>
+                <button class="btn-primary" id="saveLabelBtn">Create Label</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="taskDetailModal" style="display: none;">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>📝 Task Details</h3>
+                <button class="btn-close" onclick="closeModal('taskDetailModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="taskDetailContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="settingsModal" style="display: none;">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>⚙️ Settings</h3>
+                <button class="btn-close" onclick="closeModal('settingsModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-tabs">
+                    <button class="settings-tab active" data-tab="general">General</button>
+                    <button class="settings-tab" data-tab="appearance">Appearance</button>
+                    <button class="settings-tab" data-tab="notifications">Notifications</button>
+                    <button class="settings-tab" data-tab="shortcuts">Shortcuts</button>
+                    <button class="settings-tab" data-tab="data">Data</button>
+                </div>
+                
+                <div class="settings-content" id="settingsContent">
+                    <!-- General Tab -->
+                    <div class="settings-panel active" id="generalPanel">
+                        <div class="setting-group">
+                            <h4>Default View</h4>
+                            <select id="defaultViewSetting" class="input-full">
+                                <option value="inbox">Inbox</option>
+                                <option value="today">Today</option>
+                                <option value="upcoming">Upcoming</option>
+                            </select>
+                        </div>
+                        <div class="setting-group">
+                            <h4>Start of Week</h4>
+                            <select id="startOfWeekSetting" class="input-full">
+                                <option value="0">Sunday</option>
+                                <option value="1">Monday</option>
+                            </select>
+                        </div>
+                        <div class="setting-group">
+                            <h4>Date Format</h4>
+                            <select id="dateFormatSetting" class="input-full">
+                                <option value="mdy">MM/DD/YYYY</option>
+                                <option value="dmy">DD/MM/YYYY</option>
+                                <option value="ymd">YYYY-MM-DD</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Appearance Tab -->
+                    <div class="settings-panel" id="appearancePanel">
+                        <div class="setting-group">
+                            <h4>Theme</h4>
+                            <div class="theme-options">
+                                <label class="theme-option">
+                                    <input type="radio" name="theme" value="light" checked />
+                                    <span class="theme-preview light">☀️ Light</span>
+                                </label>
+                                <label class="theme-option">
+                                    <input type="radio" name="theme" value="dark" />
+                                    <span class="theme-preview dark">🌙 Dark</span>
+                                </label>
+                                <label class="theme-option">
+                                    <input type="radio" name="theme" value="auto" />
+                                    <span class="theme-preview auto">🔄 Auto</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="setting-group">
+                            <h4>Accent Color</h4>
+                            <div class="color-picker-grid" id="accentColorPicker">
+                                <div class="color-option selected" data-color="#db4c3f" style="background:#db4c3f"></div>
+                                <div class="color-option" data-color="#246fe0" style="background:#246fe0"></div>
+                                <div class="color-option" data-color="#058527" style="background:#058527"></div>
+                                <div class="color-option" data-color="#884dff" style="background:#884dff"></div>
+                            </div>
+                        </div>
+                        <div class="setting-group">
+                            <label>
+                                <input type="checkbox" id="celebrationsSetting" checked />
+                                🎉 Show celebrations (confetti on completion)
+                            </label>
+                        </div>
+                        <div class="setting-group">
+                            <label>
+                                <input type="checkbox" id="soundsSetting" checked />
+                                🔊 Sound effects
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Notifications Tab -->
+                    <div class="settings-panel" id="notificationsPanel">
+                        <div class="setting-group">
+                            <label>
+                                <input type="checkbox" id="notifyRemindersSetting" checked />
+                                ⏰ Reminder notifications
+                            </label>
+                        </div>
+                        <div class="setting-group">
+                            <label>
+                                <input type="checkbox" id="notifyDueSetting" checked />
+                                📅 Due date notifications
+                            </label>
+                        </div>
+                        <div class="setting-group">
+                            <h4>Notification Sound</h4>
+                            <select id="notifySoundSetting" class="input-full">
+                                <option value="default">Default</option>
+                                <option value="chime">Chime</option>
+                                <option value="bell">Bell</option>
+                                <option value="none">None</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Shortcuts Tab -->
+                    <div class="settings-panel" id="shortcutsPanel">
+                        <div class="shortcuts-list">
+                            <div class="shortcut-row"><span>Quick add task</span><kbd>Ctrl+K</kbd></div>
+                            <div class="shortcut-row"><span>Search</span><kbd>Ctrl+F</kbd></div>
+                            <div class="shortcut-row"><span>Toggle dark mode</span><kbd>Ctrl+D</kbd></div>
+                            <div class="shortcut-row"><span>Go to Inbox</span><kbd>Alt+1</kbd></div>
+                            <div class="shortcut-row"><span>Go to Today</span><kbd>Alt+2</kbd></div>
+                            <div class="shortcut-row"><span>Go to Upcoming</span><kbd>Alt+3</kbd></div>
+                            <div class="shortcut-row"><span>Go to Stats</span><kbd>Alt+4</kbd></div>
+                            <div class="shortcut-row"><span>Select all tasks</span><kbd>Ctrl+A</kbd></div>
+                            <div class="shortcut-row"><span>Delete selected</span><kbd>Delete</kbd></div>
+                            <div class="shortcut-row"><span>Show shortcuts</span><kbd>?</kbd></div>
+                            <div class="shortcut-row"><span>Close modal</span><kbd>Esc</kbd></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Data Tab -->
+                    <div class="settings-panel" id="dataPanel">
+                        <div class="setting-group">
+                            <h4>Export Data</h4>
+                            <p class="setting-desc">Download all your tasks, projects, and settings.</p>
+                            <div class="button-group">
+                                <button class="btn-primary" onclick="exportData('json')">📄 Export JSON</button>
+                                <button class="btn-secondary" onclick="exportData('csv')">📊 Export CSV</button>
+                            </div>
+                        </div>
+                        <div class="setting-group">
+                            <h4>Import Data</h4>
+                            <p class="setting-desc">Import tasks from a JSON backup.</p>
+                            <input type="file" id="importFileInput" accept=".json" class="input-full" />
+                            <button class="btn-secondary" onclick="importData()" style="margin-top: 10px;">📥 Import</button>
+                        </div>
+                        <div class="setting-group danger">
+                            <h4>⚠️ Danger Zone</h4>
+                            <p class="setting-desc">This action cannot be undone.</p>
+                            <button class="btn-danger" onclick="clearAllData()">🗑️ Clear All Data</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" onclick="saveSettings(); closeModal('settingsModal')">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Keyboard Shortcuts Panel (toggle with ?) -->
+    <div class="shortcuts-panel floating" id="shortcutsPanelFloating" style="display: none;">
+        <h3>⌨️ Keyboard Shortcuts</h3>
+        <div class="shortcut-row"><span>Quick add task</span><span class="shortcut-key">Ctrl+K</span></div>
+        <div class="shortcut-row"><span>Search</span><span class="shortcut-key">Ctrl+F</span></div>
+        <div class="shortcut-row"><span>Toggle dark mode</span><span class="shortcut-key">Ctrl+D</span></div>
+        <div class="shortcut-row"><span>Go to Inbox</span><span class="shortcut-key">Alt+1</span></div>
+        <div class="shortcut-row"><span>Go to Today</span><span class="shortcut-key">Alt+2</span></div>
+        <div class="shortcut-row"><span>Go to Upcoming</span><span class="shortcut-key">Alt+3</span></div>
+        <div class="shortcut-row"><span>Go to Stats</span><span class="shortcut-key">Alt+4</span></div>
+        <div class="shortcut-row"><span>Show shortcuts</span><span class="shortcut-key">?</span></div>
+        <button onclick="document.getElementById('shortcutsPanelFloating').style.display='none'" style="margin-top:15px;width:100%;" class="btn-secondary">Close (Esc)</button>
+    </div>
+
+    <!-- Sort Menu -->
+    <div class="dropdown-menu" id="sortMenu" style="display: none;">
+        <div class="dropdown-item" onclick="sortTasks('priority')">⚡ By Priority</div>
+        <div class="dropdown-item" onclick="sortTasks('dueDate')">📅 By Due Date</div>
+        <div class="dropdown-item" onclick="sortTasks('name')">🔤 By Name</div>
+        <div class="dropdown-item" onclick="sortTasks('created')">🕐 By Created Date</div>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item" onclick="sortTasks('asc')">⬆️ Ascending</div>
+        <div class="dropdown-item" onclick="sortTasks('desc')">⬇️ Descending</div>
+    </div>
+
+    <!-- Filter Menu -->
+    <div class="dropdown-menu" id="filterMenu" style="display: none;">
+        <div class="dropdown-item" onclick="filterTasks('all')">📋 All Tasks</div>
+        <div class="dropdown-item" onclick="filterTasks('p4')">🔴 Priority 4 (Urgent)</div>
+        <div class="dropdown-item" onclick="filterTasks('p3')">🟠 Priority 3 (High)</div>
+        <div class="dropdown-item" onclick="filterTasks('p2')">🔵 Priority 2 (Medium)</div>
+        <div class="dropdown-item" onclick="filterTasks('p1')">⚪ Priority 1 (Low)</div>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item" onclick="filterTasks('overdue')">⏰ Overdue</div>
+        <div class="dropdown-item" onclick="filterTasks('noDate')">❓ No Due Date</div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="app.js"></script>
+    <script src="data-protection.js"></script>
+    <script src="natural-dates.js"></script>
+    <script src="subtasks.js"></script>
+    <script src="enhanced-features.js"></script>
+    <script src="advanced-features.js"></script>
+    <script src="onboarding.js"></script>
+    <script src="todoist-importer.js"></script>
+    
+    <script>
+        // Show shortcuts panel with ?
+        document.addEventListener('keydown', (e) => {
+            if (e.key === '?' && !e.target.matches('input, textarea')) {
+                const panel = document.getElementById('shortcutsPanelFloating');
+                panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+            }
+        });
+        
+        // Make task items clickable to show details
+        document.addEventListener('click', (e) => {
+            const taskItem = e.target.closest('.task-item');
+            if (taskItem && !e.target.matches('.task-checkbox, .task-action-btn, button')) {
+                const taskId = taskItem.dataset.taskId;
+                if (taskId && typeof showTaskDetail === 'function') {
+                    showTaskDetail(taskId);
+                }
+            }
+        });
+
+        // Color picker functionality
+        document.querySelectorAll('.color-picker-grid').forEach(grid => {
+            grid.addEventListener('click', (e) => {
+                const option = e.target.closest('.color-option');
+                if (option) {
+                    grid.querySelectorAll('.color-option').forEach(o => o.classList.remove('selected'));
+                    option.classList.add('selected');
+                    const input = grid.nextElementSibling;
+                    if (input && input.type === 'hidden') {
+                        input.value = option.dataset.color;
+                    }
+                }
+            });
+        });
+
+        // Settings tabs
+        document.querySelectorAll('.settings-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.settings-panel').forEach(p => p.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab + 'Panel').classList.add('active');
+            });
+        });
+
+        // Toggle section collapse
+        function toggleSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            section.classList.toggle('collapsed');
+        }
+
+        // Show sort/filter menus
+        function showSortMenu() {
+            const btn = document.getElementById('sortBtn');
+            const menu = document.getElementById('sortMenu');
+            const rect = btn.getBoundingClientRect();
+            menu.style.top = rect.bottom + 'px';
+            menu.style.right = (window.innerWidth - rect.right) + 'px';
+            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function showFilterMenu() {
+            const btn = document.getElementById('filterBtn');
+            const menu = document.getElementById('filterMenu');
+            const rect = btn.getBoundingClientRect();
+            menu.style.top = rect.bottom + 'px';
+            menu.style.right = (window.innerWidth - rect.right) + 'px';
+            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Close menus when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#sortBtn') && !e.target.closest('#sortMenu')) {
+                document.getElementById('sortMenu').style.display = 'none';
+            }
+            if (!e.target.closest('#filterBtn') && !e.target.closest('#filterMenu')) {
+                document.getElementById('filterMenu').style.display = 'none';
+            }
+        });
+
+        // Add label modal
+        function showAddLabelModal() {
+            openModal('labelModal');
+        }
+
+        // Toggle sidebar
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+        }
+
+        // Expand task form
+        document.getElementById('expandTaskBtn')?.addEventListener('click', () => {
+            const row = document.getElementById('taskDetailsRow');
+            row.style.display = row.style.display === 'none' ? 'block' : 'none';
+        });
+
+        // Sorting and filtering
+        let currentSort = 'priority';
+        let currentSortOrder = 'desc';
+        let currentFilter = 'all';
+
+        function sortTasks(type) {
+            if (type === 'asc' || type === 'desc') {
+                currentSortOrder = type;
+            } else {
+                currentSort = type;
+            }
+            renderView();
+            document.getElementById('sortMenu').style.display = 'none';
+        }
+
+        function filterTasks(type) {
+            currentFilter = type;
+            renderView();
+            document.getElementById('filterMenu').style.display = 'none';
+        }
+
+        // Activity filter buttons
+        document.querySelectorAll('.activity-filters .filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.activity-filters .filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const filter = btn.dataset.filter;
+                // Filter activity items
+                document.querySelectorAll('.activity-item').forEach(item => {
+                    if (filter === 'all' || item.dataset.action === filter) {
+                        item.style.display = 'flex';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Save settings
+        function saveSettings() {
+            const settings = {
+                defaultView: document.getElementById('defaultViewSetting').value,
+                startOfWeek: document.getElementById('startOfWeekSetting').value,
+                dateFormat: document.getElementById('dateFormatSetting').value,
+                celebrations: document.getElementById('celebrationsSetting').checked,
+                sounds: document.getElementById('soundsSetting').checked,
+            };
+            localStorage.setItem('todoistSettings', JSON.stringify(settings));
+            showToast('Settings saved! ✓', 'success');
+        }
+
+        // Clear all data
+        function clearAllData() {
+            if (confirm('Are you sure you want to delete ALL data? This cannot be undone!')) {
+                if (confirm('This will permanently delete all tasks, projects, and settings. Continue?')) {
+                    fetch('/api/tasks', { method: 'DELETE' });
+                    fetch('/api/projects', { method: 'DELETE' });
+                    localStorage.clear();
+                    location.reload();
+                }
+            }
+        }
+
+        // Calendar functionality
+        let currentMonth = new Date();
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendarGrid');
+            const monthDisplay = document.getElementById('calendarMonth');
+            
+            monthDisplay.textContent = currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+            
+            const firstDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+            const lastDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
+            
+            let html = '<div class="calendar-weekdays">';
+            ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(day => {
+                html += `<div class="calendar-weekday">${day}</div>`;
+            });
+            html += '</div><div class="calendar-days">';
+            
+            // Empty cells for days before month starts
+            for (let i = 0; i < firstDay.getDay(); i++) {
+                html += '<div class="calendar-day empty"></div>';
+            }
+            
+            // Days of the month
+            for (let day = 1; day <= lastDay.getDate(); day++) {
+                const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
+                const dateStr = date.toISOString().split('T')[0];
+                const dayTasks = tasks.filter(t => t.dueDate && t.dueDate.startsWith(dateStr));
+                const isToday = date.toDateString() === new Date().toDateString();
+                
+                html += `<div class="calendar-day ${isToday ? 'today' : ''}" onclick="showDayTasks('${dateStr}')">
+                    <span class="day-number">${day}</span>
+                    ${dayTasks.length > 0 ? `<div class="day-tasks-count">${dayTasks.length} task${dayTasks.length > 1 ? 's' : ''}</div>` : ''}
+                </div>`;
+            }
+            
+            html += '</div>';
+            grid.innerHTML = html;
+        }
+
+        function changeMonth(delta) {
+            currentMonth.setMonth(currentMonth.getMonth() + delta);
+            renderCalendar();
+        }
+
+        function showDayTasks(dateStr) {
+            const dayTasks = tasks.filter(t => t.dueDate && t.dueDate.startsWith(dateStr));
+            if (dayTasks.length > 0) {
+                showToast(`${dayTasks.length} task(s) on ${formatDate(dateStr)}`, 'info');
+            }
+        }
+
+        // Calendar view button
+        document.getElementById('calendarViewBtn')?.addEventListener('click', () => {
+            document.querySelectorAll('.view-options .btn-icon').forEach(b => b.classList.remove('active'));
+            document.getElementById('calendarViewBtn').classList.add('active');
+            
+            document.getElementById('tasksContainer').style.display = 'none';
+            document.getElementById('statsView').style.display = 'none';
+            document.getElementById('activityView').style.display = 'none';
+            document.getElementById('calendarView').style.display = 'block';
+            
+            renderCalendar();
+        });
+
+        // Register service worker for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(() => {});
+            });
+        }
+    </script>
+</body>
+</html>

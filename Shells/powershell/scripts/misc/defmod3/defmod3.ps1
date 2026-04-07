@@ -1,0 +1,2 @@
+﻿# defmod3 - Set default model to OPUS (most capable)
+. 'F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\Claude\ModelMgmt\Set-ClaudeResource.ps1' -Model 'claude-opus-4-6' -Thinking $true -ThinkingBudget 30000 -MaxOutputTokens 32768 -BashTimeout 300000 -BashMaxTimeout 600000 -McpTimeout 60000 -CompactThreshold 0.2 -CompactBudget 5000 -Label 'Default: Opus (max capability)' -Color Magenta

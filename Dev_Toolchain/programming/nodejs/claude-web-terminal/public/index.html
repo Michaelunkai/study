@@ -1,0 +1,325 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Web Terminal</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0d1117; color: #c9d1d9; font-family: monospace; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+  #topbar { background: #161b22; border-bottom: 1px solid #30363d; padding: 6px 12px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+  #topbar .title { color: #58a6ff; font-weight: bold; font-size: 14px; }
+  #topbar .status { font-size: 12px; color: #8b949e; }
+  #topbar .elapsed { font-size: 12px; color: #3fb950; }
+  #font-controls { display: flex; gap: 8px; }
+  #font-controls button { background: #21262d; border: 1px solid #30363d; color: #c9d1d9; padding: 2px 8px; cursor: pointer; border-radius: 4px; font-size: 12px; }
+  #font-controls button:hover { background: #30363d; }
+  #terminal-container { height: 100%; overflow: hidden; position: relative; }
+  #drop-overlay { position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(88,166,255,0.15); border:2px dashed #58a6ff; display:none; align-items:center; justify-content:center; z-index:50; pointer-events:none; }
+  #drop-overlay span { color: #58a6ff; font-size: 18px; font-weight: bold; }
+  #split-container { display: flex; flex-direction: row; flex: 1; overflow: hidden; }
+  #pane1, #pane2 { flex: 1; overflow: hidden; min-width: 100px; }
+  #split-divider { width: 4px; background: #30363d; cursor: col-resize; flex-shrink: 0; }
+  #split-divider:hover { background: #58a6ff; }
+  #pane2 { display: none; }
+  .split-active #pane2 { display: block; }
+  #search-bar { background: #161b22; border-bottom: 1px solid #30363d; padding: 6px 12px; display: none; align-items: center; gap: 8px; }
+  #search-bar input { background: #0d1117; border: 1px solid #30363d; color: #c9d1d9; padding: 4px 8px; border-radius: 4px; font-size: 13px; width: 200px; }
+  #search-bar button { background: #21262d; border: 1px solid #30363d; color: #c9d1d9; padding: 4px 10px; cursor: pointer; border-radius: 4px; font-size: 12px; }
+</style>
+</head>
+<body>
+
+
+<div id="topbar">
+  <span class="title">Claude Web Terminal</span>
+  <div style="display:flex;gap:16px;align-items:center">
+    <div id="font-controls">
+      <button onclick="changeFontSize(-1)" title="Decrease font">A-</button>
+      <button onclick="changeFontSize(0)" title="Reset font">A</button>
+      <button onclick="changeFontSize(1)" title="Increase font">A+</button>
+    </div>
+    <button onclick="toggleSplit()" id="split-btn" style="background:#21262d;border:1px solid #30363d;color:#c9d1d9;padding:2px 8px;cursor:pointer;border-radius:4px;font-size:12px">Split</button>
+    <button onclick="showReplay()" style="background:#21262d;border:1px solid #30363d;color:#c9d1d9;padding:2px 8px;cursor:pointer;border-radius:4px;font-size:12px">Replay</button>
+    <span class="elapsed" id="elapsed">Disconnected</span>
+    <span class="status" id="status">Not connected</span>
+  </div>
+</div>
+
+<div id="search-bar">
+  <input type="text" id="search-input" placeholder="Search...">
+  <button onclick="searchNext()">Next</button>
+  <button onclick="searchPrev()">Prev</button>
+  <button onclick="closeSearch()">Close</button>
+</div>
+
+<div id="split-container">
+  <div id="pane1"><div id="terminal-container" style="height:100%;padding:4px"><div id="drop-overlay"><span>Drop file to upload</span></div></div></div>
+  <div id="split-divider" title="Drag to resize"></div>
+  <div id="pane2"><div id="terminal-container-2" style="height:100%;padding:4px"></div></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xterm-addon-search@0.13.0/lib/xterm-addon-search.js"></script>
+<script>
+let ws = null;
+let term = null;
+let fitAddon = null;
+let searchAddon = null;
+let connectedAt = null;
+let elapsedTimer = null;
+let fontSize = parseInt(localStorage.getItem('fontSize') || '14');
+
+function initTerminal() {
+  if (term) { term.dispose(); }
+  term = new Terminal({
+    theme: {
+      background: '#0d1117', foreground: '#c9d1d9',
+      cursor: '#58a6ff', selectionBackground: '#264f78',
+      black: '#484f58', red: '#ff7b72', green: '#3fb950',
+      yellow: '#d29922', blue: '#58a6ff', magenta: '#bc8cff',
+      cyan: '#39c5cf', white: '#b1bac4',
+      brightBlack: '#6e7681', brightRed: '#ffa198', brightGreen: '#56d364',
+      brightYellow: '#e3b341', brightBlue: '#79c0ff', brightMagenta: '#d2a8ff',
+      brightCyan: '#56d4dd', brightWhite: '#f0f6fc',
+    },
+    fontSize: fontSize, fontFamily: 'Consolas, "Courier New", monospace',
+    cursorBlink: true, allowTransparency: true,
+  });
+  fitAddon = new FitAddon.FitAddon();
+  searchAddon = new SearchAddon.SearchAddon();
+  term.loadAddon(fitAddon);
+  term.loadAddon(searchAddon);
+  term.open(document.getElementById('terminal-container'));
+  fitAddon.fit();
+}
+
+function changeFontSize(delta) {
+  if (delta === 0) fontSize = 14;
+  else fontSize = Math.max(10, Math.min(24, fontSize + delta));
+  localStorage.setItem('fontSize', fontSize);
+  if (term) { term.options.fontSize = fontSize; fitAddon.fit(); }
+}
+
+function connect() {
+  const token = 'claude-terminal-2026';
+  const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+  const wsUrl = protocol + '//' + location.host;
+
+  initTerminal();
+
+  ws = new WebSocket(wsUrl);
+
+  ws.onopen = () => {
+    ws.send(JSON.stringify({ type: 'auth', token, cols: term.cols, rows: term.rows }));
+    // Client-side keepalive to prevent cloudflared tunnel timeout
+    setInterval(() => {
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({ type: 'ping' }));
+      }
+    }, 25000);
+  };
+
+  ws.onmessage = (e) => {
+    const msg = JSON.parse(e.data);
+    if (msg.type === 'auth') {
+      if (msg.success) {
+        document.getElementById('status').textContent = 'Connected';
+        connectedAt = Date.now();
+        startElapsedTimer();
+
+        term.onData((d) => ws.send(JSON.stringify({ type: 'input', data: d })));
+        window.addEventListener('resize', () => {
+          fitAddon.fit();
+          ws.send(JSON.stringify({ type: 'resize', cols: term.cols, rows: term.rows }));
+          if (fitAddon2) fitAddon2.fit();
+        });
+      } else {
+        if (term) term.write('\r\n\x1b[31m[Auth failed]\x1b[0m\r\n');
+      }
+    } else if (msg.type === 'data') {
+      term.write(msg.data);
+    } else if (msg.type === 'error') {
+      alert(msg.msg);
+    }
+  };
+
+  ws.onclose = () => {
+    document.getElementById('status').textContent = 'Reconnecting...';
+    stopElapsedTimer();
+    if (term) term.write('\r\n\x1b[33m[Reconnecting in 3s...]\x1b[0m\r\n');
+    setTimeout(connect, 3000);
+  };
+
+  ws.onerror = () => {
+    document.getElementById('status').textContent = 'Error';
+  };
+}
+
+function startElapsedTimer() {
+  elapsedTimer = setInterval(() => {
+    if (!connectedAt) return;
+    const s = Math.floor((Date.now() - connectedAt) / 1000);
+    const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
+    document.getElementById('elapsed').textContent =
+      (h ? h + 'h ' : '') + (m ? m + 'm ' : '') + sec + 's';
+  }, 1000);
+}
+
+function stopElapsedTimer() {
+  clearInterval(elapsedTimer);
+  document.getElementById('elapsed').textContent = 'Disconnected';
+}
+
+function searchNext() {
+  searchAddon.findNext(document.getElementById('search-input').value);
+}
+function searchPrev() {
+  searchAddon.findPrevious(document.getElementById('search-input').value);
+}
+function closeSearch() {
+  document.getElementById('search-bar').style.display = 'none';
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.key === 'f') { e.preventDefault(); const sb = document.getElementById('search-bar'); sb.style.display = sb.style.display === 'flex' ? 'none' : 'flex'; if (sb.style.display === 'flex') document.getElementById('search-input').focus(); }
+  if (e.ctrlKey && e.key === '=') { e.preventDefault(); changeFontSize(1); }
+  if (e.ctrlKey && e.key === '-') { e.preventDefault(); changeFontSize(-1); }
+  if (e.ctrlKey && e.key === '0') { e.preventDefault(); changeFontSize(0); }
+});
+
+// Search input live handler
+document.getElementById('search-input').addEventListener('input', (e) => {
+  if (e.target.value && searchAddon) searchAddon.findNext(e.target.value, { incremental: true });
+});
+document.getElementById('search-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeSearch();
+  if (e.key === 'Enter') { e.shiftKey ? searchPrev() : searchNext(); }
+});
+
+// Auto-connect immediately on page load — no input needed
+connect();
+
+// Split view
+let term2 = null, fitAddon2 = null, ws2 = null;
+
+function toggleSplit() {
+  const container = document.getElementById('split-container');
+  if (container.classList.contains('split-active')) {
+    container.classList.remove('split-active');
+    document.getElementById('split-btn').textContent = 'Split';
+    if (ws2) ws2.close();
+    if (term2) { term2.dispose(); term2 = null; }
+    ws2 = null;
+  } else {
+    container.classList.add('split-active');
+    document.getElementById('split-btn').textContent = 'Unsplit';
+    initPane2();
+  }
+}
+
+function initPane2() {
+  term2 = new Terminal({
+    theme: {
+      background: '#0d1117', foreground: '#c9d1d9', cursor: '#58a6ff',
+      selectionBackground: '#264f78',
+    },
+    fontSize: fontSize, fontFamily: 'Consolas, "Courier New", monospace', cursorBlink: true,
+  });
+  fitAddon2 = new FitAddon.FitAddon();
+  term2.loadAddon(fitAddon2);
+  term2.open(document.getElementById('terminal-container-2'));
+  fitAddon2.fit();
+
+  const token = 'claude-terminal-2026';
+  const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+  const wsUrl = protocol + '//' + location.host;
+  ws2 = new WebSocket(wsUrl);
+  ws2.onopen = () => ws2.send(JSON.stringify({ type: 'auth', token, cols: term2.cols, rows: term2.rows }));
+  ws2.onmessage = (e) => {
+    const msg = JSON.parse(e.data);
+    if (msg.type === 'auth' && msg.success) {
+      term2.onData((d) => ws2.send(JSON.stringify({ type: 'input', data: d })));
+      term2.write('\x1b[36m[Pane 2 Connected]\x1b[0m\r\n');
+    } else if (msg.type === 'data') {
+      term2.write(msg.data);
+    }
+  };
+  ws2.onclose = () => { if (term2) term2.write('\r\n\x1b[31m[Pane 2 Closed]\x1b[0m\r\n'); };
+}
+
+// Drag to resize
+const divider = document.getElementById('split-divider');
+let isDragging = false;
+divider.addEventListener('mousedown', () => { isDragging = true; document.body.style.cursor = 'col-resize'; });
+document.addEventListener('mousemove', (e) => {
+  if (!isDragging) return;
+  const container = document.getElementById('split-container');
+  const rect = container.getBoundingClientRect();
+  const pct = ((e.clientX - rect.left) / rect.width * 100);
+  const clamped = Math.max(20, Math.min(80, pct));
+  document.getElementById('pane1').style.flex = 'none';
+  document.getElementById('pane1').style.width = clamped + '%';
+  document.getElementById('pane2').style.flex = '1';
+  if (fitAddon) fitAddon.fit();
+  if (fitAddon2) fitAddon2.fit();
+});
+document.addEventListener('mouseup', () => { isDragging = false; document.body.style.cursor = ''; });
+
+// Session replay
+function getBackendUrl() {
+  return location.protocol + '//' + location.host;
+}
+async function showReplay() {
+  try {
+    const sessions = await fetch(getBackendUrl() + '/sessions').then(r => r.json());
+    if (!sessions.length) { alert('No sessions recorded yet'); return; }
+    const choice = sessions[0];
+    const text = await fetch(getBackendUrl() + '/session/' + choice).then(r => r.text());
+    if (term) {
+      term.clear();
+      term.write('\r\n\x1b[36m[Replay: ' + choice + ']\x1b[0m\r\n\r\n');
+      let i = 0;
+      function writeChunk() {
+        if (i >= text.length) return;
+        term.write(text.slice(i, i + 50));
+        i += 50;
+        setTimeout(writeChunk, 5);
+      }
+      writeChunk();
+    }
+  } catch (err) { alert('Replay failed: ' + err.message); }
+}
+
+// Add favicon
+const link = document.createElement('link');
+link.rel = 'icon';
+link.href = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">&#x1F4BB;</text></svg>';
+document.head.appendChild(link);
+
+// Drag-drop file upload (#87)
+const termContainer = document.getElementById('terminal-container');
+termContainer.addEventListener('dragover', (e) => { e.preventDefault(); document.getElementById('drop-overlay').style.display = 'flex'; });
+termContainer.addEventListener('dragleave', () => { document.getElementById('drop-overlay').style.display = 'none'; });
+termContainer.addEventListener('drop', async (e) => {
+  e.preventDefault();
+  document.getElementById('drop-overlay').style.display = 'none';
+  const file = e.dataTransfer.files[0];
+  if (!file) return;
+  const formData = new FormData();
+  formData.append('file', file);
+  try {
+    const res = await fetch(getBackendUrl() + '/upload', { method: 'POST', body: formData });
+    const data = await res.json();
+    if (term) term.write('\r\n\x1b[32mUploaded: ' + data.originalname + ' (' + data.size + ' bytes) -> ' + data.filename + '\x1b[0m\r\n');
+  } catch (err) {
+    if (term) term.write('\r\n\x1b[31mUpload failed: ' + err.message + '\x1b[0m\r\n');
+  }
+});
+</script>
+</body>
+</html>
+

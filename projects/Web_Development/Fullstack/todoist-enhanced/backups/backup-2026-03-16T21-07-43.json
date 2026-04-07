@@ -1,0 +1,172 @@
+{
+  "projects": [
+    {
+      "id": "7b5b190e-0b18-42ad-b5db-ddccf6921667",
+      "name": "Work Projects",
+      "color": "#808080",
+      "isFavorite": false,
+      "viewStyle": "list",
+      "parentId": null,
+      "order": 0,
+      "createdAt": "2026-03-11T20:18:01.773Z"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "d8363633-66ec-494d-b80c-79a2269df4b9",
+      "content": "Complete project documentation",
+      "description": "",
+      "projectId": null,
+      "parentId": null,
+      "priority": 1,
+      "dueDate": null,
+      "labels": [],
+      "completed": false,
+      "order": 0,
+      "createdAt": "2026-03-11T20:17:28.160Z",
+      "recurring": null
+    },
+    {
+      "id": "f2004ebe-b96a-46f0-9554-17c4ae040124",
+      "content": "Review code changes",
+      "description": "",
+      "projectId": null,
+      "parentId": null,
+      "priority": 4,
+      "dueDate": null,
+      "labels": [],
+      "completed": false,
+      "order": 1,
+      "createdAt": "2026-03-11T20:19:21.671Z",
+      "recurring": null
+    },
+    {
+      "id": "fc8631e8-9c9d-4684-babb-ffd370434db4",
+      "content": "try",
+      "description": "",
+      "projectId": null,
+      "parentId": null,
+      "priority": 1,
+      "dueDate": null,
+      "labels": [],
+      "completed": false,
+      "order": 2,
+      "createdAt": "2026-03-12T18:13:56.426Z",
+      "recurring": null
+    },
+    {
+      "id": "4ee369f5-7e11-4c70-b7a6-9038578fb514",
+      "content": "df",
+      "description": "",
+      "projectId": null,
+      "parentId": null,
+      "priority": 1,
+      "dueDate": null,
+      "labels": [],
+      "completed": false,
+      "order": 3,
+      "createdAt": "2026-03-16T20:46:08.672Z",
+      "recurring": null
+    },
+    {
+      "id": "8adc3794-b0db-46a6-ae9e-85ad42341338",
+      "content": "o",
+      "description": "",
+      "projectId": null,
+      "parentId": null,
+      "priority": 1,
+      "dueDate": null,
+      "labels": [],
+      "completed": false,
+      "order": 4,
+      "createdAt": "2026-03-16T20:55:07.419Z",
+      "recurring": null
+    },
+    {
+      "id": "c36fd19b-d82d-43a8-8555-519bcc539aa6",
+      "content": "dgf",
+      "description": "",
+      "projectId": null,
+      "parentId": null,
+      "priority": 1,
+      "dueDate": null,
+      "labels": [],
+      "completed": false,
+      "order": 5,
+      "createdAt": "2026-03-16T21:01:35.499Z",
+      "recurring": null
+    }
+  ],
+  "labels": [],
+  "filters": [],
+  "comments": [],
+  "activityLog": [
+    {
+      "id": "fcc84b86-015e-4af7-93a1-0e8b0be4c9ce",
+      "action": "task_created",
+      "details": {
+        "taskContent": "dgf"
+      },
+      "timestamp": "2026-03-16T21:01:35.505Z"
+    },
+    {
+      "id": "4612d4bd-51cc-4a0d-b66a-12e1f5a74bc2",
+      "action": "task_created",
+      "details": {
+        "taskContent": "o"
+      },
+      "timestamp": "2026-03-16T20:55:07.423Z"
+    },
+    {
+      "id": "d9b1541c-364e-4e0e-a859-7b3d7c3000ce",
+      "action": "task_created",
+      "details": {
+        "taskContent": "df"
+      },
+      "timestamp": "2026-03-16T20:46:08.676Z"
+    },
+    {
+      "id": "272defb7-ffbc-414c-9891-26b72817ff01",
+      "action": "task_created",
+      "details": {
+        "taskContent": "try"
+      },
+      "timestamp": "2026-03-12T18:13:56.427Z"
+    },
+    {
+      "id": "fcf5ae8f-e4c4-4239-974a-c83cdf903d65",
+      "action": "task_created",
+      "details": {
+        "taskContent": "Review code changes"
+      },
+      "timestamp": "2026-03-11T20:19:21.674Z"
+    },
+    {
+      "id": "ea0dd382-a124-4c28-8cd9-443a96f78bcd",
+      "action": "project_created",
+      "details": {
+        "projectName": "Work Projects"
+      },
+      "timestamp": "2026-03-11T20:18:01.777Z"
+    },
+    {
+      "id": "f7a840f2-628e-413c-a6f9-487f133ca0c6",
+      "action": "task_created",
+      "details": {
+        "taskContent": "Complete project documentation"
+      },
+      "timestamp": "2026-03-11T20:17:28.162Z"
+    }
+  ],
+  "settings": {
+    "theme": "light",
+    "defaultView": "today",
+    "startOfWeek": 1
+  },
+  "stats": {
+    "totalTasksCompleted": 0,
+    "currentStreak": 0,
+    "longestStreak": 0,
+    "karma": 0
+  }
+}

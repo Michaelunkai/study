@@ -1,0 +1,67 @@
+# Dependencies
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# Production
+build/
+dist/
+
+# Misc
+.DS_Store
+*.pem
+.env*.local
+
+# npm (project uses pnpm)
+package-lock.json
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+.env
+.data/
+aegis/
+
+# Playwright
+test-results/
+playwright-report/
+.tmp/
+.playwright-mcp/
+
+# Local QA screenshots
+/e2e-debug-*.png
+/e2e-channels-*.png
+
+# Claude Code context files (root CLAUDE.md is committed for AI agent discovery)
+**/CLAUDE.md
+!/CLAUDE.md
+
+# Auto-excluded large files (>49MB)
+Dev_Toolchain/programming/.NET/projects/C\#/AndroidMonitor/AndroidMonitor.exe
+Dev_Toolchain/programming/.NET/projects/C\#/StartupManagerClean/StartupManager/published/StartupManager.exe
+
+# Auto-excluded files with secrets
+AI_ML/AI_and_Machine_Learning/Artificial_Intelligence/MCP/claudecode/b.backup..ps1
+AI_ML/AI_and_Machine_Learning/Artificial_Intelligence/MCP/claudecode/b.backup.2025-12-02.ps1
+AI_ML/AI_and_Machine_Learning/Artificial_Intelligence/MCP/claudecode/GLOBAL_RULE_MCP_ONDEMAND.txt
+hosting/youtube/Playlists/youtube_credentials.json
+Shells/powershell/scripts/cfun/cfun.ps1
+Shells/powershell/scripts/misc/gitlog/gitlog.ps1
+Shells/powershell/scripts/steep/new/a.ps1
+Shells/powershell/scripts/steep/fsteep/a.ps1
+Shells/powershell/scripts/steep/fsteep/c.ps1
+Shells/powershell/scripts/steep/new/b.ps1
+Shells/powershell/scripts/steep/new/win11PowershellMegaClean/a.ps1
+Version_control/git/gitlog/gitlog.ps1
+Shells/powershell/scripts/steep/new/win11PowershellMegaClean/b.ps1
+src/lib/__tests__/scan-credentials.test.ts
