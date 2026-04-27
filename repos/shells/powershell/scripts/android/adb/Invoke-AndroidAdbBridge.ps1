@@ -587,6 +587,52 @@ function Test-IsLocalPullDestination([string]$Value) {
     return $false
 }
 
+function Resolve-PushArguments([string[]]$Values) {
+    if ($null -eq $Values -or $Values.Count -eq 0) {
+        return [pscustomobject]@{
+            Source = $null
+            Destination = $null
+        }
+    }
+
+    $parts = @($Values | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
+    if ($parts.Count -eq 0) {
+        return [pscustomobject]@{
+            Source = $null
+            Destination = $null
+        }
+    }
+
+    $destination = $null
+    if ($parts.Count -gt 1 -and $parts[-1].StartsWith('/')) {
+        $destination = $parts[-1]
+        $parts = @($parts[0..($parts.Count - 2)])
+    }
+
+    $sourceCandidates = @()
+    $sourceCandidates += ($parts -join ' ')
+    $sourceCandidates += ($parts -join '')
+    if ($parts.Count -gt 1) {
+        $sourceCandidates += ($parts[0..($parts.Count - 2)] -join ' ')
+        $sourceCandidates += ($parts[0..($parts.Count - 2)] -join '')
+    }
+    $sourceCandidates += $parts[0]
+
+    foreach ($candidate in @($sourceCandidates | Where-Object { $_ } | Select-Object -Unique)) {
+        if (Resolve-LocalSourcePath $candidate) {
+            return [pscustomobject]@{
+                Source = $candidate
+                Destination = $destination
+            }
+        }
+    }
+
+    return [pscustomobject]@{
+        Source = ($parts -join ' ')
+        Destination = $destination
+    }
+}
+
 function Copy-ToAndroid([string]$Source, [string]$Destination) {
     $resolvedSource = Resolve-LocalSourcePath $Source
     if ([string]::IsNullOrWhiteSpace($resolvedSource)) {
@@ -673,9 +719,8 @@ switch ($cmd) {
         return
     }
     'push' {
-        $source = if ($rest.Count -gt 0) { $rest[0] } else { $null }
-        $dest = if ($rest.Count -gt 1) { $rest[1] } else { $null }
-        Copy-ToAndroid $source $dest
+        $pushArgs = Resolve-PushArguments $rest
+        Copy-ToAndroid $pushArgs.Source $pushArgs.Destination
         return
     }
     'pull' {

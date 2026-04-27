@@ -71,6 +71,7 @@ If `aadb push <pcPath>` points to a missing file, `aadb` tries to recover by:
 - removing a trailing slash,
 - checking the current directory for the same filename,
 - searching under the nearest existing parent folder for that filename.
+- reconstructing accidentally split unquoted Windows paths, including missing-space and with-space candidates.
 
 This makes commands like this work when run from the real APK folder:
 
@@ -79,6 +80,14 @@ aadb push "F:\study\repos\fullstack\todoist-enhanced\c\todoist-enhanced-private-
 ```
 
 If `app-debug.apk` is actually in the current folder or under `outputs\apk\debug`, `aadb` resolves it and pushes it to `/sdcard/Download/app-debug.apk`.
+
+This also handles accidental PowerShell splitting like:
+
+```powershell
+aadb push F:\study\repos\fullstack\todoist-enhanced\c\todoist-enhanced- private-android-output\app\build\outputs\app-debug.apk
+```
+
+The two tokens after `push` are reconstructed before path recovery runs.
 
 `aadb pull` with no arguments opens an interactive browser starting at `/home`. On normal Android phones `/home` is usually not readable, so it falls back to `/sdcard`.
 
