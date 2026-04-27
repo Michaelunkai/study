@@ -529,6 +529,51 @@ function Resolve-AndroidDestination([string]$Source, [string]$Destination) {
     return "/sdcard/Download/$($item.Name)"
 }
 
+function Resolve-LocalSourcePath([string]$Source) {
+    if ([string]::IsNullOrWhiteSpace($Source)) {
+        return (Get-Location).Path
+    }
+
+    if (Test-Path -LiteralPath $Source) {
+        return (Resolve-Path -LiteralPath $Source).Path
+    }
+
+    $trimmedSource = $Source.TrimEnd('\', '/')
+    if ($trimmedSource -and (Test-Path -LiteralPath $trimmedSource)) {
+        return (Resolve-Path -LiteralPath $trimmedSource).Path
+    }
+
+    $leaf = Split-Path -Leaf $trimmedSource
+    if ([string]::IsNullOrWhiteSpace($leaf)) {
+        return $null
+    }
+
+    $currentCandidate = Join-Path (Get-Location).Path $leaf
+    if (Test-Path -LiteralPath $currentCandidate) {
+        return (Resolve-Path -LiteralPath $currentCandidate).Path
+    }
+
+    $ancestor = Split-Path -Parent $trimmedSource
+    while (-not [string]::IsNullOrWhiteSpace($ancestor) -and -not (Test-Path -LiteralPath $ancestor)) {
+        $next = Split-Path -Parent $ancestor
+        if ($next -eq $ancestor) {
+            break
+        }
+        $ancestor = $next
+    }
+
+    if (-not [string]::IsNullOrWhiteSpace($ancestor) -and (Test-Path -LiteralPath $ancestor)) {
+        $match = Get-ChildItem -LiteralPath $ancestor -Recurse -Force -Filter $leaf -ErrorAction SilentlyContinue |
+            Sort-Object FullName |
+            Select-Object -First 1
+        if ($match) {
+            return $match.FullName
+        }
+    }
+
+    return $null
+}
+
 function Test-IsLocalPullDestination([string]$Value) {
     if ([string]::IsNullOrWhiteSpace($Value)) {
         return $false
@@ -543,18 +588,11 @@ function Test-IsLocalPullDestination([string]$Value) {
 }
 
 function Copy-ToAndroid([string]$Source, [string]$Destination) {
-    if ([string]::IsNullOrWhiteSpace($Source)) {
-        $Source = (Get-Location).Path
+    $resolvedSource = Resolve-LocalSourcePath $Source
+    if ([string]::IsNullOrWhiteSpace($resolvedSource)) {
+        throw "PC path not found: $Source"
     }
-    if (-not (Test-Path -LiteralPath $Source)) {
-        $trimmedSource = $Source.TrimEnd('\', '/')
-        if ($trimmedSource -and (Test-Path -LiteralPath $trimmedSource)) {
-            $Source = $trimmedSource
-        }
-        else {
-            throw "PC path not found: $Source"
-        }
-    }
+    $Source = $resolvedSource
     $serial = Ensure-Connected
     $dest = Resolve-AndroidDestination $Source $Destination
     Invoke-Adb @('-s', $serial, 'push', '-p', $Source, $dest)
