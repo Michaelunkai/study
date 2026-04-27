@@ -44,9 +44,11 @@ Android pairing codes are temporary. No Windows script can make the pairing code
 aadb setup
 aadb connect
 aadb apk
+aadb push
 aadb push "C:\path\file-or-folder"
 aadb pull
 aadb pull DCIM
+aadb pull "C:\target\folder"
 aadb pull "/sdcard/Download/file.zip" "C:\Users\me\Downloads"
 aadb shell ls /sdcard/Download
 aadb devices
@@ -62,7 +64,21 @@ aadb path
 /sdcard/Download/<same-name>
 ```
 
+`aadb push` with no arguments pushes the current PC folder to `/sdcard/Download`.
+
 `aadb pull` with no arguments opens an interactive browser starting at `/home`. On normal Android phones `/home` is usually not readable, so it falls back to `/sdcard`.
+
+`aadb pull <pcFolder>` where `<pcFolder>` is a Windows path pulls `/sdcard/DCIM` into that PC folder. Example:
+
+```powershell
+aadb pull "F:\study\repos\fullstack\todoist-enhanced\c\todoist-enhanced-private-android-output\app\build\outputs\apk\debug"
+```
+
+That means:
+
+```text
+/sdcard/DCIM -> F:\study\repos\fullstack\todoist-enhanced\c\todoist-enhanced-private-android-output\app\build\outputs\apk\debug
+```
 
 Interactive pull controls:
 

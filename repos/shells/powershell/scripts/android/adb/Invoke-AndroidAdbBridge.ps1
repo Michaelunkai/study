@@ -21,9 +21,11 @@ function Write-AadbHelp {
     Write-Host '  aadb setup                         Print Android steps, pair once, save endpoint.'
     Write-Host '  aadb connect                       Auto-connect using saved endpoint or mDNS discovery.'
     Write-Host '  aadb apk                           Install default APK and copy it to /sdcard/Download.'
+    Write-Host '  aadb push                          Copy current PC folder to /sdcard/Download.'
     Write-Host '  aadb push <pcPath> [androidPath]   Copy PC file/folder to Android.'
     Write-Host '  aadb pull                          Browse Android from /home, then pull selection here.'
     Write-Host '  aadb pull DCIM                     Copy /sdcard/DCIM to current PC folder.'
+    Write-Host '  aadb pull <pcFolder>               Copy /sdcard/DCIM to that PC folder.'
     Write-Host '  aadb pull <androidPath> [pcPath]   Copy Android file/folder to PC.'
     Write-Host '  aadb persist                       Reinstall PATH and logon auto-connect persistence.'
     Write-Host '  aadb shell <command...>            Auto-connect, then run adb shell.'
@@ -527,9 +529,22 @@ function Resolve-AndroidDestination([string]$Source, [string]$Destination) {
     return "/sdcard/Download/$($item.Name)"
 }
 
+function Test-IsLocalPullDestination([string]$Value) {
+    if ([string]::IsNullOrWhiteSpace($Value)) {
+        return $false
+    }
+    if ($Value -match '^[A-Za-z]:[\\/]' -or $Value -match '^\\\\' -or $Value -match '^\.{1,2}([\\/]|$)') {
+        return $true
+    }
+    if ($Value -match '[\\]') {
+        return $true
+    }
+    return $false
+}
+
 function Copy-ToAndroid([string]$Source, [string]$Destination) {
     if ([string]::IsNullOrWhiteSpace($Source)) {
-        throw 'Missing PC source path.'
+        $Source = (Get-Location).Path
     }
     if (-not (Test-Path -LiteralPath $Source)) {
         $trimmedSource = $Source.TrimEnd('\', '/')
@@ -549,6 +564,15 @@ function Copy-ToAndroid([string]$Source, [string]$Destination) {
 function Copy-FromAndroid([string]$Source, [string]$Destination) {
     if ([string]::IsNullOrWhiteSpace($Source)) {
         throw 'Missing Android source path.'
+    }
+    if (Test-IsLocalPullDestination $Source) {
+        if ([string]::IsNullOrWhiteSpace($Destination)) {
+            $Destination = $Source
+            $Source = '/sdcard/DCIM'
+        }
+        else {
+            throw 'For pull, use either: aadb pull <androidPath> <pcPath> OR aadb pull <pcPath>.'
+        }
     }
     if (-not $Source.StartsWith('/')) {
         $Source = "/sdcard/$Source"
