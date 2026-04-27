@@ -1,0 +1,613 @@
+param(
+    [Parameter(ValueFromRemainingArguments = $true)]
+    [string[]]$AadbArgs
+)
+
+$ErrorActionPreference = 'Stop'
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
+$DefaultApk = 'F:\study\repos\fullstack\todoist-enhanced\c\todoist-enhanced-private-android-output\app\build\outputs\apk\debug\app-debug.apk'
+$ConfigDir = Join-Path $env:APPDATA 'CodexAdb'
+$ConfigPath = Join-Path $ConfigDir 'wireless-adb.json'
+$InstalledScriptPath = Join-Path $ConfigDir 'Invoke-AndroidAdbBridge.ps1'
+$UserBinDir = Join-Path $HOME 'bin'
+$ShimPath = Join-Path $UserBinDir 'aadb.ps1'
+$PlatformRoot = Join-Path $env:LOCALAPPDATA 'Android'
+$PlatformTools = Join-Path $PlatformRoot 'platform-tools'
+$Adb = Join-Path $PlatformTools 'adb.exe'
+
+function Write-AadbHelp {
+    Write-Host 'aadb commands:' -ForegroundColor Cyan
+    Write-Host '  aadb setup                         Print Android steps, pair once, save endpoint.'
+    Write-Host '  aadb connect                       Auto-connect using saved endpoint or mDNS discovery.'
+    Write-Host '  aadb apk                           Install default APK and copy it to /sdcard/Download.'
+    Write-Host '  aadb push <pcPath> [androidPath]   Copy PC file/folder to Android.'
+    Write-Host '  aadb pull                          Browse Android from /home, then pull selection here.'
+    Write-Host '  aadb pull <androidPath> [pcPath]   Copy Android file/folder to PC.'
+    Write-Host '  aadb persist                       Reinstall PATH and logon auto-connect persistence.'
+    Write-Host '  aadb shell <command...>            Auto-connect, then run adb shell.'
+    Write-Host '  aadb devices                       Show adb devices.'
+    Write-Host '  aadb steps                         Print Android setup steps only.'
+    Write-Host '  aadb path                          Show script, config, and adb paths.'
+    Write-Host '  aadb <any adb args...>             Auto-connect, then pass arguments to adb.'
+}
+
+function Ensure-Directory([string]$Path) {
+    if (-not (Test-Path -LiteralPath $Path)) {
+        New-Item -ItemType Directory -Force -Path $Path | Out-Null
+    }
+}
+
+function Ensure-Adb {
+    if (Test-Path -LiteralPath $Adb) {
+        return
+    }
+
+    Ensure-Directory $PlatformRoot
+    $zip = Join-Path $env:TEMP 'platform-tools-latest-windows.zip'
+    Write-Host 'Downloading official Google Android platform-tools...' -ForegroundColor Cyan
+    Invoke-WebRequest -UseBasicParsing 'https://dl.google.com/android/repository/platform-tools-latest-windows.zip' -OutFile $zip
+    Expand-Archive -Force $zip $PlatformRoot
+
+    $userPath = [Environment]::GetEnvironmentVariable('Path', 'User')
+    $parts = @($userPath -split ';' | Where-Object { $_ })
+    if ($parts -notcontains $PlatformTools) {
+        [Environment]::SetEnvironmentVariable('Path', (($parts + $PlatformTools | Select-Object -Unique) -join ';'), 'User')
+    }
+}
+
+function Load-Config {
+    Ensure-Directory $ConfigDir
+    $empty = [ordered]@{
+        connectEndpoints = @()
+        lastSerial = $null
+        lastPair = $null
+        saved = $null
+    }
+    if (-not (Test-Path -LiteralPath $ConfigPath)) {
+        return [pscustomobject]$empty
+    }
+
+    try {
+        $raw = Get-Content -LiteralPath $ConfigPath -Raw | ConvertFrom-Json
+        $endpoints = @()
+        if ($null -ne $raw.connectEndpoints) {
+            $endpoints += @($raw.connectEndpoints | Where-Object { $_ })
+        }
+        if ($null -ne $raw.connect) {
+            $endpoints += @($raw.connect | Where-Object { $_ })
+        }
+        if ($null -ne $raw.lastSerial -and $raw.lastSerial -match '^\d{1,3}(\.\d{1,3}){3}:\d+$') {
+            $endpoints += $raw.lastSerial
+        }
+        return [pscustomobject]@{
+            connectEndpoints = @($endpoints | Select-Object -Unique)
+            lastSerial = if ($null -ne $raw.lastSerial) { $raw.lastSerial } else { $null }
+            lastPair = if ($null -ne $raw.lastPair) { $raw.lastPair } else { $null }
+            saved = if ($null -ne $raw.saved) { $raw.saved } else { $null }
+        }
+    }
+    catch {
+        return [pscustomobject]$empty
+    }
+}
+
+function Save-Config($Config) {
+    Ensure-Directory $ConfigDir
+    $endpoints = @()
+    if ($null -ne $Config.connectEndpoints) {
+        $endpoints = @($Config.connectEndpoints | Where-Object { $_ } | Select-Object -Unique)
+    }
+    $lastSerial = if ($null -ne $Config.lastSerial) { [string]$Config.lastSerial } else { $null }
+    if ($lastSerial -and $lastSerial -match '^\d{1,3}(\.\d{1,3}){3}:\d+$' -and @($endpoints) -notcontains $lastSerial) {
+        $endpoints = @($lastSerial) + @($endpoints)
+    }
+    [pscustomobject]@{
+        connectEndpoints = $endpoints
+        lastSerial = $lastSerial
+        lastPair = if ($null -ne $Config.lastPair) { $Config.lastPair } else { $null }
+        saved = (Get-Date).ToString('s')
+        note = 'ADB trust persists in adbkey; pairing code itself is temporary.'
+    } | ConvertTo-Json -Depth 5 -Compress | Set-Content -LiteralPath $ConfigPath -Encoding ASCII
+}
+
+function Write-AndroidSteps {
+    Write-Host ''
+    Write-Host 'ANDROID STEPS FOR FIRST SETUP' -ForegroundColor Cyan
+    Write-Host '1. Put the phone and this Windows PC on the same trusted Wi-Fi network.'
+    Write-Host '2. Open Android Settings, then About phone, then tap Build number seven times.'
+    Write-Host '3. Enter your lock screen PIN if Android asks to enable Developer options.'
+    Write-Host '4. Open Settings, Developer options, then enable the main Developer options switch.'
+    Write-Host '5. Enable Wireless debugging and approve the Android warning dialog.'
+    Write-Host '6. Open Wireless debugging, then tap Pair device with pairing code.'
+    Write-Host '7. Keep that pairing screen open; it shows IP:PORT and a six-digit code.'
+    Write-Host '8. Type the IP with dots, for example 192.168.1.124:41539, never 192:168.'
+    Write-Host '9. After pairing, leave Wireless debugging enabled for future aadb auto-connect.'
+    Write-Host '10. Disable battery restrictions for Settings if your phone kills Wireless debugging.'
+    Write-Host '11. If Android rotates ports after reboot, aadb tries saved endpoints and mDNS discovery.'
+    Write-Host ''
+}
+
+function Invoke-Adb {
+    param([string[]]$Arguments)
+    & $Adb @Arguments
+}
+
+function Start-AdbServer {
+    Ensure-Adb
+    $env:Path = "$UserBinDir;$PlatformTools;$env:Path"
+    Invoke-Adb @('start-server') | Out-Host
+}
+
+function Get-AuthorizedSerial {
+    $lines = Invoke-Adb @('devices') 2>$null
+    $serials = @()
+    foreach ($line in $lines) {
+        if ($line -match '^(\S+)\s+device$') {
+            $serials += $Matches[1]
+        }
+    }
+    $ipSerial = @($serials | Where-Object { $_ -match '^\d{1,3}(\.\d{1,3}){3}:\d+$' } | Select-Object -First 1)
+    if ($ipSerial.Count -gt 0) {
+        return $ipSerial[0]
+    }
+    if ($serials.Count -gt 0) {
+        return $serials[0]
+    }
+    return $null
+}
+
+function Get-MdnsEndpoints {
+    $result = @()
+    $lines = Invoke-Adb @('mdns', 'services') 2>$null
+    foreach ($line in $lines) {
+        if ($line -match '_adb-tls-connect' -and $line -match '(\d{1,3}(\.\d{1,3}){3}:\d+)') {
+            $result += $Matches[1]
+        }
+    }
+    return @($result | Select-Object -Unique)
+}
+
+function Try-ConnectEndpoint([string]$Endpoint) {
+    if ([string]::IsNullOrWhiteSpace($Endpoint)) {
+        return $null
+    }
+    Write-Host "Trying adb connect $Endpoint" -ForegroundColor DarkCyan
+    Invoke-Adb @('connect', $Endpoint) 2>&1 | Out-Host
+    Start-Sleep -Seconds 1
+    return Get-AuthorizedSerial
+}
+
+function Add-EndpointToConfig($Config, [string]$Endpoint, [string]$Serial) {
+    $lastPair = if ($null -ne $Config.lastPair) { $Config.lastPair } else { $null }
+    if (-not [string]::IsNullOrWhiteSpace($Endpoint)) {
+        $existing = @($Config.connectEndpoints | Where-Object { $_ })
+        $endpoints = @($Endpoint) + @($existing | Where-Object { $_ -ne $Endpoint })
+    }
+    else {
+        $endpoints = @($Config.connectEndpoints | Where-Object { $_ })
+    }
+    $lastSerial = if ($null -ne $Config.lastSerial) { $Config.lastSerial } else { $null }
+    if (-not [string]::IsNullOrWhiteSpace($Serial)) {
+        $lastSerial = $Serial
+        if ($Serial -match '^\d{1,3}(\.\d{1,3}){3}:\d+$' -and @($endpoints) -notcontains $Serial) {
+            $endpoints = @($Serial) + @($endpoints)
+        }
+    }
+    Save-Config ([pscustomobject]@{
+        connectEndpoints = @($endpoints | Select-Object -Unique)
+        lastSerial = $lastSerial
+        lastPair = $lastPair
+        saved = $Config.saved
+    })
+}
+
+function Ensure-LocalPersistence {
+    Ensure-Directory $UserBinDir
+    Ensure-Directory $ConfigDir
+
+    if ($PSCommandPath -and ($PSCommandPath -ne $InstalledScriptPath)) {
+        Copy-Item -LiteralPath $PSCommandPath -Destination $InstalledScriptPath -Force
+    }
+    elseif (-not (Test-Path -LiteralPath $InstalledScriptPath)) {
+        Copy-Item -LiteralPath $PSCommandPath -Destination $InstalledScriptPath -Force
+    }
+
+    $shimBody = "& '$InstalledScriptPath' @args`r`n"
+    Set-Content -LiteralPath $ShimPath -Value $shimBody -Encoding ASCII
+
+    $userPath = [Environment]::GetEnvironmentVariable('Path', 'User')
+    $parts = @($userPath -split ';' | Where-Object { $_ })
+    $wanted = @($UserBinDir, $PlatformTools)
+    foreach ($path in $wanted) {
+        if ($parts -notcontains $path) {
+            $parts += $path
+        }
+    }
+    [Environment]::SetEnvironmentVariable('Path', (($parts | Select-Object -Unique) -join ';'), 'User')
+    $env:Path = "$UserBinDir;$PlatformTools;$env:Path"
+
+    $taskName = 'CodexAadbAutoConnect'
+    $taskCommand = "powershell.exe -NoProfile -ExecutionPolicy Bypass -File `"$ShimPath`" connect"
+    schtasks.exe /Create /TN $taskName /SC ONLOGON /RL LIMITED /F /TR $taskCommand | Out-Host
+    try {
+        $task = Get-ScheduledTask -TaskName $taskName -ErrorAction Stop
+        $task.Settings.DisallowStartIfOnBatteries = $false
+        $task.Settings.StopIfGoingOnBatteries = $false
+        $task.Settings.ExecutionTimeLimit = 'PT5M'
+        Set-ScheduledTask -InputObject $task -ErrorAction Stop | Out-Null
+    }
+    catch {
+        Write-Host 'Scheduled task created; advanced battery settings were not changed.' -ForegroundColor Yellow
+    }
+    Write-Host "PERSISTENCE READY: PATH shim and logon auto-connect task installed." -ForegroundColor Green
+}
+
+function Ensure-ProfileWrapper {
+    $profiles = @(
+        (Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'WindowsPowerShell\Microsoft.PowerShell_profile.ps1'),
+        (Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'PowerShell\Microsoft.PowerShell_profile.ps1')
+    )
+    $block = @"
+
+# >>> aadb Android ADB bridge >>>
+function aadb {
+    & '$ShimPath' @args
+}
+# <<< aadb Android ADB bridge <<<
+"@
+    foreach ($profilePath in $profiles) {
+        $profileDir = Split-Path -Parent $profilePath
+        Ensure-Directory $profileDir
+        if (-not (Test-Path -LiteralPath $profilePath)) {
+            New-Item -ItemType File -Force -Path $profilePath | Out-Null
+        }
+        $raw = [IO.File]::ReadAllText($profilePath)
+        $pattern = '(?s)\r?\n?# >>> aadb Android ADB bridge >>>.*?# <<< aadb Android ADB bridge <<<\r?\n?'
+        $raw = [regex]::Replace($raw, $pattern, '')
+        [IO.File]::WriteAllText($profilePath, $raw.TrimEnd() + $block, [Text.UTF8Encoding]::new($false))
+    }
+    Write-Host 'PROFILE READY: aadb wrapper installed into WindowsPowerShell and PowerShell profiles.' -ForegroundColor Green
+}
+
+function Invoke-AutoSetup {
+    Ensure-Adb
+    Ensure-LocalPersistence
+    Ensure-ProfileWrapper
+    try {
+        $serial = Ensure-Connected
+        Write-Host "READY: aadb is installed and connected to $serial." -ForegroundColor Green
+        return
+    }
+    catch {
+        Write-Host $_.Exception.Message -ForegroundColor Yellow
+        Write-Host 'Pairing is required now because no trusted/reachable device was found.' -ForegroundColor Yellow
+        Setup-Wireless | Out-Null
+    }
+}
+
+function Ensure-Connected {
+    Start-AdbServer
+    $cfg = Load-Config
+
+    $serial = Get-AuthorizedSerial
+    if ($serial -and $serial -notmatch '^\d{1,3}(\.\d{1,3}){3}:\d+$') {
+        Write-Host "USB ADB is authorized as $serial; still searching for wireless endpoint." -ForegroundColor DarkCyan
+        $serial = $null
+    }
+    if ($serial) {
+        Add-EndpointToConfig $cfg $null $serial
+        return $serial
+    }
+
+    foreach ($endpoint in @($cfg.connectEndpoints | Where-Object { $_ })) {
+        $serial = Try-ConnectEndpoint $endpoint
+        if ($serial) {
+            Add-EndpointToConfig $cfg $endpoint $serial
+            return $serial
+        }
+    }
+
+    foreach ($endpoint in Get-MdnsEndpoints) {
+        $serial = Try-ConnectEndpoint $endpoint
+        if ($serial) {
+            Add-EndpointToConfig $cfg $endpoint $serial
+            return $serial
+        }
+    }
+
+    throw 'No authorized Android device found. Run: aadb setup'
+}
+
+function Setup-Wireless {
+    Start-AdbServer
+    Ensure-LocalPersistence
+    Write-AndroidSteps
+
+    $pairEndpoint = (Read-Host 'Enter pairing IP:PORT once').Trim()
+    if ($pairEndpoint -notmatch '^\d{1,3}(\.\d{1,3}){3}:\d+$') {
+        throw 'Bad pairing address. Use dots, example 192.168.1.124:41539'
+    }
+
+    $pairCode = (Read-Host 'Enter six-digit pairing code once').Trim()
+    if ($pairCode -notmatch '^\d{6}$') {
+        throw 'Bad pairing code. It must be exactly six digits.'
+    }
+
+    Invoke-Adb @('pair', $pairEndpoint, $pairCode) 2>&1 | Out-Host
+    Start-Sleep -Seconds 3
+
+    $cfg = Load-Config
+    $cfg = [pscustomobject]@{
+        connectEndpoints = @($cfg.connectEndpoints)
+        lastSerial = $cfg.lastSerial
+        lastPair = $pairEndpoint
+        saved = $cfg.saved
+    }
+
+    $serial = Get-AuthorizedSerial
+    $connectedEndpoint = $null
+    if (-not $serial) {
+        foreach ($endpoint in Get-MdnsEndpoints) {
+            $serial = Try-ConnectEndpoint $endpoint
+            if ($serial) {
+                $connectedEndpoint = $endpoint
+                break
+            }
+        }
+    }
+
+    if (-not $serial) {
+        Save-Config $cfg
+        throw 'Paired, but could not discover the wireless connect port. Keep Wireless debugging enabled, disable VPN/firewall isolation, then run aadb setup again.'
+    }
+
+    Add-EndpointToConfig $cfg $connectedEndpoint $serial
+    Write-Host "SETUP SAVED: aadb will reuse ADB trust and auto-discover/reconnect to $serial." -ForegroundColor Green
+    return $serial
+}
+
+function ConvertTo-AndroidShellQuote([string]$Value) {
+    return "'" + ($Value -replace "'", "'\''") + "'"
+}
+
+function Join-AndroidPath([string]$BasePath, [string]$Name) {
+    if ($BasePath -eq '/') {
+        return "/$Name"
+    }
+    return ($BasePath.TrimEnd('/') + '/' + $Name)
+}
+
+function Get-AndroidPathKind([string]$Serial, [string]$Path) {
+    $quoted = ConvertTo-AndroidShellQuote $Path
+    $script = "if [ -d $quoted ]; then echo DIR; elif [ -e $quoted ]; then echo FILE; else echo MISSING; fi"
+    $result = Invoke-Adb @('-s', $Serial, 'shell', $script) 2>$null | Select-Object -First 1
+    if ($null -eq $result) {
+        return 'MISSING'
+    }
+    return $result.ToString().Trim()
+}
+
+function Resolve-InteractivePullRoot([string]$Serial, [string]$RequestedPath) {
+    if ((Get-AndroidPathKind $Serial $RequestedPath) -eq 'DIR') {
+        return $RequestedPath
+    }
+
+    if ($RequestedPath -eq '/home') {
+        Write-Host '/home is not readable on this Android device; falling back to shared storage.' -ForegroundColor Yellow
+        foreach ($candidate in @('/sdcard', '/storage/emulated/0', '/')) {
+            if ((Get-AndroidPathKind $Serial $candidate) -eq 'DIR') {
+                return $candidate
+            }
+        }
+    }
+
+    throw "Android directory not found or not readable: $RequestedPath"
+}
+
+function Get-AndroidDirectoryEntries([string]$Serial, [string]$Path) {
+    $quoted = ConvertTo-AndroidShellQuote $Path
+    $script = "cd $quoted 2>/dev/null && ls -1A"
+    $lines = Invoke-Adb @('-s', $Serial, 'shell', $script) 2>$null
+    $entries = @()
+    foreach ($line in $lines) {
+        $name = $line.ToString().TrimEnd("`r")
+        if ([string]::IsNullOrWhiteSpace($name) -or $name -eq '.' -or $name -eq '..') {
+            continue
+        }
+        $entryPath = Join-AndroidPath $Path $name
+        $kind = if ((Get-AndroidPathKind $Serial $entryPath) -eq 'DIR') { 'D' } else { 'F' }
+        $entries += [pscustomobject]@{
+            Kind = $kind
+            Name = $name
+            Path = $entryPath
+        }
+    }
+    return @($entries | Sort-Object Kind, Name)
+}
+
+function Invoke-InteractivePull([string]$StartPath) {
+    $serial = Ensure-Connected
+    $current = Resolve-InteractivePullRoot $serial $StartPath
+    $destination = (Get-Location).Path
+
+    while ($true) {
+        Write-Host ''
+        Write-Host "Android: $current" -ForegroundColor Cyan
+        Write-Host "PC target: $destination" -ForegroundColor Cyan
+        $entries = @(Get-AndroidDirectoryEntries $serial $current)
+        if ($entries.Count -eq 0) {
+            Write-Host '(empty or not readable)'
+        }
+        for ($i = 0; $i -lt $entries.Count; $i++) {
+            $label = if ($entries[$i].Kind -eq 'D') { '[DIR] ' } else { '[FILE]' }
+            '{0,3}. {1} {2}' -f ($i + 1), $label, $entries[$i].Name | Write-Host
+        }
+
+        Write-Host ''
+        Write-Host 'Commands: number=open folder/pull file, p number=pull item, p=pull current folder, ..=up, q=quit'
+        $rawChoice = Read-Host 'Choose'
+        if ($null -eq $rawChoice) {
+            return
+        }
+        $choice = $rawChoice.Trim()
+        if ($choice -match '^(q|quit|exit)$') {
+            return
+        }
+        if ($choice -eq '..') {
+            if ($current -ne '/') {
+                $current = ($current.TrimEnd('/') -replace '/[^/]+$', '')
+                if ([string]::IsNullOrWhiteSpace($current)) {
+                    $current = '/'
+                }
+            }
+            continue
+        }
+        if ($choice -match '^(p|pull)$') {
+            Copy-FromAndroid $current $destination
+            return
+        }
+        if ($choice -match '^p\s*(\d+)$') {
+            $idx = [int]$Matches[1] - 1
+            if ($idx -lt 0 -or $idx -ge $entries.Count) {
+                Write-Host 'Invalid item number.' -ForegroundColor Yellow
+                continue
+            }
+            Copy-FromAndroid $entries[$idx].Path $destination
+            return
+        }
+        if ($choice -match '^\d+$') {
+            $idx = [int]$choice - 1
+            if ($idx -lt 0 -or $idx -ge $entries.Count) {
+                Write-Host 'Invalid item number.' -ForegroundColor Yellow
+                continue
+            }
+            if ($entries[$idx].Kind -eq 'D') {
+                $current = $entries[$idx].Path
+            }
+            else {
+                Copy-FromAndroid $entries[$idx].Path $destination
+                return
+            }
+            continue
+        }
+        Write-Host 'Unknown command.' -ForegroundColor Yellow
+    }
+}
+
+function Resolve-AndroidDestination([string]$Source, [string]$Destination) {
+    if (-not [string]::IsNullOrWhiteSpace($Destination)) {
+        return $Destination
+    }
+    $item = Get-Item -LiteralPath $Source
+    return "/sdcard/Download/$($item.Name)"
+}
+
+function Copy-ToAndroid([string]$Source, [string]$Destination) {
+    if ([string]::IsNullOrWhiteSpace($Source)) {
+        throw 'Missing PC source path.'
+    }
+    if (-not (Test-Path -LiteralPath $Source)) {
+        $trimmedSource = $Source.TrimEnd('\', '/')
+        if ($trimmedSource -and (Test-Path -LiteralPath $trimmedSource)) {
+            $Source = $trimmedSource
+        }
+        else {
+            throw "PC path not found: $Source"
+        }
+    }
+    $serial = Ensure-Connected
+    $dest = Resolve-AndroidDestination $Source $Destination
+    Invoke-Adb @('-s', $serial, 'push', '-p', $Source, $dest)
+    Write-Host "COPIED TO ANDROID: $Source -> $dest"
+}
+
+function Copy-FromAndroid([string]$Source, [string]$Destination) {
+    if ([string]::IsNullOrWhiteSpace($Source)) {
+        throw 'Missing Android source path.'
+    }
+    if ([string]::IsNullOrWhiteSpace($Destination)) {
+        $Destination = (Get-Location).Path
+    }
+    $serial = Ensure-Connected
+    Invoke-Adb @('-s', $serial, 'pull', '-a', $Source, $Destination)
+    Write-Host "COPIED FROM ANDROID: $Source -> $Destination"
+}
+
+function Install-DefaultApk {
+    if (-not (Test-Path -LiteralPath $DefaultApk)) {
+        throw "Default APK not found: $DefaultApk"
+    }
+    $serial = Ensure-Connected
+    Invoke-Adb @('-s', $serial, 'install', '-r', '-d', $DefaultApk)
+    Invoke-Adb @('-s', $serial, 'push', '-p', $DefaultApk, '/sdcard/Download/app-debug.apk')
+    Write-Host "APK INSTALLED AND COPIED: $DefaultApk -> /sdcard/Download/app-debug.apk"
+}
+
+function Show-Paths {
+    Write-Host "Script: $PSCommandPath"
+    Write-Host "Installed script: $InstalledScriptPath"
+    Write-Host "Shim:   $ShimPath"
+    Write-Host "Config: $ConfigPath"
+    Write-Host "ADB:    $Adb"
+}
+
+if ($null -eq $AadbArgs -or $AadbArgs.Count -eq 0) {
+    Write-AadbHelp
+    return
+}
+
+$cmd = $AadbArgs[0].ToLowerInvariant()
+$rest = @()
+if ($AadbArgs.Count -gt 1) {
+    $rest = @($AadbArgs[1..($AadbArgs.Count - 1)])
+}
+
+switch ($cmd) {
+    'help' { Write-AadbHelp; return }
+    '-h' { Write-AadbHelp; return }
+    '--help' { Write-AadbHelp; return }
+    'steps' { Write-AndroidSteps; return }
+    'path' { Ensure-Adb; Show-Paths; return }
+    'persist' { Ensure-Adb; Ensure-LocalPersistence; Ensure-ProfileWrapper; return }
+    'bootstrap' { Invoke-AutoSetup; return }
+    'autosetup' { Invoke-AutoSetup; return }
+    'setup' { Setup-Wireless | Out-Null; return }
+    'connect' { $serial = Ensure-Connected; Write-Host "CONNECTED: $serial"; return }
+    'devices' { Start-AdbServer; Invoke-Adb @('devices', '-l'); return }
+    'apk' { Install-DefaultApk; return }
+    'install' {
+        $apk = if ($rest.Count -gt 0) { $rest[0] } else { $DefaultApk }
+        if (-not (Test-Path -LiteralPath $apk)) { throw "APK not found: $apk" }
+        $serial = Ensure-Connected
+        Invoke-Adb @('-s', $serial, 'install', '-r', '-d', $apk)
+        return
+    }
+    'push' {
+        $source = if ($rest.Count -gt 0) { $rest[0] } else { $null }
+        $dest = if ($rest.Count -gt 1) { $rest[1] } else { $null }
+        Copy-ToAndroid $source $dest
+        return
+    }
+    'pull' {
+        $source = if ($rest.Count -gt 0) { $rest[0] } else { $null }
+        $dest = if ($rest.Count -gt 1) { $rest[1] } else { $null }
+        if ([string]::IsNullOrWhiteSpace($source)) {
+            Invoke-InteractivePull '/home'
+        }
+        else {
+            Copy-FromAndroid $source $dest
+        }
+        return
+    }
+    'shell' {
+        $serial = Ensure-Connected
+        Invoke-Adb (@('-s', $serial, 'shell') + $rest)
+        return
+    }
+    default {
+        $serial = Ensure-Connected
+        Invoke-Adb (@('-s', $serial) + $AadbArgs)
+        return
+    }
+}
