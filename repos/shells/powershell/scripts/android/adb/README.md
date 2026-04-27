@@ -46,6 +46,7 @@ aadb connect
 aadb apk
 aadb push "C:\path\file-or-folder"
 aadb pull
+aadb pull DCIM
 aadb pull "/sdcard/Download/file.zip" "C:\Users\me\Downloads"
 aadb shell ls /sdcard/Download
 aadb devices
@@ -66,12 +67,33 @@ aadb path
 Interactive pull controls:
 
 ```text
+name       pull that visible file or full folder, for example DCIM
+all        pull the current Android folder in full, then return to the menu
 number     open folder / pull file
 p number   pull that file or full folder
-p          pull current folder
+p          pull current folder, then return to the menu
+open name  open that visible folder without pulling it
 ..         go up
 q          quit
 ```
+
+Examples:
+
+```text
+DCIM       pulls /sdcard/DCIM in full to the current PC folder
+Download   pulls /sdcard/Download in full to the current PC folder
+all        pulls whatever Android folder is currently open
+```
+
+Command-line shorthand:
+
+```powershell
+aadb pull DCIM
+aadb pull Download
+aadb pull Pictures
+```
+
+Any `aadb pull <name>` value that does not start with `/` is treated as `/sdcard/<name>`.
 
 ## Persistence
 

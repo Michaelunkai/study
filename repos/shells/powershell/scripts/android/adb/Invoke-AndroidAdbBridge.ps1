@@ -23,6 +23,7 @@ function Write-AadbHelp {
     Write-Host '  aadb apk                           Install default APK and copy it to /sdcard/Download.'
     Write-Host '  aadb push <pcPath> [androidPath]   Copy PC file/folder to Android.'
     Write-Host '  aadb pull                          Browse Android from /home, then pull selection here.'
+    Write-Host '  aadb pull DCIM                     Copy /sdcard/DCIM to current PC folder.'
     Write-Host '  aadb pull <androidPath> [pcPath]   Copy Android file/folder to PC.'
     Write-Host '  aadb persist                       Reinstall PATH and logon auto-connect persistence.'
     Write-Host '  aadb shell <command...>            Auto-connect, then run adb shell.'
@@ -445,7 +446,7 @@ function Invoke-InteractivePull([string]$StartPath) {
         }
 
         Write-Host ''
-        Write-Host 'Commands: number=open folder/pull file, p number=pull item, p=pull current folder, ..=up, q=quit'
+        Write-Host 'Commands: name=pull item/folder, all=pull current folder, number=open folder/pull file, p number=pull item, open name=open folder, ..=up, q=quit'
         $rawChoice = Read-Host 'Choose'
         if ($null -eq $rawChoice) {
             return
@@ -463,9 +464,9 @@ function Invoke-InteractivePull([string]$StartPath) {
             }
             continue
         }
-        if ($choice -match '^(p|pull)$') {
+        if ($choice -match '^(all|p|pull)$') {
             Copy-FromAndroid $current $destination
-            return
+            continue
         }
         if ($choice -match '^p\s*(\d+)$') {
             $idx = [int]$Matches[1] - 1
@@ -474,7 +475,21 @@ function Invoke-InteractivePull([string]$StartPath) {
                 continue
             }
             Copy-FromAndroid $entries[$idx].Path $destination
-            return
+            continue
+        }
+        if ($choice -match '^(open|cd)\s+(.+)$') {
+            $nameChoice = $Matches[2].Trim()
+            $matchesByName = @($entries | Where-Object { $_.Name -ieq $nameChoice })
+            if ($matchesByName.Count -eq 1 -and $matchesByName[0].Kind -eq 'D') {
+                $current = $matchesByName[0].Path
+            }
+            elseif ($matchesByName.Count -eq 1) {
+                Write-Host 'That item is a file. Type its name without open/cd to pull it.' -ForegroundColor Yellow
+            }
+            else {
+                Write-Host 'Folder name not found or ambiguous.' -ForegroundColor Yellow
+            }
+            continue
         }
         if ($choice -match '^\d+$') {
             $idx = [int]$choice - 1
@@ -487,8 +502,17 @@ function Invoke-InteractivePull([string]$StartPath) {
             }
             else {
                 Copy-FromAndroid $entries[$idx].Path $destination
-                return
+                continue
             }
+            continue
+        }
+        $matchesByName = @($entries | Where-Object { $_.Name -ieq $choice })
+        if ($matchesByName.Count -eq 1) {
+            Copy-FromAndroid $matchesByName[0].Path $destination
+            continue
+        }
+        elseif ($matchesByName.Count -gt 1) {
+            Write-Host 'Name is ambiguous. Use the number or p number.' -ForegroundColor Yellow
             continue
         }
         Write-Host 'Unknown command.' -ForegroundColor Yellow
@@ -525,6 +549,9 @@ function Copy-ToAndroid([string]$Source, [string]$Destination) {
 function Copy-FromAndroid([string]$Source, [string]$Destination) {
     if ([string]::IsNullOrWhiteSpace($Source)) {
         throw 'Missing Android source path.'
+    }
+    if (-not $Source.StartsWith('/')) {
+        $Source = "/sdcard/$Source"
     }
     if ([string]::IsNullOrWhiteSpace($Destination)) {
         $Destination = (Get-Location).Path
