@@ -19,7 +19,7 @@ The installer:
 - Adds `aadb` wrappers to Windows PowerShell 5 and PowerShell 7 profiles.
 - Creates the `CodexAadbAutoConnect` scheduled task at Windows logon.
 - Reuses an existing trusted/reachable device when possible.
-- If pairing is required, prints the Android steps and waits for pairing `IP:PORT` and code.
+- If saved wireless ADB fails, retries saved endpoints, retries mDNS discovery, restarts the ADB server, retries again, then prints Android pairing steps and waits for pairing `IP:PORT` and code.
 
 ## Android Steps When Pairing Is Required
 
@@ -42,7 +42,9 @@ Android pairing codes are temporary. No Windows script can make the pairing code
 
 ```powershell
 aadb setup
+aadb repair
 aadb connect
+aad connect
 aadb apk
 aadb push
 aadb push "C:\path\file-or-folder"
@@ -155,6 +157,31 @@ If the phone stays on the same Wi-Fi and Wireless debugging remains enabled, `aa
 
 ```powershell
 aadb setup
+```
+
+Most commands do not stop with "run setup" anymore. If no device is reachable, `aadb connect`, `aadb push`, `aadb pull`, `aadb shell`, and pass-through commands automatically start pairing repair and ask for the new Android pairing `IP:PORT` plus six-digit pairing code.
+
+Reconnect ladder before prompting:
+
+1. Check already-authorized ADB devices.
+2. Try saved wireless endpoints from `%APPDATA%\CodexAdb\wireless-adb.json`.
+3. Try Android wireless ADB mDNS discovery.
+4. Restart the ADB server.
+5. Retry saved endpoints and mDNS with bounded timeouts so stale ports cannot hang forever.
+6. Start pairing repair and ask for the new pairing `IP:PORT` plus six-digit code.
+
+If the command is running from a non-interactive host that cannot accept `Read-Host` input, it exits with a clear message telling you to run `aadb repair` in an interactive PowerShell window.
+
+Use this to force the same pairing repair immediately:
+
+```powershell
+aadb repair
+```
+
+`aad` is also installed as a short alias for `aadb`, so this works too:
+
+```powershell
+aad connect
 ```
 
 ## Project Files

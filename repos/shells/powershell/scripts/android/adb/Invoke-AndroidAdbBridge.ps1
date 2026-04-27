@@ -6,12 +6,23 @@ param(
 $ErrorActionPreference = 'Stop'
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
+trap {
+    $line = if ($null -ne $_ -and $null -ne $_.InvocationInfo) { $_.InvocationInfo.ScriptLineNumber } else { 'unknown' }
+    $message = if ($null -ne $_ -and $null -ne $_.Exception) { $_.Exception.Message } else { 'unknown error' }
+    Write-Host "AADB ERROR line ${line}: $message" -ForegroundColor Red
+    if ($null -ne $_ -and $_.ScriptStackTrace) {
+        Write-Host $_.ScriptStackTrace -ForegroundColor DarkRed
+    }
+    throw $_
+}
+
 $DefaultApk = 'F:\study\repos\fullstack\todoist-enhanced\c\todoist-enhanced-private-android-output\app\build\outputs\apk\debug\app-debug.apk'
 $ConfigDir = Join-Path $env:APPDATA 'CodexAdb'
 $ConfigPath = Join-Path $ConfigDir 'wireless-adb.json'
 $InstalledScriptPath = Join-Path $ConfigDir 'Invoke-AndroidAdbBridge.ps1'
 $UserBinDir = Join-Path $HOME 'bin'
 $ShimPath = Join-Path $UserBinDir 'aadb.ps1'
+$ShortShimPath = Join-Path $UserBinDir 'aad.ps1'
 $PlatformRoot = Join-Path $env:LOCALAPPDATA 'Android'
 $PlatformTools = Join-Path $PlatformRoot 'platform-tools'
 $Adb = Join-Path $PlatformTools 'adb.exe'
@@ -19,7 +30,8 @@ $Adb = Join-Path $PlatformTools 'adb.exe'
 function Write-AadbHelp {
     Write-Host 'aadb commands:' -ForegroundColor Cyan
     Write-Host '  aadb setup                         Print Android steps, pair once, save endpoint.'
-    Write-Host '  aadb connect                       Auto-connect using saved endpoint or mDNS discovery.'
+    Write-Host '  aadb repair                        Force pairing repair now.'
+    Write-Host '  aadb connect                       Auto-connect; if unreachable, start pairing repair.'
     Write-Host '  aadb apk                           Install default APK and copy it to /sdcard/Download.'
     Write-Host '  aadb push                          Copy current PC folder to /sdcard/Download.'
     Write-Host '  aadb push <pcPath> [androidPath]   Copy PC file/folder to Android.'
@@ -33,6 +45,7 @@ function Write-AadbHelp {
     Write-Host '  aadb steps                         Print Android setup steps only.'
     Write-Host '  aadb path                          Show script, config, and adb paths.'
     Write-Host '  aadb <any adb args...>             Auto-connect, then pass arguments to adb.'
+    Write-Host '  aad <same args>                    Short alias for aadb.'
 }
 
 function Ensure-Directory([string]$Path) {
@@ -136,6 +149,45 @@ function Invoke-Adb {
     & $Adb @Arguments
 }
 
+function ConvertTo-ProcessArgument([string]$Value) {
+    if ($null -eq $Value) {
+        return '""'
+    }
+    if ($Value -notmatch '[\s"]') {
+        return $Value
+    }
+    return '"' + ($Value -replace '"', '\"') + '"'
+}
+
+function Invoke-AdbBounded {
+    param(
+        [string[]]$Arguments,
+        [int]$TimeoutSeconds = 8
+    )
+    Ensure-Adb
+    $psi = [Diagnostics.ProcessStartInfo]::new()
+    $psi.FileName = $Adb
+    $psi.Arguments = (@($Arguments) | ForEach-Object { ConvertTo-ProcessArgument $_ }) -join ' '
+    $psi.RedirectStandardOutput = $true
+    $psi.RedirectStandardError = $true
+    $psi.UseShellExecute = $false
+    $process = [Diagnostics.Process]::Start($psi)
+    if ($null -eq $process) {
+        return @("ADB_PROCESS_START_RETURNED_NULL: adb $($psi.Arguments)")
+    }
+    if (-not $process.WaitForExit($TimeoutSeconds * 1000)) {
+        try {
+            $process.Kill()
+        }
+        catch {
+        }
+        return @("ADB_TIMEOUT after ${TimeoutSeconds}s: adb $($psi.Arguments)")
+    }
+    $stdout = if ($null -ne $process.StandardOutput) { $process.StandardOutput.ReadToEnd() } else { '' }
+    $stderr = if ($null -ne $process.StandardError) { $process.StandardError.ReadToEnd() } else { '' }
+    return @(($stdout + "`n" + $stderr) -split "`r?`n" | Where-Object { $_ })
+}
+
 function Start-AdbServer {
     Ensure-Adb
     $env:Path = "$UserBinDir;$PlatformTools;$env:Path"
@@ -161,11 +213,23 @@ function Get-AuthorizedSerial {
 }
 
 function Get-MdnsEndpoints {
+    param(
+        [int]$Attempts = 3,
+        [int]$DelaySeconds = 1
+    )
     $result = @()
-    $lines = Invoke-Adb @('mdns', 'services') 2>$null
-    foreach ($line in $lines) {
-        if ($line -match '_adb-tls-connect' -and $line -match '(\d{1,3}(\.\d{1,3}){3}:\d+)') {
-            $result += $Matches[1]
+    for ($attempt = 1; $attempt -le $Attempts; $attempt++) {
+        $lines = Invoke-AdbBounded -Arguments @('mdns', 'services') -TimeoutSeconds 5
+        foreach ($line in $lines) {
+            if ($line -match '_adb-tls-connect' -and $line -match '(\d{1,3}(\.\d{1,3}){3}:\d+)') {
+                $result += $Matches[1]
+            }
+        }
+        if ($result.Count -gt 0) {
+            break
+        }
+        if ($attempt -lt $Attempts) {
+            Start-Sleep -Seconds $DelaySeconds
         }
     }
     return @($result | Select-Object -Unique)
@@ -176,7 +240,7 @@ function Try-ConnectEndpoint([string]$Endpoint) {
         return $null
     }
     Write-Host "Trying adb connect $Endpoint" -ForegroundColor DarkCyan
-    Invoke-Adb @('connect', $Endpoint) 2>&1 | Out-Host
+    Invoke-AdbBounded -Arguments @('connect', $Endpoint) -TimeoutSeconds 8 | Out-Host
     Start-Sleep -Seconds 1
     return Get-AuthorizedSerial
 }
@@ -218,6 +282,7 @@ function Ensure-LocalPersistence {
 
     $shimBody = "& '$InstalledScriptPath' @args`r`n"
     Set-Content -LiteralPath $ShimPath -Value $shimBody -Encoding ASCII
+    Set-Content -LiteralPath $ShortShimPath -Value $shimBody -Encoding ASCII
 
     $userPath = [Environment]::GetEnvironmentVariable('Path', 'User')
     $parts = @($userPath -split ';' | Where-Object { $_ })
@@ -257,6 +322,9 @@ function Ensure-ProfileWrapper {
 function aadb {
     & '$ShimPath' @args
 }
+function aad {
+    & '$ShortShimPath' @args
+}
 # <<< aadb Android ADB bridge <<<
 "@
     foreach ($profilePath in $profiles) {
@@ -292,6 +360,7 @@ function Invoke-AutoSetup {
 function Ensure-Connected {
     Start-AdbServer
     $cfg = Load-Config
+    $attemptedEndpoints = @{}
 
     $serial = Get-AuthorizedSerial
     if ($serial -and $serial -notmatch '^\d{1,3}(\.\d{1,3}){3}:\d+$') {
@@ -303,7 +372,8 @@ function Ensure-Connected {
         return $serial
     }
 
-    foreach ($endpoint in @($cfg.connectEndpoints | Where-Object { $_ })) {
+    foreach ($endpoint in @($cfg.connectEndpoints | Where-Object { $_ } | Select-Object -Unique)) {
+        $attemptedEndpoints[$endpoint] = $true
         $serial = Try-ConnectEndpoint $endpoint
         if ($serial) {
             Add-EndpointToConfig $cfg $endpoint $serial
@@ -311,7 +381,13 @@ function Ensure-Connected {
         }
     }
 
-    foreach ($endpoint in Get-MdnsEndpoints) {
+    foreach ($endpoint in Get-MdnsEndpoints -Attempts 2 -DelaySeconds 1) {
+        if ($null -ne $attemptedEndpoints -and $attemptedEndpoints.ContainsKey($endpoint)) {
+            continue
+        }
+        if ($null -ne $attemptedEndpoints) {
+            $attemptedEndpoints[$endpoint] = $true
+        }
         $serial = Try-ConnectEndpoint $endpoint
         if ($serial) {
             Add-EndpointToConfig $cfg $endpoint $serial
@@ -319,7 +395,28 @@ function Ensure-Connected {
         }
     }
 
-    throw 'No authorized Android device found. Run: aadb setup'
+    Write-Host 'No device reachable through saved endpoint or mDNS. Restarting ADB server and trying once more...' -ForegroundColor Yellow
+    Invoke-Adb @('kill-server') 2>$null | Out-Null
+    Start-AdbServer
+
+    foreach ($endpoint in @($cfg.connectEndpoints | Where-Object { $_ } | Select-Object -Unique)) {
+        $serial = Try-ConnectEndpoint $endpoint
+        if ($serial) {
+            Add-EndpointToConfig $cfg $endpoint $serial
+            return $serial
+        }
+    }
+
+    foreach ($endpoint in Get-MdnsEndpoints -Attempts 2 -DelaySeconds 1) {
+        $serial = Try-ConnectEndpoint $endpoint
+        if ($serial) {
+            Add-EndpointToConfig $cfg $endpoint $serial
+            return $serial
+        }
+    }
+
+    Write-Host 'No authorized Android device found. Starting wireless pairing repair now.' -ForegroundColor Yellow
+    return (Setup-Wireless)
 }
 
 function Setup-Wireless {
@@ -327,12 +424,20 @@ function Setup-Wireless {
     Ensure-LocalPersistence
     Write-AndroidSteps
 
-    $pairEndpoint = (Read-Host 'Enter pairing IP:PORT once').Trim()
+    $rawPairEndpoint = Read-Host 'Enter pairing IP:PORT once'
+    if ($null -eq $rawPairEndpoint) {
+        throw 'Pairing repair requires the Android pairing IP:PORT. Run aadb repair in an interactive PowerShell window.'
+    }
+    $pairEndpoint = $rawPairEndpoint.Trim()
     if ($pairEndpoint -notmatch '^\d{1,3}(\.\d{1,3}){3}:\d+$') {
         throw 'Bad pairing address. Use dots, example 192.168.1.124:41539'
     }
 
-    $pairCode = (Read-Host 'Enter six-digit pairing code once').Trim()
+    $rawPairCode = Read-Host 'Enter six-digit pairing code once'
+    if ($null -eq $rawPairCode) {
+        throw 'Pairing repair requires the Android six-digit pairing code. Run aadb repair in an interactive PowerShell window.'
+    }
+    $pairCode = $rawPairCode.Trim()
     if ($pairCode -notmatch '^\d{6}$') {
         throw 'Bad pairing code. It must be exactly six digits.'
     }
@@ -683,6 +788,7 @@ function Show-Paths {
     Write-Host "Script: $PSCommandPath"
     Write-Host "Installed script: $InstalledScriptPath"
     Write-Host "Shim:   $ShimPath"
+    Write-Host "Short shim: $ShortShimPath"
     Write-Host "Config: $ConfigPath"
     Write-Host "ADB:    $Adb"
 }
@@ -708,6 +814,8 @@ switch ($cmd) {
     'bootstrap' { Invoke-AutoSetup; return }
     'autosetup' { Invoke-AutoSetup; return }
     'setup' { Setup-Wireless | Out-Null; return }
+    'repair' { Setup-Wireless | Out-Null; return }
+    'pair' { Setup-Wireless | Out-Null; return }
     'connect' { $serial = Ensure-Connected; Write-Host "CONNECTED: $serial"; return }
     'devices' { Start-AdbServer; Invoke-Adb @('devices', '-l'); return }
     'apk' { Install-DefaultApk; return }
