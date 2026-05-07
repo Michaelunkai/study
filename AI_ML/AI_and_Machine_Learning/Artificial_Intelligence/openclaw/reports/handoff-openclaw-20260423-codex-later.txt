@@ -1,0 +1,192 @@
+```text
+Original mission
+- Continue Micha's active `until-done` OpenClaw migration and hardening mission in `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw`.
+- The real goal is not only code cleanup. It is to make the F-drive OpenClaw tree the single durable authority for runtime, config, bot workspaces, PowerShell helpers, and new writes; restore the Telegram slash-command surface on all 4 bots; keep the hidden tray-managed gateway stable; prove cross-bot parity and isolation; purge clearly stale OpenClaw-related C-drive leftovers; and only then continue to the later `nvid` phase.
+- Do not restart broad discovery. Continue from the current verified checkpoint.
+
+What the user actually wanted proved or achieved
+- `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw` must be the authoritative OpenClaw home.
+- New OpenClaw data must land on F, not in real C-drive payload folders.
+- The hidden tray manager must remain the one visible control path; no duplicate tray icons, no extra console popups, no duplicate gateway sessions.
+- All 4 Telegram bots (`bot1`, `bot2`, `openclaw`, `openclaw4`) must share the same command surface and capability parity while still keeping different chats and tasks isolated unless global fan-out is intentional.
+- Slash commands must be restored and actually registered on the bots, including the newly missing `/start` command from this run.
+- PowerShell profile helpers that still pointed at old C-drive state paths had to be corrected.
+- C-drive OpenClaw residue had to be purged only after the F-drive authority was proven.
+- Final mission completion is still blocked on fresh user-side Telegram proof in all 4 bot chats; the Nvidia phase must not start before that proof loop is satisfied.
+
+Workspace and paths
+- Workspace root: `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw`
+- Canonical state root: `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\openclaw-home`
+- Canonical config: `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\openclaw-home\openclaw.json`
+- Hidden tray launcher: `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\ClawdBot\ClawdbotTray.vbs`
+- Hidden manager: `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\ClawdBot\ClawdBotManager.exe`
+- Runtime entrypoint: `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\npm-global\node_modules\openclaw\dist\index.js`
+- Path/env resolver: `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\scripts\Resolve-OpenClawPaths.ps1`
+- Telegram sync script: `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\scripts\telegram-global\Sync-TelegramMenu.ps1`
+- Slash add/update helper: `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\scripts\telegram-global\Set-OpenClawSlashCommand.ps1`
+- Restart helper: `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\ProfileFunctions\Restart-OpenclawGateway.ps1`
+- Current PowerShell profile patched in this run: `C:\Users\micha\Documents\PowerShell\Microsoft.PowerShell_profile.ps1`
+- `later` skill support files used for this handoff:
+- `C:\Users\micha\.codex\skills\later\references\evidence-sources.md`
+- `C:\Users\micha\.codex\skills\later\scripts\copy-to-clipboard.ps1`
+- `C:\Users\micha\.codex\skills\later\scripts\find-related-sessions.ps1`
+
+User instructions and constraints to preserve
+- This is still `until-done` work. Do not stop at plans or plausible explanations.
+- Do not claim final success without concrete proof.
+- Preserve the tray-only, hidden-manager runtime model. No duplicate tray icons, no duplicate gateway children, no extra windows.
+- Treat all 4 OpenClaw workspaces as capability-equal.
+- Keep cross-bot isolation except for intentional global actions.
+- New data should write to F. C paths may remain only as compatibility shims if they are symlinks/forwarders into F and have zero meaningful payload.
+- Do not redo broad discovery. The current architecture and controlling surfaces are already known.
+- After two materially failed attempts, stop guessing and read exact code, logs, config, or current docs.
+- The final blocker remains user-side Telegram proof. The environment still cannot fake a user-to-bot message or observe the user's Telegram client directly.
+- The later `nvid` repair phase is downstream. Do not start it until the OpenClaw Telegram proof gate is satisfied in the required execution order.
+
+Completeness ledger
+- `verified`
+- `openclaw-home\openclaw.json` is F-rooted for all 4 agents and workspaces.
+- `C:\Users\micha\.openclaw` is a symlink to `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\openclaw-home`.
+- `C:\Users\micha\.clawdbot\openclaw.json` is a symlink to `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\openclaw-home\openclaw.json`.
+- Writing a probe file through `C:\Users\micha\.openclaw\__codex_probe.txt` created the file under the F-root target and deleting it via the C path removed it from F too.
+- The stale profile functions `disdis`, `endis`, `backgame`, and `resgame` in `C:\Users\micha\Documents\PowerShell\Microsoft.PowerShell_profile.ps1` were patched to resolve through `Resolve-OpenClawPaths.ps1` instead of hardcoded `C:\Users\micha\.openclaw` paths.
+- `/start` was added to the global OpenClaw Telegram command surface and mirrored into all 4 workspaces.
+- `Sync-TelegramMenu.ps1` was patched twice: first to sanitize description encoding safely, then to compact published descriptions enough for Telegram to accept the full command surface.
+- After the compact-description patch, all 4 bots returned `count=98` and `start=True` for `default`, `all_private_chats`, and the known direct-chat scope `chat_id=716239770`.
+- The hidden tray runtime is healthy after restart. Verified chain at time of proof: `ClawdBotManager.exe` PID `15372` -> `node.exe` PID `12252`, listener on `127.0.0.1:18789` and `[::1]:18789`, and `Restart-OpenclawGateway.ps1 -CheckOnly` reported `ClawdBot runtime is healthy`.
+- `Sync-TelegramMenu.ps1` parses cleanly.
+- `C:\Users\micha\Documents\PowerShell\Microsoft.PowerShell_profile.ps1` parses cleanly.
+- Clearly stale C-drive OpenClaw leftovers were deleted in this run:
+- `C:\Users\micha\.openclaw-legacy-20260423-184719`
+- `C:\Users\micha\.openclaw-mission-control`
+- `C:\Users\micha\.openclaw-restore-rollback-20260320-073347`
+- `C:\Users\micha\.openclaw-restore-rollback-20260320-193710`
+- `C:\Users\micha\dot-openclaw-restore-rollback-20260320-073347`
+- `C:\Users\micha\openclaw-mission-control`
+- `C:\Users\micha\ClawdBot_Startup_SETUP.txt`
+- `C:\Users\micha\ClawdBot_Startup.bat`
+- `C:\Users\micha\cleanup-openclaw-configs.ps1`
+- `C:\Users\micha\fix-openclaw-config.ps1`
+- `C:\Users\micha\fix-openclaw-install.ps1`
+- `C:\Users\micha\install-openclaw-clean.ps1`
+- `C:\Users\micha\OPENCLAW_COMMANDS.txt`
+- `C:\Users\micha\temp_grep_clawhooks.ps1`
+- `C:\Users\micha\.claw`
+- `C:\Users\micha\.clawd`
+- `C:\Users\micha\clawd`
+- After that purge, the only claw/openclaw-named top-level entries left in `C:\Users\micha` were:
+- `C:\Users\micha\.openclaw` -> symlink to F
+- `C:\Users\micha\.clawdbot` -> real directory containing the symlinked config shim
+
+- `partial`
+- The command surface now includes 98 published commands, but this run did not inventory every one of those commands against a separate historical expected catalog beyond the current config and workspace skill surface.
+- `/start` is definitely restored in the Telegram menu and in all 4 workspaces, but there was no fresh user-side chat execution proof for `/start` or for the broader command set.
+- The user's stricter real-time progress requirement for every bot job every 30 seconds was not re-audited in runtime code during this segment.
+- The `.clawdbot` directory remains as a compatibility shim surface because it contains the symlinked config path. It was not collapsed further.
+
+- `blocked`
+- Final OpenClaw completion is still blocked on the user-side Telegram proof loop.
+- Exact blocker: the environment cannot originate a genuine user-to-bot message or directly inspect Micha's Telegram client surface, so the final proof of real bot behavior in the same user chats still requires Micha's action.
+
+- `not started`
+- The downstream Nvidia `nvid` repair phase was not touched in this segment because the required OpenClaw Telegram proof gate is still open.
+
+Current verified state
+- Live config path in use: `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\openclaw-home\openclaw.json`
+- `gateway.port` is `18789`
+- `OPENCLAW_STATE_DIR` and `OPENCLAW_CONFIG_PATH` user env vars are both set to the F-root paths.
+- `openclaw-home\openclaw.json` has `tools.elevated.enabled = true` and Telegram `allowFrom = ['*']` style permissive execution surfaces for all 4 configured bots.
+- The Telegram command source config currently contains `98` `customCommands` entries.
+- `bot1`, `bot2`, `openclaw`, and `openclaw4` each returned `98` commands and `start=True` when queried via Telegram Bot API after the final sync.
+- The published Telegram descriptions are intentionally compact labels now, e.g. `start`, `snap`, `slash`, `vault save`; this was the durable fix that allowed all 98 commands to fit.
+- At the last top-level `C:\Users\micha` claw/openclaw audit, only `.openclaw` and `.clawdbot` remained.
+
+Completed changes from this run
+- Patched `C:\Users\micha\Documents\PowerShell\Microsoft.PowerShell_profile.ps1` to remove stale hardcoded C-drive state references from:
+- `disdis`
+- `endis`
+- `backgame`
+- `resgame`
+- Added `/start` to `openclaw-home\openclaw.json` and mirrored `start\SKILL.md` into:
+- `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\openclaw-home\workspace-openclaw-main\skills\start\SKILL.md`
+- `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\openclaw-home\workspace-moltbot2\skills\start\SKILL.md`
+- `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\openclaw-home\workspace-moltbot\skills\start\SKILL.md`
+- `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\openclaw-home\workspace-openclaw\skills\start\SKILL.md`
+- Patched `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\scripts\telegram-global\Sync-TelegramMenu.ps1` so it:
+- sanitizes description text safely
+- handles Telegram `BOT_COMMANDS_TOO_MUCH` from both exception-message and error-details surfaces
+- falls back to compact command-name-derived descriptions when long descriptions would overflow Telegram's payload limit
+- Successfully re-synced the Telegram menus after proving via a live probe that Telegram accepts all 98 commands when descriptions are short.
+- Restarted the hidden tray-managed gateway and re-verified listener/process health.
+- Purged the clearly stale C-drive OpenClaw leftovers listed above.
+
+Tests, verification, and evidence
+- `Get-Item 'C:\Users\micha\.openclaw' | Format-List FullName,Attributes,LinkType,Target,LastWriteTime`
+- result showed `SymbolicLink` -> `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\openclaw-home`
+- `Get-Item 'C:\Users\micha\.clawdbot\openclaw.json' | Format-List FullName,Attributes,LinkType,Target,Length,LastWriteTime`
+- result showed `SymbolicLink` -> `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\openclaw-home\openclaw.json`
+- Probe proof:
+- wrote `C:\Users\micha\.openclaw\__codex_probe.txt`
+- confirmed `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\openclaw-home\__codex_probe.txt` existed with matching content
+- deleted through the C path and confirmed removal from F too
+- Parser checks:
+- `profile_parse_ok`
+- `sync_parse_ok`
+- Telegram command registration proof after final sync:
+- `bot1:default:count=98;start=True`
+- `bot1:all_private_chats:count=98;start=True`
+- `bot1:chat716239770:count=98;start=True`
+- same pattern for `bot2`, `openclaw`, and `openclaw4`
+- Runtime proof after restart:
+- `Restart-OpenclawGateway.ps1` output: `Restarting OpenClaw gateway... Gateway restarted True`
+- `Restart-OpenclawGateway.ps1 -CheckOnly` output: `ClawdBot runtime is healthy` and `True`
+- `Get-CimInstance Win32_Process ...` showed `ClawdBotManager.exe` parent of the gateway `node.exe`
+- `netstat -ano | Select-String ':18789'` showed `LISTENING` on PID `12252`
+- `git status --short` at the workspace root is not useful as a cleanliness signal here because the repo is nested inside a much larger tree and reports many unrelated ancestor untracked paths.
+
+Claimed-but-unverified state
+- The exact per-command execution behavior of the full 98-command menu was not re-proved from real user chat messages in this run.
+- The user's requirement that every bot always emit real-time progress every 30 seconds in the same Telegram chat was not code-audited or live-proved in this segment.
+- The `.clawdbot` compatibility directory may be collapsible further, but that was not attempted because the symlinked config shim is currently working and no longer stores the real config.
+- No fresh `/new` proof exists yet from this run in all four live bot chats.
+
+Rejected paths and user corrections
+- Do not claim completion from Telegram Bot API registration alone. Micha explicitly wants live chat proof.
+- Do not treat old C-drive listings as proof of live storage until you check whether they are symlinks. Earlier directory traversal was misleading because it traversed the `.openclaw` symlink and made it look like a real C payload still existed.
+- Do not reintroduce long Telegram descriptions if that drops the visible command count again.
+- Do not enable extra launchers or create a second visible bot runtime just to test something.
+- Do not start the Nvidia phase before the OpenClaw proof gate is closed.
+
+Failed paths to avoid
+- Broad recursive search across the whole repo including `npm-global` without filtering; it is noisy and can timeout.
+- Using `rg.exe` on this machine without fallback; the WinGet shim is broken here.
+- Assuming a `GetMyCommands` check run in parallel with a live sync reflects stable post-sync state; one earlier verification race produced misleading 80-command reads.
+- Treating `.openclaw` content shown by directory traversal as proof of a real C directory when the parent path is actually a symlink.
+
+Remaining work
+- The next session must first preserve the now-working F-root and 98-command Telegram state. Do not undo the compact-description sync behavior.
+- Then finish the still-open final OpenClaw proof gate:
+- Micha must send `/new` plus one real screenshot-or-action request in each of the 4 bot chats: `bot1`, `bot2`, `openclaw`, `openclaw4`
+- the next session must verify the bots respond correctly in those same chats
+- confirm cross-bot parity and non-overlap from those live chats
+- If any bot fails that proof loop, fix the actual runtime or routing issue rather than assuming menu registration means execution is fine.
+- After the OpenClaw proof gate is fully satisfied, continue to the deferred Nvidia phase (`nvid`) under the user's original required order.
+
+Immediate next actions
+- Re-check stable state at the start of the new session with these commands first:
+- `Get-Item 'C:\Users\micha\.openclaw' | Format-List FullName,Attributes,LinkType,Target,LastWriteTime`
+- `Get-Item 'C:\Users\micha\.clawdbot\openclaw.json' | Format-List FullName,Attributes,LinkType,Target,Length,LastWriteTime`
+- `& 'F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\ProfileFunctions\Restart-OpenclawGateway.ps1' -CheckOnly`
+- `netstat -ano | Select-String ':18789'`
+- `powershell -NoProfile -ExecutionPolicy Bypass -File 'F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\scripts\telegram-global\Sync-TelegramMenu.ps1' | Out-String`
+- Then re-run a Bot API count check for `default`, `all_private_chats`, and `chat_id=716239770` to ensure all 4 bots still show `98` commands and `/start` present.
+- Then ask Micha for the still-missing real Telegram proof loop if he has not already provided it.
+- Once Micha provides that proof surface, verify it and continue immediately to the remaining OpenClaw completion work and the later Nvidia phase.
+
+Execution directive
+- Continue from the current verified state immediately.
+- Do not restart broad discovery.
+- Preserve the confirmed F-root architecture, the working hidden tray-managed gateway, the symlink compatibility shims, the 98-command Telegram menu surface, and the profile fixes.
+- Fix only what still remains unverified or blocked.
+- Verify the result yourself with live runtime and Telegram proofs, and stop only when the stated mission is complete.
+```

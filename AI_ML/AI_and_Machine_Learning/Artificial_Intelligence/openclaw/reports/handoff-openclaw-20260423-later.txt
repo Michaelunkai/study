@@ -1,0 +1,271 @@
+Original mission
+
+The original mission is Micha's until-done OpenClaw migration and hardening contract. Make `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw` the single real OpenClaw authority, eliminate every avoidable non-F control surface, preserve tray-only hidden operation via the F tray manager, keep all four Telegram bots and workspaces capability-equal and isolated, verify PS5 and PS7 command resolution plus gateway restart and health, update durable rule surfaces such as the `claw` skill and `/claw` metadata, produce a residue audit for every remaining non-F path, and then repair, harden, run, and verify the `nvid` PowerShell workflow end to end.
+
+This is mission-sticky until-done work. Do not claim completion without proof. If blocked, name the exact blocker and the exact missing input.
+
+What the user actually wanted proved or achieved
+
+- `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw` must be the authoritative runtime, config, workspace, launcher, npm surface, and startup home.
+- No stale C or alternate path may still control active OpenClaw behavior.
+- Exactly one tray icon and no duplicate manager, gateway, or node child processes.
+- Startup re-entry must be idempotent.
+- Gateway restart must preserve the hidden tray-manager chain.
+- PS5 and PS7 must both resolve `openclaw`, `clawdbot`, and `gclaw` into the F architecture.
+- `openclaw onboard --install-daemon` and `openclaw doctor --fix` must work honestly in the final architecture.
+- `gclaw` must be a modern equivalent, not the old npm-global reinstall recipe.
+- Four bots and workspaces must retain capability parity and session isolation.
+- Telegram slash commands, menus, and `/claw` metadata must match the real runtime.
+- Final residue audit must classify every remaining non-F path with proof.
+- After OpenClaw hardening, `nvid` must be repaired in both profile files and fully verified against the real RTX 5080 machine state.
+
+Workspace and paths
+
+- Workspace root: `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw`
+- Source-of-truth config: `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\openclaw-home\openclaw.json`
+- Canonical state dir: `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\openclaw-home`
+- F command surface:
+- `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\npm-global\openclaw.cmd`
+- `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\npm-global\openclaw.ps1`
+- `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\npm-global\clawdbot.cmd`
+- `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\npm-global\clawdbot.ps1`
+- Profile override entry: `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\ProfileFunctions\OpenClawProfileOverrides.ps1`
+- Modern gclaw script: `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\ProfileFunctions\gclaw.ps1`
+- Key patched runtime files:
+- `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\npm-global\node_modules\openclaw\dist\schtasks-BszHD7Ag.js`
+- `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\npm-global\node_modules\openclaw\dist\prompt-select-styled-D1dFXIrR.js`
+- Command-surface generator: `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\scripts\Ensure-OpenClawCommandSurface.ps1`
+- Path and environment resolver: `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\scripts\Resolve-OpenClawPaths.ps1`
+- Live gateway launcher script: `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\openclaw-home\gateway.cmd`
+- Tray chain roots:
+- `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\ClawdBot\ClawdBotManager.exe`
+- `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\ClawdBot\ClawdbotTray.vbs`
+- Rollback and preservation artifacts:
+- `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\reports\migration-rollback-20260423-172305`
+- `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\reports\c-legacy-artifacts-20260423-185126`
+- `C:\Users\micha\.openclaw-legacy-20260423-184719`
+- Compatibility links and shims:
+- `C:\Users\micha\.openclaw` -> `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\openclaw-home`
+- `C:\Users\micha\.clawdbot\openclaw.json` -> `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\openclaw-home\openclaw.json`
+- `C:\Users\micha\AppData\Local\npm-global\openclaw.cmd` and `.ps1` forward to the F wrappers
+- `C:\Users\micha\AppData\Roaming\npm\clawdbot.cmd` and `.ps1` forward to the F wrappers
+
+User instructions and constraints to preserve
+
+- Evidence over assumptions. Read the live controlling files before editing.
+- Do not restart broad discovery.
+- No duplicate tray icons, duplicate gateways, duplicate managers, duplicate node children, or extra UI.
+- The tray-manager chain is the intended visible control surface.
+- PowerShell 5 `allstart` remains startup authority unless Micha explicitly approves another path.
+- Startup must be idempotent.
+- Four workspaces must stay capability-equal unless Micha explicitly requests otherwise.
+- Session isolation across the four bots is strict except for intentional global actions.
+- No fake capability limits. All bots are intended to have maximum permission.
+- No stale helper, task, launcher, shim, or profile function may remain authoritative.
+- If two materially failed attempts occur, stop guessing and read the code, logs, config, and exact failure text.
+- Do not claim completion from config edits alone. Verify live.
+- The final mission response must include a residue audit and real proofs. If blocked, use the exact until-done blocked contract.
+- Current user-visible blocker for the final cross-bot proof loop: Micha must send `/new` plus one real screenshot-or-action request in the remaining configured Telegram bot chats.
+
+Completeness ledger
+
+- `achieved and verified`
+- Canonical config, state, cron, canvas, and workspaces are F-rooted under `openclaw-home`.
+- The live tray and gateway process chain points to the F runtime.
+- The F command surface for `openclaw` exists and `clawdbot` now resolves as a compatibility alias to `openclaw`.
+- PS5 command resolution and version proof were captured for `openclaw`, `clawdbot`, and `gclaw`.
+- `openclaw onboard --non-interactive --accept-risk --install-daemon --json` succeeds in both PS5 and PS7.
+- The live C state and config authorities were replaced with F-targeting symlinks.
+- Old C npm package trees were removed and legacy `.clawdbot` artifacts were moved into an F archive.
+
+- `achieved but not yet re-verified`
+- `gclaw` was modernized to the noninteractive F-root flow, but it was not executed after patching.
+- The doctor false-positive about multiple state directories was patched, but the rerun was interrupted before proving the warning disappeared.
+
+- `partial`
+- The residue audit is mostly known but not yet assembled into the final classified list.
+- Startup idempotency and gateway restart behavior were partially observed earlier, but not re-run after the latest `schtasks` and doctor patches.
+- Telegram slash and menu parity and `/claw` metadata durability were not re-verified in the latest segment.
+
+- `blocked`
+- Final cross-bot live proof still needs fresh `/new` plus one real screenshot-or-action request in the remaining bot chats.
+
+- `not started in this segment`
+- The `nvid` repair, dedupe, and live Nvidia App and driver verification work.
+- Final `claw` skill and `/claw` metadata audit or update if drift remains.
+
+Current verified state
+
+- `openclaw-home\openclaw.json` currently points all four agents and workspaces to:
+- `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\openclaw-home\workspace-openclaw-main`
+- `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\openclaw-home\workspace-moltbot2`
+- `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\openclaw-home\workspace-moltbot`
+- `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\openclaw-home\workspace-openclaw`
+- Elevated Telegram execution is enabled globally and per-agent in that config.
+- `openclaw gateway status --deep` after migration showed:
+- Service: `Scheduled Task (registered)`
+- Service file: `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\openclaw-home\gateway.cmd`
+- Command: `C:\Program Files\nodejs\node.exe F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\npm-global\node_modules\openclaw\dist\index.js gateway --port 18789`
+- Service env points to F `OPENCLAW_STATE_DIR` and F `OPENCLAW_CONFIG_PATH`
+- Runtime running, pid `20592`, state `Disabled`, listener `127.0.0.1:18789`
+- `OpenClaw Gateway` XML currently has `<Enabled>false</Enabled>` and points to the F `gateway.cmd`. This is intentional compatibility residue, not the primary startup authority.
+- `C:\Users\micha\.openclaw` is a symlink to F `openclaw-home`.
+- `C:\Users\micha\.clawdbot\openclaw.json` is a symlink to F `openclaw-home\openclaw.json`.
+- `clawdbot --version` from both F and roaming shims prints `OpenClaw 2026.4.21 (f788c88)`.
+
+Completed changes
+
+- Patched `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\scripts\Ensure-OpenClawCommandSurface.ps1` so legacy C shims are explicit forwarders to F wrappers and canonical F `clawdbot` wraps `openclaw` instead of the broken published `clawdbot` CLI.
+- Replaced the live C state and config authorities with F-targeting symlinks.
+- Removed stale package trees:
+- `C:\Users\micha\AppData\Local\npm-global\node_modules\openclaw`
+- `C:\Users\micha\AppData\Roaming\npm\node_modules\clawdbot`
+- plus the bare no-extension launchers under those dirs
+- Archived remaining `.clawdbot` residue into `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\reports\c-legacy-artifacts-20260423-185126`.
+- Patched `...\dist\schtasks-BszHD7Ag.js` so updating an existing disabled `OpenClaw Gateway` task no longer forces `schtasks /Run`; it now updates the task script and leaves the disabled compatibility task disabled.
+- Patched `...\ProfileFunctions\gclaw.ps1` so the modern flow is:
+- persist the F env and command surface
+- print version
+- `openclaw onboard --non-interactive --accept-risk --install-daemon`
+- `openclaw doctor --fix`
+- print version
+- no npm global uninstall or reinstall
+- Patched `...\dist\prompt-select-styled-D1dFXIrR.js` so doctor state-dir warnings should ignore symlink-equivalent `~\.openclaw` -> F state links.
+- Earlier critical F-root corrections already in place:
+- `openclaw-home\exec-approvals.json` F socket path
+- `openclaw-home\devices\paired.json` and `identity\device-auth.json` operator scopes and pairing state
+- `openclaw-home\gateway.cmd` F runtime command
+- `ProfileFunctions\openclaw-stop.ps1` and `ProfileFunctions\clawd.ps1` moved off broken `Get-WmiObject`
+
+Tests, verification, and evidence
+
+- PS5 noninteractive onboard success:
+- `powershell.exe -NoProfile -Command "& 'F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\npm-global\openclaw.cmd' onboard --non-interactive --accept-risk --install-daemon --json"`
+- result: `ok: true`, `installDaemon: true`, `daemonInstall.installed: true`
+- printed:
+- `Updated Scheduled Task: OpenClaw Gateway`
+- `Task script: F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\openclaw-home\gateway.cmd`
+- `Launch mode: kept disabled`
+
+- PS7 noninteractive onboard success:
+- `pwsh -NoProfile -Command "& 'F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\npm-global\openclaw.cmd' onboard --non-interactive --accept-risk --install-daemon --json"`
+- same success shape and same `Launch mode: kept disabled`
+
+- PS5 command-surface proof captured:
+- `Get-Command openclaw,clawdbot,gclaw | Select Name,CommandType,Source,Definition`
+- `openclaw.ps1` source is the F wrapper
+- `clawdbot.ps1` source is the F wrapper
+- `gclaw` definition points to `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\ProfileFunctions\gclaw.ps1`
+- `openclaw --version` -> `OpenClaw 2026.4.21 (f788c88)`
+- `clawdbot --version` -> `OpenClaw 2026.4.21 (f788c88)`
+
+- Before patching `schtasks-BszHD7Ag.js`, `onboard --non-interactive --accept-risk --install-daemon --json` failed with:
+- `Gateway service install did not complete successfully.`
+- `Gateway service install failed: Error: schtasks run failed: ERROR: The scheduled task "OpenClaw Gateway" could not run because it is disabled.`
+
+- `openclaw doctor --fix` in PS5 was run before the symlink-aware doctor patch. It completed and reported:
+- missing Claude CLI binary
+- missing `anthropic:claude-cli` auth profile
+- false positive `Multiple state directories detected` mentioning `~\.openclaw`
+- no channel security warnings
+- Telegram ok
+
+- The rerun of `openclaw doctor --fix` after the symlink-aware patch was started, then Micha intentionally interrupted the session. Treat the doctor-patch verification as unverified until you rerun it.
+
+- `openclaw gateway status --deep` also warned about `Other gateway-like services detected` including `\ClawdBotTray` and `\OpenClaw Gateway`. This is expected given the tray chain plus the disabled compatibility task. Do not "fix" this by enabling `OpenClaw Gateway` as the primary launcher.
+
+Claimed-but-unverified state
+
+- `gclaw` should now complete without hanging because it uses the proven noninteractive onboard path, but this exact function has not been executed after patching.
+- The patched doctor false-positive should disappear because `~\.openclaw` now resolves to the same real path as the F canonical home, but this has not been re-proved after the user interruption.
+- PS7 `Get-Command`, `doctor --fix`, and `gclaw` proof is still incomplete in one clean capture.
+- Startup idempotency and gateway restart and tray uniqueness need fresh re-verification after the latest patches.
+
+Rejected paths and user corrections
+
+- Do not preserve the old `gclaw` behavior that ran `npm rm -g` and `npm i -g openclaw@2026.4.21`. Micha explicitly wanted F-root authority, not machine-global npm authority.
+- Do not use the published `clawdbot` CLI as authoritative. It is broken on this machine. The package is missing an outbound helper cluster. First missing file observed was `dist\infra\outbound\target-normalization.js`, then `channel-target.js`, with many more missing. Keep `clawdbot` as a thin compatibility alias to `openclaw`.
+- Do not "fix" `onboard --install-daemon` by enabling `OpenClaw Gateway` permanently and turning it into a second startup authority. That violates the tray-only and no-duplicates rule.
+- Do not redo broad filesystem and task discovery from zero. Continue from the known F-root architecture and the known residue set.
+- After two failed attempts, read the dist JS instead of guessing. That was the correct path for both the onboarding hang and the scheduled-task defect.
+
+Constraints to preserve
+
+- Treat `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw` as canonical authority.
+- Preserve exactly one hidden tray manager chain. No duplicate tray icons or duplicate gateway processes.
+- Keep `OpenClaw Gateway` as a compatibility surface only unless Micha explicitly approves a startup-architecture change.
+- Preserve four-bot capability parity and session isolation.
+- Be honest about non-F residue. Classify every remaining non-F path as one of:
+- `eliminated`
+- `migrated into F`
+- `retained only as a compatibility shim with proof of necessity`
+- `OS-owned or vendor-owned unavoidable residue with proof`
+- No completion claim without live verification and a residue audit.
+- Do not claim final completion until the Telegram `/new` proof loop is done in the remaining bot chats and the `nvid` workflow is repaired and verified.
+
+Failed paths to avoid
+
+- Running raw `openclaw onboard --install-daemon` in automation without `--non-interactive --accept-risk`.
+- Trusting the pre-patch doctor state-dir warning as evidence of real split state.
+- Re-enabling or relying on the `OpenClaw Gateway` task as a second launcher.
+- Reinstalling machine-global npm packages as the primary repair path.
+- Using broad repo `git status` as a clean signal. The enclosing tree is noisy with many unrelated untracked paths.
+
+Remaining work
+
+- Re-run `openclaw doctor --fix` in PS5 and PS7 after the `prompt-select-styled-D1dFXIrR.js` patch. Capture whether the `~\.openclaw` false positive is gone. Classify any remaining warnings honestly.
+- Run and capture `gclaw` in PS5 and PS7.
+- Run a clean PS7 `Get-Command openclaw,clawdbot,gclaw` proof.
+- Re-verify startup idempotency and gateway restart behavior with the current patched runtime:
+- no duplicate tray icons
+- no duplicate manager, gateway, or node children
+- listener still `127.0.0.1:18789`
+- restart preserves the hidden tray-manager chain
+- Finish the residue audit. Likely remaining non-F entries to classify:
+- `C:\Users\micha\.openclaw`
+- `C:\Users\micha\.clawdbot\openclaw.json`
+- `C:\Users\micha\AppData\Local\npm-global\openclaw.cmd`
+- `C:\Users\micha\AppData\Local\npm-global\openclaw.ps1`
+- `C:\Users\micha\AppData\Roaming\npm\clawdbot.cmd`
+- `C:\Users\micha\AppData\Roaming\npm\clawdbot.ps1`
+- `C:\Windows\System32\Tasks\ClawdBotTray`
+- `C:\Windows\System32\Tasks\OpenClaw Gateway`
+- `C:\Program Files\nodejs\node.exe`
+- `C:\Windows\System32\wscript.exe`
+- `C:\Users\micha\AppData\Local\Temp\openclaw\...`
+- any rollback dirs left on C
+- Verify or update `C:\Users\micha\.codex\skills\claw\SKILL.md` and any `/claw` Telegram custom command or menu metadata if they still describe old C paths or stale authority.
+- Do the blocked Telegram proof loop:
+- Micha must send `/new` plus one real screenshot-or-action request in each remaining bot chat that has not yet been freshly proven in this architecture
+- then verify all four bots and workspaces remain capability-equal and isolated
+- verify Telegram commands and menus live where relevant
+- Repair `nvid` in both profile files:
+- `C:\Users\micha\Documents\PowerShell\Microsoft.PowerShell_profile.ps1`
+- `C:\Users\micha\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1`
+- dedupe the multiple `nvid`, `nvidia`, and `nvid2` style functions
+- replace destructive uninstall-first behavior with a safe, evidence-based Nvidia App flow
+- detect actual GPU hardware `NVIDIA GeForce RTX 5080`
+- use Nvidia App, not GeForce Experience
+- install or open Nvidia Control Panel package `9NF8H0H7WMLT`
+- verify driver version and update truthfully
+- rerun `nvid` and verify future reruns behave correctly
+
+Immediate next actions
+
+- First, check whether the interrupted doctor run left any stray duplicate `openclaw`, `node`, or gateway processes. Do not assume the interruption was clean.
+- Then run these exact proofs in order:
+- `powershell.exe -Command "openclaw doctor --fix"`
+- `pwsh -Command "Get-Command openclaw,clawdbot,gclaw | Select Name,CommandType,Source,Definition | Format-List; openclaw --version; clawdbot --version; openclaw doctor --fix"`
+- `powershell.exe -Command "gclaw"`
+- `pwsh -Command "gclaw"`
+- `powershell.exe -NoProfile -Command "& 'F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\npm-global\openclaw.cmd' gateway status --deep"`
+- If `doctor --fix` still reports multiple state dirs after the symlink-aware patch, reopen `F:\study\AI_ML\AI_and_Machine_Learning\Artificial_Intelligence\openclaw\npm-global\node_modules\openclaw\dist\prompt-select-styled-D1dFXIrR.js` and inspect the realpath comparison. Do not guess.
+- After local proofs, ask Micha for the missing live Telegram action only if still needed:
+- send `/new` plus one real screenshot-or-action request in each remaining bot chat that has not yet been freshly proven
+- then finish the residue audit and move on to `nvid`
+
+Execution directive
+
+Continue from the current state immediately. Do not restart broad discovery. Preserve confirmed working parts, fix the remaining gaps, verify the result yourself, and stop only when the stated mission is complete.
+
+Treat the mission as still active until-done work. If you hit the Telegram-input blocker before completion, stop with the exact blocker and next-input wording instead of bluffing final success.

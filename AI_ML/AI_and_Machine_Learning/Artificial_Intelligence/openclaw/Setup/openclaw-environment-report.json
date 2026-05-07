@@ -1,0 +1,665 @@
+﻿{
+    "generatedAt":  "2026-04-28T04:26:26.3951805+03:00",
+    "nodeVersion":  "v24.13.0",
+    "npmVersion":  "11.6.2",
+    "openclawCmd":  [
+                        "F:\\study\\AI_ML\\AI_and_Machine_Learning\\Artificial_Intelligence\\openclaw\\npm-global\\openclaw.cmd",
+                        "C:\\Users\\micha\\AppData\\Local\\npm-global\\openclaw.cmd"
+                    ],
+    "nodePath":  "C:\\Program Files\\nodejs\\node.exe",
+    "npmPrefix":  "C:\\Users\\micha\\AppData\\Local\\npm-global",
+    "userProfile":  "C:\\Users\\micha",
+    "paths":  {
+                  "repoRoot":  "F:\\study\\AI_ML\\AI_and_Machine_Learning\\Artificial_Intelligence\\openclaw",
+                  "stateRootF":  "F:\\study\\AI_ML\\AI_and_Machine_Learning\\Artificial_Intelligence\\openclaw\\openclaw-home",
+                  "stateRootUser":  "C:\\Users\\micha\\.openclaw",
+                  "setupRoot":  "F:\\study\\AI_ML\\AI_and_Machine_Learning\\Artificial_Intelligence\\openclaw\\Setup",
+                  "npmGlobalRepo":  "F:\\study\\AI_ML\\AI_and_Machine_Learning\\Artificial_Intelligence\\openclaw\\npm-global",
+                  "npmGlobalUser":  "C:\\Users\\micha\\AppData\\Local\\npm-global",
+                  "npmRoaming":  "C:\\Users\\micha\\AppData\\Roaming\\npm",
+                  "openclawConfig":  "F:\\study\\AI_ML\\AI_and_Machine_Learning\\Artificial_Intelligence\\openclaw\\openclaw-home\\openclaw.json",
+                  "gatewayCmd":  "F:\\study\\AI_ML\\AI_and_Machine_Learning\\Artificial_Intelligence\\openclaw\\openclaw-home\\gateway.cmd",
+                  "trayVbs":  "F:\\study\\AI_ML\\AI_and_Machine_Learning\\Artificial_Intelligence\\openclaw\\ClawdBot\\ClawdbotTray.vbs",
+                  "trayExe":  "F:\\study\\AI_ML\\AI_and_Machine_Learning\\Artificial_Intelligence\\openclaw\\ClawdBot\\ClawdBotManager.exe"
+              },
+    "dirSummaries":  [
+                         {
+                             "path":  "F:\\study\\AI_ML\\AI_and_Machine_Learning\\Artificial_Intelligence\\openclaw\\openclaw-home",
+                             "exists":  true,
+                             "dirs":  11924,
+                             "files":  26022,
+                             "bytes":  680798629
+                         },
+                         {
+                             "path":  "C:\\Users\\micha\\.openclaw",
+                             "exists":  true,
+                             "dirs":  11924,
+                             "files":  26022,
+                             "bytes":  680800377
+                         },
+                         {
+                             "path":  "F:\\study\\AI_ML\\AI_and_Machine_Learning\\Artificial_Intelligence\\openclaw\\npm-global",
+                             "exists":  true,
+                             "dirs":  10438,
+                             "files":  87623,
+                             "bytes":  1850576464
+                         },
+                         {
+                             "path":  "F:\\study\\AI_ML\\AI_and_Machine_Learning\\Artificial_Intelligence\\openclaw\\Setup",
+                             "exists":  true,
+                             "dirs":  0,
+                             "files":  1,
+                             "bytes":  112
+                         }
+                     ],
+    "startupTasks":  [
+                         {
+                             "taskName":  "ClawdBotTray",
+                             "state":  "Ready",
+                             "taskPath":  "\\",
+                             "actions":  [
+                                             "C:\\Windows\\System32\\wscript.exe //B //Nologo F:\\study\\AI_ML\\AI_and_Machine_Learning\\Artificial_Intelligence\\openclaw\\ClawdBot\\ClawdbotTray.vbs"
+                                         ],
+                             "triggers":  [
+                                              "MSFT_TaskLogonTrigger"
+                                          ]
+                         },
+                         {
+                             "taskName":  "OpenClaw Gateway",
+                             "state":  "Disabled",
+                             "taskPath":  "\\",
+                             "actions":  [
+                                             "F:\\study\\AI_ML\\AI_and_Machine_Learning\\Artificial_Intelligence\\openclaw\\openclaw-home\\gateway.cmd"
+                                         ],
+                             "triggers":  [
+                                              "MSFT_TaskLogonTrigger"
+                                          ]
+                         }
+                     ],
+    "startupCommands":  [
+                            {
+                                "name":  "current.ahk",
+                                "command":  "C:\\PROGRA~1\\AUTOHO~1\\v2\\AutoHotkey64.exe \"F:\\study\\Platforms\\windows\\autohotkey\\mymainahk\\current.ahk\"",
+                                "location":  "Startup",
+                                "user":  "user\\user"
+                            },
+                            {
+                                "name":  "FullScreenSnip",
+                                "command":  "\"F:\\study\\Platforms\\windows\\snipping\\SnipToClipBoard\\FullScreenSnip.exe\"",
+                                "location":  "HKU\\S-1-5-21-4273236717-3318517009-3029446451-1001\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+                                "user":  "user\\user"
+                            },
+                            {
+                                "name":  "current.ahk",
+                                "command":  "\"F:\\study\\Platforms\\windows\\autohotkey\\mymainahk\\current.ahk\"",
+                                "location":  "HKU\\S-1-5-21-4273236717-3318517009-3029446451-1001\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+                                "user":  "user\\user"
+                            }
+                        ],
+    "topRepo":  [
+                    {
+                        "Name":  "%SystemDrive%",
+                        "PSIsContainer":  true,
+                        "LastWriteTime":  "\/Date(1776969690000)\/"
+                    },
+                    {
+                        "Name":  "ClawdBot",
+                        "PSIsContainer":  true,
+                        "LastWriteTime":  "\/Date(1776801660000)\/"
+                    },
+                    {
+                        "Name":  "OpenClawRunner",
+                        "PSIsContainer":  true,
+                        "LastWriteTime":  "\/Date(1774872426000)\/"
+                    },
+                    {
+                        "Name":  "OpenClawTray",
+                        "PSIsContainer":  true,
+                        "LastWriteTime":  "\/Date(1774872426000)\/"
+                    },
+                    {
+                        "Name":  "ProfileFunctions",
+                        "PSIsContainer":  true,
+                        "LastWriteTime":  "\/Date(1775084708000)\/"
+                    },
+                    {
+                        "Name":  "backup-claw",
+                        "PSIsContainer":  true,
+                        "LastWriteTime":  "\/Date(1776734988000)\/"
+                    },
+                    {
+                        "Name":  "listclaw",
+                        "PSIsContainer":  true,
+                        "LastWriteTime":  "\/Date(1776734990000)\/"
+                    },
+                    {
+                        "Name":  "mission-control",
+                        "PSIsContainer":  true,
+                        "LastWriteTime":  "\/Date(1772099952000)\/"
+                    },
+                    {
+                        "Name":  "npm-global",
+                        "PSIsContainer":  true,
+                        "LastWriteTime":  "\/Date(1776802460000)\/"
+                    },
+                    {
+                        "Name":  "openclaw-dashboard-proxy",
+                        "PSIsContainer":  true,
+                        "LastWriteTime":  "\/Date(1774872428000)\/"
+                    },
+                    {
+                        "Name":  "openclaw-home",
+                        "PSIsContainer":  true,
+                        "LastWriteTime":  "\/Date(1776955234000)\/"
+                    },
+                    {
+                        "Name":  "openclaw-mission-control",
+                        "PSIsContainer":  true,
+                        "LastWriteTime":  "\/Date(1774872428000)\/"
+                    },
+                    {
+                        "Name":  "openclaw",
+                        "PSIsContainer":  true,
+                        "LastWriteTime":  "\/Date(1774872410000)\/"
+                    },
+                    {
+                        "Name":  "projects",
+                        "PSIsContainer":  true,
+                        "LastWriteTime":  "\/Date(1776982870000)\/"
+                    },
+                    {
+                        "Name":  "reports",
+                        "PSIsContainer":  true,
+                        "LastWriteTime":  "\/Date(1776867370000)\/"
+                    },
+                    {
+                        "Name":  "scripts",
+                        "PSIsContainer":  true,
+                        "LastWriteTime":  "\/Date(1775480520000)\/"
+                    },
+                    {
+                        "Name":  "skills",
+                        "PSIsContainer":  true,
+                        "LastWriteTime":  "\/Date(1775480520000)\/"
+                    },
+                    {
+                        "Name":  "Setup",
+                        "PSIsContainer":  true,
+                        "LastWriteTime":  "\/Date(1777339058950)\/"
+                    },
+                    {
+                        "Name":  "Dockerfile",
+                        "PSIsContainer":  false,
+                        "LastWriteTime":  "\/Date(1777143736000)\/"
+                    },
+                    {
+                        "Name":  "sync-telegram-menu-verify.json",
+                        "PSIsContainer":  false,
+                        "LastWriteTime":  "\/Date(1776993654000)\/"
+                    }
+                ],
+    "topState":  [
+                     {
+                         "Name":  "%SystemDrive%",
+                         "PSIsContainer":  true,
+                         "LastWriteTime":  "\/Date(1776766964000)\/"
+                     },
+                     {
+                         "Name":  "ClawdBot",
+                         "PSIsContainer":  true,
+                         "LastWriteTime":  "\/Date(1776801662000)\/"
+                     },
+                     {
+                         "Name":  "agents",
+                         "PSIsContainer":  true,
+                         "LastWriteTime":  "\/Date(1776955234000)\/"
+                     },
+                     {
+                         "Name":  "browser",
+                         "PSIsContainer":  true,
+                         "LastWriteTime":  "\/Date(1776736724000)\/"
+                     },
+                     {
+                         "Name":  "canvas",
+                         "PSIsContainer":  true,
+                         "LastWriteTime":  "\/Date(1776718608000)\/"
+                     },
+                     {
+                         "Name":  "channels",
+                         "PSIsContainer":  true,
+                         "LastWriteTime":  "\/Date(1776955946000)\/"
+                     },
+                     {
+                         "Name":  "chrome-cdp",
+                         "PSIsContainer":  true,
+                         "LastWriteTime":  "\/Date(1777057848000)\/"
+                     },
+                     {
+                         "Name":  "commands",
+                         "PSIsContainer":  true,
+                         "LastWriteTime":  "\/Date(1776758648000)\/"
+                     },
+                     {
+                         "Name":  "completions",
+                         "PSIsContainer":  true,
+                         "LastWriteTime":  "\/Date(1776762040000)\/"
+                     },
+                     {
+                         "Name":  "delivery-queue",
+                         "PSIsContainer":  true,
+                         "LastWriteTime":  "\/Date(1776952640000)\/"
+                     },
+                     {
+                         "Name":  "devices",
+                         "PSIsContainer":  true,
+                         "LastWriteTime":  "\/Date(1776953566000)\/"
+                     },
+                     {
+                         "Name":  "flows",
+                         "PSIsContainer":  true,
+                         "LastWriteTime":  "\/Date(1776762000000)\/"
+                     },
+                     {
+                         "Name":  "generated-skills",
+                         "PSIsContainer":  true,
+                         "LastWriteTime":  "\/Date(1776988302000)\/"
+                     },
+                     {
+                         "Name":  "identity",
+                         "PSIsContainer":  true,
+                         "LastWriteTime":  "\/Date(1776718642000)\/"
+                     },
+                     {
+                         "Name":  "logs",
+                         "PSIsContainer":  true,
+                         "LastWriteTime":  "\/Date(1776768576000)\/"
+                     },
+                     {
+                         "Name":  "media",
+                         "PSIsContainer":  true,
+                         "LastWriteTime":  "\/Date(1776736744000)\/"
+                     },
+                     {
+                         "Name":  "memory",
+                         "PSIsContainer":  true,
+                         "LastWriteTime":  "\/Date(1776939050000)\/"
+                     },
+                     {
+                         "Name":  "scripts",
+                         "PSIsContainer":  true,
+                         "LastWriteTime":  "\/Date(1777057708000)\/"
+                     },
+                     {
+                         "Name":  "tasks",
+                         "PSIsContainer":  true,
+                         "LastWriteTime":  "\/Date(1776807366000)\/"
+                     },
+                     {
+                         "Name":  "telegram",
+                         "PSIsContainer":  true,
+                         "LastWriteTime":  "\/Date(1776955234000)\/"
+                     },
+                     {
+                         "Name":  "tmp",
+                         "PSIsContainer":  true,
+                         "LastWriteTime":  "\/Date(1776971266000)\/"
+                     },
+                     {
+                         "Name":  "workspace-moltbot",
+                         "PSIsContainer":  true,
+                         "LastWriteTime":  "\/Date(1776955234000)\/"
+                     },
+                     {
+                         "Name":  "workspace-moltbot2",
+                         "PSIsContainer":  true,
+                         "LastWriteTime":  "\/Date(1776955234000)\/"
+                     },
+                     {
+                         "Name":  "workspace-openclaw-main",
+                         "PSIsContainer":  true,
+                         "LastWriteTime":  "\/Date(1776955234000)\/"
+                     },
+                     {
+                         "Name":  "workspace-openclaw",
+                         "PSIsContainer":  true,
+                         "LastWriteTime":  "\/Date(1776955234000)\/"
+                     },
+                     {
+                         "Name":  "gateway.cmd",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1777056400000)\/"
+                     },
+                     {
+                         "Name":  "openclaw-browser-env.json",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1777137558000)\/"
+                     },
+                     {
+                         "Name":  "openclaw.json",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1777337066000)\/"
+                     },
+                     {
+                         "Name":  "openclaw.json.bak",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1777140568000)\/"
+                     },
+                     {
+                         "Name":  "openclaw.json.bak.1",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1776964906000)\/"
+                     },
+                     {
+                         "Name":  "openclaw.json.bak.2",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1776964306000)\/"
+                     },
+                     {
+                         "Name":  "openclaw.json.bak.3",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1776963970000)\/"
+                     },
+                     {
+                         "Name":  "openclaw.json.bak.4",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1776963640000)\/"
+                     },
+                     {
+                         "Name":  "openclaw.json.clobbered.2026-04-24T02-25-49-328Z",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1776997550000)\/"
+                     },
+                     {
+                         "Name":  "openclaw.json.clobbered.2026-04-24T11-25-23-137Z",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1777029924000)\/"
+                     },
+                     {
+                         "Name":  "openclaw.json.clobbered.2026-04-24T18-38-26-868Z",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1777055908000)\/"
+                     },
+                     {
+                         "Name":  "openclaw.json.clobbered.2026-04-25T17-15-40-486Z",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1777137342000)\/"
+                     },
+                     {
+                         "Name":  "openclaw.json.clobbered.2026-04-25T17-16-04-772Z",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1777137366000)\/"
+                     },
+                     {
+                         "Name":  "openclaw.json.clobbered.2026-04-25T17-16-37-957Z",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1777137398000)\/"
+                     },
+                     {
+                         "Name":  "openclaw.json.clobbered.2026-04-25T17-16-53-865Z",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1777137414000)\/"
+                     },
+                     {
+                         "Name":  "openclaw.json.clobbered.2026-04-25T17-17-25-285Z",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1777137446000)\/"
+                     },
+                     {
+                         "Name":  "openclaw.json.clobbered.2026-04-25T17-18-05-981Z",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1777137486000)\/"
+                     },
+                     {
+                         "Name":  "openclaw.json.clobbered.2026-04-25T17-18-56-782Z",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1777137538000)\/"
+                     },
+                     {
+                         "Name":  "openclaw.json.clobbered.2026-04-25T17-20-44-120Z",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1777137646000)\/"
+                     },
+                     {
+                         "Name":  "openclaw.json.clobbered.2026-04-25T17-47-16-006Z",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1777139238000)\/"
+                     },
+                     {
+                         "Name":  "openclaw.json.clobbered.2026-04-25T17-47-32-211Z",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1777139254000)\/"
+                     },
+                     {
+                         "Name":  "openclaw.json.clobbered.2026-04-25T17-47-32-240Z",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1777139254000)\/"
+                     },
+                     {
+                         "Name":  "openclaw.json.clobbered.2026-04-25T17-47-49-470Z",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1777139270000)\/"
+                     },
+                     {
+                         "Name":  "openclaw.json.last-good",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1777338148000)\/"
+                     },
+                     {
+                         "Name":  "openclaw.json.pre-browser-token.bak",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1777139238000)\/"
+                     },
+                     {
+                         "Name":  "telegram-open-bot2.png",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1776762132000)\/"
+                     },
+                     {
+                         "Name":  "telegram-sync-bot1.png",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1776762098000)\/"
+                     },
+                     {
+                         "Name":  "telegram-sync-bot2.png",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1776762164000)\/"
+                     },
+                     {
+                         "Name":  "telegram-sync-live-bot2-fresh.png",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1776763428000)\/"
+                     },
+                     {
+                         "Name":  "telegram-sync-live-bot2.png",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1776763364000)\/"
+                     },
+                     {
+                         "Name":  "telegram-sync-live-final-bottom.png",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1776764316000)\/"
+                     },
+                     {
+                         "Name":  "telegram-sync-live-final.png",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1776764290000)\/"
+                     },
+                     {
+                         "Name":  "telegram-sync-openclaw-visible.png",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1776764346000)\/"
+                     },
+                     {
+                         "Name":  "tmp-configure-playwright-token.py",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1777137640000)\/"
+                     },
+                     {
+                         "Name":  "tmp-dump-tools-block.py",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1777137504000)\/"
+                     },
+                     {
+                         "Name":  "tmp-inject-playwright-token.py",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1777137482000)\/"
+                     },
+                     {
+                         "Name":  "tmp-persist-playwright-token.py",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1777139234000)\/"
+                     },
+                     {
+                         "Name":  "tmp-replace-tools-block.py",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1777137534000)\/"
+                     },
+                     {
+                         "Name":  "tmp-set-playwright-token.py",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1777137442000)\/"
+                     },
+                     {
+                         "Name":  "tray-overflow-before.png",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1776723266000)\/"
+                     },
+                     {
+                         "Name":  "claude-session.txt",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1777048380000)\/"
+                     },
+                     {
+                         "Name":  "update-check.json",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1777336140000)\/"
+                     },
+                     {
+                         "Name":  "exec-approvals.json",
+                         "PSIsContainer":  false,
+                         "LastWriteTime":  "\/Date(1777339602000)\/"
+                     }
+                 ],
+    "telegramFiles":  [
+                          {
+                              "Name":  "command-catalog.json",
+                              "Length":  297886,
+                              "LastWriteTime":  "\/Date(1777337066000)\/"
+                          },
+                          {
+                              "Name":  "menu-priority.json",
+                              "Length":  823,
+                              "LastWriteTime":  "\/Date(1777136988000)\/"
+                          },
+                          {
+                              "Name":  "slash-state.json",
+                              "Length":  280,
+                              "LastWriteTime":  "\/Date(1777136988000)\/"
+                          },
+                          {
+                              "Name":  "update-offset-bot1.json",
+                              "Length":  73,
+                              "LastWriteTime":  "\/Date(1777142900000)\/"
+                          },
+                          {
+                              "Name":  "update-offset-bot1.json.c5e3937e-6bed-43f1-b5fd-54f95edfdbff.tmp",
+                              "Length":  73,
+                              "LastWriteTime":  "\/Date(1776937718000)\/"
+                          },
+                          {
+                              "Name":  "update-offset-openclaw.json",
+                              "Length":  73,
+                              "LastWriteTime":  "\/Date(1777337782000)\/"
+                          },
+                          {
+                              "Name":  "update-offset-openclaw4.json",
+                              "Length":  73,
+                              "LastWriteTime":  "\/Date(1777337784000)\/"
+                          },
+                          {
+                              "Name":  "update-offset-bot2.json",
+                              "Length":  73,
+                              "LastWriteTime":  "\/Date(1777338216000)\/"
+                          },
+                          {
+                              "Name":  "route-registry.json",
+                              "Length":  1143,
+                              "LastWriteTime":  "\/Date(1777339294000)\/"
+                          }
+                      ],
+    "generatedSkills":  {
+                            "custom":  [
+                                           "adversarial_review",
+                                           "all",
+                                           "backgame",
+                                           "clu",
+                                           "done",
+                                           "done_job",
+                                           "drivers",
+                                           "job",
+                                           "new",
+                                           "news",
+                                           "nnew",
+                                           "ps",
+                                           "rescue",
+                                           "resgame",
+                                           "review",
+                                           "snap"
+                                       ],
+                            "claude":  [
+                                           "advisor",
+                                           "backclau",
+                                           "backres",
+                                           "channel",
+                                           "channels_setup",
+                                           "clp",
+                                           "clu",
+                                           "code_review",
+                                           "conit",
+                                           "cpu_toggle",
+                                           "done",
+                                           "done_job",
+                                           "dream",
+                                           "end",
+                                           "game",
+                                           "gat",
+                                           "hook",
+                                           "imp",
+                                           "job",
+                                           "jobs",
+                                           "mem",
+                                           "mission_merge",
+                                           "mission_split",
+                                           "mission_to_todo",
+                                           "model1",
+                                           "model2",
+                                           "model3",
+                                           "model4",
+                                           "net",
+                                           "obs",
+                                           "redone",
+                                           "rerlp",
+                                           "rlp",
+                                           "rlp_clear",
+                                           "rmdone",
+                                           "router",
+                                           "smart_git_commit",
+                                           "snap",
+                                           "step_quality",
+                                           "sub10",
+                                           "sub15",
+                                           "sub20",
+                                           "sub30",
+                                           "sub40",
+                                           "sub5",
+                                           "sysopt",
+                                           "tel",
+                                           "time",
+                                           "todo_to_mission",
+                                           "todoist",
+                                           "todos",
+                                           "vid",
+                                           "work"
+                                       ]
+                        }
+}

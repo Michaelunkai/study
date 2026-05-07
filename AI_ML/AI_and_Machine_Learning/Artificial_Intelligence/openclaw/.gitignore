@@ -1,0 +1,59 @@
+# Generated runtime installs and package caches
+npm-global/node_modules/
+npm-global/package-lock.json
+npm-global/openclaw
+npm-global/clawdbot
+npm-global/openclaw.cmd
+npm-global/openclaw.ps1
+npm-global/clawdbot.cmd
+npm-global/clawdbot.ps1
+npm-global/%SystemDrive%/
+
+# Disposable restore/version payloads
+Setup/payload/
+versions/
+reports/migration-rollback-*/
+reports/c-legacy-artifacts-*/
+
+# Build outputs and executable backups
+ClawdBot/ClawdBotManager.exe
+ClawdBot/ClawdBotManager.exe.*
+ClawdBot/*.bak*
+ClawdBot/*.patched.exe
+ClawdBot/*.build*.exe
+ClawdBot/*.test*.exe
+ClawdBot/*_ClawdBotManager.exe
+ClawdBot/src/**/bin/
+ClawdBot/src/**/obj/
+
+# Local runtime state, secrets, caches, screenshots, and temp files
+openclaw-home/
+openclaw-home/*.json
+openclaw-home/*.bak
+openclaw-home/*.last-good
+openclaw-home/*.png
+openclaw-home/tmp/
+openclaw-home/logs/
+openclaw-home/media/
+openclaw-home/browser/
+openclaw-home/chrome-cdp/
+openclaw-home/%SystemDrive%/
+.playwright-mcp/
+.openclaw-cache/
+openclaw-dashboard-proxy/.env.local
+**/next-env.d.ts
+tmp/
+tmp-dotnet-sdk-*/
+tmp-dotnet-sdk-*.zip
+%SystemDrive%/
+**/__pycache__/
+
+# Nested demo/project dependency and deployment outputs
+backup-claw/
+listclaw/
+projects/portfolio/devops/daily-use/devops-command-center/
+projects/**/node_modules/
+projects/**/.next/
+projects/**/.netlify/
+projects/**/dist/
+projects/**/build/
