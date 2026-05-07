@@ -1,0 +1,4 @@
+logs/*.log
+logs/*.png
+state/*.json
+vm/
