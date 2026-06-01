@@ -1,0 +1,32 @@
+# PowerShell / Windows transient files
+*.log
+*.tmp
+*.bak
+*.old
+*.orig
+*.swp
+*.swo
+
+# Python/editor caches if helper tooling is added later
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+.env.*
+
+# Build/output caches
+bin/
+obj/
+dist/
+build/
+
+# Local generated verification output
+verification/*.local.txt
+verification/*.local.json
+
+# Never commit secrets or local qBittorrent config backups
+*qBittorrent.ini*
+*.key
+*.pem
+*.pfx
