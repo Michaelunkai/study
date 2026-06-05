@@ -2,6 +2,8 @@
 *.log
 *.tmp
 *.bak
+*.bak-*
+*.bak.*
 *.old
 *.orig
 *.swp
@@ -24,6 +26,10 @@ build/
 # Local generated verification output
 verification/*.local.txt
 verification/*.local.json
+
+# Runtime state stays local, but wrapper scripts under runtime/qbit-fitgirl-auto-install are source files.
+runtime/fitlauncher-zero-download-guardian/*
+!runtime/fitlauncher-zero-download-guardian/.gitkeep
 
 # Never commit secrets or local qBittorrent config backups
 *qBittorrent.ini*
