@@ -1,0 +1,52 @@
+qbittorrent:
+  url: "http://127.0.0.1:18080"
+  username: "admin"
+  password: "adminadmin"
+  save_path: "F:/Downloads"
+
+jackett:
+  auto_discover: true
+  url: "http://127.0.0.1:9117"
+  api_key: ""
+
+prowlarr:
+  auto_discover: true
+  url: "http://127.0.0.1:9696"
+  api_key: ""
+
+search:
+  max_results_per_source: 100
+  timeout_per_source: 15
+  parallel: true
+  confidence_threshold: 50
+
+aliases:
+  "gta v": ["gta 5", "grand theft auto v", "grand theft auto 5"]
+  "gta 5": ["gta v", "grand theft auto 5", "grand theft auto v"]
+  "elden ring": ["elden ring", "elden ring shadow of the erdtree"]
+  "god of war": ["god of war ragnarok", "god of war 2018", "god of war ragnarok pc"]
+  "baldurs gate": ["baldurs gate 3", "baldur's gate 3", "bg3"]
+  "cyberpunk": ["cyberpunk 2077"]
+  "red dead": ["red dead redemption 2", "rdr2"]
+  "call of duty": ["cod", "mw3", "mw2", "black ops"]
+  "assassins creed": ["ac", "ac Valhalla", "ac Odyssey", "ac Mirage"]
+  "final fantasy": ["ff7", "ff16", "ffxiv", "final fantasy 7", "final fantasy 16"]
+  "resident evil": ["re4", "re village", "resident evil 4", "resident evil village"]
+  "legend of zelda": ["zelda", "totk", "botw", "tears of the kingdom", "breath of the wild"]
+  "mario": ["super mario", "mario wonder", "mario odyssey"]
+  "pokemon": ["pokémon", "pokemon"]
+  "metal gear": ["mgsv", "metal gear solid", "mgs"]
+  "dark souls": ["ds1", "ds2", "ds3", "dark souls 1", "dark souls 2", "dark souls 3"]
+  "persona": ["persona 5", "persona 3", "persona 4"]
+  "diablo": ["diablo 4", "diablo iv", "diablo 3"]
+  "street fighter": ["sf6", "street fighter 6"]
+  "hogwarts legacy": ["hogwarts legacy"]
+  "starfield": ["starfield"]
+  "palworld": ["palworld"]
+  "stellar blade": ["stellar blade"]
+  "silent hill": ["silent hill 2", "silent hill"]
+  "fortnite": ["fortnite"]
+  "minecraft": ["minecraft"]
+  "the witcher": ["witcher 3", "witcher 4", "the witcher 3"]
+  "hollow knight": ["hollow knight", "hollow knight silksong"]
+  "arma": ["arma 3", "arma 4"]
