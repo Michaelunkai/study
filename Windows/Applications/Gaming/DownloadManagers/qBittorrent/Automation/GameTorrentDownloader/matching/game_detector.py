@@ -30,7 +30,7 @@ JUNK_MARKERS = [
 GAME_POSITIVE = [
     'fitgirl', 'dodi', 'tenoke', 'reloaded', 'repack', 'kaos', 'empress',
     'elamigos', 'razor1911', 'codex', 'cpy', 'skidrow', 'plaza', 'corepack',
-    'gog', 'steam', 'epic', 'goty', 'deluxe', 'ultimate', 'dlc', 'complete',
+    'rune', 'gog', 'steam', 'epic', 'goty', 'deluxe', 'ultimate', 'dlc', 'complete',
     'steamrip', 'pcdvd', 'pc iso', 'full game', 'pc game', 'game',
     'repack', 'repacked', 'pre-installed', 'portable',
     '.iso', '.bin', '.exe', '.msi', '.bin.xdelta', '.cia', '.nsp', '.xci'
@@ -60,7 +60,7 @@ class GameDetector:
                 return True
 
         movie_score = sum(1 for s in MOVIE_MARKERS if s in n)
-        if movie_score >= 3:
+        if movie_score >= 4:
             return False
 
         music_score = sum(1 for s in MUSIC_MARKERS if s in n)

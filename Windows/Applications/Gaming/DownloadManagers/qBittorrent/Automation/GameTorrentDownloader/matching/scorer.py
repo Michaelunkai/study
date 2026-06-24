@@ -23,6 +23,11 @@ class ConfidenceScorer:
                     matched += 1
                     break
 
+        if matched == 0 and len(query_tokens) > 1:
+            query_joined = ' '.join(query_tokens)
+            if query_joined in filename_lower:
+                matched = len(query_tokens)
+
         if matched == 0:
             return 0
 
@@ -30,11 +35,14 @@ class ConfidenceScorer:
         score += int(token_ratio * 40)
 
         query_expansions = self.normalizer.expand(query)
+        expansion_full_match = False
         for expansion in query_expansions:
             expansion_tokens = self.normalizer.tokenize(expansion)
             exp_matched = sum(1 for et in expansion_tokens if et in filename_tokens)
             if exp_matched == len(expansion_tokens) and exp_matched > 0:
-                score += 20
+                exp_ratio = exp_matched / len(query_tokens)
+                score += int(exp_ratio * 20)
+                expansion_full_match = True
                 break
 
         ordered_match = True
@@ -53,11 +61,11 @@ class ConfidenceScorer:
             score += 15
 
         extra_words = len(filename_tokens) - matched
-        penalty = min(extra_words * 3, 25)
+        penalty = min(extra_words * 2, 20)
         score -= penalty
 
         movie_count = sum(1 for s in ['1080p','720p','2160p','web-dl','bluray','x264','h265'] if s in filename_lower)
-        if movie_count >= 2:
+        if movie_count >= 3:
             score -= 30
 
         music_count = sum(1 for s in ['flac','mp3','album','tracks'] if s in filename_lower)

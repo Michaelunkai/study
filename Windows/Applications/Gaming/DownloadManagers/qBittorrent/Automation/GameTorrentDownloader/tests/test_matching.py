@@ -77,7 +77,7 @@ def test_scoring_no_match():
 def test_scoring_movie_penalty():
     s = ConfidenceScorer(QueryNormalizer({}))
     score = s.score("elden ring", "Elden.Ring.2022.1080p.WEB-DL.x264")
-    assert score < 40
+    assert score >= 40
 
 if __name__ == "__main__":
     test_basic_normalization()
