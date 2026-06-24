@@ -5,7 +5,8 @@ param(
     [int]$MaxRounds = 12,
     [int]$HeartbeatSeconds = 1,
     [int]$NoOutputTimeoutSeconds = 1800,
-    [switch]$SelfTest
+    [switch]$SelfTest,
+    [switch]$VerboseConsole
 )
 
 $ErrorActionPreference = 'Stop'
@@ -18,6 +19,77 @@ $script:LauncherPath = $MyInvocation.MyCommand.Path
 $script:LogFile = Join-Path $script:LogDirectory ("windowsupdate-{0}.log" -f (Get-Date -Format 'yyyyMMdd-HHmmss'))
 $script:Round = 0
 $script:ResumeTaskName = 'CodexFastWindowsUpdateResume'
+$script:ProgressId = 1
+$script:ProgressVisible = $false
+$script:SearchShown = $false
+
+function Complete-ConsoleProgress {
+    if (-not $script:ProgressVisible) { return }
+    try {
+        Write-Progress -Id $script:ProgressId -Activity 'Windows Update' -Completed
+    } catch {
+    }
+    $script:ProgressVisible = $false
+}
+
+function Should-WriteConsoleLine {
+    param([string]$Text)
+
+    if ($VerboseConsole) { return $true }
+    $suppressedPatterns = @(
+        '^monitor=alive ',
+        '^service ready:',
+        '^UsoClient ',
+        '^UPSTREAM_REFERENCE=',
+        '^LOCAL_RUNNER=',
+        '^child: \[child\]\[[0-9:]+\] round=',
+        '^child: \[child\]\[[0-9:]+\] Microsoft Update service enabled',
+        '^child: \[child\]\[[0-9:]+\] searching:',
+        '^child: \[child\]\[[0-9:]+\] found=',
+        '^child: \[child\]\[[0-9:]+\] queued=',
+        '^child: \[child\]\[[0-9:]+\] download-start',
+        '^child: \[child\]\[[0-9:]+\] install-start',
+        '^child: \[child\]\[[0-9:]+\] download-result',
+        '^child: \[child\]\[[0-9:]+\] install-result',
+        '^child: \[child\]\[[0-9:]+\] installed-item=',
+        '^child: \[child\]\[[0-9:]+\] round-result='
+    )
+    foreach ($pattern in $suppressedPatterns) {
+        if ($Text -match $pattern) { return $false }
+    }
+    return $true
+}
+
+function Show-SearchStatus {
+    if ($script:SearchShown) { return }
+    Complete-ConsoleProgress
+    $script:SearchShown = $true
+    try { Write-Host 'Searching for updates...' -ForegroundColor DarkGray } catch { Write-Output 'Searching for updates...' }
+}
+
+function Show-UpdateProgressFromChildLine {
+    param([Parameter(Mandatory = $true)][string]$Line)
+
+    if ($Line -notmatch 'progress: phase=(\w+) update=(\d+)/(\d+) kb=([^ ]+) updatePercent=([0-9.]+)% overallPercent=([0-9.]+)% title=(.+)$') {
+        return $false
+    }
+
+    $phase = $matches[1]
+    $currentIndex = $matches[2]
+    $totalCount = $matches[3]
+    $kb = $matches[4]
+    $updatePercent = [double]$matches[5]
+    $title = $matches[7]
+    $activity = if ($phase -eq 'install') { "Installing $kb" } else { "Downloading $kb" }
+    $status = ('{0:N2}%  update {1}/{2}' -f $updatePercent, $currentIndex, $totalCount)
+    try {
+        Write-Progress -Id $script:ProgressId -Activity $activity -Status $status -CurrentOperation $title -PercentComplete ([Math]::Min(100, [Math]::Max(0, [int][Math]::Round($updatePercent))))
+        $script:ProgressVisible = $true
+        $script:SearchShown = $false
+    } catch {
+    }
+    return $true
+}
 
 function Write-UpdateLine {
     param(
@@ -27,6 +99,10 @@ function Write-UpdateLine {
 
     $line = "[update][{0}] {1}" -f (Get-Date -Format 'HH:mm:ss'), $Text
     try { Add-Content -LiteralPath $script:LogFile -Value $line -Encoding UTF8 } catch { }
+    if ($Text -match '^(UPDATE_RESULT=|reboot-required=|resume-task=registered|PreviewOnly requested|SELFTEST)') {
+        Complete-ConsoleProgress
+    }
+    if (-not (Should-WriteConsoleLine -Text $Text)) { return }
     try { Write-Host $line -ForegroundColor $Color } catch { Write-Output $line }
 }
 
@@ -50,6 +126,7 @@ function Start-ElevatedSelfIfNeeded {
     if ($PreviewOnly) { $argList += '-PreviewOnly' }
     if ($AllowReboot) { $argList += '-AllowReboot' }
     if ($SkipOptional) { $argList += '-SkipOptional' }
+    if ($VerboseConsole) { $argList += '-VerboseConsole' }
     Write-UpdateLine 'Administrator rights are required for reliable Windows Update installation; relaunching elevated and waiting.' Yellow
     Start-Process -FilePath $psExe -ArgumentList ($argList -join ' ') -Verb RunAs -Wait
     return $true
@@ -167,9 +244,23 @@ function Invoke-RealProgressRound {
             $line = [string]$lines[$i]
             if ([string]::IsNullOrWhiteSpace($line)) { continue }
             $output.Add($line)
-            $color = if ($line -match '^\[child\]\[[0-9:]+\] progress:') {
-                [ConsoleColor]::Red
-            } elseif ($IsError) {
+            if ($line -match '^\[child\]\[[0-9:]+\] searching:') {
+                Show-SearchStatus
+                $newCount++
+                continue
+            }
+            if ($line -match '^\[child\]\[[0-9:]+\] found=(\d+)') {
+                Complete-ConsoleProgress
+                $script:SearchShown = $false
+                Write-UpdateLine ("Found {0} updates in this pass." -f $matches[1]) White
+                $newCount++
+                continue
+            }
+            if (Show-UpdateProgressFromChildLine -Line $line) {
+                $newCount++
+                continue
+            }
+            $color = if ($IsError) {
                 [ConsoleColor]::Yellow
             } else {
                 $DefaultColor
@@ -208,7 +299,10 @@ function Invoke-RealProgressRound {
         $newLines += Receive-ChildFileLines -Path $stdoutFile -LastLine ([ref]$lastOutLine)
         $newLines += Receive-ChildFileLines -Path $stderrFile -LastLine ([ref]$lastErrLine) -IsError
         $exitCode = $process.ExitCode
+        Complete-ConsoleProgress
+        $script:SearchShown = $false
     } catch {
+        Complete-ConsoleProgress
         throw "cscript runner failed: $($_.Exception.Message)"
     }
 
@@ -318,8 +412,11 @@ function Invoke-FastWindowsUpdate {
         Write-UpdateLine 'SELFTEST: upstream GitHub async WUA reference and local runner are present; no scan/download/install executed.' Green
         Write-UpdateLine ("SELFTEST_UPSTREAM={0}" -f $script:Upstream) Green
         Write-UpdateLine ("SELFTEST_RUNNER={0}" -f $script:Runner) Green
-        Write-UpdateLine 'child: [child][00:00:00] progress: phase=download update=1/1 kb=KB000000 updatePercent=42.50% overallPercent=42.50% title=SELFTEST Windows Update progress formatter' Red
-        Write-UpdateLine 'child: [child][00:00:01] progress: phase=install update=1/1 kb=KB000000 updatePercent=87.25% overallPercent=87.25% title=SELFTEST Windows Update progress formatter' Red
+        [void](Show-UpdateProgressFromChildLine -Line '[child][00:00:00] progress: phase=download update=1/1 kb=KB000000 updatePercent=42.50% overallPercent=42.50% title=SELFTEST Windows Update progress formatter')
+        Start-Sleep -Milliseconds 300
+        [void](Show-UpdateProgressFromChildLine -Line '[child][00:00:01] progress: phase=install update=1/1 kb=KB000000 updatePercent=87.25% overallPercent=87.25% title=SELFTEST Windows Update progress formatter')
+        Start-Sleep -Milliseconds 300
+        Complete-ConsoleProgress
         Write-UpdateLine ("UPDATE_RESULT=SELFTEST_OK log={0}" -f $script:LogFile) Green
         return 0
     }
