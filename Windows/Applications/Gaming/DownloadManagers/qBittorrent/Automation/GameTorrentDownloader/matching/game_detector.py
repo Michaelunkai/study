@@ -1,19 +1,16 @@
 import re
 
-MOVIE_MARKERS = [
+MOVIE_VIDEO_MARKERS = [
     '1080p', '720p', '2160p', '4k', 'web-dl', 'webrip', 'bluray', 'bdrip',
     'dvdrip', 'h264', 'h265', 'hevc', 'x264', 'x265', 'xvid', 'brrip',
     'hdtv', 'remux', 'hdrip', 'cam', 'hdcam', 'ts', 'tc', 'screener',
-    'dts', 'dolby', 'atmos', 'aac', 'mp3', 'ac3', '5.1', '7.1',
-    'hdrip', 'subbed', 'dubbed', 'multi', 'extended', 'theatrical',
-    'directors cut', 'unrated', 'imax'
+    'dts', 'dolby', 'atmos', '5.1', '7.1', 'subbed', 'dubbed',
+    'extended', 'theatrical', 'directors cut', 'unrated', 'imax',
+    'web', 'webhd', 'hdrip', 'bdrip', 'brrip', 'dvd', 'hddvd',
+    'proper', 'rerip', 'rarbg', 'yify', 'yts',
 ]
 
-MUSIC_MARKERS = [
-    'mp3', 'flac', '.wav', 'aac', 'album', 'disc', 'vinyl', 'cd',
-    'tracks', 'tracklist', '320kbps', 'vbr', 'opus', 'ogg', 'm4a',
-    'soundtrack', 'ost', 'ep', 'single', 'lp', 'remix', 'mixtape'
-]
+MOVIE_YEAR_PATTERN = re.compile(r'[\.\s\[\(](19|20)\d{2}[\.\s\]\)]')
 
 TV_MARKERS = [
     's01e', 's02e', 's03e', 's04e', 's05e', 's06e', 's07e', 's08e',
@@ -22,26 +19,54 @@ TV_MARKERS = [
 ]
 
 JUNK_MARKERS = [
-    'wallpaper', 'soundtrack', 'strategy guide', 'artbook', 'subtitle',
-    'ebook', 'manual', 'trainer', 'cheat', 'save game', 'mod',
+    'wallpaper', 'strategy guide', 'artbook', 'subtitle',
+    'ebook', 'manual', 'trainer', 'cheat', 'save game',
     ' cracked', 'crack only', 'keygen', 'keymaker', 'patch only'
 ]
 
-GAME_POSITIVE = [
-    'fitgirl', 'dodi', 'tenoke', 'reloaded', 'repack', 'kaos', 'empress',
-    'elamigos', 'razor1911', 'codex', 'cpy', 'skidrow', 'plaza', 'corepack',
-    'rune', 'gog', 'steam', 'epic', 'goty', 'deluxe', 'ultimate', 'dlc', 'complete',
-    'steamrip', 'pcdvd', 'pc iso', 'full game', 'pc game', 'game',
-    'repack', 'repacked', 'pre-installed', 'portable',
-    '.iso', '.bin', '.exe', '.msi', '.bin.xdelta', '.cia', '.nsp', '.xci'
+GAME_REPACK_GROUPS = [
+    'fitgirl', 'dodi', 'tenoke', 'reloaded', 'kaos', 'empress',
+    'elamigos', 'razor1911', 'codex', 'cpy', 'skidrow', 'plaza',
+    'corepack', 'rune', 'mercs', 'iso', 'gog', 'steamrip',
+    'rgmechanics', 'bgm', 'chronos', 'dodigames', 'fckdrm',
+    'goggame', 'pooeen', 'xatab', 'russianduck', 'mechanics',
+]
+
+GAME_EDITION_MARKERS = [
+    'goty', 'deluxe', 'ultimate', 'dlc', 'complete edition',
+    'premium edition', 'gold edition', 'definitive', 'enhanced edition',
+    'game of the year', 'digital deluxe', 'legacy', 'collection',
+    'anthology', 'bundle', 'pack',
+]
+
+GAME_PLATFORM_MARKERS = [
+    'pc game', 'pc dvd', 'pc iso', 'windows', 'steam', 'epic games',
+    'gog', 'origin', 'uplay', 'rockstar', 'battle.net', 'battlenet',
+    'game', 'steamrip',
 ]
 
 GAME_EXTENSIONS = ['.iso', '.bin', '.exe', '.msi', '.nsp', '.xci', '.cia',
                    '.pkg', '.rap', '.edat', '.iso.xdelta']
 
+GAME_SIZE_MIN_GB = 1.0
+GAME_SIZE_MAX_GB = 150.0
+
+
 class GameDetector:
-    def is_game(self, name: str) -> bool:
+    def _has_game_group(self, name: str) -> bool:
         n = name.lower()
+        return any(g in n for g in GAME_REPACK_GROUPS)
+
+    def _has_movie_markers(self, name: str) -> bool:
+        n = name.lower()
+        movie_count = sum(1 for s in MOVIE_VIDEO_MARKERS if s in n)
+        return movie_count >= 1
+
+    def _has_year(self, name: str) -> bool:
+        return bool(MOVIE_YEAR_PATTERN.search(name.lower()))
+
+    def is_game(self, name: str) -> bool:
+        n = name.lower().strip()
 
         for marker in TV_MARKERS:
             if marker in n:
@@ -55,28 +80,58 @@ class GameDetector:
             if n.rstrip().endswith(ext):
                 return True
 
-        for marker in GAME_POSITIVE:
+        if self._has_game_group(n):
+            return True
+
+        for marker in GAME_EDITION_MARKERS:
             if marker in n:
                 return True
 
-        movie_score = sum(1 for s in MOVIE_MARKERS if s in n)
-        if movie_score >= 4:
+        for marker in GAME_PLATFORM_MARKERS:
+            if marker in n:
+                return True
+
+        if self._has_movie_markers(n):
             return False
 
-        music_score = sum(1 for s in MUSIC_MARKERS if s in n)
-        if music_score >= 2:
+        if self._has_year(n):
             return False
 
         size_match = re.search(r'(\d+\.?\d*)\s*(gb|mb|tb)', n)
         if size_match:
             size_val = float(size_match.group(1))
             size_unit = size_match.group(2)
-            if size_unit == 'gb' and 1 < size_val < 200:
+            if size_unit == 'gb' and GAME_SIZE_MIN_GB <= size_val <= GAME_SIZE_MAX_GB:
                 return True
-            if size_unit == 'mb' and 50 < size_val < 5000:
+            if size_unit == 'tb' and size_val <= 1:
                 return True
 
-        if re.search(r'(repack|repacked)', n):
+        return False
+
+    def is_definitely_not_game(self, name: str) -> bool:
+        n = name.lower().strip()
+
+        if self._has_game_group(n):
+            return False
+
+        for marker in MOVIE_VIDEO_MARKERS:
+            if marker in n:
+                return True
+
+        if self._has_year(n):
             return True
+
+        for marker in TV_MARKERS:
+            if marker in n:
+                return True
+
+        size_match = re.search(r'(\d+\.?\d*)\s*(gb|mb|tb)', n)
+        if size_match:
+            size_val = float(size_match.group(1))
+            size_unit = size_match.group(2)
+            if size_unit == 'mb' and size_val < 500:
+                return True
+            if size_unit == 'gb' and size_val < 1.0:
+                return True
 
         return False

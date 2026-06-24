@@ -15,6 +15,14 @@ EDITION_MAP = {
 
 PLATFORM_STRIP = {"pc", "win", "windows", "steam", "epic", "gog", "origin", "uplay", "rockstar", "r星"}
 
+ROMAN_TO阿拉伯数字 = {
+    'i': '1', 'ii': '2', 'iii': '3', 'iv': '4', 'v': '5',
+    'vi': '6', 'vii': '7', 'viii': '8', 'ix': '9', 'x': '10',
+    'xi': '11', 'xii': '12', 'xiii': '13', 'xiv': '14', 'xv': '15',
+    'xvi': '16', 'xvii': '17', 'xviii': '18', 'xix': '19', 'xx': '20',
+}
+
+
 class QueryNormalizer:
     def __init__(self, aliases: dict):
         self.aliases = aliases
@@ -34,8 +42,25 @@ class QueryNormalizer:
         text = re.sub(r'\s+', ' ', text).strip()
         return text
 
+    def normalize_roman(self, text: str) -> str:
+        text = self.normalize(text)
+        words = text.split()
+        result = []
+        for w in words:
+            if w in ROMAN_TO阿拉伯数字:
+                result.append(ROMAN_TO阿拉伯数字[w])
+            else:
+                result.append(w)
+        return ' '.join(result)
+
     def tokenize(self, text: str) -> list:
         text = self.normalize(text)
+        tokens = text.split()
+        tokens = [t for t in tokens if not re.match(r'^v?\d+\.\d+(\.\d+)?$', t)]
+        return tokens
+
+    def tokenize_with_roman(self, text: str) -> list:
+        text = self.normalize_roman(text)
         tokens = text.split()
         tokens = [t for t in tokens if not re.match(r'^v?\d+\.\d+(\.\d+)?$', t)]
         return tokens
