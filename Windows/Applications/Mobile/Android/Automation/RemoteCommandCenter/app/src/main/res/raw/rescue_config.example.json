@@ -1,0 +1,28 @@
+{
+  "relayBases": [
+    "https://ntfy.sh"
+  ],
+  "localBases": [
+    "http://192.168.1.10:8777/rcc"
+  ],
+  "wakeMacs": [
+    "AA:BB:CC:DD:EE:FF"
+  ],
+  "wakeBroadcasts": [
+    "255.255.255.255",
+    "192.168.1.255"
+  ],
+  "wakeHosts": [
+    "192.168.1.10"
+  ],
+  "wakePorts": [
+    7,
+    9,
+    40000,
+    40009
+  ],
+  "commandTopic": "rcc-command-CHANGE-ME",
+  "statusTopic": "rcc-status-CHANGE-ME",
+  "sharedKey": "CHANGE-ME-GENERATED-BY-SETUP"
+}
+

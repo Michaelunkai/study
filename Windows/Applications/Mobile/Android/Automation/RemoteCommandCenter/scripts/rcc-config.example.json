@@ -1,0 +1,14 @@
+{
+  "RelayBases": [
+    "https://ntfy.sh"
+  ],
+  "LocalPort": 8777,
+  "LocalPath": "/rcc/action",
+  "CommandTopic": "rcc-command-CHANGE-ME",
+  "StatusTopic": "rcc-status-CHANGE-ME",
+  "SharedKey": "CHANGE-ME-GENERATED-BY-SETUP",
+  "AllowedSkewSeconds": 300,
+  "StateDir": "C:\\RemoteCommandCenter\\runtime",
+  "LogDir": "C:\\RemoteCommandCenter\\runtime\\logs"
+}
+

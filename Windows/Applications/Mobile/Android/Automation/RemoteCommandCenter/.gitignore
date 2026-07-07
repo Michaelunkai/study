@@ -1,0 +1,10 @@
+artifacts/build-output/work/
+artifacts/build-output/*.apk
+artifacts/build-output/debug.keystore
+artifacts/build-output/*.idsig
+runtime/
+!runtime/.gitkeep
+scripts/rcc-config.json
+app/src/main/res/raw/rescue_config.json
+.serena/
+*.log
