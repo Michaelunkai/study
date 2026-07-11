@@ -2,6 +2,11 @@ artifacts/build-output/work/
 artifacts/build-output/*.apk
 artifacts/build-output/debug.keystore
 artifacts/build-output/*.idsig
+artifacts/build-output/*.png
+artifacts/build-output/*.xml
+artifacts/build-output/*.json
+artifacts/icon-work/
+artifacts/ui-proof/
 runtime/
 !runtime/.gitkeep
 scripts/rcc-config.json

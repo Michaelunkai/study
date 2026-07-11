@@ -15,7 +15,27 @@ $log = Join-Path $config.LogDir 'stay-awake.log'
 
 function Write-StayAwakeLog {
     param([string]$Message)
-    Add-Content -LiteralPath $log -Encoding UTF8 -Value ("[{0}] {1}" -f (Get-Date -Format 'yyyy-MM-dd HH:mm:ss.fff'), $Message)
+    try {
+        if ((Test-Path -LiteralPath $log) -and ((Get-Item -LiteralPath $log -ErrorAction Stop).Length -gt 5242880)) {
+            $archive = Join-Path (Split-Path -Parent $log) ('stay-awake.{0}.log' -f (Get-Date -Format 'yyyyMMdd-HHmmss'))
+            Move-Item -LiteralPath $log -Destination $archive -Force -ErrorAction Stop
+        }
+        $line = "[{0}] {1}{2}" -f (Get-Date -Format 'yyyy-MM-dd HH:mm:ss.fff'), $Message, [Environment]::NewLine
+        [System.IO.File]::AppendAllText($log, $line, [System.Text.UTF8Encoding]::new($false))
+    } catch {
+        try {
+            $fallback = Join-Path $env:TEMP 'RemoteCommandCenter-stay-awake-fallback.log'
+            $line = "[{0}] LOG_WRITE_FAILED target=""{1}"" error=""{2}"" original=""{3}""{4}" -f (Get-Date -Format 'yyyy-MM-dd HH:mm:ss.fff'), $log, $_.Exception.Message, $Message, [Environment]::NewLine
+            [System.IO.File]::AppendAllText($fallback, $line, [System.Text.UTF8Encoding]::new($false))
+        } catch {}
+    }
+}
+
+$stayAwakeMutexCreated = $false
+$stayAwakeMutex = New-Object System.Threading.Mutex($true, 'Global\RemoteCommandCenterStayAwake', [ref]$stayAwakeMutexCreated)
+if (-not $stayAwakeMutexCreated) {
+    Write-StayAwakeLog 'STAY_AWAKE_ALREADY_RUNNING exit=True'
+    exit 0
 }
 
 $system32 = Join-Path $env:SystemRoot 'System32'
@@ -31,6 +51,30 @@ function Invoke-PowerCfg {
     $joined = (($output | Out-String) -replace '\r?\n', ' | ').Trim()
     Write-StayAwakeLog ("POWERCFG args=""{0}"" exit={1} output=""{2}""" -f ($Arguments -join ' '), $exitCode, $joined)
     return $exitCode
+}
+
+function Enable-RccFullHibernate {
+    Invoke-PowerCfg @('/hibernate','on') | Out-Null
+    $typeExit = Invoke-PowerCfg @('/hibernate','/type','full')
+    if ($typeExit -ne 0) {
+        Write-StayAwakeLog "HIBERNATE_FULL_RETRY reason=powercfg_type_full_exit_$typeExit delayMs=1200"
+        Start-Sleep -Milliseconds 1200
+        Invoke-PowerCfg @('/hibernate','on') | Out-Null
+        $typeExit = Invoke-PowerCfg @('/hibernate','/type','full')
+    }
+
+    $available = (& $powercfg /a | Out-String)
+    $hibernateAvailable = ($available -match '(?m)^\s*Hibernate\s*$')
+    Write-StayAwakeLog "HIBERNATE_FULL_VERIFY available=$hibernateAvailable"
+    if (-not $hibernateAvailable) {
+        Write-StayAwakeLog "HIBERNATE_FULL_RETRY reason=verification_failed delayMs=1200"
+        Start-Sleep -Milliseconds 1200
+        Invoke-PowerCfg @('/hibernate','on') | Out-Null
+        Invoke-PowerCfg @('/hibernate','/type','full') | Out-Null
+        $available = (& $powercfg /a | Out-String)
+        $hibernateAvailable = ($available -match '(?m)^\s*Hibernate\s*$')
+        Write-StayAwakeLog "HIBERNATE_FULL_VERIFY available=$hibernateAvailable afterRetry=True"
+    }
 }
 
 function Get-RccWakeablePowerScheme {
@@ -107,15 +151,22 @@ function Set-RccNetworkAdapterWakePowerManagement {
             $before = (Get-ItemProperty -LiteralPath $classKey.PsPath -ErrorAction SilentlyContinue).PnPCapabilities
             New-ItemProperty -LiteralPath $classKey.PsPath -Name 'PnPCapabilities' -PropertyType DWord -Value 0 -Force -ErrorAction Stop | Out-Null
             Write-StayAwakeLog "NETADAPTER_PNPCAPABILITIES_SET adapter=""$($Adapter.Name)"" key=""$($classKey.PSChildName)"" before=$before value=0"
+            foreach ($registrySetting in @(
+                @{ Name = 'PowerDownPll'; Value = '0' },
+                @{ Name = 'ReduceSpeedOnPowerDown'; Value = '0' },
+                @{ Name = 'WolShutdownLinkSpeed'; Value = '2' },
+                @{ Name = 'S5WakeOnLan'; Value = '1' },
+                @{ Name = '*WakeOnMagicPacket'; Value = '1' },
+                @{ Name = '*WakeOnPattern'; Value = '1' },
+                @{ Name = '*ModernStandbyWoLMagicPacket'; Value = '1' },
+                @{ Name = 'GigaLite'; Value = '0' }
+            )) {
+                $settingBefore = (Get-ItemProperty -LiteralPath $classKey.PsPath -Name $registrySetting.Name -ErrorAction SilentlyContinue).($registrySetting.Name)
+                New-ItemProperty -LiteralPath $classKey.PsPath -Name $registrySetting.Name -PropertyType String -Value $registrySetting.Value -Force -ErrorAction Stop | Out-Null
+                Write-StayAwakeLog "NETADAPTER_REGISTRY_SET adapter=""$($Adapter.Name)"" key=""$($classKey.PSChildName)"" name=""$($registrySetting.Name)"" before=""$settingBefore"" value=""$($registrySetting.Value)"""
+            }
             if ($before -ne $null -and [int]$before -ne 0) {
-                try {
-                    Disable-NetAdapter -Name $Adapter.Name -Confirm:$false -ErrorAction Stop
-                    Start-Sleep -Seconds 2
-                    Enable-NetAdapter -Name $Adapter.Name -Confirm:$false -ErrorAction Stop
-                    Write-StayAwakeLog "NETADAPTER_RESTARTED_FOR_PNPCAPABILITIES adapter=""$($Adapter.Name)"""
-                } catch {
-                    Write-StayAwakeLog "NETADAPTER_RESTART_FOR_PNPCAPABILITIES_FAILED adapter=""$($Adapter.Name)"" error=""$($_.Exception.Message)"""
-                }
+                Write-StayAwakeLog "NETADAPTER_RESTART_DEFERRED adapter=""$($Adapter.Name)"" reason=""preserve active network session; setting applies at next boot/resume"""
             }
         } else {
             Write-StayAwakeLog "NETADAPTER_PNPCAPABILITIES_KEY_NOT_FOUND adapter=""$($Adapter.Name)"" guid=""$($Adapter.InterfaceGuid)"""
@@ -154,7 +205,13 @@ function Enable-RccWakeOnLan {
         Set-RccAdapterProperty -AdapterName $adapter.Name -DisplayName 'Wake on magic packet when system is in the S0ix power state' -DisplayValue 'Enabled'
         Set-RccAdapterProperty -AdapterName $adapter.Name -DisplayName 'Wake on pattern match' -DisplayValue 'Enabled'
         Set-RccAdapterProperty -AdapterName $adapter.Name -DisplayName 'Shutdown Wake-On-Lan' -DisplayValue 'Enabled'
-        Set-RccAdapterProperty -AdapterName $adapter.Name -DisplayName 'WOL & Shutdown Link Speed' -DisplayValue '10 Mbps First'
+        Set-RccAdapterProperty -AdapterName $adapter.Name -DisplayName 'WOL & Shutdown Link Speed' -DisplayValue 'Not Speed Down'
+        try {
+            Set-NetAdapterAdvancedProperty -Name $adapter.Name -RegistryKeyword 'WolShutdownLinkSpeed' -RegistryValue 2 -NoRestart -ErrorAction Stop
+            Write-StayAwakeLog "NETADAPTER_PROPERTY_SET adapter=""$($adapter.Name)"" keyword=""WolShutdownLinkSpeed"" value=""2"""
+        } catch {
+            Write-StayAwakeLog "NETADAPTER_PROPERTY_FAILED adapter=""$($adapter.Name)"" keyword=""WolShutdownLinkSpeed"" value=""2"" error=""$($_.Exception.Message)"""
+        }
         Set-RccAdapterProperty -AdapterName $adapter.Name -DisplayName 'Energy-Efficient Ethernet' -DisplayValue 'Disabled'
         Set-RccAdapterProperty -AdapterName $adapter.Name -DisplayName 'Green Ethernet' -DisplayValue 'Disabled'
         Set-RccAdapterProperty -AdapterName $adapter.Name -DisplayName 'Advanced EEE' -DisplayValue 'Disabled'
@@ -177,36 +234,53 @@ function Enable-RccWakeOnLan {
 function Enable-RccWakeablePowerPolicy {
     $scheme = Get-RccWakeablePowerScheme
     $subSleep = '238c9fa8-0aad-41ed-83f4-97be242c8f20'
+    $standbyIdle = '29f6c1db-86da-48c5-9fdb-f2b67b1f44da'
     $allowStandby = 'abfc2519-3608-4c2a-94ea-171b0ed546ab'
     $wakeTimers = 'bd3b718a-0680-4d9d-8ab2-e1d2b4ac806d'
     $remoteFileSleep = 'd4c1d4c8-d5cc-43d3-b83e-fc51215cb04d'
     $unattendedSleepTimeout = '7bc4a2f9-d8fc-4469-b07b-33eb785aaca0'
+    $subPciExpress = '501a4d13-42af-4429-9fd1-a8218c268e20'
+    $linkStatePowerManagement = 'ee12f906-d277-404b-b6da-e5fa1a576df5'
 
     foreach ($setting in @($allowStandby, $wakeTimers, $remoteFileSleep)) {
         Invoke-PowerCfg @('/setacvalueindex',$scheme,$subSleep,$setting,'1') | Out-Null
         Invoke-PowerCfg @('/setdcvalueindex',$scheme,$subSleep,$setting,'1') | Out-Null
     }
-    foreach ($value in @('0')) {
-        Invoke-PowerCfg @('/setacvalueindex',$scheme,$subSleep,$unattendedSleepTimeout,$value) | Out-Null
-        Invoke-PowerCfg @('/setdcvalueindex',$scheme,$subSleep,$unattendedSleepTimeout,$value) | Out-Null
-    }
+    Invoke-PowerCfg @('/setacvalueindex',$scheme,$subSleep,$standbyIdle,'86400') | Out-Null
+    Invoke-PowerCfg @('/setdcvalueindex',$scheme,$subSleep,$standbyIdle,'86400') | Out-Null
+    Invoke-PowerCfg @('/setacvalueindex',$scheme,$subSleep,$unattendedSleepTimeout,'86400') | Out-Null
+    Invoke-PowerCfg @('/setdcvalueindex',$scheme,$subSleep,$unattendedSleepTimeout,'86400') | Out-Null
+    Invoke-PowerCfg @('/setacvalueindex',$scheme,$subPciExpress,$linkStatePowerManagement,'0') | Out-Null
+    Invoke-PowerCfg @('/setdcvalueindex',$scheme,$subPciExpress,$linkStatePowerManagement,'0') | Out-Null
     Invoke-PowerCfg @('/setactive',$scheme) | Out-Null
     return $scheme
 }
 
-Invoke-PowerCfg @('/hibernate','on') | Out-Null
-Invoke-PowerCfg @('/hibernate','/type','full') | Out-Null
+Enable-RccFullHibernate
 $wakeableScheme = Enable-RccWakeablePowerPolicy
-Invoke-PowerCfg @('/change','standby-timeout-ac','0') | Out-Null
-Invoke-PowerCfg @('/change','standby-timeout-dc','0') | Out-Null
+# A zero standby timeout disables S3 on this Windows/firmware combination.
+# Keep manual sleep available while making idle and unattended sleep practically unreachable.
+Invoke-PowerCfg @('/setacvalueindex',$wakeableScheme,'238c9fa8-0aad-41ed-83f4-97be242c8f20','29f6c1db-86da-48c5-9fdb-f2b67b1f44da','86400') | Out-Null
+Invoke-PowerCfg @('/setdcvalueindex',$wakeableScheme,'238c9fa8-0aad-41ed-83f4-97be242c8f20','29f6c1db-86da-48c5-9fdb-f2b67b1f44da','86400') | Out-Null
+Invoke-PowerCfg @('/setacvalueindex',$wakeableScheme,'238c9fa8-0aad-41ed-83f4-97be242c8f20','7bc4a2f9-d8fc-4469-b07b-33eb785aaca0','86400') | Out-Null
+Invoke-PowerCfg @('/setdcvalueindex',$wakeableScheme,'238c9fa8-0aad-41ed-83f4-97be242c8f20','7bc4a2f9-d8fc-4469-b07b-33eb785aaca0','86400') | Out-Null
+Invoke-PowerCfg @('/setacvalueindex',$wakeableScheme,'501a4d13-42af-4429-9fd1-a8218c268e20','ee12f906-d277-404b-b6da-e5fa1a576df5','0') | Out-Null
+Invoke-PowerCfg @('/setdcvalueindex',$wakeableScheme,'501a4d13-42af-4429-9fd1-a8218c268e20','ee12f906-d277-404b-b6da-e5fa1a576df5','0') | Out-Null
 Invoke-PowerCfg @('/change','hibernate-timeout-ac','0') | Out-Null
 Invoke-PowerCfg @('/change','hibernate-timeout-dc','0') | Out-Null
 Invoke-PowerCfg @('/change','monitor-timeout-ac','0') | Out-Null
 Invoke-PowerCfg @('/change','monitor-timeout-dc','0') | Out-Null
 Enable-RccWakeOnLan
 
-Invoke-PowerCfg @('/hibernate','on') | Out-Null
-Invoke-PowerCfg @('/hibernate','/type','full') | Out-Null
+Enable-RccFullHibernate
+try {
+    New-Item -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Power' -Force -ErrorAction SilentlyContinue | Out-Null
+    # Keep the hiberfile-backed Fast Startup path available while preserving the full hibernate and Wake-on-LAN setup above.
+    Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Power' -Name 'HiberbootEnabled' -Type DWord -Value 1 -Force
+    Write-StayAwakeLog 'FAST_STARTUP_ENABLED name=HiberbootEnabled value=1 reason=boot-readiness optimization; full hibernate and Wake-on-LAN setup retained'
+} catch {
+    Write-StayAwakeLog "FAST_STARTUP_DISABLE_FAILED error=""$($_.Exception.Message)"""
+}
 Invoke-PowerCfg @('/change','hibernate-timeout-ac','0') | Out-Null
 Invoke-PowerCfg @('/change','hibernate-timeout-dc','0') | Out-Null
 Invoke-PowerCfg @('/setactive',$wakeableScheme) | Out-Null
@@ -220,4 +294,6 @@ if (Get-Command Get-NetAdapterAdvancedProperty -ErrorAction SilentlyContinue) {
         Select-Object Name,DisplayName,DisplayValue |
         Format-Table -AutoSize | Out-String) -replace '\r?\n', ' | '
 }
-Write-StayAwakeLog "STAY_AWAKE_APPLIED scheme=$wakeableScheme standbyTimeout=0 hibernateTimeout=0 monitorTimeout=0 hibernate=full wolProperties=enabled staleMarkers=removed powercfgA=""$available"" wakeArmed=""$wakeArmed"" wakeProps=""$wakeProps"""
+Write-StayAwakeLog "STAY_AWAKE_APPLIED scheme=$wakeableScheme standbyTimeoutSeconds=86400 unattendedSleepTimeoutSeconds=86400 hibernateTimeout=0 monitorTimeout=0 hibernate=full wolProperties=enabled staleMarkers=removed powercfgA=""$available"" wakeArmed=""$wakeArmed"" wakeProps=""$wakeProps"""
+try { $stayAwakeMutex.ReleaseMutex() | Out-Null } catch {}
+$stayAwakeMutex.Dispose()

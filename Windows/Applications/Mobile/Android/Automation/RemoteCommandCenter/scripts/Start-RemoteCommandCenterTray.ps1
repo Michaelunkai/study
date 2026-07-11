@@ -6,6 +6,12 @@ $ErrorActionPreference = 'Continue'
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
+$createdNew = $false
+$mutex = New-Object System.Threading.Mutex($true, 'Global\RemoteCommandCenterTray', [ref]$createdNew)
+if (-not $createdNew) {
+    exit 0
+}
+
 $config = Get-Content -LiteralPath $ConfigPath -Raw | ConvertFrom-Json
 New-Item -ItemType Directory -Force -Path $config.StateDir, $config.LogDir | Out-Null
 $log = Join-Path $config.LogDir 'tray.log'
@@ -48,12 +54,16 @@ $psExe = "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe"
 $agentScript = Join-Path $PSScriptRoot 'Start-RemoteCommandCenterAgent.ps1'
 $httpScript = Join-Path $PSScriptRoot 'Start-RemoteCommandCenterHttpReceiver.ps1'
 $powerGuardScript = Join-Path $PSScriptRoot 'Start-RemoteCommandCenterPowerGuard.ps1'
+$moonlightGuardScript = Join-Path $PSScriptRoot 'Start-RemoteCommandCenterMoonlightGuard.ps1'
+$tvBridgeScript = Join-Path $PSScriptRoot 'Start-RemoteCommandCenterTvBridge.ps1'
 $commonArgs = @('-NoProfile','-ExecutionPolicy','Bypass')
 
 $agent = Start-Process -FilePath $psExe -ArgumentList ($commonArgs + @('-File', $agentScript, '-ConfigPath', $ConfigPath)) -WindowStyle Hidden -PassThru
 $http = Start-Process -FilePath $psExe -ArgumentList ($commonArgs + @('-File', $httpScript, '-ConfigPath', $ConfigPath, '-Port', [string]$config.LocalPort)) -WindowStyle Hidden -PassThru
 $powerGuard = Start-Process -FilePath $psExe -ArgumentList ($commonArgs + @('-File', $powerGuardScript, '-ConfigPath', $ConfigPath, '-IntervalSeconds', '5')) -WindowStyle Hidden -PassThru
-Write-TrayLog "Tray started agentPid=$($agent.Id) httpPid=$($http.Id) powerGuardPid=$($powerGuard.Id)"
+$moonlightGuard = Start-Process -FilePath $psExe -ArgumentList ($commonArgs + @('-File', $moonlightGuardScript, '-ConfigPath', $ConfigPath, '-IntervalSeconds', '300')) -WindowStyle Hidden -PassThru
+$tvBridge = Start-Process -FilePath $psExe -ArgumentList ($commonArgs + @('-File', $tvBridgeScript, '-ConfigPath', $ConfigPath, '-Port', '8781')) -WindowStyle Hidden -PassThru
+Write-TrayLog "Tray started agentPid=$($agent.Id) httpPid=$($http.Id) powerGuardPid=$($powerGuard.Id) moonlightGuardPid=$($moonlightGuard.Id) tvBridgePid=$($tvBridge.Id)"
 
 $notify = New-Object System.Windows.Forms.NotifyIcon
 $notify.Icon = New-Object System.Drawing.Icon $iconPath
@@ -84,5 +94,9 @@ try {
     Stop-ChildProcess -Process $agent
     Stop-ChildProcess -Process $http
     Stop-ChildProcess -Process $powerGuard
+    Stop-ChildProcess -Process $moonlightGuard
+    Stop-ChildProcess -Process $tvBridge
+    try { $mutex.ReleaseMutex() | Out-Null } catch {}
+    $mutex.Dispose()
     Write-TrayLog 'Tray stopped child processes.'
 }

@@ -22,6 +22,14 @@ $androidJar = Join-Path $platform.FullName 'android.jar'
 $javac = Join-Path $JdkRoot 'bin\javac.exe'
 $jar = Join-Path $JdkRoot 'bin\jar.exe'
 $keytool = Join-Path $JdkRoot 'bin\keytool.exe'
+$gradleText = Get-Content -LiteralPath (Join-Path $root 'app\build.gradle') -Raw
+$versionCodeMatch = [regex]::Match($gradleText, 'versionCode\s+(\d+)')
+$versionNameMatch = [regex]::Match($gradleText, 'versionName\s+"([^"]+)"')
+if (-not $versionCodeMatch.Success -or -not $versionNameMatch.Success) {
+    throw 'Unable to resolve Android versionCode/versionName from app\build.gradle'
+}
+$versionCode = $versionCodeMatch.Groups[1].Value
+$versionName = $versionNameMatch.Groups[1].Value
 
 $out = Join-Path $root 'artifacts\build-output'
 $work = Join-Path $out 'work'
@@ -37,7 +45,7 @@ if ($LASTEXITCODE -ne 0) { throw "aapt2 compile failed" }
 
 $unsigned = Join-Path $work 'unsigned.apk'
 $flatFiles = Get-ChildItem -LiteralPath $compiled -Filter *.flat | ForEach-Object { $_.FullName }
-& $aapt2 link -o $unsigned -I $androidJar --manifest (Join-Path $root 'app\src\main\AndroidManifest.xml') --java $gen --auto-add-overlay --min-sdk-version 26 --target-sdk-version 35 --version-code 1 --version-name 1.0 $flatFiles
+& $aapt2 link -o $unsigned -I $androidJar --manifest (Join-Path $root 'app\src\main\AndroidManifest.xml') --java $gen --auto-add-overlay --min-sdk-version 26 --target-sdk-version 35 --version-code $versionCode --version-name $versionName $flatFiles
 if ($LASTEXITCODE -ne 0) { throw "aapt2 link failed" }
 
 $sources = @()

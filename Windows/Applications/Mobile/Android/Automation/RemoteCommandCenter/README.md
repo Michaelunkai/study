@@ -2,6 +2,8 @@
 
 Android remote-control app plus Windows tray/receiver agent for controlling a PC from an Android phone.
 
+Project handoff and exact current-state evidence are in [`docs/CONTINUATION.md`](docs/CONTINUATION.md). This project lives inside the larger `F:\study` checkout; do not stage or reset the parent checkout as a whole.
+
 Package: `com.mich.remotecommandcenter`
 
 ## What It Does
@@ -121,3 +123,10 @@ runtime\logs\wake-packet-proof.json
 ## Important Limit
 
 Wake from full shutdown, sleep, or hibernate ultimately depends on motherboard firmware, NIC support, router forwarding, and the physical network path. This project configures Windows and sends the correct packets, but it cannot force unsupported hardware or blocked routers to wake a machine.
+
+## Current state
+
+- Moonlighter/Moonlight: the user reported the button working; the source preserves the original connect/disconnect scripts and adds the session-bound focus guardian.
+- YouTube/TizenTube: the receiver-side visible-TizenBrew false-positive repair is implemented and contract-tested. The latest Android reinstall succeeded, but the final live tap from the TizenBrew card screen is deliberately recorded as not yet verified.
+- Wake, TV reboot, Codex restart, and the remaining controls: source contracts and static checks exist; use the continuation document's evidence matrix before treating any live behavior as proven.
+- No generated machine configuration, shared key, relay topic, runtime log, or private Android signing material belongs in GitHub.
