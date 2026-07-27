@@ -10553,120 +10553,162 @@ function Get-MacriumStateToolScript {
 function cdex {    cd c:\users\micha\.codex }
 
 function getamd {
-    $Support = 'https://www.amd.com/en/support/downloads/drivers.html/processors/ryzen/ryzen-9000-series/amd-ryzen-7-9800x3d.html'
-    $Referer = $Support
-    $IsWin11 = ((Get-CimInstance Win32_OperatingSystem).Caption -match 'Windows 11')
-    $Pattern = if ($IsWin11) {
-        'https://drivers\.amd\.com/drivers/whql-amd-software-adrenalin-edition-[^"''<> ]+-win11-a\.exe'
-    }
-    else {
-        'https://drivers\.amd\.com/drivers/whql-amd-software-adrenalin-edition-[^"''<> ]+-win10-a\.exe'
-    }
+    [CmdletBinding()]
+    param()
 
-    $Html = (Invoke-WebRequest -UseBasicParsing -Uri $Support).Content
-    $Url = ([regex]::Match($Html, $Pattern)).Value
-    if (-not $Url) {
-        throw 'Could not find the latest AMD Adrenalin package URL on the AMD support page.'
+    $progressId = 769
+    $work = $null
+    $succeeded = $false
+
+    function Write-AmdProgress {
+        param([int] $PercentComplete, [string] $Status)
+        Write-Progress -Id $progressId -Activity 'AMD Adrenalin update' -Status $Status -PercentComplete $PercentComplete
     }
 
-    $SevenZip = if (Test-Path 'C:\Program Files\7-Zip\7z.exe') {
-        'C:\Program Files\7-Zip\7z.exe'
-    }
-    elseif (Test-Path 'C:\Program Files\AMD\CIM\Bin64\7z.exe') {
-        'C:\Program Files\AMD\CIM\Bin64\7z.exe'
-    }
-    else {
-        throw '7z.exe not found.'
-    }
-
-    $Work = Join-Path $env:TEMP ('AMD-AUTO-' + (Get-Date -Format 'yyyyMMdd-HHmmss'))
-    $Pkg = Join-Path $Work ([IO.Path]::GetFileName($Url))
-    $Extract = Join-Path $Work 'Extracted'
-    $Log = Join-Path $Work 'install.log'
-    New-Item -ItemType Directory -Path $Work, $Extract -Force | Out-Null
-
-    Get-Process -ErrorAction SilentlyContinue |
-        Where-Object { $_.ProcessName -match 'RadeonSoftware|AMDRSServ|AMDRSSrcExt|amdow|AMDSoftwareInstaller|ATISetup|Setup' } |
-        Stop-Process -Force -ErrorAction SilentlyContinue
-
-    $Uninstall = (Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*', 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*' -ErrorAction SilentlyContinue |
-        Where-Object { $_.DisplayName -eq 'AMD Software' } |
-        Select-Object -First 1).UninstallString
-    if ($Uninstall) {
-        Start-Process -FilePath 'cmd.exe' -ArgumentList '/c', $Uninstall -Wait
-        Start-Sleep -Seconds 5
-    }
-
-    Get-Process -ErrorAction SilentlyContinue |
-        Where-Object { $_.ProcessName -match 'AMDSoftwareInstaller|ATISetup|Setup' } |
-        Stop-Process -Force -ErrorAction SilentlyContinue
-
-    Get-ChildItem -Path 'F:\Downloads\amd-software-adrenalin-edition-*-minimalsetup*_web.exe', 'F:\Downloads\whql-amd-software-adrenalin-edition-*-win??-a.exe', 'F:\Downloads\AMD-Adrenalin-*', 'F:\Downloads\AMD-ADRENALIN-*-INSTALL-RESULT.LOG', 'F:\Downloads\amd-*-support-page.html' -ErrorAction SilentlyContinue |
-        Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
-
-    if (Test-Path 'C:\AMD\AMD-Software-Installer') {
-        Remove-Item 'C:\AMD\AMD-Software-Installer' -Recurse -Force -ErrorAction SilentlyContinue
-    }
-
-    & curl.exe -L --fail --retry 3 --retry-delay 5 -H ('Referer: ' + $Referer) -o $Pkg $Url
-    if (-not (Test-Path $Pkg)) {
-        throw 'AMD package download failed.'
-    }
-
-    & $SevenZip x -aoa ('-o' + $Extract) $Pkg | Out-Null
-    $Setup = Join-Path $Extract 'Setup.exe'
-    if (-not (Test-Path $Setup)) {
-        throw 'Extracted AMD Setup.exe not found.'
-    }
-
-    Start-Process -FilePath $Setup -ArgumentList '-INSTALL', '-OUTPUT', 'screen', '-LOG', $Log -Wait
-
-    $Done = $false
-    for ($i = 0; $i -lt 900; $i++) {
-        $Active = Get-Process -ErrorAction SilentlyContinue | Where-Object { $_.ProcessName -match 'AMDSoftwareInstaller|ATISetup' }
-        $Tail = if (Test-Path $Log) { Get-Content $Log -Tail 40 -ErrorAction SilentlyContinue } else { @() }
-        if (($Tail -join "`n") -match 'Install has completed\. Cleaning up\.') {
-            $Done = $true
-            break
+    try {
+        Write-AmdProgress 5 'Detecting operating system and latest AMD package'
+        $support = 'https://www.amd.com/en/support/downloads/drivers.html/processors/ryzen/ryzen-9000-series/amd-ryzen-7-9800x3d.html'
+        $isWin11 = ((Get-CimInstance Win32_OperatingSystem -ErrorAction Stop).Caption -match 'Windows 11')
+        $pattern = if ($isWin11) {
+            'https://drivers\.amd\.com/drivers/whql-amd-software-adrenalin-edition-[^"''<> ]+-win11-a\.exe'
+        } else {
+            'https://drivers\.amd\.com/drivers/whql-amd-software-adrenalin-edition-[^"''<> ]+-win10-a\.exe'
         }
-        if ((-not $Active) -and (Test-Path 'C:\Program Files\AMD\CNext\CNext\RadeonSoftware.exe')) {
-            $Done = $true
-            break
+
+        Write-AmdProgress 10 'Reading AMD support page'
+        $html = (Invoke-WebRequest -UseBasicParsing -Uri $support -ErrorAction Stop).Content
+        $url = ([regex]::Match($html, $pattern)).Value
+        if (-not $url) {
+            throw 'Could not find the latest AMD Adrenalin package URL on the AMD support page.'
         }
-        Start-Sleep -Seconds 2
-    }
 
-    $Radeon = 'C:\Program Files\AMD\CNext\CNext\RadeonSoftware.exe'
-    if (-not (Test-Path $Radeon)) {
-        throw 'RadeonSoftware.exe was not installed.'
-    }
+        $sevenZip = if (Test-Path -LiteralPath 'C:\Program Files\7-Zip\7z.exe' -PathType Leaf) {
+            'C:\Program Files\7-Zip\7z.exe'
+        } elseif (Test-Path -LiteralPath 'C:\Program Files\AMD\CIM\Bin64\7z.exe' -PathType Leaf) {
+            'C:\Program Files\AMD\CIM\Bin64\7z.exe'
+        } else {
+            throw '7z.exe not found.'
+        }
 
-    Start-Process $Radeon
-    Start-Sleep -Seconds 6
-    if (-not (Get-Process RadeonSoftware -ErrorAction SilentlyContinue)) {
-        throw 'AMD Software did not launch successfully.'
-    }
+        $work = Join-Path $env:TEMP ('AMD-AUTO-' + (Get-Date -Format 'yyyyMMdd-HHmmss'))
+        $pkg = Join-Path $work ([IO.Path]::GetFileName($url))
+        $extract = Join-Path $work 'Extracted'
+        $log = Join-Path $work 'install.log'
 
-    $App = Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*', 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*' -ErrorAction SilentlyContinue |
-        Where-Object { $_.DisplayName -eq 'AMD Software' } |
-        Select-Object -First 1
-    if (-not $App) {
-        throw 'AMD Software is missing from installed apps after install.'
-    }
+        Write-AmdProgress 18 'Preparing isolated AMD installer workspace'
+        New-Item -ItemType Directory -Path $work, $extract -Force -ErrorAction Stop | Out-Null
 
-    if (Test-Path 'C:\AMD\AMD-Software-Installer') {
-        Remove-Item 'C:\AMD\AMD-Software-Installer' -Recurse -Force -ErrorAction SilentlyContinue
-    }
-    if (Test-Path $Work) {
-        Remove-Item $Work -Recurse -Force -ErrorAction SilentlyContinue
-    }
+        Write-AmdProgress 25 'Stopping active AMD installer processes'
+        Get-Process -ErrorAction SilentlyContinue |
+            Where-Object { $_.ProcessName -match 'RadeonSoftware|AMDRSServ|AMDRSSrcExt|amdow|AMDSoftwareInstaller|ATISetup|Setup' } |
+            Stop-Process -Force -ErrorAction SilentlyContinue
 
-    [pscustomobject]@{
-        DisplayName    = $App.DisplayName
-        DisplayVersion = $App.DisplayVersion
-        RadeonRunning  = [bool](Get-Process RadeonSoftware -ErrorAction SilentlyContinue)
-        LatestUrl      = $Url
-    } | Format-List
+        $uninstall = (Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*', 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*' -ErrorAction SilentlyContinue |
+            Where-Object { $_.DisplayName -eq 'AMD Software' } |
+            Select-Object -First 1).UninstallString
+        if ($uninstall) {
+            Write-AmdProgress 32 'Running existing AMD Software uninstaller'
+            $uninstallProcess = Start-Process -FilePath 'cmd.exe' -ArgumentList '/c', $uninstall -Wait -PassThru -ErrorAction Stop
+            $uninstallProcess.Refresh()
+            if ($uninstallProcess.ExitCode -notin 0, 3010) {
+                throw "AMD uninstaller failed with exit code $($uninstallProcess.ExitCode)."
+            }
+            Start-Sleep -Seconds 5
+        }
+
+        Write-AmdProgress 38 'Cleaning stale AMD installer files'
+        Get-Process -ErrorAction SilentlyContinue |
+            Where-Object { $_.ProcessName -match 'AMDSoftwareInstaller|ATISetup|Setup' } |
+            Stop-Process -Force -ErrorAction SilentlyContinue
+        Get-ChildItem -Path 'F:\Downloads\amd-software-adrenalin-edition-*-minimalsetup*_web.exe', 'F:\Downloads\whql-amd-software-adrenalin-edition-*-win??-a.exe', 'F:\Downloads\AMD-Adrenalin-*', 'F:\Downloads\AMD-ADRENALIN-*-INSTALL-RESULT.LOG', 'F:\Downloads\amd-*-support-page.html' -ErrorAction SilentlyContinue |
+            Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+        if (Test-Path -LiteralPath 'C:\AMD\AMD-Software-Installer') {
+            Remove-Item -LiteralPath 'C:\AMD\AMD-Software-Installer' -Recurse -Force -ErrorAction SilentlyContinue
+        }
+
+        Write-AmdProgress 45 'Downloading latest AMD package'
+        & curl.exe -L --fail --retry 3 --retry-delay 5 -H ('Referer: ' + $support) -o $pkg $url
+        $curlExitCode = [int]$LASTEXITCODE
+        if ($curlExitCode -ne 0 -or -not (Test-Path -LiteralPath $pkg -PathType Leaf)) {
+            throw "AMD package download failed with exit code $curlExitCode."
+        }
+
+        Write-AmdProgress 58 'Extracting AMD installer package'
+        & $sevenZip x -aoa ('-o' + $extract) $pkg | Out-Null
+        $sevenZipExitCode = [int]$LASTEXITCODE
+        if ($sevenZipExitCode -ne 0) {
+            throw "AMD package extraction failed with exit code $sevenZipExitCode."
+        }
+        $setup = Join-Path $extract 'Setup.exe'
+        if (-not (Test-Path -LiteralPath $setup -PathType Leaf)) {
+            throw 'Extracted AMD Setup.exe not found.'
+        }
+
+        Write-AmdProgress 66 'Launching AMD installer'
+        $setupProcess = Start-Process -FilePath $setup -ArgumentList '-INSTALL', '-OUTPUT', 'screen', '-LOG', $log -Wait -PassThru -ErrorAction Stop
+        $setupProcess.Refresh()
+        if ($setupProcess.ExitCode -notin 0, 3010) {
+            throw "AMD installer launcher failed with exit code $($setupProcess.ExitCode)."
+        }
+
+        $done = $false
+        for ($i = 0; $i -lt 900; $i++) {
+            $percent = 70 + [Math]::Min(22, [int][Math]::Floor(($i / 899.0) * 22))
+            Write-AmdProgress $percent ("Waiting for AMD installation completion ({0}s elapsed)" -f ($i * 2))
+            $active = Get-Process -ErrorAction SilentlyContinue | Where-Object { $_.ProcessName -match 'AMDSoftwareInstaller|ATISetup' }
+            $tail = if (Test-Path -LiteralPath $log -PathType Leaf) { Get-Content -LiteralPath $log -Tail 40 -ErrorAction SilentlyContinue } else { @() }
+            if (($tail -join "`n") -match 'Install has completed\. Cleaning up\.') {
+                $done = $true
+                break
+            }
+            if ((-not $active) -and (Test-Path -LiteralPath 'C:\Program Files\AMD\CNext\CNext\RadeonSoftware.exe' -PathType Leaf)) {
+                $done = $true
+                break
+            }
+            Start-Sleep -Seconds 2
+        }
+        if (-not $done) {
+            throw "AMD installation did not complete within 1800 seconds. Review log: $log"
+        }
+
+        $radeon = 'C:\Program Files\AMD\CNext\CNext\RadeonSoftware.exe'
+        if (-not (Test-Path -LiteralPath $radeon -PathType Leaf)) {
+            throw 'RadeonSoftware.exe was not installed.'
+        }
+
+        Write-AmdProgress 94 'Launching and validating AMD Software'
+        Start-Process -FilePath $radeon -ErrorAction Stop
+        Start-Sleep -Seconds 6
+        if (-not (Get-Process RadeonSoftware -ErrorAction SilentlyContinue)) {
+            throw 'AMD Software did not launch successfully.'
+        }
+
+        Write-AmdProgress 98 'Checking installed AMD Software registration'
+        $app = Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*', 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*' -ErrorAction SilentlyContinue |
+            Where-Object { $_.DisplayName -eq 'AMD Software' } |
+            Select-Object -First 1
+        if (-not $app) {
+            throw 'AMD Software is missing from installed apps after install.'
+        }
+
+        $succeeded = $true
+        [pscustomobject]@{
+            DisplayName    = $app.DisplayName
+            DisplayVersion = $app.DisplayVersion
+            RadeonRunning  = [bool](Get-Process RadeonSoftware -ErrorAction SilentlyContinue)
+            LatestUrl      = $url
+        } | Format-List
+    } finally {
+        Write-Progress -Id $progressId -Activity 'AMD Adrenalin update' -Completed
+        if ($succeeded) {
+            if (Test-Path -LiteralPath 'C:\AMD\AMD-Software-Installer') {
+                Remove-Item -LiteralPath 'C:\AMD\AMD-Software-Installer' -Recurse -Force -ErrorAction SilentlyContinue
+            }
+            if ($work -and (Test-Path -LiteralPath $work)) {
+                Remove-Item -LiteralPath $work -Recurse -Force -ErrorAction SilentlyContinue
+            }
+        }
+    }
 }
 
 
