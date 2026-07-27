@@ -22644,6 +22644,13 @@ function speed {
     $url = 'https://install.speedtest.net/app/cli/ookla-speedtest-1.2.0-win64.zip'
     $expectedSha256 = '13E3D888B845D301A556419E31F14AB9BFF57E3F06089EF2FD3BDC9BA6841EFA'
 
+    function Write-SpeedtestProgress {
+        param([int] $PercentComplete, [string] $Status)
+        Write-Progress -Id 768 -Activity 'Speedtest CLI' -Status $Status -PercentComplete $PercentComplete
+    }
+
+    Write-SpeedtestProgress 10 'Checking managed Speedtest CLI installation'
+    try {
     function Test-SpeedtestCliExecutable {
         param([Parameter(Mandatory = $true)][string] $Path)
         try {
@@ -22677,12 +22684,15 @@ function speed {
         $extractRoot = Join-Path $env:TEMP ('ookla-speedtest-extract-' + [Guid]::NewGuid().ToString('N'))
         if (Test-Path -LiteralPath $zipPath -PathType Leaf) { Remove-Item -LiteralPath $zipPath -Force -ErrorAction SilentlyContinue }
         [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+        Write-SpeedtestProgress 50 'Downloading verified Ookla CLI package'
         Invoke-WebRequest -Uri $url -OutFile $zipPath -UseBasicParsing -ErrorAction Stop
+        Write-SpeedtestProgress 65 'Verifying download hash'
         $actualSha256 = (Get-FileHash -LiteralPath $zipPath -Algorithm SHA256).Hash.ToUpperInvariant()
         if ($actualSha256 -ne $expectedSha256) { throw "Speedtest CLI download hash mismatch: $actualSha256" }
         Add-Type -AssemblyName System.IO.Compression.FileSystem
         New-Item -ItemType Directory -Force -Path $extractRoot | Out-Null
         try {
+            Write-SpeedtestProgress 75 'Extracting verified Ookla CLI package'
             [System.IO.Compression.ZipFile]::ExtractToDirectory($zipPath, $extractRoot)
             $extractedExe = Join-Path $extractRoot 'speedtest.exe'
             if (-not (Test-Path -LiteralPath $extractedExe -PathType Leaf)) { throw "Speedtest CLI zip did not contain speedtest.exe" }
@@ -22692,6 +22702,7 @@ function speed {
         } finally {
             Remove-Item -LiteralPath $extractRoot -Recurse -Force -ErrorAction SilentlyContinue
         }
+        Write-SpeedtestProgress 85 'Verifying installed CLI'
         if (-not (Test-SpeedtestCliExecutable -Path $installExe)) { throw "Installed Speedtest CLI is not executable: $installExe" }
         $userPath = [Environment]::GetEnvironmentVariable('Path','User')
         $pathParts = @($userPath -split ';' | Where-Object { $_ })
@@ -22706,6 +22717,7 @@ function speed {
     $cli = $null
     if (Test-SpeedtestCliExecutable -Path $installExe) { $cli = $installExe }
     if (-not $cli) {
+        Write-SpeedtestProgress 25 'Checking other Speedtest CLI installations'
         $commands = @(Get-Command speedtest.exe -CommandType Application -ErrorAction SilentlyContinue)
         foreach ($cmd in $commands) {
             if ($cmd -and $cmd.Source -and $cmd.Source -ne $installExe -and (Test-SpeedtestCliExecutable -Path $cmd.Source)) {
@@ -22714,8 +22726,12 @@ function speed {
             }
         }
     }
-    if (-not $cli) { $cli = Install-SpeedtestCliExecutable }
+    if (-not $cli) {
+        Write-SpeedtestProgress 40 'No usable CLI found; preparing verified installation'
+        $cli = Install-SpeedtestCliExecutable
+    }
 
+    Write-SpeedtestProgress 95 'Starting Speedtest CLI'
     if ($ArgumentList -and $ArgumentList.Count -gt 0) {
         & $cli @ArgumentList
         return
@@ -22723,6 +22739,9 @@ function speed {
 
     & $cli --version
     & $cli --accept-license --accept-gdpr
+    } finally {
+        Write-Progress -Id 768 -Activity 'Speedtest CLI' -Completed
+    }
 }
 
 function ssgame {  F:\study\Windows\Applications\Gaming\SaveData\Backup\Tools\Python\MichSaveGame\run-MichSaveGame.ps1 }
