@@ -4821,7 +4821,42 @@ function bbbbbb {
 }
 
 function gitadd {
-     git add .; git commit --allow-empty -m "Force sync"; git push --force origin main
+    [CmdletBinding()]
+    param(
+        [string] $Message = 'Sync changes',
+        [switch] $AllowEmptyCommit
+    )
+
+    $progressId = 771
+    try {
+        Write-Progress -Id $progressId -Activity 'Git sync' -Status 'Staging working tree changes' -PercentComplete 20
+        git add --all
+        if ($LASTEXITCODE -ne 0) {
+            throw "git add failed with exit code $LASTEXITCODE"
+        }
+
+        $staged = @(git diff --cached --name-only)
+        if ($staged.Count -gt 0 -or $AllowEmptyCommit) {
+            Write-Progress -Id $progressId -Activity 'Git sync' -Status 'Creating commit' -PercentComplete 60
+            $commitArgs = @('commit', '-m', $Message)
+            if ($AllowEmptyCommit) { $commitArgs += '--allow-empty' }
+            git @commitArgs
+            if ($LASTEXITCODE -ne 0) {
+                throw "git commit failed with exit code $LASTEXITCODE"
+            }
+        } else {
+            Write-Host 'GITADD_PROGRESS stage=no-staged-changes' -ForegroundColor DarkGray
+        }
+
+        Write-Progress -Id $progressId -Activity 'Git sync' -Status 'Pushing current branch without force' -PercentComplete 90
+        git push origin HEAD
+        if ($LASTEXITCODE -ne 0) {
+            throw "git push failed with exit code $LASTEXITCODE"
+        }
+        Write-Host 'GITADD_OK pushed current branch without force' -ForegroundColor Green
+    } finally {
+        Write-Progress -Id $progressId -Activity 'Git sync' -Completed
+    }
 }
 function bbbbn {
      & "F:\study\shells\powershell\scripts\CodeBerg\codeberg-sync.ps1" -FolderPath @args
