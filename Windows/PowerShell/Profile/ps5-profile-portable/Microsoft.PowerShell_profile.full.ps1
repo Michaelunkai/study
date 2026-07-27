@@ -5444,10 +5444,10 @@ function Complete-GititProcess {
         $State.Process.Refresh()
         $exitCode = $State.Process.ExitCode
     } catch {
-        $exitCode = 0
+        throw "gitit child process exit code could not be read: $($_.Exception.Message)"
     }
     if ($null -eq $exitCode -or "$exitCode" -eq "") {
-        $exitCode = 0
+        throw 'gitit child process exit code was not available.'
     }
     Stop-GititProcess -State $State
     [PSCustomObject]@{
