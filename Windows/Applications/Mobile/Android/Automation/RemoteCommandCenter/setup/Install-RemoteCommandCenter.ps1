@@ -5,8 +5,9 @@ param(
     [string]$RelayBase = 'https://ntfy.sh',
     [int]$LocalPort = 8777,
     [string[]]$WakePorts = @('7','9','40000','40009'),
-    [string]$SdkRoot = 'C:\Users\micha\bubblewrap-tools\android_sdk',
-    [string]$JdkRoot = 'C:\Users\micha\android-build-tools\jdk',
+    [string]$SdkRoot = $env:ANDROID_SDK_ROOT,
+    [string]$JdkRoot = $env:JAVA_HOME,
+    [string]$AdbSerial,
     [switch]$BuildApk = $true,
     [switch]$InstallAndroid,
     [switch]$SkipPcAgent,
@@ -14,6 +15,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+if ([string]::IsNullOrWhiteSpace($SdkRoot)) { $SdkRoot = $env:ANDROID_HOME }
 
 function New-Base64UrlToken {
     param([int]$Bytes = 24)
@@ -60,15 +62,23 @@ $raw = Join-Path $Root 'app\src\main\res\raw'
 $runtime = Join-Path $Root 'runtime'
 $logDir = Join-Path $runtime 'logs'
 $dist = Join-Path $Root 'dist'
+$nodeCommand = Get-Command node.exe -ErrorAction SilentlyContinue | Select-Object -First 1
+$npmCommand = Get-Command npm.cmd -ErrorAction SilentlyContinue | Select-Object -First 1
+$dependencyRestore = Join-Path $scripts 'Restore-RemoteCommandCenterDependencies.ps1'
 
 if ($ValidateOnly) {
     $checks = [ordered]@{
         Root = (Test-Path -LiteralPath $Root)
         PowerShell51 = (Test-Path -LiteralPath "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe")
         DotNetCsc = ((Test-Path -LiteralPath "$env:SystemRoot\Microsoft.NET\Framework64\v4.0.30319\csc.exe") -or (Test-Path -LiteralPath "$env:SystemRoot\Microsoft.NET\Framework\v4.0.30319\csc.exe"))
+        Node = [bool]$nodeCommand
+        Npm = [bool]$npmCommand
+        TvDependencyManifest = (Test-Path -LiteralPath (Join-Path $scripts 'package-lock.json') -PathType Leaf)
+        TvDependencyRestoreScript = (Test-Path -LiteralPath $dependencyRestore -PathType Leaf)
         AndroidSdkRoot = (Test-Path -LiteralPath $SdkRoot)
         JdkRoot = (Test-Path -LiteralPath $JdkRoot)
-        Adb = (Test-Path -LiteralPath (Join-Path $env:LOCALAPPDATA 'Android\platform-tools\adb.exe'))
+        Adb = (Test-Path -LiteralPath (Join-Path $SdkRoot 'platform-tools\adb.exe'))
+        AdbSerialSpecified = (-not [string]::IsNullOrWhiteSpace($AdbSerial))
         DetectedPcIp = $PcIp
         DetectedPcMac = $PcMac
     }
@@ -76,6 +86,9 @@ if ($ValidateOnly) {
     Write-Output 'REMOTE_COMMAND_CENTER_VALIDATE_ONLY_OK'
     exit 0
 }
+
+if (-not (Test-Path -LiteralPath $dependencyRestore -PathType Leaf)) { throw "TV dependency restore script is missing: $dependencyRestore" }
+& $dependencyRestore -ScriptsRoot $scripts
 
 New-Item -ItemType Directory -Force -Path $scripts, $raw, $runtime, $logDir, $dist | Out-Null
 
@@ -129,14 +142,24 @@ if ($BuildApk) {
 }
 
 if ($InstallAndroid) {
-    $adb = Join-Path $env:LOCALAPPDATA 'Android\platform-tools\adb.exe'
+    $adb = Join-Path $SdkRoot 'platform-tools\adb.exe'
     if (-not (Test-Path -LiteralPath $adb)) { throw "ADB not found: $adb" }
     if (-not (Test-Path -LiteralPath $apk)) { throw "APK not found: $apk" }
-    $serial = (& $adb devices | Select-String "`tdevice$" | Select-Object -First 1).ToString().Split("`t")[0]
-    if (-not $serial) { throw 'No connected Android device. Enable wireless debugging or connect USB, then re-run with -InstallAndroid.' }
-    & $adb -s $serial install --no-incremental -r -d $apk
-    & $adb -s $serial shell pm grant com.mich.remotecommandcenter android.permission.WRITE_SECURE_SETTINGS
-    & $adb -s $serial shell monkey -p com.mich.remotecommandcenter -c android.intent.category.LAUNCHER 1 | Out-Null
+    if ([string]::IsNullOrWhiteSpace($AdbSerial)) { throw 'Pass -AdbSerial with the exact verified device serial before using -InstallAndroid.' }
+    $deviceState = & $adb -s $AdbSerial get-state 2>$null
+    if ($LASTEXITCODE -ne 0 -or ($deviceState -join '').Trim() -ne 'device') { throw 'The exact ADB serial is not in device state; reconnect and verify it before installing.' }
+    & $adb -s $AdbSerial install --no-incremental -r $apk
+    if ($LASTEXITCODE -ne 0) { throw 'APK install failed; existing application data was not removed.' }
+    $gradleText = Get-Content -LiteralPath (Join-Path $Root 'app\build.gradle') -Raw
+    $expectedCode = [regex]::Match($gradleText, 'versionCode\s+(\d+)').Groups[1].Value
+    $expectedName = [regex]::Match($gradleText, 'versionName\s+"([^"]+)"').Groups[1].Value
+    if (-not $expectedCode -or -not $expectedName) { throw 'Unable to resolve expected Android package version.' }
+    $installed = & $adb -s $AdbSerial shell dumpsys package com.mich.remotecommandcenter
+    if ($LASTEXITCODE -ne 0) { throw 'Installed package identity could not be read back.' }
+    $installedText = $installed -join [Environment]::NewLine
+    if ($installedText -notmatch ('versionCode=' + [regex]::Escape($expectedCode)) -or $installedText -notmatch ('versionName=' + [regex]::Escape($expectedName))) {
+        throw 'Installed package version does not match app/build.gradle.'
+    }
 }
 
 Write-Output "REMOTE_COMMAND_CENTER_SETUP_OK"

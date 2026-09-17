@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -53,10 +54,13 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
+import java.security.MessageDigest;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
@@ -91,17 +95,26 @@ public class MainActivity extends Activity {
     private final ArrayList<TextView> buttons = new ArrayList<>();
     private final AtomicBoolean volumeHeld = new AtomicBoolean(false);
     private final AtomicBoolean wakeSendInFlight = new AtomicBoolean(false);
+    private final AtomicBoolean terminalSendInFlight = new AtomicBoolean(false);
     private final ConcurrentHashMap<String, AtomicBoolean> actionSendInFlight = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Long> commandCreatedAtByNonce = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, String> commandRequestHashByNonce = new ConcurrentHashMap<>();
     private final AtomicLong directTvRetryAfterMs = new AtomicLong(0);
     private final AtomicLong relayRetryAfterMs = new AtomicLong(0);
     private final Handler statusHandler = new Handler(Looper.getMainLooper());
+    private Runnable pendingWakeTask;
+    private PowerManager.WakeLock pendingWakeLock;
+    private boolean wakeIntentConfirmationShowing;
     private volatile boolean destroyed;
+    private volatile boolean activityStarted;
+    private final AtomicBoolean statusCheckInFlight = new AtomicBoolean(false);
+    private final AtomicLong statusGeneration = new AtomicLong(0L);
     private final Runnable statusPoller = new Runnable() {
         @Override
         public void run() {
-            if (destroyed) return;
+            if (destroyed || !activityStarted) return;
             checkPcStatusAsync();
-            statusHandler.postDelayed(this, 600);
+            statusHandler.postDelayed(this, 3000);
         }
     };
 
@@ -228,14 +241,23 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         config = loadConfig();
         buildUi();
-        startStatusPolling();
         handleIntent(getIntent());
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        checkPcStatusAsync();
+    protected void onStart() {
+        super.onStart();
+        activityStarted = true;
+        statusHandler.removeCallbacks(statusPoller);
+        statusHandler.post(statusPoller);
+    }
+
+    @Override
+    protected void onStop() {
+        activityStarted = false;
+        statusGeneration.incrementAndGet();
+        statusHandler.removeCallbacks(statusPoller);
+        super.onStop();
     }
 
     @Override
@@ -248,6 +270,9 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         destroyed = true;
+        activityStarted = false;
+        statusGeneration.incrementAndGet();
+        cancelScheduledWakeBurst();
         statusHandler.removeCallbacksAndMessages(null);
         super.onDestroy();
     }
@@ -302,12 +327,15 @@ public class MainActivity extends Activity {
 
         status = new TextView(this);
         status.setText("Ready.");
+        status.setContentDescription("Remote Command Center action status");
         status.setTextColor(Color.rgb(203, 213, 225));
         status.setTextSize(14);
         status.setGravity(Gravity.CENTER);
         LinearLayout.LayoutParams statusParams = new LinearLayout.LayoutParams(-1, -2);
         statusParams.setMargins(0, dp(8), 0, dp(14));
         root.addView(status, statusParams);
+
+        addUpdateInfo(root);
 
         addPowerStrip(root);
         addSection(root, "Controls", "Windows repair, terminal, and display controls", systemCommands);
@@ -318,6 +346,46 @@ public class MainActivity extends Activity {
         }
 
         setContentView(scroll);
+    }
+
+    private void addUpdateInfo(LinearLayout root) {
+        TextView updateInfo = new TextView(this);
+        updateInfo.setText("What changed in this update");
+        updateInfo.setContentDescription("Show changes included in the installed update");
+        updateInfo.setTextColor(Color.rgb(125, 211, 252));
+        updateInfo.setTextSize(14);
+        updateInfo.setGravity(Gravity.CENTER);
+        updateInfo.setPadding(dp(12), dp(10), dp(12), dp(10));
+        updateInfo.setBackground(remoteButtonBg(Color.rgb(14, 116, 144)));
+        updateInfo.setClickable(true);
+        updateInfo.setFocusable(true);
+        updateInfo.setOnClickListener(v -> showWhatChangedDialog());
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, -2);
+        params.setMargins(0, 0, 0, dp(8));
+        root.addView(updateInfo, params);
+    }
+
+    private void showWhatChangedDialog() {
+        String versionName = "unknown";
+        int versionCode = 0;
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), 0);
+            if (info.versionName != null) versionName = info.versionName;
+            versionCode = info.versionCode;
+        } catch (PackageManager.NameNotFoundException ignored) {
+        }
+
+        String changes = "• Commands use a strict authenticated action allowlist.\n\n"
+                + "• Tracked actions use a signed completion matched to the action and nonce. "
+                + "A missing result is reported as unconfirmed.\n\n"
+                + "• PC reachability checks run one at a time every three seconds while this screen is visible.\n\n"
+                + "• For terminal lines, returned means PowerShell finished the line; its real-world effects are not verified.\n\n"
+                + "• Reachability confirms the PC service is available; it does not by itself confirm a TV or power-state change.";
+        new AlertDialog.Builder(this)
+                .setTitle("What changed — " + versionName + " (build " + versionCode + ")")
+                .setMessage(changes)
+                .setPositiveButton("Close", null)
+                .show();
     }
 
     private void addPowerStrip(LinearLayout root) {
@@ -564,6 +632,7 @@ public class MainActivity extends Activity {
 
         terminalInput = new EditText(this);
         terminalInput.setSingleLine(true);
+        terminalInput.setContentDescription("PowerShell command line");
         terminalInput.setHint("Type a PowerShell line for the PC");
         terminalInput.setHintTextColor(Color.rgb(148, 163, 184));
         terminalInput.setTextColor(Color.WHITE);
@@ -582,6 +651,7 @@ public class MainActivity extends Activity {
         LinearLayout.LayoutParams inputParams = new LinearLayout.LayoutParams(-1, dp(52));
         inputParams.setMargins(0, dp(8), 0, 0);
         panel.addView(terminalInput, inputParams);
+        buttons.add(terminalInput);
 
         Button send = new Button(this);
         send.setAllCaps(false);
@@ -592,6 +662,7 @@ public class MainActivity extends Activity {
         Drawable sendBg = getDrawable(R.drawable.ic_terminal_send_bg);
         send.setBackground(sendBg != null ? sendBg : buttonBg(Color.rgb(22, 163, 74)));
         send.setOnClickListener(v -> sendTerminalLine());
+        buttons.add(send);
         LinearLayout.LayoutParams sendParams = new LinearLayout.LayoutParams(-1, dp(52));
         sendParams.setMargins(0, dp(8), 0, 0);
         panel.addView(send, sendParams);
@@ -656,11 +727,56 @@ public class MainActivity extends Activity {
     }
 
     private void sendCommand(Command command) {
+        if ("shutdown_pc".equals(command.id)) {
+            confirmDestructivePcCommand(command,
+                    "Confirm PC shutdown",
+                    "This shuts down the PC immediately and force-closes open apps. Waking it afterward depends on the PC's Wake-on-LAN setup.",
+                    "Shut down now");
+            return;
+        }
+        if ("force_reboot_now".equals(command.id)) {
+            confirmDestructivePcCommand(command,
+                    "Confirm PC reboot",
+                    "This immediately restarts the PC and force-closes open apps. Save your work before continuing.",
+                    "Reboot now");
+            return;
+        }
+        if ("refresh2_logoff".equals(command.id)) {
+            confirmDestructivePcCommand(command,
+                    "Confirm sign-out and sign-in",
+                    "This signs out the current Windows account and force-closes open apps. Existing Windows sign-in settings will be left unchanged; a local sign-in may be required afterward.",
+                    "Log out now");
+            return;
+        }
+        if ("reboot_to_bios".equals(command.id)) {
+            confirmDestructivePcCommand(command,
+                    "Confirm BIOS restart",
+                    "This immediately restarts the PC into UEFI firmware and force-closes open apps. Remote Commander cannot operate while firmware setup is open; you will need local access to exit. Save your work first.",
+                    "Reboot to BIOS");
+            return;
+        }
+        if ("restart_codex".equals(command.id)) {
+            confirmDestructivePcCommand(command,
+                    "Confirm Codex restart",
+                    "This closes and reopens Codex Desktop on the PC. The current Codex task may disconnect briefly; save or checkpoint work first.",
+                    "Restart Codex");
+            return;
+        }
+        dispatchCommand(command);
+    }
+
+    private void confirmDestructivePcCommand(Command command, String title, String message, String positiveLabel) {
+        new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                .setPositiveButton(positiveLabel, (dialog, which) -> dispatchCommand(command))
+                .show();
+    }
+
+    private void dispatchCommand(Command command) {
         if ("wake_pc".equals(command.id)) {
-            if (!wakeSendInFlight.compareAndSet(false, true)) {
-                setStatusText("Wake is already running...");
-                return;
-            }
+            cancelScheduledWakeBurst();
             startWakeSend("Sending Wake...");
             return;
         }
@@ -771,6 +887,7 @@ public class MainActivity extends Activity {
         long createdAt = System.currentTimeMillis() / 1000L;
         boolean dryRun = false;
         String canonical = "rcc|" + createdAt + "|" + nonce + "|" + dryRun + "|" + action + "|" + CONFIRM;
+        String requestHash = requestFingerprint(canonical);
         String signature = hmac(canonical, config.getString("sharedKey"));
 
         JSONObject body = new JSONObject();
@@ -782,41 +899,126 @@ public class MainActivity extends Activity {
         body.put("confirm", CONFIRM);
         body.put("signature", signature);
 
-        postCommand(body.toString());
+        commandCreatedAtByNonce.put(nonce, createdAt);
+        commandRequestHashByNonce.put(nonce, requestHash);
+        try {
+            postCommand(body.toString());
+        } catch (Exception error) {
+            commandCreatedAtByNonce.remove(nonce);
+            commandRequestHashByNonce.remove(nonce);
+            throw error;
+        }
         return nonce;
     }
 
     private String waitForActionCompletion(String nonce, String label, String action) throws Exception {
-        long timeoutMs = "youtube_tizen".equals(action) ? 120000L
-                : "moonlight_toggle".equals(action) ? 90000L
-                : 45000L;
+        long timeoutMs = action.startsWith("terminal_line:") ? 360000L : ("tv_force_reboot".equals(action) ? 300000L : 270000L);
         long deadline = System.currentTimeMillis() + timeoutMs;
+        long sentAt = commandCreatedAtByNonce.getOrDefault(nonce, System.currentTimeMillis() / 1000L);
+        String initialCursor = Long.toString(Math.max(0L, sentAt - 1L));
+        Map<String, String> relayCursors = new HashMap<>();
         boolean observed = false;
-        while (System.currentTimeMillis() < deadline) {
-            JSONArray bases = config.getJSONArray("localBases");
-            for (int i = 0; i < bases.length(); i++) {
-                JSONObject statusBody = getJson(bases.getString(i) + "/status?nonce="
-                        + URLEncoder.encode(nonce, "UTF-8"), 700);
-                if (statusBody == null) continue;
-                JSONObject actionStatus = statusBody.optJSONObject("actionStatus");
-                if (actionStatus == null) continue;
-                observed = true;
-                String state = actionStatus.optString("state", "");
-                if ("completed".equals(state)) return "Completed: " + label;
-                if ("skipped".equals(state)) return "Already running: " + label;
-                if ("failed".equals(state)) {
-                    throw new IllegalStateException(label + " failed: "
-                            + actionStatus.optString("message", "unknown error"));
+        try {
+            while (System.currentTimeMillis() < deadline) {
+                JSONArray bases = config.getJSONArray("localBases");
+                String proof = hmac("rcc-status-query|" + nonce, config.getString("sharedKey"));
+                for (int i = 0; i < bases.length(); i++) {
+                    String target = bases.getString(i) + "/status?nonce="
+                            + URLEncoder.encode(nonce, "UTF-8") + "&proof=" + URLEncoder.encode(proof, "UTF-8");
+                    JSONObject statusBody = getJson(target, 700);
+                    if (statusBody == null) continue;
+                    JSONObject actionStatus = statusBody.optJSONObject("actionStatus");
+                    if (!isVerifiedActionStatus(actionStatus, nonce, action)) continue;
+                    observed = true;
+                    String result = completionForStatus(actionStatus, label, action);
+                    if (result != null) return result;
+                }
+
+                JSONArray relays = config.optJSONArray("relayBases");
+                String statusTopic = config.optString("statusTopic", "");
+                if (relays != null && !statusTopic.isEmpty()) {
+                    for (int i = 0; i < relays.length(); i++) {
+                        String base = relays.getString(i).replaceAll("/+$", "");
+                        String cursor = relayCursors.getOrDefault(base, initialCursor);
+                        String target = base + "/" + URLEncoder.encode(statusTopic, "UTF-8")
+                                + "/json?poll=1&since=" + URLEncoder.encode(cursor, "UTF-8");
+                        String eventStream = getText(target, 1200);
+                        if (eventStream == null || eventStream.isEmpty()) continue;
+                        for (String line : eventStream.split("\\r?\\n")) {
+                            if (line.trim().isEmpty()) continue;
+                            try {
+                                JSONObject event = new JSONObject(line);
+                                if (!"message".equals(event.optString("event", ""))) continue;
+                                String eventId = event.optString("id", "");
+                                if (!eventId.isEmpty()) relayCursors.put(base, eventId);
+                                else if (event.has("time")) relayCursors.put(base, event.optString("time", cursor));
+                                JSONObject actionStatus = new JSONObject(event.optString("message", "{}"));
+                                if (!isVerifiedActionStatus(actionStatus, nonce, action)) continue;
+                                observed = true;
+                                String result = completionForStatus(actionStatus, label, action);
+                                if (result != null) return result;
+                            } catch (Exception ignored) {
+                            }
+                        }
+                    }
+                }
+                try {
+                    Thread.sleep(observed ? 250 : 500);
+                } catch (InterruptedException ignored) {
+                    Thread.currentThread().interrupt();
+                    break;
                 }
             }
-            try {
-                Thread.sleep(observed ? 150 : 300);
-            } catch (InterruptedException ignored) {
-                Thread.currentThread().interrupt();
-                break;
-            }
+            return "Unconfirmed: " + label + " (no authenticated completion received).";
+        } finally {
+            commandCreatedAtByNonce.remove(nonce);
+            commandRequestHashByNonce.remove(nonce);
         }
-        throw new IllegalStateException("Timed out waiting for " + label + " completion.");
+    }
+
+    private boolean isVerifiedActionStatus(JSONObject actionStatus, String nonce, String action) {
+        String statusAction = action.startsWith("terminal_line:") ? "terminal_line" : action;
+        String expectedRequestHash = commandRequestHashByNonce.get(nonce);
+        if (actionStatus == null
+                || !"rcc-status".equals(actionStatus.optString("type", ""))
+                || !nonce.equals(actionStatus.optString("nonce", ""))
+                || !statusAction.equals(actionStatus.optString("action", ""))
+                || expectedRequestHash == null
+                || !expectedRequestHash.equals(actionStatus.optString("requestHash", ""))) return false;
+        try {
+            String canonical = "rcc-status|" + nonce
+                    + "|" + actionStatus.optString("action", "")
+                    + "|" + actionStatus.optString("requestHash", "")
+                    + "|" + actionStatus.optString("state", "")
+                    + "|" + actionStatus.optInt("exitCode", 0)
+                    + "|" + actionStatus.optString("updatedUtc", "")
+                    + "|" + actionStatus.optString("message", "");
+            byte[] expected = hmac(canonical, config.getString("sharedKey")).getBytes(StandardCharsets.UTF_8);
+            byte[] actual = actionStatus.optString("signature", "").getBytes(StandardCharsets.UTF_8);
+            return MessageDigest.isEqual(expected, actual);
+        } catch (Exception ignored) {
+            return false;
+        }
+    }
+
+    private String completionForStatus(JSONObject actionStatus, String label, String action) throws Exception {
+        String state = actionStatus.optString("state", "");
+        if ("completed".equals(state)) {
+            if (action.startsWith("terminal_line:")) return "Line returned: " + label + " (effects not verified)";
+            return "Completed: " + label;
+        }
+        if ("skipped".equals(state)) return "Already running: " + label;
+        if ("unconfirmed".equals(state)) return "Unconfirmed: " + label;
+        if ("failed".equals(state)) {
+            throw new IllegalStateException(label + " failed (code " + actionStatus.optInt("exitCode", -1) + "): "
+                    + actionStatus.optString("message", "unknown error"));
+        }
+        return null;
+    }
+
+    private String requestFingerprint(String canonical) throws Exception {
+        byte[] digest = MessageDigest.getInstance("SHA-256").digest(canonical.getBytes(StandardCharsets.UTF_8));
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(digest);
     }
 
     private boolean isDirectTvRemoteCommand(String id) {
@@ -828,7 +1030,7 @@ public class MainActivity extends Activity {
     }
 
     private String tvKeyForCommand(String id) {
-        if ("tv_power_toggle".equals(id) || "tv_force_reboot".equals(id)) return "KEY_POWER";
+        if ("tv_power_toggle".equals(id)) return "KEY_POWER";
         if ("tv_mute".equals(id)) return "KEY_MUTE";
         if ("tv_volume_up".equals(id)) return "KEY_VOLUP";
         if ("tv_volume_down".equals(id)) return "KEY_VOLDOWN";
@@ -881,11 +1083,13 @@ public class MainActivity extends Activity {
         setStatusText("TV volume: " + volume + "...");
         new Thread(() -> {
             try {
-                sendCommandViaReceiver("tv_set_volume:" + volume);
+                String action = "tv_set_volume:" + volume;
+                String nonce = sendCommandViaReceiver(action);
+                String completion = waitForActionCompletion(nonce, "TV volume " + volume, action);
                 Log.i(TAG, "TV_SET_VOLUME_RECEIVER_ONLY_SENT volume=" + volume);
                 runOnUiThread(() -> {
-                    setStatusText("TV volume set to " + volume);
-                    Toast.makeText(this, "TV volume set to " + volume, Toast.LENGTH_SHORT).show();
+                    setStatusText(completion);
+                    Toast.makeText(this, completion, Toast.LENGTH_SHORT).show();
                 });
             } catch (Exception e) {
                 runOnUiThread(() -> setStatusText("TV volume failed: " + e.getMessage()));
@@ -905,11 +1109,7 @@ public class MainActivity extends Activity {
                 if (canTryDirectTv()) {
                     try {
                         String key = tvKeyForCommand(command.id);
-                        if ("tv_force_reboot".equals(command.id)) {
-                            sendSamsungTvHeldKey(key, 6500);
-                        } else {
-                            sendSamsungTvKey(key, "Click");
-                        }
+                        sendSamsungTvKey(key, "Click");
                         Log.i(TAG, "TV_DIRECT_SENT action=" + command.id + " key=" + key);
                         runOnUiThread(() -> setStatusText("TV sent direct: " + command.label));
                         return;
@@ -919,8 +1119,9 @@ public class MainActivity extends Activity {
                     }
                 }
                 String nonce = sendCommandViaReceiver(command.id);
-                Log.i(TAG, "TV_RECEIVER_SENT action=" + command.id + " nonce=" + nonce);
-                runOnUiThread(() -> setStatusText("TV accepted via PC: " + command.label));
+                String completion = waitForActionCompletion(nonce, command.label, command.id);
+                Log.i(TAG, "TV_RECEIVER_COMPLETION action=" + command.id + " nonce=" + nonce);
+                runOnUiThread(() -> setStatusText(completion));
             } catch (Exception e) {
                 runOnUiThread(() -> setStatusText("TV failed: " + e.getMessage()));
             } finally {
@@ -948,6 +1149,8 @@ public class MainActivity extends Activity {
                         }
                     }
                     String nonce = sendCommandViaReceiver(command.id);
+                    commandCreatedAtByNonce.remove(nonce);
+                    commandRequestHashByNonce.remove(nonce);
                     Log.i(TAG, "TV_HOLD_RECEIVER_SENT action=" + command.id + " nonce=" + nonce);
                     Thread.sleep(310);
                 }
@@ -1005,15 +1208,6 @@ public class MainActivity extends Activity {
             body.put("params", params);
             writeWebSocketTextFrame(socket.getOutputStream(), body.toString());
             Thread.sleep(1000);
-        }
-    }
-
-    private void sendSamsungTvHeldKey(String key, long holdMs) throws Exception {
-        try (SSLSocket socket = openSamsungTvSocket()) {
-            sendSamsungTvFrame(socket, key, "Press");
-            Thread.sleep(Math.max(500, holdMs));
-            sendSamsungTvFrame(socket, key, "Release");
-            Thread.sleep(80);
         }
     }
 
@@ -1169,36 +1363,42 @@ public class MainActivity extends Activity {
             Toast.makeText(this, "Type a PowerShell line first.", Toast.LENGTH_SHORT).show();
             return;
         }
-        String encoded = Base64.getUrlEncoder().withoutPadding().encodeToString(line.getBytes(StandardCharsets.UTF_8));
+        byte[] payload = line.getBytes(StandardCharsets.UTF_8);
+        if (payload.length > 8192) {
+            Toast.makeText(this, "Terminal line is too long (maximum 8192 UTF-8 bytes).", Toast.LENGTH_LONG).show();
+            return;
+        }
+        if (!terminalSendInFlight.compareAndSet(false, true)) {
+            setStatusText("A terminal line is already being sent.");
+            return;
+        }
+        String encoded = Base64.getUrlEncoder().withoutPadding().encodeToString(payload);
         String action = "terminal_line:" + encoded;
         setBusy(true, "Sending terminal line...");
         new Thread(() -> {
+            String nonce = null;
+            String result;
+            boolean confirmed = false;
             try {
-                String nonce = nonce();
-                long createdAt = System.currentTimeMillis() / 1000L;
-                boolean dryRun = false;
-                String canonical = "rcc|" + createdAt + "|" + nonce + "|" + dryRun + "|" + action + "|" + CONFIRM;
-                String signature = hmac(canonical, config.getString("sharedKey"));
-
-                JSONObject body = new JSONObject();
-                body.put("type", "rcc");
-                body.put("createdAt", createdAt);
-                body.put("nonce", nonce);
-                body.put("dryRun", dryRun);
-                body.put("action", action);
-                body.put("confirm", CONFIRM);
-                body.put("signature", signature);
-
-                postCommand(body.toString());
-                checkPcStatusAsync();
-                runOnUiThread(() -> {
-                    terminalInput.setText("");
-                    setBusy(false, "Sent to PC terminal (" + nonce.substring(0, 8) + ")");
-                    Toast.makeText(this, "Sent to PC terminal", Toast.LENGTH_SHORT).show();
-                });
+                nonce = sendCommandViaReceiver(action);
+                result = waitForActionCompletion(nonce, "PC Terminal", action);
+                confirmed = result.startsWith("Line returned: PC Terminal");
             } catch (Exception e) {
-                runOnUiThread(() -> setBusy(false, "Terminal send failed: " + e.getMessage()));
+                result = "Terminal action failed: " + e.getMessage();
             }
+
+            final String finalResult = result;
+            final String noncePrefix = nonce == null ? "" : " (" + nonce.substring(0, 8) + ")";
+            final boolean clearInput = confirmed;
+            runOnUiThread(() -> {
+                try {
+                    if (clearInput && terminalInput != null) terminalInput.setText("");
+                    setBusy(false, finalResult + noncePrefix);
+                    if (clearInput) Toast.makeText(this, "PowerShell line returned; effects are not verified", Toast.LENGTH_LONG).show();
+                } finally {
+                    terminalSendInFlight.set(false);
+                }
+            });
         }, "rcc-terminal-send").start();
     }
 
@@ -1206,15 +1406,44 @@ public class MainActivity extends Activity {
         if (intent == null) return;
         int wakeDelayMs = intent.getIntExtra("wake_delay_ms", -1);
         if (wakeDelayMs >= 0) {
-            scheduleWakeBurst(wakeDelayMs);
+            requestWakeIntentConfirmation(wakeDelayMs);
             return;
         }
         if (!intent.getBooleanExtra("wake_now", false)) return;
-        startWakeSend("Sending Wake...");
+        requestWakeIntentConfirmation(-1);
+    }
+
+    private void requestWakeIntentConfirmation(int delayMs) {
+        if (destroyed || isFinishing()) return;
+        if (wakeIntentConfirmationShowing) {
+            setStatusText("Wake confirmation is already open.");
+            return;
+        }
+        boolean delayed = delayMs >= 0;
+        int boundedDelay = Math.max(0, Math.min(delayMs, 300000));
+        wakeIntentConfirmationShowing = true;
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(delayed ? "Schedule PC Wake?" : "Wake PC?")
+                .setMessage(delayed
+                        ? "An external app requested a PC wake in " + boundedDelay + " ms. Confirm to schedule it."
+                        : "An external app requested a PC wake. Confirm to send Wake-on-LAN and contact the PC.")
+                .setNegativeButton("Cancel", (ignored, which) -> {})
+                .setPositiveButton(delayed ? "Schedule Wake" : "Wake PC", (ignored, which) -> {
+                    if (delayed) {
+                        scheduleWakeBurst(boundedDelay);
+                    } else {
+                        cancelScheduledWakeBurst();
+                        startWakeSend("Sending Wake...");
+                    }
+                })
+                .create();
+        dialog.setOnDismissListener(ignored -> wakeIntentConfirmationShowing = false);
+        dialog.show();
     }
 
     private void scheduleWakeBurst(int delayMs) {
         int boundedDelay = Math.max(0, Math.min(delayMs, 300000));
+        cancelScheduledWakeBurst();
         setStatusText("Wake scheduled in " + boundedDelay + " ms...");
         PowerManager power = (PowerManager) getSystemService(Context.POWER_SERVICE);
         PowerManager.WakeLock delayLock = null;
@@ -1222,14 +1451,41 @@ public class MainActivity extends Activity {
             delayLock = power.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "RemoteCommandCenter:DelayedWake");
             delayLock.acquire(boundedDelay + 180000L);
         }
-        PowerManager.WakeLock finalDelayLock = delayLock;
-        statusHandler.postDelayed(() -> new Thread(() -> {
-            try {
-                sendWakeNowAndContinue("Delayed Wake");
-            } finally {
-                if (finalDelayLock != null && finalDelayLock.isHeld()) finalDelayLock.release();
+        final PowerManager.WakeLock finalDelayLock = delayLock;
+        final Runnable[] scheduledTask = new Runnable[1];
+        scheduledTask[0] = () -> {
+            if (pendingWakeTask != scheduledTask[0]) {
+                releaseWakeLock(finalDelayLock);
+                return;
             }
-        }, "rcc-delayed-wake").start(), boundedDelay);
+            pendingWakeTask = null;
+            pendingWakeLock = null;
+            startWakeSend("Delayed Wake", "Delayed Wake", finalDelayLock);
+        };
+        pendingWakeTask = scheduledTask[0];
+        pendingWakeLock = finalDelayLock;
+        if (!statusHandler.postDelayed(scheduledTask[0], boundedDelay)) {
+            cancelScheduledWakeBurst();
+            setStatusText("Wake could not be scheduled.");
+        }
+    }
+
+    private void cancelScheduledWakeBurst() {
+        if (pendingWakeTask != null) {
+            statusHandler.removeCallbacks(pendingWakeTask);
+            pendingWakeTask = null;
+        }
+        PowerManager.WakeLock lock = pendingWakeLock;
+        pendingWakeLock = null;
+        releaseWakeLock(lock);
+    }
+
+    private void releaseWakeLock(PowerManager.WakeLock lock) {
+        if (lock == null || !lock.isHeld()) return;
+        try {
+            lock.release();
+        } catch (RuntimeException ignored) {
+        }
     }
 
     private String runLocalCommand(String id) throws Exception {
@@ -1293,15 +1549,16 @@ public class MainActivity extends Activity {
         status.setText(text);
     }
 
-    private void startStatusPolling() {
-        statusHandler.removeCallbacks(statusPoller);
-        statusHandler.post(statusPoller);
-    }
-
     private void checkPcStatusAsync() {
+        if (destroyed || !activityStarted || !statusCheckInFlight.compareAndSet(false, true)) return;
+        long generation = statusGeneration.get();
         new Thread(() -> {
             boolean ready = canReachPcStatus();
-            runOnUiThread(() -> updatePcIndicator(ready));
+            runOnUiThread(() -> {
+                statusCheckInFlight.set(false);
+                if (destroyed || !activityStarted || statusGeneration.get() != generation) return;
+                updatePcIndicator(ready);
+            });
         }, "rcc-status").start();
     }
 
@@ -1477,7 +1734,7 @@ public class MainActivity extends Activity {
                     new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
                 StringBuilder body = new StringBuilder();
                 String line;
-                while ((line = reader.readLine()) != null) body.append(line);
+                while ((line = reader.readLine()) != null) body.append(line).append('\n');
                 return body.toString();
             }
         } catch (Exception ignored) {
@@ -1555,14 +1812,30 @@ public class MainActivity extends Activity {
     }
 
     private void startWakeSend(String text) {
+        startWakeSend(text, "Immediate Wake", null);
+    }
+
+    private void startWakeSend(String text, String completionLabel, PowerManager.WakeLock completionLock) {
+        if (!wakeSendInFlight.compareAndSet(false, true)) {
+            releaseWakeLock(completionLock);
+            setStatusText("Wake is already running...");
+            return;
+        }
         setStatusText(text);
-        new Thread(() -> {
-            try {
-                sendWakeNowAndContinue("Immediate Wake");
-            } finally {
-                wakeSendInFlight.set(false);
-            }
-        }, "rcc-wake").start();
+        try {
+            new Thread(() -> {
+                try {
+                    sendWakeNowAndContinue(completionLabel);
+                } finally {
+                    wakeSendInFlight.set(false);
+                    releaseWakeLock(completionLock);
+                }
+            }, "rcc-wake").start();
+        } catch (RuntimeException e) {
+            wakeSendInFlight.set(false);
+            releaseWakeLock(completionLock);
+            setStatusText("Wake could not start.");
+        }
     }
 
     private void sendWakeNowAndContinue(String label) {

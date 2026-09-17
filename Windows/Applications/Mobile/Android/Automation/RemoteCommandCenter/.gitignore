@@ -9,6 +9,7 @@ artifacts/icon-work/
 artifacts/ui-proof/
 runtime/
 !runtime/.gitkeep
+node_modules/
 scripts/rcc-config.json
 app/src/main/res/raw/rescue_config.json
 .serena/

@@ -5,6 +5,10 @@ public abstract class TestCase {
         if (!condition) throw new AssertionError(message);
     }
 
+    public static void assertFalse(String message, boolean condition) {
+        if (condition) throw new AssertionError(message);
+    }
+
     public static void assertEquals(Object expected, Object actual) {
         if (expected == null ? actual != null : !expected.equals(actual)) {
             throw new AssertionError("expected=" + expected + " actual=" + actual);

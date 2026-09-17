@@ -1,0 +1,12 @@
+{
+  "name": "remote-command-center-windows-helpers",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Runtime dependencies for the Remote Command Center Samsung TV bridge.",
+  "scripts": {
+    "test:tv-control": "node --test ../tests/samsung-tv-control.integration.test.js"
+  },
+  "dependencies": {
+    "ws": "8.21.3"
+  }
+}

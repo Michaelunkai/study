@@ -40,8 +40,8 @@ Install-RemoteCommandCenter.cmd
 Useful options:
 
 ```cmd
-Install-RemoteCommandCenter.cmd -PcIp 192.168.1.129 -PcMac 30:56:0F:40:D2:4C
-Install-RemoteCommandCenter.cmd -InstallAndroid
+Install-RemoteCommandCenter.cmd -PcIp 192.0.2.10 -PcMac 02:00:00:00:00:01
+Install-RemoteCommandCenter.cmd -InstallAndroid -AdbSerial "EXACT_ADB_SERIAL_FROM_CONNECT_HELPER"
 Install-RemoteCommandCenter.cmd -SdkRoot C:\Android\sdk -JdkRoot C:\Java\jdk
 ```
 
@@ -61,6 +61,7 @@ Windows:
 
 - Windows PowerShell 5.1
 - .NET Framework 4.x compiler (`csc.exe`) for the tray launcher
+- Node.js and npm for the Samsung TV bridge; setup restores the lockfile-pinned `ws` dependency with `npm ci`
 - Administrator rights for scheduled tasks, firewall rule, WOL, and power policy setup
 
 Android build:
@@ -70,7 +71,7 @@ Android build:
 
 Android install:
 
-- ADB at `%LOCALAPPDATA%\Android\platform-tools\adb.exe`
+- ADB at `<Android SDK root>\platform-tools\adb.exe`; provide the exact verified serial with `-AdbSerial`
 - USB debugging or wireless debugging enabled on the Android device
 
 ## Generated Local Files
@@ -88,8 +89,13 @@ Use the `.example.json` files only as templates. Do not publish a real generated
 ## Build APK Manually
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\build-android.ps1
+$SdkRoot = $env:ANDROID_SDK_ROOT
+if (-not $SdkRoot) { $SdkRoot = $env:ANDROID_HOME }
+$JdkRoot = $env:JAVA_HOME
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\build-android.ps1 -SdkRoot $SdkRoot -JdkRoot $JdkRoot
 ```
+
+Alternatively, pass explicit paths with `-SdkRoot` and `-JdkRoot` when those environment variables are not set.
 
 Output:
 
@@ -100,12 +106,17 @@ artifacts\build-output\RemoteCommandCenter-debug.apk
 ## Install APK Manually
 
 ```powershell
-$adb = "$env:LOCALAPPDATA\Android\platform-tools\adb.exe"
+$SdkRoot = $env:ANDROID_SDK_ROOT
+if (-not $SdkRoot) { $SdkRoot = $env:ANDROID_HOME }
+if (-not $SdkRoot) { throw 'Set ANDROID_SDK_ROOT or ANDROID_HOME.' }
+$adb = Join-Path $SdkRoot 'platform-tools\adb.exe'
 $apk = ".\artifacts\build-output\RemoteCommandCenter-debug.apk"
-$serial = (& $adb devices | Select-String "`tdevice$" | Select-Object -First 1).ToString().Split("`t")[0]
-& $adb -s $serial install --no-incremental -r -d $apk
-& $adb -s $serial shell pm grant com.mich.remotecommandcenter android.permission.WRITE_SECURE_SETTINGS
-& $adb -s $serial shell monkey -p com.mich.remotecommandcenter -c android.intent.category.LAUNCHER 1
+$AdbSerial = '<exact ADB_SERIAL returned by Connect-AndroidAdb.ps1>'
+& $adb -s $AdbSerial get-state
+if ($LASTEXITCODE -ne 0) { throw 'Selected ADB serial is not ready.' }
+& $adb -s $AdbSerial install --no-incremental -r $apk
+if ($LASTEXITCODE -ne 0) { throw 'APK install failed.' }
+& $adb -s $AdbSerial shell dumpsys package com.mich.remotecommandcenter | Select-String 'versionCode|versionName'
 ```
 
 ## Verify Wake Packets Without Sleeping The PC
@@ -114,7 +125,7 @@ $serial = (& $adb devices | Select-String "`tdevice$" | Select-Object -First 1).
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\Test-RemoteCommandCenterWakePackets.ps1 -Seconds 45
 ```
 
-Then press Wake in the Android app or launch it with the `wake_now` intent. The proof JSON is written to:
+Then press Wake in the Android app or launch it with the `wake_now` intent. An external Wake intent requires confirmation on the Android device before it sends packets. The optional `wake_delay_ms` intent is capped at five minutes, asks for confirmation, and replaces any earlier pending delayed Wake. The proof JSON is written to:
 
 ```text
 runtime\logs\wake-packet-proof.json

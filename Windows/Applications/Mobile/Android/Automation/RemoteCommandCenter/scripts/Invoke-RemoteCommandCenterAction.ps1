@@ -14,6 +14,7 @@ if ([string]::IsNullOrWhiteSpace($PSScriptRoot)) {
 if ([string]::IsNullOrWhiteSpace($ConfigPath) -or $ConfigPath -eq '\rcc-config.json') {
     $ConfigPath = Join-Path $scriptRoot 'rcc-config.json'
 }
+. (Join-Path $scriptRoot 'RemoteCommandCenter.Protocol.ps1')
 $config = Get-Content -LiteralPath $ConfigPath -Raw | ConvertFrom-Json
 $ps = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
 New-Item -ItemType Directory -Force -Path $config.LogDir | Out-Null
@@ -325,13 +326,17 @@ function Start-ExactExecutable {
 }
 
 function Invoke-UnfreezePc {
-    $masterChief = 'F:\study\Windows\Applications\Mobile\Android\Automation\MasterChiefRescue\scripts\Invoke-MasterChiefRescue.ps1'
-    Write-ActionLog "UNFREEZE_READY method=MasterChiefRescuePlusFastPulse script=`"$masterChief`" exists=$(Test-Path -LiteralPath $masterChief)"
+    $masterChief = $env:RCC_MASTERCHIEF_RESCUE_SCRIPT
+    if ([string]::IsNullOrWhiteSpace($masterChief)) {
+        $masterChief = Join-Path (Split-Path -Parent $PSScriptRoot) 'MasterChiefRescue\scripts\Invoke-MasterChiefRescue.ps1'
+    }
+    $masterChiefExists = (-not [string]::IsNullOrWhiteSpace($masterChief)) -and (Test-Path -LiteralPath $masterChief -PathType Leaf)
+    Write-ActionLog "UNFREEZE_READY method=MasterChiefRescuePlusFastPulse script=`"$masterChief`" exists=$masterChiefExists"
     if (Test-ProofOnly) {
         Write-ActionLog 'PROOF_ONLY active; unfreeze rescue was not executed.'
         return
     }
-    if (-not (Test-Path -LiteralPath $masterChief)) {
+    if (-not $masterChiefExists) {
         Write-ActionLog 'UNFREEZE_SCRIPT_MISSING'
         exit 7
     }
@@ -340,18 +345,25 @@ function Invoke-UnfreezePc {
 }
 
 function Invoke-OpenSpeedyToggle {
-    Invoke-AppWindowToggle -Name 'OpenSpeedy' -ProcessName 'Speedy' -ExePath 'F:\backup\windowsapps\installed\OpenSpeedy\Speedy.exe' -MarkerName 'openspeedy-visible.txt' -PreferTitle @('Speedy') -RejectTitle @('QTrayIconMessageWindow','Default IME','MSCTFIME UI') -RejectClass @('QTrayIconMessageWindow','IME','MSCTF') -LaunchWaitMilliseconds 2200
+    Invoke-AppWindowToggle -Name 'OpenSpeedy' -ProcessName 'OpenSpeedy' -ExePath 'F:\backup\windowsapps\installed\OpenSpeedy\OpenSpeedy.exe' -MarkerName 'openspeedy-visible.txt' -PreferTitle @('OpenSpeedy','Speedy') -RejectTitle @('QTrayIconMessageWindow','Default IME','MSCTFIME UI') -RejectClass @('QTrayIconMessageWindow','IME','MSCTF') -LaunchWaitMilliseconds 2200
 }
 
 function Invoke-WandToggle {
-    Invoke-AppWindowToggle -Name 'Wand' -ProcessName 'Wand' -ExePath 'C:\Users\micha\AppData\Local\Wand\Wand.exe' -MarkerName 'wand-visible.txt' -PreferTitle @('Wand') -RejectTitle @('QTrayIconMessageWindow') -RejectClass @('QTrayIconMessageWindow')
+    $wandExe = Join-Path $env:LOCALAPPDATA 'Wand\Wand.exe'
+    Invoke-AppWindowToggle -Name 'Wand' -ProcessName 'Wand' -ExePath $wandExe -MarkerName 'wand-visible.txt' -PreferTitle @('Wand') -RejectTitle @('QTrayIconMessageWindow') -RejectClass @('QTrayIconMessageWindow')
 }
 
 function Invoke-QBittorrentToggle {
     Invoke-AppWindowToggle -Name 'qBittorrent' -ProcessName 'qbittorrent' -ExePath 'C:\Program Files\qBittorrent\qbittorrent.exe' -MarkerName 'qbittorrent-visible.txt' -PreferTitle @('qBittorrent') -RejectTitle @('QTrayIconMessageWindow') -RejectClass @('QTrayIconMessageWindow')
-    $fitGirlAutoInstall = 'F:\study\Windows\Applications\Gaming\DownloadManagers\qBittorrent\FitGirl\Automation\AutoInstall\qbittorrent-fitgirl-force-auto-install-20260601\dist\FitGirlAutoInstall.exe'
-    $fitGirlInstallScript = 'F:\study\Windows\Applications\Gaming\DownloadManagers\qBittorrent\FitGirl\Automation\AutoInstall\qbittorrent-fitgirl-force-auto-install-20260601\install.ps1'
-    $fitGirlProjectRoot = Split-Path -Parent $fitGirlInstallScript
+    $fitGirlRoots = @(
+        $env:RCC_FITGIRL_HELPER_ROOT,
+        'F:\study\projects\SystemMonitor\PSProcLasso\Windows\Applications\Gaming\DownloadManagers\qBittorrent\FitGirl\Automation\AutoInstall\qbittorrent-fitgirl-force-auto-install-20260601',
+        'F:\study\Software_Engineering\Mobile\Android\Automation\Codex\Launchers\michNvidiaApp\Windows\Applications\Gaming\DownloadManagers\qBittorrent\FitGirl\Automation\AutoInstall\qbittorrent-fitgirl-force-auto-install-20260601'
+    ) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -Unique
+    $fitGirlProjectRoot = $fitGirlRoots | Where-Object { Test-Path -LiteralPath (Join-Path $_ 'install.ps1') -PathType Leaf } | Select-Object -First 1
+    if (-not $fitGirlProjectRoot) { $fitGirlProjectRoot = $fitGirlRoots | Select-Object -First 1 }
+    $fitGirlAutoInstall = Join-Path $fitGirlProjectRoot 'dist\FitGirlAutoInstall.exe'
+    $fitGirlInstallScript = Join-Path $fitGirlProjectRoot 'install.ps1'
     $ps5 = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
     Write-ActionLog "FITGIRL_AUTOINSTALL_READY exe=`"$fitGirlAutoInstall`" exists=$(Test-Path -LiteralPath $fitGirlAutoInstall) canonical=`"$fitGirlInstallScript`" canonicalExists=$(Test-Path -LiteralPath $fitGirlInstallScript)"
     if (Test-ProofOnly) {
@@ -694,13 +706,14 @@ function Invoke-MoonlightToggle {
     $target = if ($mode -eq 'stop') { $scripts.Stop } else { $scripts.Start }
     $focusGuardian = Join-Path $PSScriptRoot 'Start-RemoteCommandCenterMoonlightFocusGuardian.ps1'
     Write-ActionLog "MOONLIGHT_TOGGLE_READY mode=$mode sessions=$sessions root=`"$($scripts.Root)`" startExists=$startExists stopExists=$stopExists target=`"$target`""
+    if (Test-ProofOnly) {
+        $targetExists = Test-Path -LiteralPath $target -PathType Leaf
+        Write-ActionLog "PROOF_ONLY active; Moonlight toggle was not launched. mode=$mode startExists=$startExists stopExists=$stopExists targetExists=$targetExists focusGuardian=`"$focusGuardian`" focusGuardianExists=$(Test-Path -LiteralPath $focusGuardian -PathType Leaf)"
+        return
+    }
     if (-not (Test-Path -LiteralPath $target)) {
         Write-ActionLog "MOONLIGHT_TOGGLE_SCRIPT_MISSING target=`"$target`""
         exit 5
-    }
-    if (Test-ProofOnly) {
-        Write-ActionLog "PROOF_ONLY active; Moonlight start/stop script was not launched. focusGuardian=`"$focusGuardian`" focusGuardianExists=$(Test-Path -LiteralPath $focusGuardian -PathType Leaf)"
-        return
     }
     if ($mode -eq 'stop' -and (Test-Path -LiteralPath $focusGuardian -PathType Leaf)) {
         & $ps -NoProfile -ExecutionPolicy Bypass -File $focusGuardian -ConfigPath $ConfigPath -Stop 2>&1 |
@@ -864,11 +877,9 @@ function Wait-SamsungTvControlReady {
 function Invoke-TizenTubeViaPairedController {
     $tvIp = '192.168.1.173'
     $tizenBrewAppId = 'xvvl3S1bvH.TizenBrewStandalone'
-    $tvController = 'C:\Users\micha\.codex\tools\tv\samsung-tv-control.js'
-    $node = 'C:\Program Files\nodejs\node.exe'
-    if (-not (Test-Path -LiteralPath $node -PathType Leaf)) {
-        $node = (Get-Command node -ErrorAction Stop).Source
-    }
+    $tvController = Join-Path $PSScriptRoot 'samsung-tv-control.js'
+    $node = Get-SamsungTvNodePath
+    if ([string]::IsNullOrWhiteSpace($node)) { throw 'Node.js was not found for Samsung TV control.' }
     if (-not (Test-Path -LiteralPath $tvController -PathType Leaf)) {
         throw "Paired Samsung TV controller is missing: $tvController"
     }
@@ -1000,7 +1011,7 @@ function Invoke-YoutubeTizen {
 }
 
 function Invoke-StremioTv {
-    $controller = 'C:\Users\micha\.codex\tools\tv\samsung-tv-control.js'
+    $controller = Join-Path $PSScriptRoot 'samsung-tv-control.js'
     $appId = '3202306031311'
     $legacyPackageId = 'Stremio.IkWsFHtOY9'
     $tvHost = if ($env:SAMSUNG_TV_HOST) { $env:SAMSUNG_TV_HOST } else { '192.168.1.173' }
@@ -1128,7 +1139,7 @@ function Invoke-SamsungTvRemoteKey {
         [int]$HoldMilliseconds = 0
     )
 
-    $controller = 'C:\Users\micha\.codex\tools\tv\samsung-tv-control.js'
+    $controller = Join-Path $PSScriptRoot 'samsung-tv-control.js'
     $tvHost = if ($env:SAMSUNG_TV_HOST) { $env:SAMSUNG_TV_HOST } else { '192.168.1.173' }
     $nodePath = Get-SamsungTvNodePath
     Write-ActionLog "SAMSUNG_TV_REMOTE_READY action=$ActionName key=$Key holdMs=$HoldMilliseconds controller=`"$controller`" controllerExists=$(Test-Path -LiteralPath $controller -PathType Leaf) node=`"$nodePath`" tvHost=$tvHost"
@@ -1155,28 +1166,10 @@ function Invoke-SamsungTvRemoteKey {
         Write-ActionLog "SAMSUNG_TV_BRIDGE_SENT action=$ActionName key=$Key holdMs=$HoldMilliseconds elapsedMs=$elapsedMs response=$($bridgeResponse | ConvertTo-Json -Compress)"
         return
     } catch {
-        Write-ActionLog "SAMSUNG_TV_BRIDGE_FAILED action=$ActionName key=$Key holdMs=$HoldMilliseconds error=$($_.Exception.Message) fallback=node-single-shot"
+        Write-ActionLog "SAMSUNG_TV_BRIDGE_FAILED action=$ActionName key=$Key holdMs=$HoldMilliseconds errorType=$($_.Exception.GetType().Name)"
+        Write-ActionLog "SAMSUNG_TV_REMOTE_NOT_RETRIED action=$ActionName reason=bridgeOutcomeMayBeAmbiguous"
+        exit 7
     }
-
-    if ([string]::IsNullOrWhiteSpace($nodePath)) {
-        Write-ActionLog 'SAMSUNG_TV_NODE_MISSING'
-        exit 5
-    }
-
-    if ($HoldMilliseconds -gt 0) {
-        $output = & $nodePath $controller hold $Key $HoldMilliseconds 2>&1
-    } else {
-        $output = & $nodePath $controller send $Key 2>&1
-    }
-    $exit = $LASTEXITCODE
-    foreach ($line in @($output)) {
-        Write-ActionLog "SAMSUNG_TV_REMOTE $line"
-    }
-    if ($exit -ne 0) {
-        Write-ActionLog "SAMSUNG_TV_REMOTE_FAILED action=$ActionName key=$Key exit=$exit"
-        exit $exit
-    }
-    Write-ActionLog "SAMSUNG_TV_REMOTE_SENT action=$ActionName key=$Key holdMs=$HoldMilliseconds"
 }
 
 function Invoke-SamsungTvSetVolume {
@@ -1426,8 +1419,8 @@ function Invoke-SamsungTvPowerCycleReboot {
 
 function Get-SamsungTvSdbPath {
     $sdbCandidates = @(
-        'C:\Users\micha\Downloads\tizen-official-tools\tizen-sdk-10\tools\sdb.exe',
-        'F:\backup\windowsapps\installed\tv\tizen\tizen-studio\tools\sdb.exe',
+        $env:RCC_SDB_PATH,
+        'F:\backup\windowsapps\installed\SamsungSDB\data\tools\sdb.exe',
         (Join-Path $env:USERPROFILE 'tizen-studio\tools\sdb.exe'),
         (Join-Path $env:LOCALAPPDATA 'TizenStudio\tools\sdb.exe')
     ) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -Unique
@@ -1530,8 +1523,26 @@ function Get-RccWindowsTerminalPath {
     return ''
 }
 
+function Get-RccWindowsTerminalRunnerArguments {
+    param(
+        [Parameter(Mandatory=$true)][string]$PowerShellPath,
+        [Parameter(Mandatory=$true)][string[]]$RunnerArguments
+    )
+    if ([string]::IsNullOrWhiteSpace($PowerShellPath)) {
+        throw 'The PowerShell executable path is required for Windows Terminal.'
+    }
+    return (@('new-tab', $PowerShellPath) + $RunnerArguments)
+}
+
 function Get-RccTerminalBootstrapLine {
-    $definitionsPath = 'F:\study\Windows\PowerShell\Profile\ps5-profile-portable\Microsoft.PowerShell_profile.full.definitions.ps1'
+    $definitionsCandidates = @(
+        $env:RCC_PROFILE_DEFINITIONS_PATH,
+        'F:\backup\windowsapps\profile\profile-backup\ps5-profile-portable\Microsoft.PowerShell_profile.full.definitions.ps1',
+        'F:\backup\windowsapps\profile\profile-backup\WindowsPowerShell\ProfileSources\ps5-profile-portable\Microsoft.PowerShell_profile.full.definitions.ps1',
+        'F:\backup\windowsapps\profile\backup-data\ps5-profile-portable\Microsoft.PowerShell_profile.full.definitions.ps1'
+    ) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -Unique
+    $definitionsPath = $definitionsCandidates | Where-Object { Test-Path -LiteralPath $_ -PathType Leaf } | Select-Object -First 1
+    if (-not $definitionsPath) { $definitionsPath = $definitionsCandidates | Select-Object -First 1 }
     $safeDefinitionsPath = $definitionsPath.Replace("'", "''")
     @(
         ('$__rccDefs = ''{0}''' -f $safeDefinitionsPath),
@@ -1543,68 +1554,98 @@ function Get-RccTerminalBootstrapLine {
 function Invoke-RccRunInTerminal {
     param(
         [Parameter(Mandatory=$true)][string]$CommandLine,
-        [string]$TerminalPath = ''
+        [string]$TerminalPath = '',
+        [string]$CompletionNonce = ''
     )
+    if (Test-ProofOnly) {
+        Write-ActionLog 'PROOF_ONLY active; terminal command was not persisted or executed.'
+        return
+    }
+    if ($CompletionNonce -cnotmatch '^[A-Za-z0-9_-]{16,128}$') {
+        throw 'Invalid terminal completion nonce.'
+    }
+
+    $runnerFile = Join-Path $scriptRoot 'Invoke-RemoteCommandCenterTerminalRunner.ps1'
+    if (-not (Test-Path -LiteralPath $runnerFile -PathType Leaf)) {
+        throw 'The checked-in terminal runner is missing.'
+    }
     $runRoot = Join-Path $stateDir 'terminal-runs'
     New-Item -ItemType Directory -Force -Path $runRoot | Out-Null
     $runId = '{0}-{1}' -f (Get-Date -Format 'yyyyMMdd-HHmmss-fff'), $PID
     $commandFile = Join-Path $runRoot "command-$runId.txt"
-    $runnerFile = Join-Path $runRoot "runner-$runId.ps1"
+    $bootstrapFile = Join-Path $runRoot "bootstrap-$runId.ps1"
     $commandLog = Join-Path $runRoot "runner-$runId.log"
-    Set-Content -LiteralPath $commandFile -Encoding UTF8 -NoNewline -Value $CommandLine
-
-    $bootstrap = Get-RccTerminalBootstrapLine
-    $runner = @"
-param(
-    [Parameter(Mandatory=`$true)][string]`$CommandFile,
-    [Parameter(Mandatory=`$true)][string]`$LogFile
-)
-function Write-RccTerminalRunLog {
-    param([string]`$Message)
-    try {
-        Add-Content -LiteralPath `$LogFile -Encoding UTF8 -Value ("[{0}] TERMINAL_RUN {1}" -f (Get-Date -Format 'yyyy-MM-dd HH:mm:ss.fff'), `$Message)
-    } catch { }
-}
-`$ErrorActionPreference = 'Continue'
-Write-RccTerminalRunLog 'START'
-$bootstrap
-`$commandText = Get-Content -LiteralPath `$CommandFile -Raw -Encoding UTF8
-`$sha = ([Security.Cryptography.SHA256]::Create()).ComputeHash([Text.Encoding]::UTF8.GetBytes(`$commandText))
-`$shaText = ((`$sha | ForEach-Object { `$_.ToString('x2') }) -join '')
-Write-RccTerminalRunLog ("COMMAND_LOADED chars={0} sha256={1}" -f `$commandText.Length, `$shaText)
-try {
-    Invoke-Expression `$commandText
-    Write-RccTerminalRunLog ("COMMAND_COMPLETED exitCode={0}" -f `$LASTEXITCODE)
-} catch {
-    Write-RccTerminalRunLog ("COMMAND_FAILED {0}" -f `$_.Exception.Message)
-    Write-Error `$_.Exception.Message
-}
-"@
-    Set-Content -LiteralPath $runnerFile -Encoding UTF8 -Value $runner
-    Write-ActionLog "TERMINAL_RUNNER_READY commandFile=`"$commandFile`" runnerFile=`"$runnerFile`" commandLog=`"$commandLog`" chars=$($CommandLine.Length) mode=no-paste-script-runner"
-    if (Test-ProofOnly) {
-        Write-ActionLog 'PROOF_ONLY active; terminal runner files were created but not launched.'
-        return
+    $completionFile = Join-Path $runRoot "result-$CompletionNonce.json"
+    if (Test-Path -LiteralPath $completionFile -PathType Leaf) {
+        throw 'Terminal completion record already exists.'
     }
-    $runnerArgs = @($ps,'-NoExit','-ExecutionPolicy','Bypass','-File',$runnerFile,'-CommandFile',$commandFile,'-LogFile',$commandLog)
-    if (-not [string]::IsNullOrWhiteSpace($TerminalPath)) {
-        Start-Process -FilePath $TerminalPath -Verb RunAs -ArgumentList (@('new-tab') + $runnerArgs) | Out-Null
-    } else {
-        Start-Process -FilePath $ps -Verb RunAs -ArgumentList @('-NoExit','-ExecutionPolicy','Bypass','-File',$runnerFile,'-CommandFile',$commandFile,'-LogFile',$commandLog) | Out-Null
+
+    $deadline = [DateTimeOffset]::UtcNow.AddSeconds(315)
+    $bootstrap = Get-RccTerminalBootstrapLine
+    try {
+        Set-Content -LiteralPath $commandFile -Encoding UTF8 -NoNewline -Value $CommandLine
+        Set-Content -LiteralPath $bootstrapFile -Encoding UTF8 -NoNewline -Value $bootstrap
+        Write-ActionLog "TERMINAL_RUNNER_READY runner=checked-in commandLog=""$commandLog"" chars=$($CommandLine.Length) mode=no-paste-script-runner"
+
+        $runnerArgs = @(
+            '-NoExit','-ExecutionPolicy','Bypass','-File',$runnerFile,
+            '-CommandFile',$commandFile,'-BootstrapFile',$bootstrapFile,'-LogFile',$commandLog,
+            '-CompletionNonce',$CompletionNonce,'-ResultFile',$completionFile,
+            '-ResultDeadlineUtc',$deadline.ToString('o')
+        )
+        try {
+            if (-not [string]::IsNullOrWhiteSpace($TerminalPath)) {
+                Start-Process -FilePath $TerminalPath -Verb RunAs -ArgumentList (Get-RccWindowsTerminalRunnerArguments -PowerShellPath $ps -RunnerArguments $runnerArgs) -ErrorAction Stop | Out-Null
+            } else {
+                Start-Process -FilePath $ps -Verb RunAs -ArgumentList $runnerArgs -ErrorAction Stop | Out-Null
+            }
+        } catch {
+            Write-ActionLog 'TERMINAL_RUNNER_LAUNCH_FAILED elevation-or-terminal-start-failed=True'
+            throw 'The elevated terminal runner did not start.'
+        }
+
+        while ([DateTimeOffset]::UtcNow -lt $deadline -and -not (Test-Path -LiteralPath $completionFile -PathType Leaf)) {
+            Start-Sleep -Milliseconds 200
+        }
+        if (-not (Test-Path -LiteralPath $completionFile -PathType Leaf)) {
+            Write-ActionLog "TERMINAL_RUNNER_COMPLETION_UNCONFIRMED nonce=$CompletionNonce timeoutSeconds=315"
+            $timeoutError = New-Object System.InvalidOperationException('The terminal runner did not report a result before the bounded wait ended.')
+            $timeoutError.Data['RccExitCode'] = 124
+            throw $timeoutError
+        }
+
+        try {
+            $result = Get-Content -LiteralPath $completionFile -Raw -ErrorAction Stop | ConvertFrom-Json -ErrorAction Stop
+            if ([string]$result.type -cne 'rcc-terminal-result' -or [string]$result.nonce -cne $CompletionNonce) {
+                throw 'Terminal completion record did not match this request.'
+            }
+            if ([string]$result.state -cne 'completed' -or [int]$result.exitCode -ne 0) {
+                throw 'The PowerShell line reported an error in the elevated terminal.'
+            }
+            Write-ActionLog "TERMINAL_RUNNER_RETURNED nonce=$CompletionNonce exitCode=0 realWorldEffectsVerified=False"
+        } catch {
+            throw 'The terminal runner returned a failed or invalid completion record.'
+        }
+    } catch {
+        if ($_.Exception.Data['RccExitCode'] -eq 124) { throw }
+        Write-ActionLog 'TERMINAL_RUNNER_FAILED result=failed-or-unconfirmed'
+        throw 'The terminal runner did not confirm that the line returned.'
+    } finally {
+        Remove-Item -LiteralPath $commandFile, $bootstrapFile, $completionFile -Force -ErrorAction SilentlyContinue
     }
 }
 
 function Invoke-AdminTerminal {
-    param([string]$CommandLine = '')
+    param([string]$CommandLine = '', [string]$CompletionNonce = '')
     $terminalPath = Get-RccWindowsTerminalPath
     $hasCommand = -not [string]::IsNullOrWhiteSpace($CommandLine)
-    Write-ActionLog "ADMIN_TERMINAL_READY terminal=`"$terminalPath`" fallback=`"$ps`" hasCommand=$hasCommand mode=default-terminal-no-paste-runner"
+    Write-ActionLog ('ADMIN_TERMINAL_READY terminal="{0}" fallback="{1}" hasCommand={2} mode=default-terminal-no-paste-runner' -f $terminalPath, $ps, $hasCommand)
     if (Test-ProofOnly) {
-        Write-ActionLog 'PROOF_ONLY active; elevated terminal was not opened.'
+        Write-ActionLog 'PROOF_ONLY active; elevated terminal was not opened and terminal command was not persisted or executed.'
         return
     }
     if ($hasCommand) {
-        Invoke-RccRunInTerminal -CommandLine $CommandLine -TerminalPath $terminalPath
+        Invoke-RccRunInTerminal -CommandLine $CommandLine -TerminalPath $terminalPath -CompletionNonce $CompletionNonce
     } elseif (-not [string]::IsNullOrWhiteSpace($terminalPath)) {
         Start-Process -FilePath $terminalPath -Verb RunAs | Out-Null
     } else {
@@ -1613,45 +1654,30 @@ function Invoke-AdminTerminal {
     Write-ActionLog "ADMIN_TERMINAL_LAUNCH_REQUESTED elevation=RunAs shell=DefaultTerminalOrPowerShell profile=default hasCommand=$hasCommand execution=no-paste-script-runner"
 }
 
-function ConvertFrom-RccBase64Url {
-    param([string]$Text)
-    $base64 = $Text.Replace('-', '+').Replace('_', '/')
-    switch ($base64.Length % 4) {
-        2 { $base64 += '==' }
-        3 { $base64 += '=' }
-        1 { throw 'Invalid base64url payload length.' }
-    }
-    [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($base64))
-}
-
 function Invoke-TerminalLine {
     param([string]$EncodedLine)
     $line = ConvertFrom-RccBase64Url -Text $EncodedLine
-    $preview = if ($line.Length -gt 80) { $line.Substring(0, 80) + '...' } else { $line }
-    Write-ActionLog "TERMINAL_LINE_READY chars=$($line.Length) preview=`"$preview`" mode=fresh-elevated-terminal-tab"
+    Write-ActionLog "TERMINAL_LINE_READY chars=$($line.Length) mode=fresh-elevated-terminal-tab"
     if (Test-ProofOnly) {
-        Write-ActionLog 'PROOF_ONLY active; fresh elevated terminal tab was not opened and command was not executed.'
+        Write-ActionLog 'PROOF_ONLY active; fresh elevated terminal tab was not opened and command was not persisted or executed.'
         return
     }
-    Invoke-AdminTerminal -CommandLine $line
-    Write-ActionLog 'TERMINAL_LINE_SENT launch=fresh-elevated-terminal-tab execution=no-paste-script-runner profile=full-function-hook'
+    try {
+        Invoke-AdminTerminal -CommandLine $line -CompletionNonce $Nonce
+    } catch {
+        if ($_.Exception.Data['RccExitCode'] -eq 124) {
+            exit 124
+        }
+        throw
+    }
+    Write-ActionLog 'TERMINAL_LINE_RETURNED launch=fresh-elevated-terminal-tab execution=no-paste-script-runner realWorldEffectsVerified=False'
 }
 
+
+
 function Invoke-Refresh2Logoff {
-    $winlogon = 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon'
-    Write-ActionLog "REFRESH2_LOGOFF_READY key=`"$winlogon`" autoAdminLogon=1 user=user domain=USER autoLogonCount=1"
-    if (Test-ProofOnly) {
-        Write-ActionLog 'PROOF_ONLY active; Winlogon registry and shutdown.exe /l /f were not executed.'
-        return
-    }
-    Set-ItemProperty -Path $winlogon -Name 'AutoAdminLogon' -Value '1' -Force
-    Set-ItemProperty -Path $winlogon -Name 'DefaultUserName' -Value 'user' -Force
-    Set-ItemProperty -Path $winlogon -Name 'DefaultDomainName' -Value 'USER' -Force
-    Set-ItemProperty -Path $winlogon -Name 'DefaultPassword' -Value '13571357' -Force
-    Set-ItemProperty -Path $winlogon -Name 'AutoLogonCount' -Value '1' -Force
-    Start-Sleep -Milliseconds 200
-    & $shutdown /l /f
-    Write-ActionLog "REFRESH2_LOGOFF_TRIGGERED exit=$LASTEXITCODE"
+    Write-ActionLog 'REFRESH2_LOGOFF_READY method=shutdown.exe args=/l /f winlogonMutation=False'
+    Invoke-Executable -FilePath $shutdown -Arguments @('/l','/f')
 }
 
 $system32 = Join-Path $env:SystemRoot 'System32'
@@ -1660,7 +1686,8 @@ $rundll32 = Join-Path $system32 'rundll32.exe'
 $tsdiscon = Join-Path $system32 'tsdiscon.exe'
 $ps = Join-Path $system32 'WindowsPowerShell\v1.0\powershell.exe'
 
-Write-ActionLog "RCC_ACTION_START action=$Action nonce=$Nonce proofOnly=$(Test-ProofOnly)"
+$actionLogLabel = if ($Action -like 'terminal_line:*') { 'terminal_line' } else { $Action }
+Write-ActionLog "RCC_ACTION_START action=$actionLogLabel nonce=$Nonce proofOnly=$(Test-ProofOnly)"
 
 switch ($Action) {
     'force_reboot_now' {
@@ -1777,5 +1804,5 @@ switch ($Action) {
     }
 }
 
-Write-ActionLog "RCC_ACTION_DONE action=$Action"
+Write-ActionLog "RCC_ACTION_DONE action=$actionLogLabel"
 exit 0

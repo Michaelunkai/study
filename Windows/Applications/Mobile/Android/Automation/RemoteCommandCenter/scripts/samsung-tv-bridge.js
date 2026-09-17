@@ -1,19 +1,21 @@
 const fs = require("fs");
 const path = require("path");
+const os = require("os");
 const http = require("http");
 const https = require("https");
-let WebSocket;
-try {
-  WebSocket = require("ws");
-} catch {
-  WebSocket = require("C:\\Users\\micha\\.codex\\tools\\tv\\node_modules\\ws");
-}
+const WebSocket = require("ws");
 
 const host = process.env.SAMSUNG_TV_HOST || "192.168.1.173";
+const tvHttpPort = Number(process.env.SAMSUNG_TV_HTTP_PORT || 8001);
+const tvWebSocketPort = Number(process.env.SAMSUNG_TV_WS_PORT || 8002);
+const tvWebSocketProtocol = process.env.NODE_ENV === "test" && process.env.RCC_TEST_TV_WS_PROTOCOL === "ws"
+  ? "ws"
+  : "wss";
 const port = Number(process.env.RCC_TV_BRIDGE_PORT || 8781);
 const clientName = process.env.SAMSUNG_TV_CLIENT_NAME || "Codex Samsung Remote";
+const configPath = process.env.RCC_CONFIG_PATH || path.join(__dirname, "rcc-config.json");
 const tokenPath = process.env.SAMSUNG_TV_TOKEN_PATH || path.join(
-  process.env.USERPROFILE || "C:\\Users\\micha",
+  os.homedir(),
   ".codex",
   "state",
   "tv",
@@ -36,11 +38,16 @@ function log(message) {
 
 function readToken() {
   try {
-    if (!fs.existsSync(tokenPath)) return "";
-    return JSON.parse(fs.readFileSync(tokenPath, "utf8")).token || "";
-  } catch {
-    return "";
-  }
+    if (fs.existsSync(tokenPath)) {
+      const local = JSON.parse(fs.readFileSync(tokenPath, "utf8"));
+      if ((!local.host || local.host === host) && local.token) return local.token;
+    }
+  } catch {}
+  try {
+    const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
+    if ((!config.TvHost || config.TvHost === host) && config.TvToken) return config.TvToken;
+  } catch {}
+  return "";
 }
 
 function saveToken(token) {
@@ -56,7 +63,7 @@ function websocketUrl() {
   const params = new URLSearchParams({ name: encodedName });
   const token = readToken();
   if (token) params.set("token", token);
-  return `wss://${host}:8002/api/v2/channels/samsung.remote.control?${params}`;
+  return `${tvWebSocketProtocol}://${host}:${tvWebSocketPort}/api/v2/channels/samsung.remote.control?${params}`;
 }
 
 function requestJson(url, timeoutMs = 1800) {
@@ -176,7 +183,7 @@ const server = http.createServer(async (req, res) => {
   try {
     if (req.method === "GET" && req.url === "/status") {
       let api = null;
-      try { api = await requestJson(`http://${host}:8001/api/v2/`, 1400); } catch {}
+      try { api = await requestJson(`http://${host}:${tvHttpPort}/api/v2/`, 1400); } catch {}
       writeJson(res, 200, {
         ok: true,
         bridge: "ready",
@@ -207,9 +214,4 @@ const server = http.createServer(async (req, res) => {
 
 server.listen(port, "127.0.0.1", () => {
   log(`TV_BRIDGE_LISTEN port=${port} host=${host} clientName=${clientName}`);
-  connectTv().catch(err => log(`TV_BRIDGE_INITIAL_CONNECT_FAILED ${err.message || err}`));
 });
-
-setInterval(() => {
-  connectTv().catch(err => log(`TV_BRIDGE_RECONNECT_FAILED ${err.message || err}`));
-}, 15000).unref();

@@ -1,27 +1,37 @@
 param(
-    [string]$Serial = '192.168.1.124:41521',
-    [ValidateSet('YouTube')]
-    [string]$Button = 'YouTube',
-    [string]$SdkRoot = 'C:\Users\micha\bubblewrap-tools\android_sdk',
-    [string]$JdkRoot = 'C:\Users\micha\android-build-tools\jdk'
+    [Parameter(Mandatory = $true)]
+    [string]$Serial,
+    [ValidateSet('UpdateSummary','TerminalIme','YouTube')]
+    [string]$TestCase = 'UpdateSummary',
+    [string]$SdkRoot = $env:ANDROID_SDK_ROOT,
+    [string]$JdkRoot = $env:JAVA_HOME
 )
 
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
+if ([string]::IsNullOrWhiteSpace($Serial)) { throw 'Pass -Serial using the exact authorized ADB transport.' }
+if ([string]::IsNullOrWhiteSpace($SdkRoot)) { $SdkRoot = $env:ANDROID_HOME }
+if ([string]::IsNullOrWhiteSpace($SdkRoot)) { throw 'Pass -SdkRoot or set ANDROID_SDK_ROOT/ANDROID_HOME.' }
+if ([string]::IsNullOrWhiteSpace($JdkRoot)) { throw 'Pass -JdkRoot or set JAVA_HOME.' }
+if (-not (Test-Path -LiteralPath $SdkRoot -PathType Container)) { throw "Android SDK root was not found: $SdkRoot" }
+if (-not (Test-Path -LiteralPath $JdkRoot -PathType Container)) { throw "JDK root was not found: $JdkRoot" }
 $env:JAVA_HOME = $JdkRoot
 $env:PATH = "$JdkRoot\bin;$env:PATH"
-$adb = 'C:\Users\micha\AppData\Local\Android\platform-tools\adb.exe'
+$adb = Join-Path $SdkRoot 'platform-tools\adb.exe'
+if (-not (Test-Path -LiteralPath $adb -PathType Leaf)) { throw "ADB was not found under the selected Android SDK: $adb" }
+$deviceState = & $adb -s $Serial get-state 2>$null
+if ($LASTEXITCODE -ne 0 -or $deviceState -ne 'device') { throw 'The explicitly selected ADB transport is not ready.' }
 $buildTools = Get-ChildItem -LiteralPath (Join-Path $SdkRoot 'build-tools') -Directory |
     Sort-Object Name -Descending | Select-Object -First 1
 $platform = Get-ChildItem -LiteralPath (Join-Path $SdkRoot 'platforms') -Directory |
     Sort-Object Name -Descending | Select-Object -First 1
 if (-not $buildTools -or -not $platform) { throw 'Android SDK build tools/platform not found.' }
 
-$work = Join-Path $root 'artifacts\ui-proof'
+$runId = '{0}-{1}' -f (Get-Date -Format 'yyyyMMdd-HHmmss-fff'), [guid]::NewGuid().ToString('N')
+$work = Join-Path $env:TEMP ("RemoteCommandCenter-ui-proof-$runId")
 $classes = Join-Path $work 'classes'
 $stubs = Join-Path $work 'stubs'
 $dex = Join-Path $work 'dex'
-Remove-Item -LiteralPath $work -Recurse -Force -ErrorAction SilentlyContinue
 New-Item -ItemType Directory -Force -Path $classes, $stubs, $dex | Out-Null
 
 $androidJar = Join-Path $platform.FullName 'android.jar'
@@ -62,20 +72,31 @@ try {
     Pop-Location
 }
 
-& $adb -s $Serial push $testJar /data/local/tmp/RemoteCommandCenterUiTest.jar | Out-Host
+$deviceJar = "/data/local/tmp/RemoteCommandCenterUiTest-$runId.jar"
+& $adb -s $Serial push $testJar $deviceJar | Out-Host
 if ($LASTEXITCODE -ne 0) { throw 'Unable to push UiAutomator proof jar.' }
 & $adb -s $Serial shell cmd statusbar collapse
 & $adb -s $Serial shell am force-stop com.mich.remotecommandcenter
 & $adb -s $Serial shell am start -W -n com.mich.remotecommandcenter/.MainActivity | Out-Host
-$runnerOutput = @(& $adb -s $Serial shell uiautomator runtest /data/local/tmp/RemoteCommandCenterUiTest.jar `
-    -c com.mich.remotecommandcenter.test.RemoteCommandCenterUiTest#testClickYouTubeButtonOnce 2>&1)
+$testMethod = switch ($TestCase) {
+    'UpdateSummary' { 'testWhatChangedDialogShowsInstalledBuildSummary' }
+    'TerminalIme' { 'testTerminalImeWaitsForPowerShellLineReturn' }
+    'YouTube' { 'testClickYouTubeButtonOnce' }
+}
+$expectedMarker = switch ($TestCase) {
+    'UpdateSummary' { 'REMOTE_COMMAND_CENTER_UPDATE_SUMMARY_PASS' }
+    'TerminalIme' { 'REMOTE_COMMAND_CENTER_TERMINAL_IME_COMPLETION_PASS' }
+    'YouTube' { 'REMOTE_COMMAND_CENTER_YOUTUBE_ACTION_COMPLETED' }
+}
+$runnerOutput = @(& $adb -s $Serial shell uiautomator runtest $deviceJar `
+    -c "com.mich.remotecommandcenter.test.RemoteCommandCenterUiTest#$testMethod" 2>&1)
 $runnerOutput | Out-Host
 $runnerText = $runnerOutput -join "`n"
 if ($LASTEXITCODE -ne 0 -or
     $runnerText -match 'aborted|FAILURES!!!' -or
-    $runnerText -notmatch 'REMOTE_COMMAND_CENTER_YOUTUBE_VIEW_CLICK_INJECTED' -or
+    $runnerText -notmatch [regex]::Escape($expectedMarker) -or
     $runnerText -notmatch 'OK \(1 test\)') {
-    throw "$Button installed-button UiAutomator proof failed."
+    throw "$TestCase installed-app UiAutomator proof failed. Build/test artifacts are preserved at $work."
 }
 
-Write-Output "REMOTE_COMMAND_CENTER_ANDROID_UI_CLICK_PASS button=$Button"
+Write-Output "REMOTE_COMMAND_CENTER_ANDROID_UI_PASS testCase=$TestCase artifacts=$work"

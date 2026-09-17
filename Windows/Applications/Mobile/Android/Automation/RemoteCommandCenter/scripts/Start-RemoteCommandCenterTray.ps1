@@ -1,5 +1,6 @@
 param(
-    [string]$ConfigPath = "$PSScriptRoot\rcc-config.json"
+    [string]$ConfigPath = "$PSScriptRoot\rcc-config.json",
+    [switch]$SkipMaintenanceWorkers
 )
 
 $ErrorActionPreference = 'Continue'
@@ -60,9 +61,15 @@ $commonArgs = @('-NoProfile','-ExecutionPolicy','Bypass')
 
 $agent = Start-Process -FilePath $psExe -ArgumentList ($commonArgs + @('-File', $agentScript, '-ConfigPath', $ConfigPath)) -WindowStyle Hidden -PassThru
 $http = Start-Process -FilePath $psExe -ArgumentList ($commonArgs + @('-File', $httpScript, '-ConfigPath', $ConfigPath, '-Port', [string]$config.LocalPort)) -WindowStyle Hidden -PassThru
-$powerGuard = Start-Process -FilePath $psExe -ArgumentList ($commonArgs + @('-File', $powerGuardScript, '-ConfigPath', $ConfigPath, '-IntervalSeconds', '5')) -WindowStyle Hidden -PassThru
-$moonlightGuard = Start-Process -FilePath $psExe -ArgumentList ($commonArgs + @('-File', $moonlightGuardScript, '-ConfigPath', $ConfigPath, '-IntervalSeconds', '300')) -WindowStyle Hidden -PassThru
 $tvBridge = Start-Process -FilePath $psExe -ArgumentList ($commonArgs + @('-File', $tvBridgeScript, '-ConfigPath', $ConfigPath, '-Port', '8781')) -WindowStyle Hidden -PassThru
+$powerGuard = $null
+$moonlightGuard = $null
+if (-not $SkipMaintenanceWorkers) {
+    $powerGuard = Start-Process -FilePath $psExe -ArgumentList ($commonArgs + @('-File', $powerGuardScript, '-ConfigPath', $ConfigPath, '-IntervalSeconds', '5')) -WindowStyle Hidden -PassThru
+    $moonlightGuard = Start-Process -FilePath $psExe -ArgumentList ($commonArgs + @('-File', $moonlightGuardScript, '-ConfigPath', $ConfigPath, '-IntervalSeconds', '300')) -WindowStyle Hidden -PassThru
+} else {
+    Write-TrayLog 'Maintenance workers skipped by requested core-worker startup.'
+}
 Write-TrayLog "Tray started agentPid=$($agent.Id) httpPid=$($http.Id) powerGuardPid=$($powerGuard.Id) moonlightGuardPid=$($moonlightGuard.Id) tvBridgePid=$($tvBridge.Id)"
 
 $notify = New-Object System.Windows.Forms.NotifyIcon

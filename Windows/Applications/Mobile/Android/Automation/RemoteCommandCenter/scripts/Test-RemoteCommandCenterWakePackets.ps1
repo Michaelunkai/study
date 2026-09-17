@@ -2,7 +2,7 @@ param(
     [int[]]$Ports = @(7, 9, 40000, 40009),
     [string]$ExpectedMac = '30:56:0F:40:D2:4C',
     [int]$Seconds = 30,
-    [string]$ProofPath = 'F:\study\Windows\Applications\Mobile\Android\Automation\RemoteCommandCenter\runtime\logs\wake-packet-proof.json'
+    [string]$ProofPath = (Join-Path (Split-Path -Parent $PSScriptRoot) 'runtime\logs\wake-packet-proof.json')
 )
 
 $ErrorActionPreference = 'Stop'

@@ -3,12 +3,14 @@ param(
     [string]$Action,
     [Parameter(Mandatory = $true)]
     [string]$Nonce,
+    [string]$RequestHash = '',
     [string]$ConfigPath = "$PSScriptRoot\rcc-config.json",
     [switch]$ProofOnly
 )
 
 $ErrorActionPreference = 'Stop'
 $config = Get-Content -LiteralPath $ConfigPath -Raw | ConvertFrom-Json
+. (Join-Path $PSScriptRoot 'RemoteCommandCenter.Protocol.ps1')
 $statusDir = Join-Path $config.StateDir 'action-status'
 New-Item -ItemType Directory -Force -Path $statusDir | Out-Null
 $safeNonce = $Nonce -replace '[^A-Za-z0-9_-]', '_'
@@ -21,16 +23,16 @@ function Write-ActionStatus {
         [int]$ExitCode = 0,
         [string]$Message = ''
     )
-    $record = [ordered]@{
-        ok = ($State -in @('accepted', 'running', 'completed', 'skipped'))
-        nonce = $Nonce
-        action = $Action
-        state = $State
-        exitCode = $ExitCode
-        message = $Message
-        updatedUtc = [DateTimeOffset]::UtcNow.ToString('o')
+    $safeMessage = [string]$Message
+    foreach ($secret in @([string]$config.SharedKey, [string]$config.TvToken, [string]$config.CommandTopic, [string]$config.StatusTopic)) {
+        if (-not [string]::IsNullOrWhiteSpace($secret)) { $safeMessage = $safeMessage.Replace($secret, '[redacted]') }
     }
-    [IO.File]::WriteAllText($statusPath, ($record | ConvertTo-Json -Compress), (New-Object Text.UTF8Encoding($false)))
+    if ($safeMessage.Length -gt 240) { $safeMessage = $safeMessage.Substring(0, 240) }
+    $record = New-RccActionStatus -Nonce $Nonce -Action $Action -RequestHash $RequestHash -State $State -ExitCode $ExitCode -Message $safeMessage -SharedKey ([string]$config.SharedKey)
+    Write-RccActionStatusFile -Path $statusPath -Record $record | Out-Null
+    if ($State -in @('running', 'completed', 'failed', 'skipped', 'unconfirmed')) {
+        Publish-RccActionStatus -Record $record -Config $config | Out-Null
+    }
 }
 
 function Get-ActionLockName {
@@ -42,10 +44,21 @@ function Get-ActionLockName {
 }
 
 function Get-ActionTimeoutSeconds {
+    if ($Action -like 'terminal_line:*') { return 330 }
     switch ($Action) {
-        'youtube_tizen' { return 100 }
-        default { return 0 }
+        'youtube_tizen' { return 180 }
+        'moonlight_toggle' { return 180 }
+        'tv_force_reboot' { return 240 }
+        default { return 180 }
     }
+}
+
+if ($RequestHash -eq '') {
+    try { $RequestHash = [string](Get-Content -LiteralPath $statusPath -Raw | ConvertFrom-Json).requestHash } catch {}
+}
+if (-not (Test-RccAction -Action $Action) -or $Nonce -cnotmatch '^[A-Za-z0-9_-]{16,128}$') {
+    Write-ActionStatus -State 'failed' -ExitCode 2 -Message 'Unsupported action or invalid request nonce.'
+    exit 2
 }
 
 $mutex = [Threading.Mutex]::new($false, (Get-ActionLockName))
@@ -91,13 +104,23 @@ try {
                 & "$env:SystemRoot\System32\taskkill.exe" /PID $workerPid /T /F 2>$null | Out-Null
             } catch {
             }
-            Write-ActionStatus -State 'failed' -ExitCode 124 -Message "Action exceeded its $timeoutSeconds-second completion limit."
+            $timeoutState = if ($Action -like 'terminal_line:*') { 'unconfirmed' } else { 'failed' }
+            $timeoutMessage = if ($Action -like 'terminal_line:*') {
+                'The terminal runner did not report a result before the bounded wait ended.'
+            } else {
+                "Action exceeded its $timeoutSeconds-second completion limit."
+            }
+            Write-ActionStatus -State $timeoutState -ExitCode 124 -Message $timeoutMessage
             exit 124
         }
     } else {
         $process.WaitForExit()
     }
     if ($process.ExitCode -ne 0) {
+        if ($Action -like 'terminal_line:*' -and $process.ExitCode -eq 124) {
+            Write-ActionStatus -State 'unconfirmed' -ExitCode 124 -Message 'The terminal runner did not report a result before the bounded wait ended.'
+            exit 124
+        }
         Write-ActionStatus -State 'failed' -ExitCode $process.ExitCode -Message "Action process exited with code $($process.ExitCode)."
         exit $process.ExitCode
     }

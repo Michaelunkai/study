@@ -25,9 +25,12 @@ function Write-MoonlightGuardLog {
 
 function Get-RecoveryScript {
     param([Parameter(Mandatory=$true)][string]$Name)
-    $roots = @(
+    $roots = @()
+    if (-not [string]::IsNullOrWhiteSpace($env:RCC_MOONLIGHT_RECOVERY_ROOT)) {
+        $roots += $env:RCC_MOONLIGHT_RECOVERY_ROOT
+    }
+    $roots += @(
         'F:\backup\windowsapps\installed\tv\tizen\moonlight-setup-guardian\bin',
-        'F:\study\Systems\Windows\Media\GameStreaming\SamsungTizenMoonlightHostKit\scripts\Recovery',
         'F:\backup\windowsapps\installed\tv\tizen\fresh-windows-moonlight-bootstrap\payload\Recovery',
         'F:\backup\windowsapps\install\SamsungTvMoonlightRecovery\Recovery',
         'F:\backup\windowsapps\install\SamsungTvMoonlightRecovery'

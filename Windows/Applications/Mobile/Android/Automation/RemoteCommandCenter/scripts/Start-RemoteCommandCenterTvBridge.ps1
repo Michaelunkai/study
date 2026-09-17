@@ -1,11 +1,16 @@
 param(
     [string]$ConfigPath = "$PSScriptRoot\rcc-config.json",
     [int]$Port = 8781,
-    [string]$TvHost = $(if ($env:SAMSUNG_TV_HOST) { $env:SAMSUNG_TV_HOST } else { '192.168.1.173' })
+    [string]$TvHost
 )
 
 $ErrorActionPreference = 'Stop'
 $config = Get-Content -LiteralPath $ConfigPath -Raw | ConvertFrom-Json
+if ([string]::IsNullOrWhiteSpace($TvHost)) {
+    if (-not [string]::IsNullOrWhiteSpace($env:SAMSUNG_TV_HOST)) { $TvHost = $env:SAMSUNG_TV_HOST }
+    else { $TvHost = [string]$config.TvHost }
+}
+if ([string]::IsNullOrWhiteSpace($TvHost)) { throw 'Samsung TV host is missing from -TvHost, SAMSUNG_TV_HOST, and RCC config.' }
 New-Item -ItemType Directory -Force -Path $config.StateDir, $config.LogDir | Out-Null
 $log = Join-Path $config.LogDir 'tv-bridge-launcher.log'
 
@@ -43,9 +48,14 @@ try {
     if (-not (Test-Path -LiteralPath $bridgeScript -PathType Leaf)) {
         throw "TV bridge script missing: $bridgeScript"
     }
+    $wsPackage = Join-Path $PSScriptRoot 'node_modules\ws\package.json'
+    if (-not (Test-Path -LiteralPath $wsPackage -PathType Leaf)) {
+        throw "Pinned TV bridge dependency is missing: $wsPackage. Run Restore-RemoteCommandCenterDependencies.ps1 to restore it without changing pairing configuration."
+    }
 
     $env:RCC_TV_BRIDGE_PORT = [string]$Port
     $env:RCC_LOG_DIR = [string]$config.LogDir
+    $env:RCC_CONFIG_PATH = $ConfigPath
     $env:SAMSUNG_TV_HOST = $TvHost
     $env:SAMSUNG_TV_CLIENT_NAME = 'Codex Samsung Remote'
 

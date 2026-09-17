@@ -1,17 +1,19 @@
 param(
-    [string]$InstallDir = (Split-Path -Parent $PSScriptRoot)
+    [string]$InstallDir = (Split-Path -Parent $PSScriptRoot),
+    [switch]$CoreWorkersOnly
 )
 
 $ErrorActionPreference = 'Stop'
 if ($PSVersionTable.PSEdition -eq 'Core') {
     $ps5 = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
-    $proc = Start-Process -FilePath $ps5 -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-File',$PSCommandPath,'-InstallDir',$InstallDir) -Wait -PassThru
+    $psArgs = @('-NoProfile','-ExecutionPolicy','Bypass','-File',$PSCommandPath,'-InstallDir',$InstallDir)
+    if ($CoreWorkersOnly) { $psArgs += '-CoreWorkersOnly' }
+    $proc = Start-Process -FilePath $ps5 -ArgumentList $psArgs -Wait -PassThru
     exit $proc.ExitCode
 }
 
 $runtime = Join-Path $InstallDir 'runtime'
 $logDir = Join-Path $runtime 'logs'
-New-Item -ItemType Directory -Force -Path $runtime, $logDir, (Join-Path $runtime 'local-queue') | Out-Null
 $psExe = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
 $tray = Join-Path $PSScriptRoot 'Start-RemoteCommandCenterTray.ps1'
 $trayExe = Join-Path $InstallDir 'dist\RemoteCommandCenterTray.exe'
@@ -22,16 +24,44 @@ $moonlightGuard = Join-Path $PSScriptRoot 'Start-RemoteCommandCenterMoonlightGua
 $stayAwakeCmd = Join-Path $runtime 'run-stay-awake.cmd'
 $powerGuardCmd = Join-Path $runtime 'run-power-guard.cmd'
 $config = Join-Path $PSScriptRoot 'rcc-config.json'
+$configData = Get-Content -LiteralPath $config -Raw | ConvertFrom-Json
 $schtasks = Join-Path $env:SystemRoot 'System32\schtasks.exe'
 $netsh = Join-Path $env:SystemRoot 'System32\netsh.exe'
-$installLog = Join-Path $logDir 'install.log'
-Set-Content -LiteralPath $stayAwakeCmd -Encoding ASCII -Value "@echo off`r`n`"$psExe`" -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$stayAwake`" -ConfigPath `"$config`"`r`n"
-Set-Content -LiteralPath $powerGuardCmd -Encoding ASCII -Value "@echo off`r`n`"$psExe`" -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$powerGuard`" -ConfigPath `"$config`" -IntervalSeconds 5`r`n"
+$installLog = if ($CoreWorkersOnly) { Join-Path ([string]$configData.LogDir) 'install.log' } else { Join-Path $logDir 'install.log' }
 
 function Write-InstallLog {
     param([string]$Message)
     Add-Content -LiteralPath $installLog -Encoding UTF8 -Value ("[{0}] {1}" -f (Get-Date -Format 'yyyy-MM-dd HH:mm:ss.fff'), $Message)
 }
+
+if ($CoreWorkersOnly) {
+    New-Item -ItemType Directory -Force -Path ([string]$configData.LogDir) | Out-Null
+    $identity = [Security.Principal.WindowsIdentity]::GetCurrent().Name
+    $arguments = "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$tray`" -ConfigPath `"$config`" -SkipMaintenanceWorkers"
+    $action = New-ScheduledTaskAction -Execute $psExe -Argument $arguments
+    $trigger = New-ScheduledTaskTrigger -AtLogOn
+    $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -ExecutionTimeLimit ([TimeSpan]::Zero) -MultipleInstances IgnoreNew
+    $principal = New-ScheduledTaskPrincipal -UserId $identity -LogonType Interactive -RunLevel Highest
+
+    $urlAcl = (& $netsh http show urlacl url=http://+:8777/rcc/ 2>&1 | Out-String)
+    if ($urlAcl -notmatch 'http://\+:8777/rcc/') {
+        & $netsh http add urlacl url=http://+:8777/rcc/ user=$identity listen=yes | Out-Null
+        if ($LASTEXITCODE -ne 0) { throw "Could not reserve the local receiver URL for $identity (netsh exit $LASTEXITCODE)." }
+        Write-InstallLog "CORE_URLACL_ADDED user=`"$identity`" prefix=http://+:8777/rcc/"
+    } else {
+        Write-InstallLog 'CORE_URLACL_PRESENT prefix=http://+:8777/rcc/'
+    }
+
+    Register-ScheduledTask -TaskName 'RemoteCommandCenterTrayLogon' -Action $action -Trigger $trigger -Principal $principal -Settings $settings -Force | Out-Null
+    Write-InstallLog 'CORE_STARTUP_REGISTERED powerFirewallAndLegacyTaskChanges=False maintenanceWorkers=False'
+    Start-ScheduledTask -TaskName 'RemoteCommandCenterTrayLogon'
+    Write-Output 'Registered and started the core Remote Command Center workers; power, firewall, and legacy tasks were not changed.'
+    exit 0
+}
+
+New-Item -ItemType Directory -Force -Path $runtime, $logDir, (Join-Path $runtime 'local-queue') | Out-Null
+Set-Content -LiteralPath $stayAwakeCmd -Encoding ASCII -Value "@echo off`r`n`"$psExe`" -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$stayAwake`" -ConfigPath `"$config`"`r`n"
+Set-Content -LiteralPath $powerGuardCmd -Encoding ASCII -Value "@echo off`r`n`"$psExe`" -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$powerGuard`" -ConfigPath `"$config`" -IntervalSeconds 5`r`n"
 
 function Enable-RccPowerWake {
     $powercfg = Join-Path $env:SystemRoot 'System32\powercfg.exe'
