@@ -8,7 +8,7 @@ foreach ($path in @($manifestPath,$skillPath,$helperPath)) {
 }
 $manifest = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
 if ($manifest.name -ne 'study') { throw 'Manifest name is not study.' }
-if ($manifest.version -ne '1.0.0') { throw 'Unexpected manifest version.' }
+if ($manifest.version -notmatch '^1\.0\.0(?:\+codex\.)') { throw 'Unexpected manifest version.' }
 $skill = Get-Content -LiteralPath $skillPath -Raw
 if ($skill -notmatch 'at least six path levels|six-plus-level') { throw 'Deep-placement rule missing.' }
 if ($skill -notmatch 'public repository|public GitHub') { throw 'Public GitHub rule missing.' }
