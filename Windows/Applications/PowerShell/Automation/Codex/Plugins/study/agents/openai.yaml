@@ -1,0 +1,8 @@
+interface:
+  display_name: "Study"
+  short_description: "Organize and publish F:\\study projects"
+  brand_color: "#2563EB"
+  default_prompt: "Use $study to organize the current work under F:\\study and publish it to GitHub."
+
+policy:
+  allow_implicit_invocation: true

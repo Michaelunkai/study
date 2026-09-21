@@ -1,0 +1,31 @@
+{
+  "name": "study",
+  "version": "1.0.0+codex.20260921234448",
+  "description": "Package, verify, organize, and publish projects under F:\\study.",
+  "author": {
+    "name": "Michaelunkai"
+  },
+  "homepage": "https://github.com/Michaelunkai/study",
+  "repository": "https://github.com/Michaelunkai/study",
+  "license": "MIT",
+  "keywords": [
+    "codex",
+    "study",
+    "project",
+    "github",
+    "powershell"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Study",
+    "shortDescription": "Organize and publish F:\\study projects",
+    "longDescription": "Finds a semantic six-plus-level location under F:\\study, creates or moves one project there, verifies it, and publishes a public main-branch GitHub repository.",
+    "developerName": "Michaelunkai",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive"
+    ],
+    "defaultPrompt": "Use $study to organize the current work under F:\\study, verify it, and publish it to GitHub.",
+    "brandColor": "#2563EB"
+  }
+}

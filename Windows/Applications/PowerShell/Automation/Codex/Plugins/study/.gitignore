@@ -1,0 +1,14 @@
+# PowerShell/editor noise
+*.bak
+*.tmp
+*.log
+~$*
+
+# Node/test artifacts
+node_modules/
+
+# OS/editor metadata
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
