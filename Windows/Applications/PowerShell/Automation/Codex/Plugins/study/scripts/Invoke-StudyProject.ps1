@@ -62,7 +62,8 @@ function Find-StudyParent {
                 $depth = Get-PathDepth $_.FullName $Root
                 $depth -ge 6 -and $depth -le 12 -and
                 $_.Name -notin $blocked -and
-                -not (Test-Path -LiteralPath (Join-Path $_.FullName '.git'))
+                -not (Test-Path -LiteralPath (Join-Path $_.FullName '.git')) -and
+                -not (Test-Path -LiteralPath (Join-Path $_.FullName '.codex-plugin'))
             })
     }
     $ranked = foreach ($candidate in $candidates) {
@@ -157,15 +158,33 @@ if ($sourceItem.PSIsContainer) {
 $readme = @"
 # $ProjectName
 
-This project was organized under `F:\study` by the global `$study` workflow.
+> A project organized under `F:\study` by the global `$study` workflow.
 
-## Contents
+## Overview
 
-Add the purpose, usage, verification commands, and project-specific notes here.
+This repository contains the project artifacts, documentation, and verification needed to use and maintain **$ProjectName**.
+
+## Quick start
+
+1. Read the project-specific usage notes below.
+2. Run the primary entry point from the repository root.
+3. Run the verification commands before publishing changes.
+
+## Verification
+
+Document the exact syntax, test, build, or smoke-test command here.
+
+## Project notes
+
+Add purpose, dependencies, configuration, and operational notes here as the project is refined.
+
+## Safety
+
+Do not commit credentials, private keys, tokens, generated caches, or machine-specific secrets.
 
 ## License
 
-Add the intended license here before publishing.
+Declare the intended license here before distributing the project.
 "@
 Write-IfMissing (Join-Path $projectPath 'README.md') $readme
 Write-IfMissing (Join-Path $projectPath '.gitignore') "*.bak`n*.tmp`n*.log`nnode_modules/`n"
